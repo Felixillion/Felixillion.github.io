@@ -1,457 +1,46 @@
 {
-    "lastUpdated": "2026-01-27",
-    "centroids": {
-        "Aries": {
-            "x": 0.85,
-            "y": 0.5
-        },
-        "Taurus": {
-            "x": 0.80,
-            "y": 0.67
-        },
-        "Gemini": {
-            "x": 0.67,
-            "y": 0.80
-        },
-        "Cancer": {
-            "x": 0.5,
-            "y": 0.85
-        },
-        "Leo": {
-            "x": 0.33,
-            "y": 0.80
-        },
-        "Virgo": {
-            "x": 0.20,
-            "y": 0.67
-        },
-        "Libra": {
-            "x": 0.15,
-            "y": 0.5
-        },
-        "Scorpio": {
-            "x": 0.20,
-            "y": 0.33
-        },
-        "Sagittarius": {
-            "x": 0.33,
-            "y": 0.20
-        },
-        "Capricorn": {
-            "x": 0.5,
-            "y": 0.15
-        },
-        "Aquarius": {
-            "x": 0.67,
-            "y": 0.20
-        },
-        "Pisces": {
-            "x": 0.80,
-            "y": 0.33
-        }
+  "lastUpdated": "2026-01-27",
+  "sources": [
+    {
+      "name": "Horoscope Daily",
+      "url": "https://www.horoscopedaily.com/"
     },
-    "points": [
-        {
-            "id": 0,
-            "x": 0.85,
-            "y": 0.5,
-            "sign": "Aries",
-            "site": "A1",
-            "prediction": "Align data."
-        },
-        {
-            "id": 1,
-            "x": 0.86,
-            "y": 0.51,
-            "sign": "Aries",
-            "site": "A2",
-            "prediction": "Cosmic intent."
-        },
-        {
-            "id": 2,
-            "x": 0.84,
-            "y": 0.49,
-            "sign": "Aries",
-            "site": "A3",
-            "prediction": "Stars align."
-        },
-        {
-            "id": 3,
-            "x": 0.85,
-            "y": 0.52,
-            "sign": "Aries",
-            "site": "A4",
-            "prediction": "High confidence."
-        },
-        {
-            "id": 4,
-            "x": 0.80,
-            "y": 0.67,
-            "sign": "Taurus",
-            "site": "T1",
-            "prediction": "Cluster found."
-        },
-        {
-            "id": 5,
-            "x": 0.81,
-            "y": 0.68,
-            "sign": "Taurus",
-            "site": "T2",
-            "prediction": "Stay steady."
-        },
-        {
-            "id": 6,
-            "x": 0.79,
-            "y": 0.66,
-            "sign": "Taurus",
-            "site": "T3",
-            "prediction": "Data growth."
-        },
-        {
-            "id": 7,
-            "x": 0.80,
-            "y": 0.69,
-            "sign": "Taurus",
-            "site": "T4",
-            "prediction": "Precision mapping."
-        },
-        {
-            "id": 8,
-            "x": 0.67,
-            "y": 0.80,
-            "sign": "Gemini",
-            "site": "G1",
-            "prediction": "Binary stars."
-        },
-        {
-            "id": 9,
-            "x": 0.68,
-            "y": 0.81,
-            "sign": "Gemini",
-            "site": "G2",
-            "prediction": "Mercury phase."
-        },
-        {
-            "id": 10,
-            "x": 0.66,
-            "y": 0.79,
-            "sign": "Gemini",
-            "site": "G3",
-            "prediction": "Dual results."
-        },
-        {
-            "id": 11,
-            "x": 0.67,
-            "y": 0.82,
-            "sign": "Gemini",
-            "site": "G4",
-            "prediction": "Code bright."
-        },
-        {
-            "id": 12,
-            "x": 0.5,
-            "y": 0.85,
-            "sign": "Cancer",
-            "site": "C1",
-            "prediction": "Bright traj."
-        },
-        {
-            "id": 13,
-            "x": 0.51,
-            "y": 0.86,
-            "sign": "Cancer",
-            "site": "C2",
-            "prediction": "Shell data."
-        },
-        {
-            "id": 14,
-            "x": 0.49,
-            "y": 0.84,
-            "sign": "Cancer",
-            "site": "C3",
-            "prediction": "Moon cycle."
-        },
-        {
-            "id": 15,
-            "x": 0.5,
-            "y": 0.87,
-            "sign": "Cancer",
-            "site": "C4",
-            "prediction": "Deep research."
-        },
-        {
-            "id": 16,
-            "x": 0.33,
-            "y": 0.80,
-            "sign": "Leo",
-            "site": "L1",
-            "prediction": "Focus integrity."
-        },
-        {
-            "id": 17,
-            "x": 0.34,
-            "y": 0.81,
-            "sign": "Leo",
-            "site": "L2",
-            "prediction": "Lion share."
-        },
-        {
-            "id": 18,
-            "x": 0.32,
-            "y": 0.79,
-            "sign": "Leo",
-            "site": "L3",
-            "prediction": "Solar power."
-        },
-        {
-            "id": 19,
-            "x": 0.33,
-            "y": 0.82,
-            "sign": "Leo",
-            "site": "L4",
-            "prediction": "Data pride."
-        },
-        {
-            "id": 20,
-            "x": 0.20,
-            "y": 0.67,
-            "sign": "Virgo",
-            "site": "V1",
-            "prediction": "Clean pipe."
-        },
-        {
-            "id": 21,
-            "x": 0.21,
-            "y": 0.68,
-            "sign": "Virgo",
-            "site": "V2",
-            "prediction": "Precision PCR."
-        },
-        {
-            "id": 22,
-            "x": 0.19,
-            "y": 0.66,
-            "sign": "Virgo",
-            "site": "V3",
-            "prediction": "Logic flow."
-        },
-        {
-            "id": 23,
-            "x": 0.20,
-            "y": 0.69,
-            "sign": "Virgo",
-            "site": "V4",
-            "prediction": "Detail key."
-        },
-        {
-            "id": 24,
-            "x": 0.15,
-            "y": 0.5,
-            "sign": "Libra",
-            "site": "B1",
-            "prediction": "Balanced norm."
-        },
-        {
-            "id": 25,
-            "x": 0.16,
-            "y": 0.51,
-            "sign": "Libra",
-            "site": "B2",
-            "prediction": "Scale high."
-        },
-        {
-            "id": 26,
-            "x": 0.14,
-            "y": 0.49,
-            "sign": "Libra",
-            "site": "B3",
-            "prediction": "Equal data."
-        },
-        {
-            "id": 27,
-            "x": 0.15,
-            "y": 0.52,
-            "sign": "Libra",
-            "site": "B4",
-            "prediction": "Harmony code."
-        },
-        {
-            "id": 28,
-            "x": 0.20,
-            "y": 0.33,
-            "sign": "Scorpio",
-            "site": "S1",
-            "prediction": "Expanse energy."
-        },
-        {
-            "id": 29,
-            "x": 0.21,
-            "y": 0.34,
-            "sign": "Scorpio",
-            "site": "S2",
-            "prediction": "Deep dive."
-        },
-        {
-            "id": 30,
-            "x": 0.19,
-            "y": 0.32,
-            "sign": "Scorpio",
-            "site": "S3",
-            "prediction": "Hidden node."
-        },
-        {
-            "id": 31,
-            "x": 0.20,
-            "y": 0.35,
-            "sign": "Scorpio",
-            "site": "S4",
-            "prediction": "Sting logic."
-        },
-        {
-            "id": 32,
-            "x": 0.33,
-            "y": 0.20,
-            "sign": "Sagittarius",
-            "site": "A1",
-            "prediction": "Aim true."
-        },
-        {
-            "id": 33,
-            "x": 0.34,
-            "y": 0.21,
-            "sign": "Sagittarius",
-            "site": "A2",
-            "prediction": "Arch data."
-        },
-        {
-            "id": 34,
-            "x": 0.32,
-            "y": 0.19,
-            "sign": "Sagittarius",
-            "site": "A3",
-            "prediction": "Arrow point."
-        },
-        {
-            "id": 35,
-            "x": 0.33,
-            "y": 0.22,
-            "sign": "Sagittarius",
-            "site": "A4",
-            "prediction": "Travel far."
-        },
-        {
-            "id": 36,
-            "x": 0.5,
-            "y": 0.15,
-            "sign": "Capricorn",
-            "site": "K1",
-            "prediction": "Climb high."
-        },
-        {
-            "id": 37,
-            "x": 0.51,
-            "y": 0.16,
-            "sign": "Capricorn",
-            "site": "K2",
-            "prediction": "Steady peak."
-        },
-        {
-            "id": 38,
-            "x": 0.49,
-            "y": 0.14,
-            "sign": "Capricorn",
-            "site": "K3",
-            "prediction": "Earth sync."
-        },
-        {
-            "id": 39,
-            "x": 0.5,
-            "y": 0.17,
-            "sign": "Capricorn",
-            "site": "K4",
-            "prediction": "Logic step."
-        },
-        {
-            "id": 40,
-            "x": 0.67,
-            "y": 0.20,
-            "sign": "Aquarius",
-            "site": "U1",
-            "prediction": "Fluid trans."
-        },
-        {
-            "id": 41,
-            "x": 0.68,
-            "y": 0.21,
-            "sign": "Aquarius",
-            "site": "U2",
-            "prediction": "Wave data."
-        },
-        {
-            "id": 42,
-            "x": 0.66,
-            "y": 0.19,
-            "sign": "Aquarius",
-            "site": "U3",
-            "prediction": "Flow code."
-        },
-        {
-            "id": 43,
-            "x": 0.67,
-            "y": 0.22,
-            "sign": "Aquarius",
-            "site": "U4",
-            "prediction": "Future view."
-        },
-        {
-            "id": 44,
-            "x": 0.80,
-            "y": 0.33,
-            "sign": "Pisces",
-            "site": "P1",
-            "prediction": "Deep water."
-        },
-        {
-            "id": 45,
-            "x": 0.81,
-            "y": 0.34,
-            "sign": "Pisces",
-            "site": "P2",
-            "prediction": "Swim well."
-        },
-        {
-            "id": 46,
-            "x": 0.79,
-            "y": 0.32,
-            "sign": "Pisces",
-            "site": "P3",
-            "prediction": "Dream data."
-        },
-        {
-            "id": 47,
-            "x": 0.80,
-            "y": 0.35,
-            "sign": "Pisces",
-            "site": "P4",
-            "prediction": "Dual fish."
-        }
-    ],
-    "readings": {
-        "Aries": "Align your data with cosmic intent.",
-        "Taurus": "A cluster of opportunities awaits in your spatial analysis.",
-        "Gemini": "Mercury in retrograde might cause PCR artifacts.",
-        "Cancer": "Your UMAP project indicates a bright professional trajectory.",
-        "Leo": "Focus on data integrity. The stars favor well-structured JSON.",
-        "Virgo": "Your research clusters are aligning with Jupiter.",
-        "Libra": "Deep dive into the genomic mysteries of the stars.",
-        "Scorpio": "Expansive energy in your research today.",
-        "Sagittarius": "Precision in your high-dimensional mapping is key.",
-        "Capricorn": "A breakthrough in spatial transcriptomics is imminent.",
-        "Aquarius": "The celestial flow favors fluid transitions in your bio-pipeline.",
-        "Pisces": "Binary stars, binary code—both are bright today."
+    {
+      "name": "Astrology.com",
+      "url": "https://www.astrology.com/horoscope/daily.html"
+    },
+    {
+      "name": "Ask Oracle",
+      "url": "https://www.ask-oracle.com/horoscope/"
+    },
+    {
+      "name": "Ganeshaspeaks",
+      "url": "https://www.ganeshaspeaks.com/horoscopes/daily-horoscope/"
+    },
+    {
+      "name": "Cafe Astrology",
+      "url": "https://cafeastrology.com/dailyhoroscopes.html"
+    },
+    {
+      "name": "AstrologyZone",
+      "url": "https://www.astrologyzone.com/forecasts/"
+    },
+    {
+      "name": "Astrology Bay",
+      "url": "https://astrologybay.com/daily-horoscope"
+    },
+    {
+      "name": "Astrology King",
+      "url": "https://astrologyking.com/"
+    },
+    {
+      "name": "Tarot.com",
+      "url": "https://www.tarot.com/horoscopes/daily"
+    },
+    {
+      "name": "Astrostyle",
+      "url": "https://astrostyle.com/horoscopes/daily/"
     }
-<<<<<<< HEAD
-=======
   ],
   "centroids": {
     "Aries": {
@@ -506,192 +95,192 @@
   "points": [
     {
       "id": 0,
-      "x": 0.8363999510091205,
-      "y": 0.49079312827127786,
+      "x": 0.8763077288391351,
+      "y": 0.5505832178796289,
       "sign": "Aries",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 1,
-      "x": 0.8900640999586884,
-      "y": 0.54146139828399,
+      "x": 0.8134530287519278,
+      "y": 0.4581313017404517,
       "sign": "Aries",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 2,
-      "x": 0.8422122935301167,
-      "y": 0.6644196941675122,
+      "x": 0.7865204675467684,
+      "y": 0.6434005749291054,
       "sign": "Taurus",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 3,
-      "x": 0.7700047084144908,
-      "y": 0.7423621924962428,
+      "x": 0.8027866925604222,
+      "y": 0.7140610271920598,
       "sign": "Taurus",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 4,
-      "x": 0.6987538597070122,
-      "y": 0.8603284514795398,
+      "x": 0.6297664146227183,
+      "y": 0.8344535304457413,
       "sign": "Gemini",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 5,
-      "x": 0.7179735571481369,
-      "y": 0.8681870922750304,
+      "x": 0.6240725698870156,
+      "y": 0.8403154422272093,
       "sign": "Gemini",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 6,
-      "x": 0.44672991656650773,
-      "y": 0.9193626267178228,
+      "x": 0.46445162593691514,
+      "y": 0.9162176618234062,
       "sign": "Cancer",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 7,
-      "x": 0.4748736654235319,
-      "y": 0.8082966674824155,
+      "x": 0.4446409328718632,
+      "y": 0.8588554449103459,
       "sign": "Cancer",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 8,
-      "x": 0.32011475151339996,
-      "y": 0.7789307815717096,
+      "x": 0.26049100902150885,
+      "y": 0.8118547177393056,
       "sign": "Leo",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 9,
-      "x": 0.338230116072112,
-      "y": 0.7767769225667591,
+      "x": 0.34877306611242953,
+      "y": 0.7400268614323232,
       "sign": "Leo",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 10,
-      "x": 0.181190559090886,
-      "y": 0.6045593654236245,
+      "x": 0.1840261227164378,
+      "y": 0.7384895069078039,
       "sign": "Virgo",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 11,
-      "x": 0.2425836422347204,
-      "y": 0.7246714196376076,
+      "x": 0.25144213233582235,
+      "y": 0.6074498577480996,
       "sign": "Virgo",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 12,
-      "x": 0.10892742505644815,
-      "y": 0.5421417802670455,
+      "x": 0.15587180897118885,
+      "y": 0.5221933329938948,
       "sign": "Libra",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 13,
-      "x": 0.16455699923628933,
-      "y": 0.4528816599839627,
+      "x": 0.21632854110824545,
+      "y": 0.5667933639029814,
       "sign": "Libra",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 14,
-      "x": 0.22641811756948232,
-      "y": 0.32641517144669474,
+      "x": 0.2315537559340907,
+      "y": 0.26271787952060033,
       "sign": "Scorpio",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 15,
-      "x": 0.1858349780993789,
-      "y": 0.29853093756340265,
+      "x": 0.24286535813229912,
+      "y": 0.28508139626005585,
       "sign": "Scorpio",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 16,
-      "x": 0.26833365192096,
-      "y": 0.12305555035201503,
+      "x": 0.36491638769265816,
+      "y": 0.22082941894536323,
       "sign": "Sagittarius",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 17,
-      "x": 0.2510175786241933,
-      "y": 0.21165376535324848,
+      "x": 0.3713136966207993,
+      "y": 0.2035891554451721,
       "sign": "Sagittarius",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 18,
-      "x": 0.5547609318492531,
-      "y": 0.1593968837732405,
+      "x": 0.484653385844964,
+      "y": 0.0877525266763575,
       "sign": "Capricorn",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 19,
-      "x": 0.5351211660459032,
-      "y": 0.15607174571941104,
+      "x": 0.4308605279345747,
+      "y": 0.13738384472948303,
       "sign": "Capricorn",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 20,
-      "x": 0.6888373848652568,
-      "y": 0.1986020293981949,
+      "x": 0.7111822461976134,
+      "y": 0.25977630794579765,
       "sign": "Aquarius",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 21,
-      "x": 0.609584641818321,
-      "y": 0.22257950460892237,
+      "x": 0.7326370365544674,
+      "y": 0.21422879295765787,
       "sign": "Aquarius",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
     },
     {
       "id": 22,
-      "x": 0.7916960891048245,
-      "y": 0.3339634826490256,
+      "x": 0.7789828532604616,
+      "y": 0.2957541678097097,
       "sign": "Pisces",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 23,
-      "x": 0.8157043028110936,
-      "y": 0.35511617651248734,
+      "x": 0.7863775662326716,
+      "y": 0.3795320619221775,
       "sign": "Pisces",
       "site": "Astrostyle",
       "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
@@ -711,5 +300,4 @@
     "Aquarius": "Your experimental pipeline shows promising Aquarius characteristics today.",
     "Pisces": "Your experimental pipeline shows promising Pisces characteristics today."
   }
->>>>>>> 3367dfdd9768b29e4c22adde5d93ff4485958120
 }
