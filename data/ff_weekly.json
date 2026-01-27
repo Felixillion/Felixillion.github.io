@@ -4,7 +4,8 @@
         {
             "bank": "ANZ",
             "name": "Frequent Flyer Black",
-            "bonus": 130000,
+            "signupBonus": 130000,
+            "year1Bonus": 0,
             "fee": 425,
             "minSpend": 5000,
             "time": 12,
@@ -14,7 +15,8 @@
         {
             "bank": "NAB",
             "name": "Rewards Signature",
-            "bonus": 100000,
+            "signupBonus": 90000,
+            "year1Bonus": 30000,
             "fee": 295,
             "minSpend": 3000,
             "time": 12,
@@ -24,74 +26,26 @@
         {
             "bank": "Westpac",
             "name": "Altitude Black",
-            "bonus": 120000,
+            "signupBonus": 100000,
+            "year1Bonus": 20000,
             "fee": 250,
             "minSpend": 6000,
             "time": 18,
             "link": "#",
             "loungePasses": "2 Qantas Club"
-        },
-        {
-            "bank": "St.George",
-            "name": "Amplify Signature",
-            "bonus": 90000,
-            "fee": 279,
-            "minSpend": 3000,
-            "time": 12,
-            "link": "#",
-            "loungePasses": "2 Qantas Club"
-        },
-        {
-            "bank": "HSBC",
-            "name": "Star Alliance",
-            "bonus": 100000,
-            "fee": 450,
-            "minSpend": 4000,
-            "time": 12,
-            "link": "#",
-            "loungePasses": "Star Alliance Gold"
-        },
-        {
-            "bank": "Qantas",
-            "name": "Premier Titanium",
-            "bonus": 150000,
-            "fee": 1200,
-            "minSpend": 10000,
-            "time": 18,
-            "link": "#",
-            "loungePasses": "Qantas First Lounge"
         }
     ],
     "velocity": [
         {
             "bank": "Amex",
             "name": "Velocity Platinum",
-            "bonus": 100000,
+            "signupBonus": 100000,
+            "year1Bonus": 0,
             "fee": 375,
             "minSpend": 3000,
             "time": 12,
             "link": "#",
             "loungePasses": "2 Virgin / 2 Amex"
-        },
-        {
-            "bank": "Virgin Money",
-            "name": "Velocity High Flyer",
-            "bonus": 80000,
-            "fee": 289,
-            "minSpend": 4000,
-            "time": 12,
-            "link": "#",
-            "loungePasses": "2 Virgin"
-        },
-        {
-            "bank": "Westpac",
-            "name": "Altitude Black (Velocity)",
-            "bonus": 120000,
-            "fee": 250,
-            "minSpend": 6000,
-            "time": 18,
-            "link": "#",
-            "loungePasses": "2 Virgin"
         }
     ]
 }

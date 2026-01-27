@@ -1,20 +1,24 @@
-// Bioinformatic Astrology with Data Fetching and Sign Selector
+// Bioinformatic Astrology with Cluster Highlighting
 const height = 500;
 const width = 800;
-const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+const margin = { top: 40, right: 40, bottom: 40, left: 40 };
+let currentSign = null;
+let allPoints = [];
+let centroids = {};
 
 async function initAstrology() {
     try {
         const response = await fetch('data/astrology_daily.json');
         const data = await response.json();
 
+        allPoints = data.points;
+        centroids = data.centroids;
         document.getElementById('last-updated-astrology').textContent = data.lastUpdated;
 
-        renderUMAP(data.points);
+        renderUMAP();
         setupSignSelector(data.readings);
     } catch (err) {
         console.error('Failed to load astrology data:', err);
-        document.getElementById('umap-plot').innerHTML = '<p style="color:red">Data temporarily drifting in space...</p>';
     }
 }
 
@@ -23,21 +27,19 @@ function setupSignSelector(readings) {
     const readingDisplay = document.getElementById('personal-reading');
 
     select?.addEventListener('change', (e) => {
-        const sign = e.target.value;
-        if (sign && readings[sign]) {
-            readingDisplay.style.opacity = 0;
-            setTimeout(() => {
-                readingDisplay.textContent = `"${readings[sign]}"`;
-                readingDisplay.style.opacity = 1;
-                readingDisplay.style.transition = 'opacity 0.5s ease';
-            }, 200);
+        currentSign = e.target.value;
+        renderUMAP(); // Re-render to show glow
+
+        if (currentSign && readings[currentSign]) {
+            readingDisplay.textContent = `"${readings[currentSign]}"`;
+            readingDisplay.style.opacity = 1;
         } else {
-            readingDisplay.textContent = 'Choose your sign to see the cosmos align with your research.';
+            readingDisplay.textContent = 'Choose your sign to see the cosmos align.';
         }
     });
 }
 
-function renderUMAP(points) {
+function renderUMAP() {
     const container = document.getElementById('umap-plot');
     if (!container) return;
 
@@ -53,51 +55,60 @@ function renderUMAP(points) {
 
     const colors = ['var(--dapi-blue)', 'var(--fitc-green)', 'var(--cy5-magenta)'];
 
-    const tooltip = d3.select('body').append('div')
-        .style('position', 'absolute')
-        .style('background', 'var(--glass-bg)')
-        .style('backdrop-filter', 'var(--glass-blur)')
-        .style('border', '1px solid var(--glass-border)')
-        .style('padding', '10px')
-        .style('border-radius', '8px')
-        .style('color', '#fff')
-        .style('font-size', '12px')
-        .style('pointer-events', 'none')
-        .style('opacity', 0)
-        .style('z-index', '1000');
-
-    svg.selectAll('circle')
-        .data(points)
+    // 1. Render all source dots
+    svg.selectAll('.source-dot')
+        .data(allPoints)
         .enter()
         .append('circle')
+        .attr('class', 'source-dot')
         .attr('cx', d => x(d.x))
         .attr('cy', d => y(d.y))
-        .attr('r', 6)
-        .attr('fill', d => colors[d.id % colors.length])
-        .attr('fill-opacity', 0.6)
-        .style('cursor', 'pointer')
-        .on('mouseover', (event, d) => {
-            d3.select(event.currentTarget).attr('r', 10).attr('fill-opacity', 1);
-            tooltip.transition().duration(200).style('opacity', 1);
-            tooltip.html(`<strong>${d.site}</strong><br>${d.prediction}`)
-                .style('left', (event.pageX + 15) + 'px')
-                .style('top', (event.pageY - 28) + 'px');
-        })
-        .on('mouseout', (event) => {
-            d3.select(event.currentTarget).attr('r', 6).attr('fill-opacity', 0.6);
-            tooltip.transition().duration(500).style('opacity', 0);
-        });
+        .attr('r', 3)
+        .attr('fill', d => d.sign === currentSign ? 'var(--fitc-green)' : '#333')
+        .attr('fill-opacity', d => d.sign === currentSign ? 0.8 : 0.2)
+        .style('filter', d => d.sign === currentSign ? 'drop-shadow(0 0 5px var(--fitc-green))' : 'none')
+        .attr('stroke', d => d.sign === currentSign ? '#fff' : 'none')
+        .attr('stroke-width', 0.5);
 
+    // 2. Render Centroid (Sign Average) if selected
+    if (currentSign && centroids[currentSign]) {
+        const center = centroids[currentSign];
+
+        // Centroid Glow
+        svg.append('circle')
+            .attr('cx', x(center.x))
+            .attr('cy', y(center.y))
+            .attr('r', 15)
+            .attr('fill', 'var(--fitc-green)')
+            .attr('fill-opacity', 0.2)
+            .attr('class', 'centroid-pulse');
+
+        svg.append('circle')
+            .attr('cx', x(center.x))
+            .attr('cy', y(center.y))
+            .attr('r', 8)
+            .attr('fill', '#fff')
+            .attr('stroke', 'var(--fitc-green)')
+            .attr('stroke-width', 3)
+            .style('filter', 'drop-shadow(0 0 10px var(--fitc-green))');
+
+        svg.append('text')
+            .attr('x', x(center.x))
+            .attr('y', y(center.y) - 20)
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#fff')
+            .style('font-weight', 'bold')
+            .style('font-size', '12px')
+            .text(`${currentSign} Centroid`);
+    }
+
+    // Legend
     svg.append('text')
-        .attr('x', width - 20)
-        .attr('y', height - 10)
-        .attr('text-anchor', 'end')
+        .attr('x', 20)
+        .attr('y', 20)
         .attr('fill', 'var(--text-secondary)')
         .style('font-size', '10px')
-        .text('Dim 1 / Dim 2 (Pre-calculated UMAP Proj.)');
+        .text('● High-confidence source | ○ Low-confidence source');
 }
 
 initAstrology();
-window.addEventListener('resize', () => {
-    // Optionally re-render on resize if using absolute dimensions
-});
