@@ -1,0 +1,34 @@
+{
+    "lastUpdated": "2026-01-26",
+    "qantas": [
+        {
+            "bank": "ANZ",
+            "name": "Frequent Flyer Black",
+            "bonus": 130000,
+            "fee": 425,
+            "minSpend": 5000,
+            "time": 12,
+            "link": "https://www.anz.com.au"
+        },
+        {
+            "bank": "Westpac",
+            "name": "Altitude Black",
+            "bonus": 120000,
+            "fee": 250,
+            "minSpend": 6000,
+            "time": 18,
+            "link": "https://www.westpac.com.au"
+        }
+    ],
+    "velocity": [
+        {
+            "bank": "Amex",
+            "name": "Velocity Platinum",
+            "bonus": 100000,
+            "fee": 375,
+            "minSpend": 3000,
+            "time": 12,
+            "link": "https://www.americanexpress.com"
+        }
+    ]
+}

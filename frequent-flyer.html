@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AU Frequent Flyer Tracker | Felixillion</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">Felixillion</a></div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="astrology.html">Astrology</a></li>
+                <li><a href="frequent-flyer.html" style="color: var(--fitc-green);">Frequent Flyer</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: 8rem;">
+        <div class="fade-in">
+            <h2>AU Credit Card Points Tracker</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Comparing Qantas and Velocity sign-up offers. Quantifying the value of medical research travel.
+            </p>
+            <div style="font-size: 0.8rem; color: var(--tritc-red); margin-bottom: 2rem;">
+                Updated Weekly (Every Monday 09:00 AEST)
+            </div>
+        </div>
+
+        <div class="card-controls fade-in" style="margin: 2rem 0; display: flex; gap: 1rem;">
+            <button id="toggle-qantas" class="subheading"
+                style="cursor: pointer; background: var(--glass-bg);">Qantas</button>
+            <button id="toggle-velocity" class="subheading"
+                style="cursor: pointer; opacity: 0.5; background: var(--glass-bg);">Velocity</button>
+        </div>
+
+        <div id="card-table-container" class="glass-card fade-in" style="overflow-x: auto;">
+            <div style="text-align: center; padding: 4rem;">Syncing with bank data...</div>
+        </div>
+
+        <!-- T&C Section -->
+        <section class="fade-in" style="margin-top: 4rem; padding: 2rem; border-top: 1px solid var(--glass-border);">
+            <h3 style="font-size: 1rem; margin-bottom: 1rem;">Terms and Conditions (Disclaimer)</h3>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+                <p>1. The information provided here is for informational purposes only and does not constitute financial
+                    advice. Always read the Product Disclosure Statement (PDS) provided by the bank.</p>
+                <p>2. "Points/$" is calculated as (Bonus Points / Annual Fee). This does not account for interest rates,
+                    foreign transition fees, or value of included lounge passes.</p>
+                <p>3. Offers are subject to change by the provider without notice. Dr Lord Felix Merlin Daniel
+                    Marsh-Wakefield is not responsible for information missing from or inaccurately scrubbed by the
+                    automated engine.</p>
+                <p>4. Eligibility criteria (e.g., minimum income, non-cardholder status for 12-18 months) apply. Check
+                    source links for full details.</p>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="scripts/frequent_flyer.js"></script>
+</body>
+
+</html>

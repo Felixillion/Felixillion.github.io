@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Bio-Astrology | Felixillion</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">Felixillion</a></div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="astrology.html" style="color: var(--fitc-green);">Astrology</a></li>
+                <li><a href="frequent-flyer.html">Frequent Flyer</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: 8rem;">
+        <div class="fade-in">
+            <h2>Bioinformatic Astrology</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Clustering daily predictions via UMAP. Calculated from hundreds of celestial data points.
+            </p>
+        </div>
+
+        <!-- Interactive Reading Section -->
+        <div class="glass-card fade-in" style="margin-bottom: 3rem; text-align: center;">
+            <h3 style="margin-bottom: 1rem;">Get Your Daily Reading</h3>
+            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <select id="zodiac-select" class="subheading"
+                    style="background: var(--bg-color); color: white; border: 1px solid var(--glass-border); padding: 0.5rem 1rem;">
+                    <option value="">Select Your Sign</option>
+                    <option value="Aries">Aries</option>
+                    <option value="Taurus">Taurus</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Cancer">Cancer</option>
+                    <option value="Leo">Leo</option>
+                    <option value="Virgo">Virgo</option>
+                    <option value="Libra">Libra</option>
+                    <option value="Scorpio">Scorpio</option>
+                    <option value="Sagittarius">Sagittarius</option>
+                    <option value="Capricorn">Capricorn</option>
+                    <option value="Aquarius">Aquarius</option>
+                    <option value="Pisces">Pisces</option>
+                </select>
+            </div>
+            <div id="personal-reading" style="font-style: italic; color: var(--fitc-green); min-height: 1.5rem;">
+                Choose your sign to see the cosmos align with your research.
+            </div>
+        </div>
+
+        <div id="umap-container" class="glass-card fade-in">
+            <div id="umap-plot"></div>
+            <div style="margin-top: 1rem; text-align: right; font-size: 0.8rem; color: var(--text-secondary);">
+                Last Updated: <span id="last-updated-astrology">-</span>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="scripts/astrology.js"></script>
+</body>
+
+</html>

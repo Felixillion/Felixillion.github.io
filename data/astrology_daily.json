@@ -1,0 +1,23 @@
+{
+    "lastUpdated": "2026-01-27",
+    "averagePrediction": "A day of cosmic alignment where biological data and celestial movements intersect.",
+    "points": [
+        {"id": 0, "x": 0.2, "y": 0.3, "site": "AstrologyZone", "prediction": "Focus on data integrity."},
+        {"id": 1, "x": 0.5, "y": 0.8, "site": "CafeAstrology", "prediction": "New insights in bioinformatics await."},
+        {"id": 2, "x": 0.8, "y": 0.4, "site": "DailyHoroscope", "prediction": "Your spatial datasets hold the key."}
+    ],
+    "readings": {
+        "Aries": "Expansive energy in your research.",
+        "Taurus": "Steady progress on spatial transcriptomics.",
+        "Gemini": "Binary stars, binary code—both are bright.",
+        "Cancer": "High sensitivity to experimental noise today.",
+        "Leo": "Command the lab with celestial confidence.",
+        "Virgo": "Precise alignments in your Xenium clusters.",
+        "Libra": "Balanced results in your Comma datasets.",
+        "Scorpio": "Deep dive into the genomic mysteries.",
+        "Sagittarius": "Targeted growth in your frequent flyer points.",
+        "Capricorn": "Structured success in Australian medical research.",
+        "Aquarius": "Innovative clustering in your UMAP plots.",
+        "Pisces": "Fluid transitions between worlds."
+    }
+}
