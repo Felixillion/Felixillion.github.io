@@ -2,13 +2,22 @@
     "lastUpdated": "2026-01-27",
     "qantas": [
         {
+            "bank": "AMEX",
+            "name": "Qantas Ultimate",
+            "signupBonus": 100000,
+            "year1Bonus": 0,
+            "fee": 450,
+            "minSpend": 3000,
+            "link": "#",
+            "loungePasses": "2 Qantas / 2 Amex"
+        },
+        {
             "bank": "ANZ",
             "name": "Frequent Flyer Black",
             "signupBonus": 130000,
             "year1Bonus": 0,
             "fee": 425,
             "minSpend": 5000,
-            "time": 12,
             "link": "#",
             "loungePasses": "2 Qantas Club"
         },
@@ -19,33 +28,50 @@
             "year1Bonus": 30000,
             "fee": 295,
             "minSpend": 3000,
-            "time": 12,
             "link": "#",
             "loungePasses": "None"
         },
         {
             "bank": "Westpac",
             "name": "Altitude Black",
-            "signupBonus": 100000,
-            "year1Bonus": 20000,
+            "signupBonus": 90000,
+            "year1Bonus": 30000,
             "fee": 250,
             "minSpend": 6000,
-            "time": 18,
             "link": "#",
             "loungePasses": "2 Qantas Club"
         }
     ],
     "velocity": [
         {
-            "bank": "Amex",
+            "bank": "AMEX",
             "name": "Velocity Platinum",
             "signupBonus": 100000,
             "year1Bonus": 0,
             "fee": 375,
             "minSpend": 3000,
-            "time": 12,
             "link": "#",
             "loungePasses": "2 Virgin / 2 Amex"
+        },
+        {
+            "bank": "Bankwest",
+            "name": "Halo Platinum",
+            "signupBonus": 60000,
+            "year1Bonus": 0,
+            "fee": 150,
+            "minSpend": 2000,
+            "link": "#",
+            "loungePasses": "None"
+        },
+        {
+            "bank": "Virgin Money",
+            "name": "Velocity High Flyer",
+            "signupBonus": 80000,
+            "year1Bonus": 20000,
+            "fee": 289,
+            "minSpend": 4000,
+            "link": "#",
+            "loungePasses": "2 Virgin"
         }
     ]
 }
