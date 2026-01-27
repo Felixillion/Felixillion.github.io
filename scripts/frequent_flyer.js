@@ -94,15 +94,23 @@ window.toggleSort = (key) => {
 
 document.getElementById('toggle-qantas')?.addEventListener('click', (e) => {
     currentScheme = 'qantas';
-    document.querySelectorAll('.card-controls button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.card-controls button').forEach(b => {
+        b.classList.remove('active');
+        b.style.opacity = '0.5';
+    });
     e.target.classList.add('active');
+    e.target.style.opacity = '1';
     renderTable();
 });
 
 document.getElementById('toggle-velocity')?.addEventListener('click', (e) => {
     currentScheme = 'velocity';
-    document.querySelectorAll('.card-controls button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.card-controls button').forEach(b => {
+        b.classList.remove('active');
+        b.style.opacity = '0.5';
+    });
     e.target.classList.add('active');
+    e.target.style.opacity = '1';
     renderTable();
 });
 

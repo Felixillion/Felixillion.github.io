@@ -56,6 +56,7 @@ function renderUMAP() {
     const colors = ['var(--dapi-blue)', 'var(--fitc-green)', 'var(--cy5-magenta)'];
 
     // 1. Render all source dots
+    console.log('Rendering', allPoints.length, 'points for', currentSign);
     svg.selectAll('.source-dot')
         .data(allPoints)
         .enter()
@@ -63,10 +64,10 @@ function renderUMAP() {
         .attr('class', 'source-dot')
         .attr('cx', d => x(d.x))
         .attr('cy', d => y(d.y))
-        .attr('r', 3)
-        .attr('fill', d => d.sign === currentSign ? 'var(--fitc-green)' : '#333')
-        .attr('fill-opacity', d => d.sign === currentSign ? 0.8 : 0.2)
-        .style('filter', d => d.sign === currentSign ? 'drop-shadow(0 0 5px var(--fitc-green))' : 'none')
+        .attr('r', 4) // Slightly larger
+        .attr('fill', d => d.sign === currentSign ? 'var(--fitc-green)' : '#444')
+        .attr('fill-opacity', d => d.sign === currentSign ? 1.0 : 0.3)
+        .style('filter', d => d.sign === currentSign ? 'drop-shadow(0 0 8px var(--fitc-green))' : 'none')
         .attr('stroke', d => d.sign === currentSign ? '#fff' : 'none')
         .attr('stroke-width', 0.5);
 
