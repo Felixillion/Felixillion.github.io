@@ -41,6 +41,7 @@
       "name": "Astrostyle",
       "url": "https://astrostyle.com/horoscopes/daily/"
     }
+<<<<<<< Updated upstream
   ],
   "centroids": {
     "Aries": {
@@ -300,4 +301,6 @@
     "Aquarius": "Your experimental pipeline shows promising Aquarius characteristics today.",
     "Pisces": "Your experimental pipeline shows promising Pisces characteristics today."
   }
+=======
+>>>>>>> Stashed changes
 }

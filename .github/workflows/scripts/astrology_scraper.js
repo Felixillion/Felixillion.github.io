@@ -146,6 +146,10 @@ async function generateEmbedding(text) {
 }
 
 async function synthesizePrediction(sign, predictions) {
+    if (predictions.length === 0) {
+        return `Your ${sign} experimental data shows standard deviation today.`;
+    }
+
     const predictionTexts = predictions.map(p => `- ${p.text.substring(0, 200)}`).join('\n');
 
     const prompt = `You are a bioinformatics researcher. Based on these astrology predictions for ${sign}, write ONE concise sentence (max 25 words) using lab/science terminology.
@@ -156,33 +160,272 @@ ${predictionTexts}
 Lab-themed prediction:`;
 
     try {
+        console.log(`Synthesizing prediction for ${sign}...`);
         const response = await axios.post(
             HF_API,
             {
                 inputs: prompt,
                 parameters: {
-                    max_new_tokens: 50,
-                    temperature: 0.7,
-                    return_full_text: false
+                    max_new_tokens: 60,
+                    temperature: 0.8,
+                    return_full_text: false,
+                    do_sample: true
                 }
             },
             {
                 headers: {
                     'Authorization': `Bearer ${HF_TOKEN}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                timeout: 30000
             }
         );
 
         let generated = response.data[0]?.generated_text || '';
-        generated = generated.split('\n')[0].trim(); // Take first line only
+        generated = generated.split('\n')[0].trim();
 
-        return generated || `Your ${sign} data clusters show optimal alignment today.`;
+        if (generated && generated.length > 10 && !generated.includes('error')) {
+            console.log(`✓ LLM generated for ${sign}: ${generated.substring(0, 50)}...`);
+            return generated;
+        }
+
+        throw new Error('Invalid LLM response');
     } catch (error) {
-        console.error(`LLM synthesis failed for ${sign}:`, error.message);
-        // Fallback to template
-        return `Your experimental pipeline shows promising ${sign} characteristics today.`;
+        console.error(`✗ LLM synthesis failed for ${sign}:`, error.response?.data || error.message);
+        // Use intelligent template-based fallback
+        return generateTemplateBasedPrediction(sign, predictions);
     }
+}
+
+function generateTemplateBasedPrediction(sign, predictions) {
+    // Sign characteristics for generating unique predictions
+    const signTraits = {
+        'Aries': { element: 'fire', quality: 'cardinal', themes: ['energy', 'initiative', 'action'] },
+        'Taurus': { element: 'earth', quality: 'fixed', themes: ['stability', 'resources', 'cultivation'] },
+        'Gemini': { element: 'air', quality: 'mutable', themes: ['communication', 'adaptability', 'analysis'] },
+        'Cancer': { element: 'water', quality: 'cardinal', themes: ['sensitivity', 'protection', 'nurturing'] },
+        'Leo': { element: 'fire', quality: 'fixed', themes: ['creativity', 'expression', 'leadership'] },
+        'Virgo': { element: 'earth', quality: 'mutable', themes: ['precision', 'optimization', 'service'] },
+        'Libra': { element: 'air', quality: 'cardinal', themes: ['balance', 'harmony', 'partnership'] },
+        'Scorpio': { element: 'water', quality: 'fixed', themes: ['depth', 'transformation', 'intensity'] },
+        'Sagittarius': { element: 'fire', quality: 'mutable', themes: ['exploration', 'expansion', 'philosophy'] },
+        'Capricorn': { element: 'earth', quality: 'cardinal', themes: ['structure', 'achievement', 'discipline'] },
+        'Aquarius': { element: 'air', quality: 'fixed', themes: ['innovation', 'collective', 'breakthrough'] },
+        'Pisces': { element: 'water', quality: 'mutable', themes: ['intuition', 'dissolution', 'compassion'] }
+    };
+
+    const traits = signTraits[sign];
+
+    // Create deterministic seed from sign name and date for reproducibility
+    const today = new Date().toISOString().split('T')[0];
+    const signSeed = (sign.charCodeAt(0) * 1000) + parseInt(today.replace(/-/g, ''));
+
+    // Seeded random function
+    function seededRandom(seed) {
+        const x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // Comprehensive lab-themed template bank (organized by sign characteristics)
+    const templatesByElement = {
+        fire: [
+            `Your ${sign} kinetic energy reaches maximum catalytic efficiency today.`,
+            `Rapid reaction rates detected in ${sign} enzymatic pathways.`,
+            `High-temperature phase transitions activate ${sign} protocols.`,
+            `Exothermic reactions accelerate ${sign} experimental throughput.`,
+            `Your ${sign} system shows peak metabolic flux and ATP production.`
+        ],
+        earth: [
+            `Stable baseline conditions optimize ${sign} experimental reproducibility.`,
+            `Your ${sign} data demonstrates robust statistical power today.`,
+            `Substrate accumulation enhances ${sign} biosynthetic pathways.`,
+            `Crystallization conditions are ideal for ${sign} structural analysis.`,
+            `Ground-state energy minimization favors ${sign} protocols.`
+        ],
+        air: [
+            `Network topology analysis reveals optimal ${sign} connectivity.`,
+            `Information transfer efficiency peaks in ${sign} signaling cascades.`,
+            `Your ${sign} data shows high-dimensional clustering patterns.`,
+            `Gas-phase reactions facilitate ${sign} analytical precision.`,
+            `Signal propagation velocities maximize ${sign} throughput.`
+        ],
+        water: [
+            `Aqueous solution dynamics favor ${sign} molecular interactions.`,
+            `Your ${sign} system achieves optimal hydration equilibrium.`,
+            `Fluid dynamics modeling predicts favorable ${sign} outcomes.`,
+            `Solvent-accessible surface area increases for ${sign} binding.`,
+            `Osmotic gradients drive ${sign} transport mechanisms efficiently.`
+        ]
+    };
+
+    const templatesByTheme = {
+        energy: [
+            `ATP synthesis rates peak in your ${sign} mitochondrial assays.`,
+            `Electrochemical gradients optimize ${sign} energy production.`
+        ],
+        initiative: [
+            `De novo pathway activation initiates ${sign} biosynthesis.`,
+            `Your ${sign} protocols show first-order kinetic advantages.`
+        ],
+        action: [
+            `Active site accessibility maximizes ${sign} catalytic rates.`,
+            `Immediate-early gene expression activates ${sign} responses.`
+        ],
+        stability: [
+            `Thermodynamic stability ensures ${sign} experimental consistency.`,
+            `Your ${sign} steady-state conditions minimize variance.`
+        ],
+        resources: [
+            `Substrate concentrations are optimal for ${sign} reactions today.`,
+            `Resource allocation efficiency maximizes ${sign} yield.`
+        ],
+        cultivation: [
+            `Cell density reaches logarithmic growth phase in ${sign} cultures.`,
+            `Your ${sign} expansion protocols show exponential kinetics.`
+        ],
+        communication: [
+            `Intercellular signaling cascades enhance ${sign} coordination.`,
+            `Your ${sign} transcriptional regulation shows optimal feedback.`
+        ],
+        adaptability: [
+            `Conformational flexibility enables ${sign} substrate promiscuity.`,
+            `Your ${sign} system demonstrates phenotypic plasticity.`
+        ],
+        analysis: [
+            `High-resolution mass spectrometry reveals ${sign} complexities.`,
+            `Multivariate analysis uncovers hidden ${sign} correlations.`
+        ],
+        sensitivity: [
+            `Detection limits reach femtomolar range for ${sign} assays.`,
+            `Your ${sign} sensors show exceptional signal sensitivity.`
+        ],
+        protection: [
+            `Quality control checkpoints safeguard ${sign} data integrity.`,
+            `Error-correction pathways protect ${sign} genomic stability.`
+        ],
+        nurturing: [
+            `Growth factor supplementation optimizes ${sign} cell viability.`,
+            `Your ${sign} culture conditions support robust proliferation.`
+        ],
+        creativity: [
+            `Novel combinatorial approaches generate ${sign} diversity.`,
+            `Your ${sign} design space exploration yields innovations.`
+        ],
+        expression: [
+            `Transgene expression levels peak in ${sign} constructs today.`,
+            `Protein production rates maximize ${sign} output.`
+        ],
+        leadership: [
+            `Dominant clones emerge in ${sign} selective conditions.`,
+            `Your ${sign} pathways show hierarchical regulation.`
+        ],
+        precision: [
+            `Instrumental resolution enhances ${sign} measurement accuracy.`,
+            `Your ${sign} quality metrics exceed three-sigma thresholds.`
+        ],
+        optimization: [
+            `Parameter sweeps identify ${sign} optima across variables.`,
+            `Gradient descent converges rapidly for ${sign} functions.`
+        ],
+        service: [
+            `Helper T cell activation supports ${sign} immune responses.`,
+            `Auxiliary pathways enhance ${sign} primary reactions.`
+        ],
+        balance: [
+            `Homeostatic mechanisms maintain ${sign} equilibrium states.`,
+            `Your ${sign} system achieves optimal pH buffering.`
+        ],
+        harmony: [
+            `Cooperative binding kinetics synchronize ${sign} processes.`,
+            `Allosteric regulation coordinates ${sign} enzyme activities.`
+        ],
+        partnership: [
+            `Symbiotic interactions strengthen ${sign} co-culture systems.`,
+            `Protein-protein docking energies favor ${sign} complexes.`
+        ],
+        depth: [
+            `Deep sequencing reveals rare ${sign} variant populations.`,
+            `Your ${sign} penetration depth enables subsurface analysis.`
+        ],
+        transformation: [
+            `Epigenetic reprogramming transforms ${sign} cell states.`,
+            `Your ${sign} transfection efficiency reaches maximum.`
+        ],
+        intensity: [
+            `Laser power optimization increases ${sign} signal intensity.`,
+            `Concentrated samples amplify ${sign} detection levels.`
+        ],
+        exploration: [
+            `Unbiased screens discover novel ${sign} target space.`,
+            `Your ${sign} exploratory analysis reveals new territories.`
+        ],
+        expansion: [
+            `Library complexity increases ${sign} diversity exponentially.`,
+            `Expansion microscopy reveals ${sign} nanoscale details.`
+        ],
+        philosophy: [
+            `First-principles modeling elucidates ${sign} mechanisms.`,
+            `Theoretical frameworks guide ${sign} hypothesis generation.`
+        ],
+        structure: [
+            `Crystallographic refinement resolves ${sign} architecture.`,
+            `Your ${sign} scaffolding maintains structural integrity.`
+        ],
+        achievement: [
+            `Milestone endpoints are reached in ${sign} timelines today.`,
+            `Your ${sign} objectives achieve statistical significance.`
+        ],
+        discipline: [
+            `Rigorous controls validate ${sign} experimental design.`,
+            `Systematic protocols ensure ${sign} reproducibility.`
+        ],
+        innovation: [
+            `Breakthrough methodologies revolutionize ${sign} approaches.`,
+            `Your ${sign} platform enables unprecedented capabilities.`
+        ],
+        collective: [
+            `Population-level dynamics favor ${sign} group behaviors.`,
+            `Ensemble averages converge for ${sign} measurements.`
+        ],
+        breakthrough: [
+            `Paradigm-shifting discoveries emerge from ${sign} data.`,
+            `Your ${sign} results exceed prior theoretical limits.`
+        ],
+        intuition: [
+            `Bayesian priors incorporate ${sign} domain knowledge.`,
+            `Pattern recognition reveals subtle ${sign} signatures.`
+        ],
+        dissolution: [
+            `Solubilization improves ${sign} bioavailability profiles.`,
+            `Your ${sign} disaggregation protocols enhance dispersion.`
+        ],
+        compassion: [
+            `Gentle handling preserves ${sign} sample integrity.`,
+            `Low-stress conditions maintain ${sign} viability.`
+        ]
+    };
+
+    // Select templates based on sign's element and themes
+    const elementTemplates = templatesByElement[traits.element] || [];
+    const themeTemplates = [];
+
+    for (const theme of traits.themes) {
+        if (templatesByTheme[theme]) {
+            themeTemplates.push(...templatesByTheme[theme]);
+        }
+    }
+
+    // Combine all available templates
+    const allTemplates = [...elementTemplates, ...themeTemplates];
+
+    if (allTemplates.length > 0) {
+        // Use seeded random to pick a template (deterministic per day+sign)
+        const index = Math.floor(seededRandom(signSeed) * allTemplates.length);
+        return allTemplates[index];
+    }
+
+    // Absolute fallback (should never reach here)
+    return `Your ${sign} experimental data demonstrates ${traits.element}-phase characteristics today.`;
 }
 
 function calculateUMAP(embeddings) {
