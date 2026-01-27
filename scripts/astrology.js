@@ -85,9 +85,9 @@ function renderUMAP() {
         .attr('class', 'source-dot')
         .attr('cx', d => x(d.x))
         .attr('cy', d => y(d.y))
-        .attr('r', 4) // Slightly larger
-        .attr('fill', d => d.sign === currentSign ? 'var(--fitc-green)' : '#444')
-        .attr('fill-opacity', d => d.sign === currentSign ? 1.0 : 0.3)
+        .attr('r', 4.5) // Slightly larger
+        .attr('fill', d => d.sign === currentSign ? 'var(--fitc-green)' : '#666')
+        .attr('fill-opacity', d => d.sign === currentSign ? 1.0 : 0.6)
         .style('filter', d => d.sign === currentSign ? 'drop-shadow(0 0 8px var(--fitc-green))' : 'none')
         .attr('stroke', d => d.sign === currentSign ? '#fff' : 'none')
         .attr('stroke-width', 0.5);
