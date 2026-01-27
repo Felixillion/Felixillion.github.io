@@ -450,4 +450,266 @@
         "Aquarius": "The celestial flow favors fluid transitions in your bio-pipeline.",
         "Pisces": "Binary stars, binary code—both are bright today."
     }
+<<<<<<< HEAD
+=======
+  ],
+  "centroids": {
+    "Aries": {
+      "x": 0.85,
+      "y": 0.5
+    },
+    "Taurus": {
+      "x": 0.8031088913245535,
+      "y": 0.6749999999999999
+    },
+    "Gemini": {
+      "x": 0.675,
+      "y": 0.8031088913245534
+    },
+    "Cancer": {
+      "x": 0.5,
+      "y": 0.85
+    },
+    "Leo": {
+      "x": 0.32500000000000007,
+      "y": 0.8031088913245535
+    },
+    "Virgo": {
+      "x": 0.19689110867544646,
+      "y": 0.6749999999999999
+    },
+    "Libra": {
+      "x": 0.15000000000000002,
+      "y": 0.5
+    },
+    "Scorpio": {
+      "x": 0.1968911086754465,
+      "y": 0.32499999999999996
+    },
+    "Sagittarius": {
+      "x": 0.32499999999999984,
+      "y": 0.19689110867544657
+    },
+    "Capricorn": {
+      "x": 0.49999999999999994,
+      "y": 0.15000000000000002
+    },
+    "Aquarius": {
+      "x": 0.675,
+      "y": 0.1968911086754465
+    },
+    "Pisces": {
+      "x": 0.8031088913245534,
+      "y": 0.32499999999999984
+    }
+  },
+  "points": [
+    {
+      "id": 0,
+      "x": 0.8363999510091205,
+      "y": 0.49079312827127786,
+      "sign": "Aries",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 1,
+      "x": 0.8900640999586884,
+      "y": 0.54146139828399,
+      "sign": "Aries",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 2,
+      "x": 0.8422122935301167,
+      "y": 0.6644196941675122,
+      "sign": "Taurus",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 3,
+      "x": 0.7700047084144908,
+      "y": 0.7423621924962428,
+      "sign": "Taurus",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 4,
+      "x": 0.6987538597070122,
+      "y": 0.8603284514795398,
+      "sign": "Gemini",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 5,
+      "x": 0.7179735571481369,
+      "y": 0.8681870922750304,
+      "sign": "Gemini",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 6,
+      "x": 0.44672991656650773,
+      "y": 0.9193626267178228,
+      "sign": "Cancer",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 7,
+      "x": 0.4748736654235319,
+      "y": 0.8082966674824155,
+      "sign": "Cancer",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 8,
+      "x": 0.32011475151339996,
+      "y": 0.7789307815717096,
+      "sign": "Leo",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 9,
+      "x": 0.338230116072112,
+      "y": 0.7767769225667591,
+      "sign": "Leo",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 10,
+      "x": 0.181190559090886,
+      "y": 0.6045593654236245,
+      "sign": "Virgo",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 11,
+      "x": 0.2425836422347204,
+      "y": 0.7246714196376076,
+      "sign": "Virgo",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 12,
+      "x": 0.10892742505644815,
+      "y": 0.5421417802670455,
+      "sign": "Libra",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 13,
+      "x": 0.16455699923628933,
+      "y": 0.4528816599839627,
+      "sign": "Libra",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 14,
+      "x": 0.22641811756948232,
+      "y": 0.32641517144669474,
+      "sign": "Scorpio",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 15,
+      "x": 0.1858349780993789,
+      "y": 0.29853093756340265,
+      "sign": "Scorpio",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 16,
+      "x": 0.26833365192096,
+      "y": 0.12305555035201503,
+      "sign": "Sagittarius",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 17,
+      "x": 0.2510175786241933,
+      "y": 0.21165376535324848,
+      "sign": "Sagittarius",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 18,
+      "x": 0.5547609318492531,
+      "y": 0.1593968837732405,
+      "sign": "Capricorn",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 19,
+      "x": 0.5351211660459032,
+      "y": 0.15607174571941104,
+      "sign": "Capricorn",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 20,
+      "x": 0.6888373848652568,
+      "y": 0.1986020293981949,
+      "sign": "Aquarius",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 21,
+      "x": 0.609584641818321,
+      "y": 0.22257950460892237,
+      "sign": "Aquarius",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    },
+    {
+      "id": 22,
+      "x": 0.7916960891048245,
+      "y": 0.3339634826490256,
+      "sign": "Pisces",
+      "site": "Astrology King",
+      "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
+    },
+    {
+      "id": 23,
+      "x": 0.8157043028110936,
+      "y": 0.35511617651248734,
+      "sign": "Pisces",
+      "site": "Astrostyle",
+      "prediction": "Shield your field! Today, you may be overly affected by the comments and behavior of colleagues and "
+    }
+  ],
+  "readings": {
+    "Aries": "Your experimental pipeline shows promising Aries characteristics today.",
+    "Taurus": "Your experimental pipeline shows promising Taurus characteristics today.",
+    "Gemini": "Your experimental pipeline shows promising Gemini characteristics today.",
+    "Cancer": "Your experimental pipeline shows promising Cancer characteristics today.",
+    "Leo": "Your experimental pipeline shows promising Leo characteristics today.",
+    "Virgo": "Your experimental pipeline shows promising Virgo characteristics today.",
+    "Libra": "Your experimental pipeline shows promising Libra characteristics today.",
+    "Scorpio": "Your experimental pipeline shows promising Scorpio characteristics today.",
+    "Sagittarius": "Your experimental pipeline shows promising Sagittarius characteristics today.",
+    "Capricorn": "Your experimental pipeline shows promising Capricorn characteristics today.",
+    "Aquarius": "Your experimental pipeline shows promising Aquarius characteristics today.",
+    "Pisces": "Your experimental pipeline shows promising Pisces characteristics today."
+  }
+>>>>>>> 3367dfdd9768b29e4c22adde5d93ff4485958120
 }
