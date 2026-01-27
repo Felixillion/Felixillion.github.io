@@ -1,0 +1,138 @@
+[
+    {
+        "name": "Astrology.com",
+        "url": "https://www.astrology.com/horoscope/daily.html",
+        "type": "html",
+        "selectors": {
+            "aries": ".horoscope-content[data-sign='aries']",
+            "taurus": ".horoscope-content[data-sign='taurus']",
+            "gemini": ".horoscope-content[data-sign='gemini']",
+            "cancer": ".horoscope-content[data-sign='cancer']",
+            "leo": ".horoscope-content[data-sign='leo']",
+            "virgo": ".horoscope-content[data-sign='virgo']",
+            "libra": ".horoscope-content[data-sign='libra']",
+            "scorpio": ".horoscope-content[data-sign='scorpio']",
+            "sagittarius": ".horoscope-content[data-sign='sagittarius']",
+            "capricorn": ".horoscope-content[data-sign='capricorn']",
+            "aquarius": ".horoscope-content[data-sign='aquarius']",
+            "pisces": ".horoscope-content[data-sign='pisces']"
+        }
+    },
+    {
+        "name": "Horoscope.com",
+        "url": "https://www.horoscope.com/us/horoscopes/general/horoscope-general-daily-today.aspx?sign={sign}",
+        "type": "html",
+        "urlPattern": true,
+        "selectors": {
+            "content": ".main-horoscope p"
+        }
+    },
+    {
+        "name": "Astrostyle",
+        "url": "https://astrostyle.com/horoscopes/daily/",
+        "type": "html",
+        "selectors": {
+            "aries": "#aries .horoscope-text",
+            "taurus": "#taurus .horoscope-text",
+            "gemini": "#gemini .horoscope-text",
+            "cancer": "#cancer .horoscope-text",
+            "leo": "#leo .horoscope-text",
+            "virgo": "#virgo .horoscope-text",
+            "libra": "#libra .horoscope-text",
+            "scorpio": "#scorpio .horoscope-text",
+            "sagittarius": "#sagittarius .horoscope-text",
+            "capricorn": "#capricorn .horoscope-text",
+            "aquarius": "#aquarius .horoscope-text",
+            "pisces": "#pisces .horoscope-text"
+        }
+    },
+    {
+        "name": "Tarot.com",
+        "url": "https://www.tarot.com/horoscopes/daily",
+        "type": "html",
+        "selectors": {
+            "aries": "[data-sign='aries'] .horoscope-content",
+            "taurus": "[data-sign='taurus'] .horoscope-content",
+            "gemini": "[data-sign='gemini'] .horoscope-content",
+            "cancer": "[data-sign='cancer'] .horoscope-content",
+            "leo": "[data-sign='leo'] .horoscope-content",
+            "virgo": "[data-sign='virgo'] .horoscope-content",
+            "libra": "[data-sign='libra'] .horoscope-content",
+            "scorpio": "[data-sign='scorpio'] .horoscope-content",
+            "sagittarius": "[data-sign='sagittarius'] .horoscope-content",
+            "capricorn": "[data-sign='capricorn'] .horoscope-content",
+            "aquarius": "[data-sign='aquarius'] .horoscope-content",
+            "pisces": "[data-sign='pisces'] .horoscope-content"
+        }
+    },
+    {
+        "name": "AstrologyZone",
+        "url": "https://www.astrologyzone.com/forecasts/",
+        "type": "html",
+        "note": "Monthly forecasts, use first paragraph as daily"
+    },
+    {
+        "name": "Cafe Astrology",
+        "url": "https://cafeastrology.com/dailyhoroscopes.html",
+        "type": "html",
+        "selectors": {
+            "aries": "#aries p",
+            "taurus": "#taurus p",
+            "gemini": "#gemini p",
+            "cancer": "#cancer p",
+            "leo": "#leo p",
+            "virgo": "#virgo p",
+            "libra": "#libra p",
+            "scorpio": "#scorpio p",
+            "sagittarius": "#sagittarius p",
+            "capricorn": "#capricorn p",
+            "aquarius": "#aquarius p",
+            "pisces": "#pisces p"
+        }
+    },
+    {
+        "name": "Astrology Answers",
+        "url": "https://www.astrologyanswers.com/horoscope/daily/",
+        "type": "html"
+    },
+    {
+        "name": "Ganeshaspeaks",
+        "url": "https://www.ganeshaspeaks.com/horoscopes/daily-horoscope/",
+        "type": "html"
+    },
+    {
+        "name": "Astrosage",
+        "url": "https://www.astrosage.com/horoscope/daily-horoscope.asp",
+        "type": "html"
+    },
+    {
+        "name": "Horoscope Daily",
+        "url": "https://www.horoscopedaily.com/",
+        "type": "html"
+    },
+    {
+        "name": "Ask Oracle",
+        "url": "https://www.ask-oracle.com/horoscope/",
+        "type": "html"
+    },
+    {
+        "name": "Astrology King",
+        "url": "https://astrologyking.com/",
+        "type": "html"
+    },
+    {
+        "name": "The AstroTwins",
+        "url": "https://astrostyle.com/daily-horoscope/",
+        "type": "html"
+    },
+    {
+        "name": "Astrology Bay",
+        "url": "https://astrologybay.com/daily-horoscope",
+        "type": "html"
+    },
+    {
+        "name": "Free Horoscopes",
+        "url": "https://www.free-horoscope.com/daily-horoscope/",
+        "type": "html"
+    }
+]

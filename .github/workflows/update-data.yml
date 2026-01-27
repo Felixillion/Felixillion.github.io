@@ -1,0 +1,38 @@
+name: Update Website Data
+
+on:
+  schedule:
+    - cron: '0 0 * * *'        # Every day at midnight for Astrology
+    - cron: '0 9 * * 1'        # Every Monday at 9am AEST for FF Points
+  workflow_dispatch:           # Allows manual triggering
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: |
+          npm init -y
+          # For real scraping, you would add:
+          # npm install axios cheerio manifold-umap-js
+
+      - name: Run Scrapers
+        run: |
+          node .github/workflows/scripts/astrology_scraper.js
+          node .github/workflows/scripts/ff_scraper.js
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data/*.json
+          git commit -m "Auto-update data: $(date)" || echo "No changes to commit"
+          git push

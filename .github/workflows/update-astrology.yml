@@ -1,0 +1,35 @@
+name: Update Astrology Data
+
+on:
+  schedule:
+    # Run daily at 8pm UTC (6am AEST)
+    - cron: '0 20 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  scrape-astrology:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Run astrology scraper
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: node .github/workflows/scripts/astrology_scraper.js
+        
+      - name: Commit and push if changed
+        run: |
+          git config user.name "Astrology Bot"
+          git config user.email "astrology-bot@felixillion.github.io"
+          git add data/astrology_daily.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🌟 Update astrology data [automated]" && git push)
