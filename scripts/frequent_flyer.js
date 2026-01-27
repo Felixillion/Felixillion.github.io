@@ -33,6 +33,7 @@ function renderTable() {
                     <th style="padding: 1.2rem;">Annual Fee</th>
                     <th style="padding: 1.2rem;">Points/$</th>
                     <th style="padding: 1.2rem;">Min Spend</th>
+                    <th style="padding: 1.2rem;">Lounge Passes</th>
                     <th style="padding: 1.2rem; text-align: right;">View Offer</th>
                 </tr>
             </thead>
@@ -47,6 +48,7 @@ function renderTable() {
                         <td style="padding: 1rem;">$${card.fee}</td>
                         <td style="padding: 1rem; color: var(--dapi-blue); font-weight: 600;">${calculatePointsPerDollar(card.bonus, card.fee)}</td>
                         <td style="padding: 1rem;">$${card.minSpend.toLocaleString()}</td>
+                        <td style="padding: 1rem; font-size: 0.85rem;">${card.loungePasses || 'N/A'}</td>
                         <td style="padding: 1rem; text-align: right;"><a href="${card.link}" target="_blank" class="subheading" style="font-size: 0.8rem; text-decoration: none; display: inline-block;">Source</a></td>
                     </tr>
                 `).join('')}

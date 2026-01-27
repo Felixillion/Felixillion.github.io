@@ -1,0 +1,23 @@
+[
+    {
+        "title": "IMC Spleen",
+        "type": "Imaging Mass Cytometry",
+        "color": "var(--dapi-blue)",
+        "image": "assets/gallery/imc_spleen.jpg",
+        "description": "High-dimensional protein expression map of a mouse spleen."
+    },
+    {
+        "title": "Xenium Breast Cancer",
+        "type": "In Situ Hybridization",
+        "color": "var(--fitc-green)",
+        "image": "assets/gallery/xenium_cancer.jpg",
+        "description": "Subcellular transcriptomic mapping of breast tissue."
+    },
+    {
+        "title": "COMET Tonsil",
+        "type": "Sequential Immunofluorescence",
+        "color": "var(--cy5-magenta)",
+        "image": "assets/gallery/comet_tonsil.jpg",
+        "description": "Hyper-plex spatial proteomic profiling."
+    }
+]

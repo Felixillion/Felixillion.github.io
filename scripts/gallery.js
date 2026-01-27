@@ -1,30 +1,29 @@
-// Hero section animations and name styling
-document.addEventListener('DOMContentLoaded', () => {
-    // We could add dynamic color shifts or mouse-tracking glow here
-});
+// Spatial Gallery Implementation with JSON manifest
+async function initGallery() {
+    const galleryGrid = document.getElementById('gallery-grid');
+    if (!galleryGrid) return;
 
-// Spatial Gallery Implementation
-const galleryImages = [
-    { title: 'IMC Spleen', type: 'Imaging Mass Cytometry', color: 'var(--dapi-blue)' },
-    { title: 'Xenium Breast Cancer', type: 'In Situ Hybridization', color: 'var(--fitc-green)' },
-    { title: 'COMET Tonsil', type: 'Sequential Immunofluorescence', color: 'var(--cy5-magenta)' },
-    { title: 'Spatial Transcriptomics', type: 'ST', color: 'var(--tritc-red)' }
-];
+    try {
+        const response = await fetch('data/gallery.json');
+        const images = await response.json();
 
-const galleryGrid = document.getElementById('gallery-grid');
-
-if (galleryGrid) {
-    galleryGrid.innerHTML = `
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
-            ${galleryImages.map((img, i) => `
-                <div class="glass-card" style="padding: 1rem; cursor: pointer; border-color: ${img.color};">
-                    <div style="height: 180px; background: linear-gradient(45deg, ${img.color}33, #111); border-radius: 12px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 0.8rem; color: ${img.color}; font-weight: bold;">[ ${img.type} ]</span>
+        galleryGrid.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+                ${images.map((img, i) => `
+                    <div class="glass-card fade-in" style="padding: 1rem; cursor: pointer; border-color: ${img.color};">
+                        <div style="height: 220px; background: url('${img.image}') center/cover no-repeat, linear-gradient(45deg, ${img.color}33, #111); border-radius: 12px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                            <span style="font-size: 0.7rem; color: #fff; font-weight: bold; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 4px; position: absolute; top: 10px; left: 10px;">${img.type}</span>
+                        </div>
+                        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #fff;">${img.title}</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">${img.description}</p>
                     </div>
-                    <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">${img.title}</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Click to view high-res dataset</p>
-                </div>
-            `).join('')}
-        </div>
-    `;
+                `).join('')}
+            </div>
+        `;
+    } catch (err) {
+        console.error('Failed to load gallery data:', err);
+        galleryGrid.innerHTML = '<p>To add images, place JSON in data/gallery.json and images in assets/gallery/</p>';
+    }
 }
+
+initGallery();
