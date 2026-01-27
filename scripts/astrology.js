@@ -15,6 +15,27 @@ async function initAstrology() {
         centroids = data.centroids;
         document.getElementById('last-updated-astrology').textContent = data.lastUpdated;
 
+        // Display sources
+        if (data.sources && data.sources.length > 0) {
+            const sourcesList = document.getElementById('sources-list');
+            if (sourcesList) {
+                sourcesList.innerHTML = `
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        ${data.sources.map(s => `
+                            <a href="${s.url}" target="_blank" rel="noopener noreferrer" 
+                               style="color: var(--dapi-blue); text-decoration: none; padding: 0.3rem 0.6rem; 
+                                      background: rgba(100, 149, 237, 0.1); border-radius: 4px; 
+                                      transition: background 0.2s;"
+                               onmouseover="this.style.background='rgba(100, 149, 237, 0.2)'"
+                               onmouseout="this.style.background='rgba(100, 149, 237, 0.1)'">
+                                ${s.name}
+                            </a>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+
         renderUMAP();
         setupSignSelector(data.readings);
     } catch (err) {

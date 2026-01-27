@@ -65,6 +65,22 @@
                 Last Updated: <span id="last-updated-astrology">-</span>
             </div>
         </div>
+
+        <!-- Sources Section -->
+        <div class="glass-card fade-in" style="margin-top: 2rem;">
+            <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--fitc-green);">
+                📡 Today's Cosmic Data Sources
+            </h3>
+            <div id="sources-list" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+                <p>Aggregating predictions from multiple astrology websites...</p>
+            </div>
+            <div
+                style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border); font-size: 0.75rem; color: var(--text-secondary);">
+                <strong>Methodology:</strong> Daily predictions are scraped from 10 randomly selected websites,
+                embedded using sentence transformers, clustered via UMAP, and synthesized into lab-themed readings
+                using a free LLM (Mistral-7B).
+            </div>
+        </div>
     </main>
 
     <script type="module" src="scripts/astrology.js"></script>

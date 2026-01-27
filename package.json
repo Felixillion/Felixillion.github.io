@@ -1,0 +1,20 @@
+{
+    "name": "felixillion-website",
+    "version": "1.0.0",
+    "description": "Dr Lord Felix Merlin Daniel Marsh-Wakefield's personal website",
+    "scripts": {
+        "scrape:astrology": "node .github/workflows/scripts/astrology_scraper.js",
+        "scrape:ff": "node .github/workflows/scripts/ff_scraper.js"
+    },
+    "dependencies": {
+        "axios": "^1.6.0",
+        "cheerio": "^1.0.0-rc.12"
+    },
+    "devDependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Felixillion/Felixillion.github.io"
+    },
+    "author": "Dr Lord Felix Merlin Daniel Marsh-Wakefield",
+    "license": "MIT"
+}
