@@ -21,7 +21,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm init -y
-          npm install axios cheerio manifold-umap-js --no-fund --no-audit
+          npm install axios cheerio manifold-umap-js
 
       - name: Run Scrapers
         run: |
