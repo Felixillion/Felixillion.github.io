@@ -22,7 +22,7 @@ jobs:
         run: |
           npm init -y
           # For real scraping, you would add:
-          # npm install axios cheerio manifold-umap-js
+          npm install axios cheerio manifold-umap-js
 
       - name: Run Scrapers
         run: |
