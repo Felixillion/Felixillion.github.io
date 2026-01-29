@@ -1,45 +1,45 @@
 {
-  "lastUpdated": "2026-01-28",
+  "lastUpdated": "2026-01-29",
   "sources": [
     {
-      "name": "Astrology King",
-      "url": "https://astrologyking.com/"
+      "name": "Tarot.com",
+      "url": "https://www.tarot.com/horoscopes/daily"
     },
     {
       "name": "Astrology Bay",
       "url": "https://astrologybay.com/daily-horoscope"
     },
     {
-      "name": "Free Horoscopes",
-      "url": "https://www.free-horoscope.com/daily-horoscope/"
+      "name": "Cafe Astrology",
+      "url": "https://cafeastrology.com/dailyhoroscopes.html"
     },
     {
-      "name": "Astrostyle",
-      "url": "https://astrostyle.com/horoscopes/daily/"
-    },
-    {
-      "name": "Ask Oracle",
-      "url": "https://www.ask-oracle.com/horoscope/"
-    },
-    {
-      "name": "Horoscope Daily",
-      "url": "https://www.horoscopedaily.com/"
-    },
-    {
-      "name": "Astrosage",
-      "url": "https://www.astrosage.com/horoscope/daily-horoscope.asp"
+      "name": "Astrology King",
+      "url": "https://astrologyking.com/"
     },
     {
       "name": "Astrology.com",
       "url": "https://www.astrology.com/horoscope/daily.html"
     },
     {
-      "name": "AstrologyZone",
-      "url": "https://www.astrologyzone.com/forecasts/"
+      "name": "Free Horoscopes",
+      "url": "https://www.free-horoscope.com/daily-horoscope/"
     },
     {
-      "name": "Cafe Astrology",
-      "url": "https://cafeastrology.com/dailyhoroscopes.html"
+      "name": "Astrosage",
+      "url": "https://www.astrosage.com/horoscope/daily-horoscope.asp"
+    },
+    {
+      "name": "Horoscope.com",
+      "url": "https://www.horoscope.com/us/horoscopes/general/horoscope-general-daily-today.aspx?sign={sign}"
+    },
+    {
+      "name": "The AstroTwins",
+      "url": "https://astrostyle.com/daily-horoscope/"
+    },
+    {
+      "name": "Horoscope Daily",
+      "url": "https://www.horoscopedaily.com/"
     }
   ],
   "centroids": {
@@ -95,209 +95,209 @@
   "points": [
     {
       "id": 0,
-      "x": 0.9073937607484992,
-      "y": 0.4518145786854736,
+      "x": 0.797694940416988,
+      "y": 0.5590485306585422,
       "sign": "Aries",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 1,
-      "x": 0.8712789012381815,
-      "y": 0.5711559016878713,
+      "x": 0.7758021550581945,
+      "y": 0.47651514465359573,
       "sign": "Aries",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 2,
-      "x": 0.8084280306067876,
-      "y": 0.7491747479156653,
+      "x": 0.8154670757371858,
+      "y": 0.723454285806959,
       "sign": "Taurus",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 3,
-      "x": 0.7964947965754051,
-      "y": 0.7353241579258175,
+      "x": 0.8063151103038236,
+      "y": 0.6665706065257475,
       "sign": "Taurus",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 4,
-      "x": 0.6294014744765475,
-      "y": 0.7436015596063461,
+      "x": 0.6571831330735889,
+      "y": 0.8051484175954995,
       "sign": "Gemini",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 5,
-      "x": 0.6090376881320126,
-      "y": 0.7346695766830367,
+      "x": 0.6209886745488151,
+      "y": 0.8770197422549946,
       "sign": "Gemini",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 6,
-      "x": 0.5317655568761543,
-      "y": 0.9004633739898286,
+      "x": 0.4797109395728899,
+      "y": 0.7902679334481881,
       "sign": "Cancer",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 7,
-      "x": 0.47384227873633256,
-      "y": 0.8373239326593745,
+      "x": 0.46668962839523104,
+      "y": 0.8759091724493694,
       "sign": "Cancer",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 8,
-      "x": 0.29256344635279613,
-      "y": 0.8014069291134559,
+      "x": 0.2808561123713354,
+      "y": 0.7823447091007159,
       "sign": "Leo",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 9,
-      "x": 0.2853781945441646,
-      "y": 0.7430106070338889,
+      "x": 0.3981522902608871,
+      "y": 0.8047289122222472,
       "sign": "Leo",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 10,
-      "x": 0.2637682146363246,
-      "y": 0.6566689350628211,
+      "x": 0.17339973496721708,
+      "y": 0.6480425748626142,
       "sign": "Virgo",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 11,
-      "x": 0.20454778049377423,
-      "y": 0.6311301263417018,
+      "x": 0.22636947453456768,
+      "y": 0.6596541081434366,
       "sign": "Virgo",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 12,
-      "x": 0.1541395291078969,
-      "y": 0.5342444425627777,
+      "x": 0.07628491821406423,
+      "y": 0.5314387408796019,
       "sign": "Libra",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 13,
-      "x": 0.20434747126180625,
-      "y": 0.42798253397802505,
+      "x": 0.18070886162989402,
+      "y": 0.5026948247107388,
       "sign": "Libra",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 14,
-      "x": 0.1523834250854158,
-      "y": 0.3337687447608063,
+      "x": 0.2691237984572374,
+      "y": 0.2548259997661769,
       "sign": "Scorpio",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 15,
-      "x": 0.2635076908449462,
-      "y": 0.39013813550772974,
+      "x": 0.26860756691802545,
+      "y": 0.27462605557197894,
       "sign": "Scorpio",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 16,
-      "x": 0.3851273113873884,
-      "y": 0.1255542026417118,
+      "x": 0.38510365869932717,
+      "y": 0.1396698061057889,
       "sign": "Sagittarius",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 17,
-      "x": 0.30636251873343917,
-      "y": 0.18703840790425094,
+      "x": 0.31757102391593567,
+      "y": 0.1264476528072736,
       "sign": "Sagittarius",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 18,
-      "x": 0.46764269376958933,
-      "y": 0.22318441013762053,
+      "x": 0.45976028999642543,
+      "y": 0.07700236290667539,
       "sign": "Capricorn",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 19,
-      "x": 0.5114397493877859,
-      "y": 0.1592523850965808,
+      "x": 0.5723413186597932,
+      "y": 0.20313735250442544,
       "sign": "Capricorn",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 20,
-      "x": 0.6035040932972774,
-      "y": 0.26470755345659275,
+      "x": 0.6180079981329208,
+      "y": 0.21021648977135188,
       "sign": "Aquarius",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 21,
-      "x": 0.6622547616579563,
-      "y": 0.15623167454350706,
+      "x": 0.6794792186216188,
+      "y": 0.24583786050908152,
       "sign": "Aquarius",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     },
     {
       "id": 22,
-      "x": 0.8233926132400327,
-      "y": 0.3122430195739944,
+      "x": 0.8362389456390351,
+      "y": 0.365657776853193,
       "sign": "Pisces",
       "site": "Astrology King",
       "prediction": "The new moon in January 2026 sits between Venus and Mars. So, the spiritual meaning of the new moon "
     },
     {
       "id": 23,
-      "x": 0.8160928995653169,
-      "y": 0.39149230216214537,
+      "x": 0.770137250997001,
+      "y": 0.36839283617491736,
       "sign": "Pisces",
-      "site": "Astrostyle",
-      "prediction": "Just because it's Wednesday, doesn't mean you have to make a beeline to your workspace, Ram. In fact"
+      "site": "The AstroTwins",
+      "prediction": "Ready to widen your circle, Aries? Today’s sweet sync up of two of the most social planets, Venus an"
     }
   ],
   "readings": {
-    "Aries": "Your Aries system shows peak metabolic flux and ATP production.",
-    "Taurus": "Your Taurus data demonstrates robust statistical power today.",
-    "Gemini": "Network topology analysis reveals optimal Gemini connectivity.",
-    "Cancer": "Solvent-accessible surface area increases for Cancer binding.",
-    "Leo": "Protein production rates maximize Leo output.",
-    "Virgo": "Crystallization conditions are ideal for Virgo structural analysis.",
-    "Libra": "Allosteric regulation coordinates Libra enzyme activities.",
-    "Scorpio": "Fluid dynamics modeling predicts favorable Scorpio outcomes.",
-    "Sagittarius": "High-temperature phase transitions activate Sagittarius protocols.",
-    "Capricorn": "Crystallization conditions are ideal for Capricorn structural analysis.",
-    "Aquarius": "Signal propagation velocities maximize Aquarius throughput.",
-    "Pisces": "Low-stress conditions maintain Pisces viability."
+    "Aries": "Your Aries kinetic energy reaches maximum catalytic efficiency today.",
+    "Taurus": "Stable baseline conditions optimize Taurus experimental reproducibility.",
+    "Gemini": "Multivariate analysis uncovers hidden Gemini correlations.",
+    "Cancer": "Osmotic gradients drive Cancer transport mechanisms efficiently.",
+    "Leo": "Your Leo pathways show hierarchical regulation.",
+    "Virgo": "Auxiliary pathways enhance Virgo primary reactions.",
+    "Libra": "Protein-protein docking energies favor Libra complexes.",
+    "Scorpio": "Solvent-accessible surface area increases for Scorpio binding.",
+    "Sagittarius": "Exothermic reactions accelerate Sagittarius experimental throughput.",
+    "Capricorn": "Ground-state energy minimization favors Capricorn protocols.",
+    "Aquarius": "Network topology analysis reveals optimal Aquarius connectivity.",
+    "Pisces": "Osmotic gradients drive Pisces transport mechanisms efficiently."
   }
 }
