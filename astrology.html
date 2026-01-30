@@ -35,9 +35,26 @@
             </p>
         </div>
 
+        <!-- Planetary Data Widget -->
+        <div class="glass-card fade-in" style="margin-bottom: 2rem; background: rgba(0, 0, 0, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <h4 style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">LIVE PLANETARY POSITIONS</h4>
+                <div id="moon-phase" style="font-size: 0.9rem; color: var(--fitc-green);">🌑 Calculating...</div>
+            </div>
+            <div id="planetary-positions"
+                style="display: flex; gap: 1rem; flex-wrap: wrap; font-family: monospace; font-size: 0.85rem; color: var(--text-secondary);">
+                <!-- Populated by JS -->
+                <span>Sun: ...</span>
+                <span>Moon: ...</span>
+                <span>Mercury: ...</span>
+                <span>Venus: ...</span>
+                <span>Mars: ...</span>
+            </div>
+        </div>
+
         <!-- Interactive Reading Section -->
-        <div class="glass-card fade-in" style="margin-bottom: 3rem; text-align: center;">
-            <h3 style="margin-bottom: 1rem;">Get Your Daily Reading</h3>
+        <div class="glass-card fade-in" style="margin-bottom: 2rem; text-align: center;">
+            <h3 style="margin-bottom: 1rem;">Daily Lab Assessment</h3>
             <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
                 <select id="zodiac-select" class="subheading"
                     style="background: var(--bg-color); color: white; border: 1px solid var(--glass-border); padding: 0.5rem 1rem;">
@@ -57,7 +74,67 @@
                 </select>
             </div>
             <div id="personal-reading" style="font-style: italic; color: var(--fitc-green); min-height: 1.5rem;">
-                Choose your sign to see the cosmos align with your research.
+                Select your sign to analyze today's experimental conditions.
+            </div>
+        </div>
+
+        <!-- Partner Compatibility Section -->
+        <div class="glass-card fade-in" style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem; text-align: center;">Partner Compatibility Test</h3>
+            <div style="display: flex; justify-content: center; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+                <select id="sign1-select"
+                    style="background: var(--bg-color); color: white; border: 1px solid var(--glass-border); padding: 0.5rem;">
+                    <option value="">Sign 1</option>
+                    <option value="Aries">Aries</option>
+                    <option value="Taurus">Taurus</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Cancer">Cancer</option>
+                    <option value="Leo">Leo</option>
+                    <option value="Virgo">Virgo</option>
+                    <option value="Libra">Libra</option>
+                    <option value="Scorpio">Scorpio</option>
+                    <option value="Sagittarius">Sagittarius</option>
+                    <option value="Capricorn">Capricorn</option>
+                    <option value="Aquarius">Aquarius</option>
+                    <option value="Pisces">Pisces</option>
+                </select>
+                <span style="color: var(--fitc-green); font-size: 1.2rem;">+</span>
+                <select id="sign2-select"
+                    style="background: var(--bg-color); color: white; border: 1px solid var(--glass-border); padding: 0.5rem;">
+                    <option value="">Sign 2</option>
+                    <option value="Aries">Aries</option>
+                    <option value="Taurus">Taurus</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Cancer">Cancer</option>
+                    <option value="Leo">Leo</option>
+                    <option value="Virgo">Virgo</option>
+                    <option value="Libra">Libra</option>
+                    <option value="Scorpio">Scorpio</option>
+                    <option value="Sagittarius">Sagittarius</option>
+                    <option value="Capricorn">Capricorn</option>
+                    <option value="Aquarius">Aquarius</option>
+                    <option value="Pisces">Pisces</option>
+                </select>
+            </div>
+
+            <div id="compatibility-result" style="display: none; text-align: center; animation: fadeIn 0.5s;">
+                <div style="margin-bottom: 1rem;">
+                    <div
+                        style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">
+                        Binding Affinity</div>
+                    <div id="compat-score"
+                        style="font-size: 2.5rem; font-weight: 700; color: var(--fitc-green); text-shadow: 0 0 15px rgba(57, 255, 20, 0.3);">
+                        88%</div>
+                    <div id="compat-level" style="font-size: 1.1rem; color: white;">Exceptional</div>
+                </div>
+                <p id="compat-text"
+                    style="font-style: italic; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                    Analysis pending...
+                </p>
+                <div id="compat-details"
+                    style="display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; font-size: 0.8rem; flex-wrap: wrap;">
+                    <!-- Details populated by JS -->
+                </div>
             </div>
         </div>
 
@@ -68,19 +145,21 @@
             </div>
         </div>
 
-        <!-- Sources Section -->
+        <!-- Methodology Section -->
         <div class="glass-card fade-in" style="margin-top: 2rem;">
             <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--fitc-green);">
-                📡 Today's Cosmic Data Sources
+                📐 Calculation Methodology
             </h3>
             <div id="sources-list" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
-                <p>Aggregating predictions from multiple astrology websites...</p>
+                <p>Visualization generated from 10 distinct astrological calculation algorithms...</p>
             </div>
             <div
                 style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border); font-size: 0.75rem; color: var(--text-secondary);">
-                <strong>Methodology:</strong> Daily predictions are scraped from 10 randomly selected websites,
-                embedded using sentence transformers, clustered via UMAP, and synthesized into lab-themed readings
-                using a free LLM (Mistral-7B).
+                <strong>Data Source:</strong> Calculations are performed daily using real-time planetary ephemeris data
+                (J2000.0 epoch).
+                The UMAP visualization clusters predictions generated by 10 different interpretive frameworks (Solar
+                Transit, Lunar Phase, Harmonic Resonance, etc.)
+                to identify the consensus "experimental conditions" for each sign.
             </div>
         </div>
     </main>
