@@ -196,24 +196,34 @@ function initCanvas(positions) {
             const org = ORGANELLES[planet];
 
             // Organic, Elliptical Orbits
-            // Each planet gets a unique eccentricity and rotation
-            const baseRadius = 60 + (index * 35); // Stagger distances
-            const scale = Math.min(width, height) / 600;
-            const a = baseRadius * scale * (1 + (index % 3) * 0.2); // Semi-major axis
-            const b = baseRadius * scale * (0.8 + (index % 2) * 0.1); // Semi-minor axis (elliptical)
+            // Scale orbits to strictly fit within the cell membrane (0.45 * minDimension)
+            // Save 30px padding for the membrane edge
+            const maxRadius = (Math.min(width, height) * 0.45) - 35;
+            const minRadius = 50; // Clear the nucleus
 
-            const orbitRoation = (index * Math.PI / 4); // Rotate the whole ellipse
+            // Normalize index to 0-1 range for distribution
+            const normalizedDist = (index + 1) / Object.keys(positions).length;
+
+            // Calculate base distance
+            const baseDist = minRadius + (normalizedDist * (maxRadius - minRadius));
+
+            const eccentricity = 0.8 + (index % 3) * 0.1; // 0.8 - 1.0 (Varied flatness)
+            const a = baseDist; // Semi-major axis
+            const b = baseDist * eccentricity; // Semi-minor axis
+
+            const orbitRotation = (index * Math.PI / 2.5); // Rotate the whole ellipse
 
             // Calculate position on the ellipse
-            const orbitSpeed = 0.0005 * (300 / baseRadius);
+            // Slower outer orbits
+            const orbitSpeed = 0.0002 + (1 - normalizedDist) * 0.0008;
             const angle = (data.degree * Math.PI / 180) + (time * orbitSpeed);
 
             // Ellipse parametric equation with rotation
             const x0 = a * Math.cos(angle);
             const y0 = b * Math.sin(angle);
 
-            const x = centerX + x0 * Math.cos(orbitRoation) - y0 * Math.sin(orbitRoation);
-            const y = centerY + x0 * Math.sin(orbitRoation) + y0 * Math.cos(orbitRoation);
+            const x = centerX + x0 * Math.cos(orbitRotation) - y0 * Math.sin(orbitRotation);
+            const y = centerY + x0 * Math.sin(orbitRotation) + y0 * Math.cos(orbitRotation);
 
             drawInteractomeTrail(ctx, centerX, centerY, x, y);
             drawOrganelle(ctx, x, y, org, time);
@@ -328,7 +338,36 @@ function setupCompatibility(matrix) {
             let key = sign1 === sign2 ? sign1 : `${sign1}-${sign2}`;
             if (!matrix[key]) key = `${sign2}-${sign1}`;
 
-            const data = matrix[key];
+            let data = matrix[key];
+
+            // Client-side fallback if data is missing
+            if (!data) {
+                const getElement = (s) => {
+                    if (['Aries', 'Leo', 'Sagittarius'].includes(s)) return 'Fire';
+                    if (['Taurus', 'Virgo', 'Capricorn'].includes(s)) return 'Earth';
+                    if (['Gemini', 'Libra', 'Aquarius'].includes(s)) return 'Air';
+                    return 'Water';
+                };
+
+                const e1 = getElement(sign1);
+                const e2 = getElement(sign2);
+                let score = 50;
+                let synthesis = "Standard interaction.";
+
+                if (sign1 === sign2) { score = 90; synthesis = "Perfect resonance (Self-similar)."; }
+                else if (e1 === e2) { score = 95; synthesis = `High elemental affinity (${e1}).`; }
+                else if ((e1 === 'Fire' && e2 === 'Air') || (e1 === 'Air' && e2 === 'Fire')) { score = 85; synthesis = "Combustion/Oxidation synergy."; }
+                else if ((e1 === 'Water' && e2 === 'Earth') || (e1 === 'Earth' && e2 === 'Water')) { score = 85; synthesis = "Growth/Solubility synergy."; }
+                else { score = 40; synthesis = "Phase separation likely. High energy barrier."; }
+
+                data = {
+                    score: score,
+                    level: score > 80 ? 'Harmonious' : 'Challenging',
+                    synthesis: synthesis + " (Calculated via local elemental rules)",
+                    element_harmony: score
+                };
+            }
+
             if (data) {
                 resultDiv.style.display = 'block';
                 scoreDiv.textContent = `${data.score}%`;
