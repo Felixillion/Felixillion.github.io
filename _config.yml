@@ -1,0 +1,27 @@
+title: Felixillion
+email: felix@felixillion.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Dr Lord Felix Merlin Daniel Marsh-Wakefield's personal website. Bioinformatician, Photographer, and Frequent Flyer enthusiast.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://felixillion.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: felixillion
+github_username:  Felixillion
+
+# Build settings
+markdown: kramdown
+theme: jekyll-theme-cayman # We will override this with custom layouts but good to have a fallback
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/

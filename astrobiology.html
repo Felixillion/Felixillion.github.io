@@ -1,0 +1,58 @@
+---
+layout: default
+title: Cosmic Cell Culture | Felixillion
+footer_scripts: scripts/astrobiology.js
+---
+
+<div class="container" style="padding-top: 8rem;">
+    <div class="fade-in" style="text-align: center; margin-bottom: 3rem;">
+        <h2>Cosmic Cell Culture</h2>
+        <p style="color: var(--text-secondary);">
+            Daily experimental conditions determined by the relative positions of celestial organelles.
+        </p>
+    </div>
+
+    <!-- Experiment of the Day Card -->
+    <div class="glass-card fade-in" style="margin-bottom: 3rem; text-align: center;">
+        <h3 id="experiment-title" style="margin-bottom: 1rem; color: var(--fitc-green);">
+            Protocol of the Day
+        </h3>
+        <p id="experiment-desc" style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+            Loading daily protocols...
+        </p>
+        <div id="avoid-container" style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+            <strong style="color: var(--tritc-red); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                Safety Warning (Avoid)
+            </strong>
+            <p id="avoid-desc" style="color: var(--text-secondary); margin-top: 0.5rem; font-style: italic;">
+                Analyzing safety hazards...
+            </p>
+        </div>
+    </div>
+
+    <!-- Cellular Solar System Visualization -->
+    <div class="glass-card fade-in" style="margin-bottom: 2rem; position: relative;">
+        <div style="position: absolute; top: 1.5rem; left: 1.5rem; z-index: 10;">
+            <h4 style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Live Cytology</h4>
+            <div id="date-display" style="font-size: 0.8rem; color: var(--text-secondary);"></div>
+        </div>
+
+        <canvas id="astro-canvas" width="800" height="600"
+            style="width: 100%; height: auto; border-radius: 12px; background: radial-gradient(circle at center, #0a0a12 0%, #000 100%);"></canvas>
+
+        <div style="margin-top: 1rem; text-align: right; font-size: 0.75rem; color: var(--text-secondary);">
+            Planetary positions calculated via Keplerian orbital elements (J2000.0).
+            <br>
+            Sun = Nucleus, Planets = Organelles.
+        </div>
+    </div>
+
+    <!-- Planetary Data -->
+    <div class="glass-card fade-in">
+        <h3 style="font-size: 1rem; margin-bottom: 1rem;">Organelle Coordinates</h3>
+        <div id="planetary-data"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; font-family: monospace; font-size: 0.85rem;">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+</div>

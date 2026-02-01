@@ -1,41 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+layout: default
+title: Spatial Gallery | Felixillion
+footer_scripts: scripts/gallery.js
+---
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spatial Gallery | Felixillion</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap"
-        rel="stylesheet">
-</head>
+<div class="container" style="padding-top: 8rem;">
+    <h2 class="fade-in">Spatial Gallery</h2>
+    <p class="fade-in" style="color: var(--text-secondary); margin-bottom: 3rem;">
+        A collection of high-resolution datasets across diverse modalities: IMC, Xenium, and COMET.
+    </p>
 
-<body>
-    <nav>
-        <div class="container">
-            <div class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">Felixillion</a></div>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="gallery.html" style="color: var(--fitc-green);">Gallery</a></li>
-                <li><a href="astrology.html">Astrology</a></li>
-                <li><a href="frequent-flyer.html">Frequent Flyer</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <main class="container" style="padding-top: 8rem;">
-        <h2 class="fade-in">Spatial Gallery</h2>
-        <p class="fade-in" style="color: var(--text-secondary); margin-bottom: 3rem;">
-            A collection of high-resolution datasets across diverse modalities: IMC, Xenium, and COMET.
-        </p>
-
-        <div id="gallery-grid" class="fade-in">
-            <!-- Gallery injected by JS -->
-        </div>
-    </main>
-
-    <script type="module" src="scripts/gallery.js"></script>
-</body>
-
-</html>
+    <div id="gallery-grid" class="fade-in">
+        <!-- Gallery injected by JS -->
+    </div>
+</div>

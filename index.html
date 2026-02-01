@@ -1,56 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+layout: default
+title: Dr Lord Felix Merlin Daniel Marsh-Wakefield | Portfolio
+footer_scripts: scripts/hero.js
+---
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr Lord Felix Merlin Daniel Marsh-Wakefield | Portfolio</title>
-    <meta name="description"
-        content="Personal website of Dr Lord Felix Merlin Daniel Marsh-Wakefield - Bioinformagician, Compose of Worlds, Lover of Cats.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-</head>
-
-<body>
-    <nav>
-        <div class="container">
-            <div class="logo"><a href="index.html" style="text-decoration: none; color: inherit;">Felixillion</a></div>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-                <li><a href="astrology.html">Astrology</a></li>
-                <li><a href="frequent-flyer.html">Frequent Flyer</a></li>
-            </ul>
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="container fade-in">
+        <h1>Dr Lord Felix Merlin Daniel Marsh-Wakefield</h1>
+        <div class="subheadings">
+            <span class="subheading">Bioinformagician</span>
+            <span class="subheading">Compose of Worlds</span>
+            <span class="subheading">Lover of Cats</span>
         </div>
-    </nav>
-
-    <main>
-        <!-- Hero Section -->
-        <section id="home" class="hero">
-            <div class="container fade-in">
-                <h1>Dr Lord Felix Merlin Daniel Marsh-Wakefield</h1>
-                <div class="subheadings">
-                    <span class="subheading">Bioinformagician</span>
-                    <span class="subheading">Compose of Worlds</span>
-                    <span class="subheading">Lover of Cats</span>
-                </div>
-                <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 1.5rem;">
-                    <a href="gallery.html" class="subheading" style="text-decoration: none;">View Gallery</a>
-                    <a href="frequent-flyer.html" class="subheading"
-                        style="text-decoration: none; border-color: var(--fitc-green);">Explore FF Points</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script type="module" src="scripts/hero.js"></script>
-</body>
-
-</html>
+        <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 1.5rem;">
+            <a href="{{ '/gallery.html' | relative_url }}" class="subheading" style="text-decoration: none;">View
+                Gallery</a>
+            <a href="{{ '/frequent-flyer.html' | relative_url }}" class="subheading"
+                style="text-decoration: none; border-color: var(--fitc-green);">Explore FF Points</a>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,22 @@
+<nav>
+    <div class="container">
+        <div class="logo"><a href="{{ '/' | relative_url }}"
+                style="text-decoration: none; color: inherit;">Felixillion</a></div>
+        <ul>
+            <li><a href="{{ '/' | relative_url }}" {% if page.url=="/" %}class="active" {% endif %}>Home</a></li>
+            <li><a href="{{ '/gallery.html' | relative_url }}" {% if page.url=="/gallery.html" %}class="active" {% endif
+                    %}>Gallery</a></li>
+            <li><a href="{{ '/astrobiology.html' | relative_url }}" {% if page.url contains "astrobiology"
+                    %}class="active" style="color: var(--fitc-green);" {% endif %}>Astrobiology</a></li>
+            <li><a href="{{ '/frequent-flyer.html' | relative_url }}" {% if page.url=="/frequent-flyer.html"
+                    %}class="active" {% endif %}>Frequent Flyer</a></li>
+        </ul>
+    </div>
+</nav>
+
+<style>
+    /* Add active class style locally if not in main CSS yet, though it should be in style.css */
+    nav a.active {
+        color: var(--fitc-green);
+    }
+</style>
