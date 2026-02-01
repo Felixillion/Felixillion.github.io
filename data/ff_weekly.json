@@ -1,5 +1,5 @@
 {
-    "lastUpdated": "2026-01-27",
+    "lastUpdated": "2026-02-01",
     "qantas": [
         {
             "bank": "AMEX",
@@ -9,6 +9,7 @@
             "fee": 450,
             "minSpend": 3000,
             "link": "https://www.americanexpress.com/au/credit-cards/qantas-ultimate-card/",
+            "affiliateLink": "",
             "loungePasses": "2 Qantas / 2 Amex"
         },
         {
@@ -19,6 +20,7 @@
             "fee": 425,
             "minSpend": 5000,
             "link": "https://www.anz.com.au/personal/credit-cards/frequent-flyer-black/",
+            "affiliateLink": "",
             "loungePasses": "2 Qantas Club"
         },
         {
@@ -29,16 +31,7 @@
             "fee": 295,
             "minSpend": 3000,
             "link": "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-signature-card",
-            "loungePasses": "None"
-        },
-        {
-            "bank": "NAB",
-            "name": "Qantas Rewards Premium",
-            "signupBonus": 60000,
-            "year1Bonus": 0,
-            "fee": 150,
-            "minSpend": 2500,
-            "link": "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-premium-card",
+            "affiliateLink": "",
             "loungePasses": "None"
         },
         {
@@ -49,17 +42,8 @@
             "fee": 250,
             "minSpend": 6000,
             "link": "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-qantas/",
+            "affiliateLink": "",
             "loungePasses": "2 Qantas Club"
-        },
-        {
-            "bank": "Westpac",
-            "name": "Altitude Platinum",
-            "signupBonus": 60000,
-            "year1Bonus": 0,
-            "fee": 150,
-            "minSpend": 3000,
-            "link": "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-platinum-qantas/",
-            "loungePasses": "None"
         },
         {
             "bank": "CBA",
@@ -69,6 +53,7 @@
             "fee": 350,
             "minSpend": 2500,
             "link": "https://www.commbank.com.au/credit-cards/ultimate-awards.html",
+            "affiliateLink": "",
             "loungePasses": "None"
         },
         {
@@ -79,6 +64,7 @@
             "fee": 700,
             "minSpend": 5000,
             "link": "https://www.citibank.com.au/aus/cards/qantas/prestige.htm",
+            "affiliateLink": "",
             "loungePasses": "Priority Pass"
         },
         {
@@ -89,6 +75,7 @@
             "fee": 279,
             "minSpend": 3000,
             "link": "https://www.bankofmelbourne.com.au/personal/credit-cards/qantas/amplify-signature",
+            "affiliateLink": "",
             "loungePasses": "2 Qantas Club"
         },
         {
@@ -99,6 +86,7 @@
             "fee": 199,
             "minSpend": 2500,
             "link": "https://www.hsbc.com.au/credit-cards/products/platinum-qantas/",
+            "affiliateLink": "",
             "loungePasses": "None"
         },
         {
@@ -109,16 +97,18 @@
             "fee": 279,
             "minSpend": 3000,
             "link": "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-signature",
+            "affiliateLink": "",
             "loungePasses": "2 Qantas Club"
         },
         {
-            "bank": "St.George",
-            "name": "Amplify Platinum (Qantas)",
-            "signupBonus": 60000,
+            "bank": "Woolworths",
+            "name": "Qantas Platinum",
+            "signupBonus": 0,
             "year1Bonus": 0,
-            "fee": 99,
-            "minSpend": 2000,
-            "link": "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-platinum",
+            "fee": 169,
+            "minSpend": 0,
+            "link": "https://cards.woolworths.com.au/credit-cards/qantas-platinum-credit-card",
+            "affiliateLink": "",
             "loungePasses": "None"
         }
     ],
@@ -131,6 +121,7 @@
             "fee": 375,
             "minSpend": 3000,
             "link": "https://www.americanexpress.com/au/credit-cards/velocity-platinum-card/",
+            "affiliateLink": "",
             "loungePasses": "2 Virgin / 2 Amex"
         },
         {
@@ -141,6 +132,7 @@
             "fee": 150,
             "minSpend": 2000,
             "link": "https://www.bankwest.com.au/personal/credit-cards/halo-platinum",
+            "affiliateLink": "",
             "loungePasses": "None"
         },
         {
@@ -151,6 +143,7 @@
             "fee": 289,
             "minSpend": 4000,
             "link": "https://virginmoney.com.au/credit-cards/velocity-high-flyer",
+            "affiliateLink": "",
             "loungePasses": "2 Virgin"
         },
         {
@@ -161,6 +154,7 @@
             "fee": 250,
             "minSpend": 6000,
             "link": "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-velocity/",
+            "affiliateLink": "",
             "loungePasses": "2 Virgin"
         },
         {
@@ -171,6 +165,7 @@
             "fee": 150,
             "minSpend": 1500,
             "link": "https://www.nab.com.au/personal/credit-cards/nab-velocity-rewards-premium-card",
+            "affiliateLink": "",
             "loungePasses": "None"
         },
         {
@@ -181,6 +176,18 @@
             "fee": 250,
             "minSpend": 3000,
             "link": "https://www.citibank.com.au/aus/cards/velocity/platinum.htm",
+            "affiliateLink": "",
+            "loungePasses": "None"
+        },
+        {
+            "bank": "Coles",
+            "name": "Rewards Mastercard",
+            "signupBonus": 30000,
+            "year1Bonus": 0,
+            "fee": 99,
+            "minSpend": 3000,
+            "link": "https://www.coles.com.au/credit-cards/rewards-mastercard",
+            "affiliateLink": "",
             "loungePasses": "None"
         }
     ]
