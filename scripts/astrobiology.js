@@ -175,8 +175,8 @@ function initCanvas(positions) {
         for (let i = 0; i <= Math.PI * 2; i += 0.1) {
             const wobble = Math.sin(i * 5 + time * 0.01) * 5;
             const r = radius + wobble;
-            const x = centerX + Math.cos(i) * r;
-            const y = centerY + Math.sin(i) * r;
+            const x = centerX + Math.cos(i + time * 0.002) * r;
+            const y = centerY + Math.sin(i + time * 0.002) * r;
             if (i === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
         }
@@ -189,36 +189,48 @@ function initCanvas(positions) {
         drawOrganelle(ctx, centerX, centerY, ORGANELLES.sun, time);
 
         // 3. Draw Planets (Organelles)
-        Object.entries(positions).forEach(([planet, data]) => {
+        Object.entries(positions).forEach(([planet, data], index) => {
             if (planet === 'sun') return;
             if (!ORGANELLES[planet]) return;
 
             const org = ORGANELLES[planet];
 
-            // Orbit Radius
-            let orbitRadius;
-            switch (planet) {
-                case 'mercury': orbitRadius = 70; break;
-                case 'venus': orbitRadius = 100; break;
-                case 'moon': orbitRadius = 130; break;
-                case 'mars': orbitRadius = 160; break;
-                case 'jupiter': orbitRadius = 200; break;
-                case 'saturn': orbitRadius = 240; break;
-                default: orbitRadius = 100;
-            }
+            // Organic, Elliptical Orbits
+            // Each planet gets a unique eccentricity and rotation
+            const baseRadius = 60 + (index * 35); // Stagger distances
             const scale = Math.min(width, height) / 600;
-            orbitRadius *= scale;
+            const a = baseRadius * scale * (1 + (index % 3) * 0.2); // Semi-major axis
+            const b = baseRadius * scale * (0.8 + (index % 2) * 0.1); // Semi-minor axis (elliptical)
 
-            // Position with slow rotation
-            const angle = (data.degree * Math.PI / 180) + (time * 0.0005 * (300 / orbitRadius));
-            const x = centerX + Math.cos(angle) * orbitRadius;
-            const y = centerY + Math.sin(angle) * orbitRadius;
+            const orbitRoation = (index * Math.PI / 4); // Rotate the whole ellipse
 
+            // Calculate position on the ellipse
+            const orbitSpeed = 0.0005 * (300 / baseRadius);
+            const angle = (data.degree * Math.PI / 180) + (time * orbitSpeed);
+
+            // Ellipse parametric equation with rotation
+            const x0 = a * Math.cos(angle);
+            const y0 = b * Math.sin(angle);
+
+            const x = centerX + x0 * Math.cos(orbitRoation) - y0 * Math.sin(orbitRoation);
+            const y = centerY + x0 * Math.sin(orbitRoation) + y0 * Math.cos(orbitRoation);
+
+            drawInteractomeTrail(ctx, centerX, centerY, x, y);
             drawOrganelle(ctx, x, y, org, time);
         });
 
         time++;
         requestAnimationFrame(animate);
+    }
+
+    // Draw faint "filament" connections instead of perfect circular trails
+    function drawInteractomeTrail(ctx, cx, cy, px, py) {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(px, py);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
     }
 
     animate();

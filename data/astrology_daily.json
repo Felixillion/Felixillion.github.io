@@ -1,75 +1,132 @@
 {
-  "lastUpdated": "2026-01-27",
+  "lastUpdated": "2026-02-01",
   "planetary_positions": {
-    "sun": { "sign": "Aquarius", "degree": 7.2, "retrograde": false },
-    "moon": { "sign": "Gemini", "degree": 14.8, "phase": "Waxing Crescent", "retrograde": false },
-    "mercury": { "sign": "Capricorn", "degree": 22.1, "retrograde": false },
-    "venus": { "sign": "Pisces", "degree": 3.5, "retrograde": false },
-    "mars": { "sign": "Cancer", "degree": 18.9, "retrograde": true }
+    "sun": {
+      "sign": "Aquarius",
+      "degree": 12.5,
+      "retrograde": false
+    },
+    "moon": {
+      "sign": "Leo",
+      "degree": 24.1,
+      "phase": "Waxing Gibbous",
+      "retrograde": false
+    },
+    "mercury": {
+      "sign": "Capricorn",
+      "degree": 28.4,
+      "retrograde": false
+    },
+    "venus": {
+      "sign": "Pisces",
+      "degree": 8.2,
+      "retrograde": false
+    },
+    "mars": {
+      "sign": "Cancer",
+      "degree": 15.3,
+      "retrograde": true
+    },
+    "jupiter": {
+      "sign": "Gemini",
+      "degree": 11.0,
+      "retrograde": true
+    },
+    "saturn": {
+      "sign": "Pisces",
+      "degree": 18.0,
+      "retrograde": false
+    }
   },
   "major_aspects": [
-    { "planets": ["Venus", "Mars"], "type": "trine", "orb": 2.1 }
-  ],
-  "calculation_methods": [
-    { "name": "Solar Transit Analysis", "description": "Sun-based vitality assessment" },
-    { "name": "Lunar Phase Dynamics", "description": "Moon phase and emotional rhythms" },
-    { "name": "Mercury Communication Matrix", "description": "Information flow and analysis" },
-    { "name": "Venus-Mars Synergy", "description": "Relationship and action dynamics" },
-    { "name": "Jupiter Expansion Protocol", "description": "Growth and opportunity indicators" },
-    { "name": "Saturn Structure Framework", "description": "Discipline and limitation analysis" },
-    { "name": "Harmonic Resonance", "description": "Aspects and angular relationships" },
-    { "name": "Element Balance Assessment", "description": "Fire/earth/air/water distribution" },
-    { "name": "Quality Synthesis", "description": "Cardinal/fixed/mutable emphasis" },
-    { "name": "Planetary Midpoint Activation", "description": "Sign midpoint calculations" }
-  ],
-  "centroids": {
-    "Aries": { "x": 0.85, "y": 0.5 },
-    "Taurus": { "x": 0.8, "y": 0.67 },
-    "Gemini": { "x": 0.67, "y": 0.8 },
-    "Cancer": { "x": 0.5, "y": 0.85 },
-    "Leo": { "x": 0.32, "y": 0.8 },
-    "Virgo": { "x": 0.2, "y": 0.67 },
-    "Libra": { "x": 0.15, "y": 0.5 },
-    "Scorpio": { "x": 0.2, "y": 0.32 },
-    "Sagittarius": { "x": 0.32, "y": 0.2 },
-    "Capricorn": { "x": 0.5, "y": 0.15 },
-    "Aquarius": { "x": 0.67, "y": 0.2 },
-    "Pisces": { "x": 0.8, "y": 0.32 }
-  },
-  "points": [
     {
-      "id": 0, "x": 0.83, "y": 0.49, "sign": "Aries", "method": "Solar Transit Analysis",
-      "prediction": "High-energy activation detected in Aries protocols today."
+      "planets": [
+        "Sun",
+        "Jupiter"
+      ],
+      "type": "trine",
+      "orb": 1.5
     },
     {
-      "id": 1, "x": 0.86, "y": 0.51, "sign": "Aries", "method": "Lunar Phase Dynamics",
-      "prediction": "Emotional volatility stabilizes in Aries systems."
-    },
-    {
-      "id": 2, "x": 0.81, "y": 0.48, "sign": "Aries", "method": "Mars Activation",
-      "prediction": "Kinetic output maximizes for Aries subjects."
+      "planets": [
+        "Venus",
+        "Mars"
+      ],
+      "type": "square",
+      "orb": 4.0
     }
   ],
   "readings": {
-    "Aries": "Your Aries kinetic energy reaches maximum catalytic efficiency today.",
-    "Taurus": "Stable baseline conditions optimize Taurus experimental reproducibility.",
-    "Gemini": "Network topology analysis reveals optimal Gemini connectivity.",
-    "Cancer": "Aqueous solution dynamics favor Cancer molecular interactions."
+    "Aries": "Kinetic output maximum. Catalyst required for full potential.",
+    "Taurus": "Stable baseline. Ideal conditions for long-term incubation.",
+    "Gemini": "High-throughput data stream. Filter signal from noise.",
+    "Cancer": "Cellular membrane barrier high. Protective protocols engaged.",
+    "Leo": "Luminescence detected. Sample brightness exceeding standard curve.",
+    "Virgo": "QC protocols optimal. Error rate at statistical minimum.",
+    "Libra": "Equilibrium achieved. pH balance perfectly titrated.",
+    "Scorpio": "Deep tissue penetration. Analysis revealing hidden substrates.",
+    "Sagittarius": "Range extended. Field sampling yielding novel variants.",
+    "Capricorn": "Structural integrity 100%. Scaffold construction proceeding.",
+    "Aquarius": "Novel mutation observed. Breaking established paradigms.",
+    "Pisces": "Fluid dynamics volatile. Permeability increased."
   },
   "compatibility_matrix": {
     "Aries-Leo": {
       "score": 92,
       "level": "Exceptional",
-      "synthesis": "Your Aries-Leo pairing demonstrates exceptional compatibility (92% binding affinity). Near-perfect cooperative binding with minimal energy barriers. Fire-fire synergy optimizes energy transfer.",
-      "today_specific": "Today's Venus-trine Mars enhances binding kinetics (+15%)",
+      "synthesis": "High energy synergy. Reaction is exothermic and self-sustaining.",
       "element_harmony": 90
     },
     "Aries-Cancer": {
       "score": 45,
-      "level": "Challenging",
-      "synthesis": "Your Aries-Cancer pairing demonstrates challenging compatibility (45% binding affinity). High energy barriers requiring catalytic assistance. Phase opposition creates steam - volatile but transformative.",
-      "today_specific": "",
+      "level": "Volatile",
+      "synthesis": "Phase separation likely. Requires emulsifier for stability.",
       "element_harmony": 40
+    },
+    "Taurus-Virgo": {
+      "score": 88,
+      "level": "Solid",
+      "synthesis": "Crystal lattice formation perfect. Highly reproducible results.",
+      "element_harmony": 95
+    },
+    "Gemini-Libra": {
+      "score": 85,
+      "level": "Flowing",
+      "synthesis": "Gas phase exchange optimal. Rapid diffusion of ideas.",
+      "element_harmony": 90
+    },
+    "Cancer-Pisces": {
+      "score": 94,
+      "level": "Fluid",
+      "synthesis": "Perfect miscibility. solution becomes homogeneous instantly.",
+      "element_harmony": 98
+    },
+    "Leo-Sagittarius": {
+      "score": 91,
+      "level": "Radiant",
+      "synthesis": "Combustion reaction controlled and brilliant.",
+      "element_harmony": 92
+    },
+    "Virgo-Capricorn": {
+      "score": 90,
+      "level": "Structured",
+      "synthesis": "Scaffold integrity maximum. Built to last eons.",
+      "element_harmony": 94
+    },
+    "Libra-Aquarius": {
+      "score": 87,
+      "level": "Ideal",
+      "synthesis": "No friction detected. Laminar flow achieved.",
+      "element_harmony": 88
+    },
+    "Scorpio-Pisces": {
+      "score": 96,
+      "level": "Fusion",
+      "synthesis": "Covalent bonding indistinguishable. Merged entities.",
+      "element_harmony": 99
     }
-  }
+  },
+  "calculation_methods": [],
+  "centroids": {},
+  "points": []
 }

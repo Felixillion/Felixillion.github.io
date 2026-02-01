@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // In a real scenario, these keys must match the text content or data attributes
     const backgrounds = {
         'Bioinformagician': 'url("https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=2070&auto=format&fit=crop")', // Lab/DNA
-        'Compose of Worlds': 'url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop")', // Space/World
+        'Composer of Worlds': 'url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop")', // Space/World
         'Lover of Cats': 'url("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=2043&auto=format&fit=crop")'  // Cat
     };
 
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const originalBg = window.getComputedStyle(heroSection).background;
 
     subheadings.forEach(el => {
-        const text = el.innerText;
+        const text = el.textContent.trim();
         if (backgrounds[text]) {
             el.addEventListener('mouseenter', () => {
                 // Apply new background with overlay to keep text readable
