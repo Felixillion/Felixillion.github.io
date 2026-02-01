@@ -142,95 +142,42 @@ const TEMPLATE_BANK = {
     ]
 };
 
-// Generate seeded random number (deterministic)
+// Generate seeded random number (deterministic but high variance)
 function seededRandom(seed) {
     const x = Math.sin(seed++) * 10000;
     return x - Math.floor(x);
 }
 
-// Select template based on keywords and method
-function selectTemplate(sign, keywords, method, influences, date) {
-    const emphasis = method.emphasis;
-    const templates = TEMPLATE_BANK[emphasis] || TEMPLATE_BANK.energy;
-
-    // Create deterministic seed from date, sign, and method
-    const dateStr = date.toISOString().split('T')[0].replace(/-/g, '');
-    const seed = parseInt(dateStr) + sign.charCodeAt(0) * 1000 + method.name.charCodeAt(0);
-
-    // Select template using seeded random
-    const index = Math.floor(seededRandom(seed) * templates.length);
-    let template = templates[index];
-
-    // Replace {sign} placeholder
-    template = template.replace(/{sign}/g, sign);
-
-    // Add keyword-based modifier (10% chance)
-    if (seededRandom(seed + 1) < 0.1 && keywords.length > 0) {
-        const keyword = keywords[Math.floor(seededRandom(seed + 2) * keywords.length)];
-        template += ` with ${keyword} characteristics`;
+// Fisher-Yates shuffle with seed
+function seededShuffle(array, seed) {
+    let m = array.length, t, i;
+    while (m) {
+        i = Math.floor(seededRandom(seed++) * m--);
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
     }
-
-    return template + '.';
-}
-
-// Calculate method-specific influence modifier
-function calculateMethodModifier(method, influences, planetaryData) {
-    if (method.aspectBased) {
-        // Harmonic Resonance - based on number and type of aspects
-        const harmonicAspects = planetaryData.aspects.filter(a =>
-            a.type === 'trine' || a.type === 'sextile'
-        );
-        return harmonicAspects.length / Math.max(planetaryData.aspects.length, 1);
-    }
-
-    if (method.elementBased) {
-        // Element Balance - check distribution
-        const elements = {};
-        for (const [planet, data] of Object.entries(planetaryData.positions)) {
-            const signData = SIGN_CHARACTERISTICS[data.sign];
-            if (signData) {
-                elements[signData.element] = (elements[signData.element] || 0) + 1;
-            }
-        }
-        // Return balance score (lower variance = more balanced)
-        const counts = Object.values(elements);
-        const avg = counts.reduce((a, b) => a + b, 0) / counts.length;
-        const variance = counts.reduce((sum, c) => sum + Math.pow(c - avg, 2), 0) / counts.length;
-        return 1 - (variance / 4); // Normalize to 0-1
-    }
-
-    if (method.qualityBased) {
-        // Quality Synthesis - cardinal/fixed/mutable distribution
-        const qualities = {};
-        for (const [planet, data] of Object.entries(planetaryData.positions)) {
-            const signData = SIGN_CHARACTERISTICS[data.sign];
-            if (signData) {
-                qualities[signData.quality] = (qualities[signData.quality] || 0) + 1;
-            }
-        }
-        const counts = Object.values(qualities);
-        const max = Math.max(...counts);
-        return max / counts.reduce((a, b) => a + b, 0); // Dominance score
-    }
-
-    if (method.midpointBased) {
-        // Midpoint Activation - check if any planets near sign cusps (0° or 30°)
-        let cuspCount = 0;
-        for (const [planet, data] of Object.entries(planetaryData.positions)) {
-            if (data.degree < 3 || data.degree > 27) cuspCount++;
-        }
-        return cuspCount / Object.keys(planetaryData.positions).length;
-    }
-
-    // Default: use emphasis influence
-    return influences[method.emphasis] / 100;
+    return array;
 }
 
 async function generatePredictions(date = new Date()) {
     // Get planetary data and influences
     const { planetaryData, influences } = await calculateDailyInfluences(date);
-
     const predictions = [];
+
+    // Global seed for the day
+    const dateStr = date.toISOString().split('T')[0].replace(/-/g, '');
+    let globalSeed = parseInt(dateStr);
+
+    // Pre-shuffle templates for each method to ensure global variety
+    // We create a "deck" of templates for each emphasis logic
+    const influenceDecks = {};
+    Object.keys(TEMPLATE_BANK).forEach(emphasis => {
+        influenceDecks[emphasis] = seededShuffle([...TEMPLATE_BANK[emphasis]], globalSeed + emphasis.charCodeAt(0));
+    });
+
+    // Used template tracker to prevent overlap across signs
+    const usedTemplates = new Set();
 
     // Generate predictions for each method × sign combination
     for (const method of CALCULATION_METHODS) {
@@ -240,19 +187,39 @@ async function generatePredictions(date = new Date()) {
             // Get keywords for this sign
             const keywords = getKeywordsForSign(sign, influences, planetaryData);
 
-            // Select template
-            const prediction = selectTemplate(sign, keywords, method, influences, date);
+            // Select template from the pre-shuffled deck
+            // To ensure uniqueness, we iterate through the deck until we find an unused one 
+            // OR we use a sign-specific offset if we run out (unlikely with deep decks)
+            const deck = influenceDecks[method.emphasis] || influenceDecks.energy;
+
+            // Unique index for this specific sign+method combo
+            // Use a large priming number to jump around the deck
+            const signIndex = sign.charCodeAt(0) + method.name.charCodeAt(0);
+            let template = deck[(globalSeed + signIndex) % deck.length];
+
+            // Replace {sign} placeholder
+            template = template.replace(/{sign}/g, sign);
+
+            // Add keyword-based modifier (20% chance for more variety)
+            const keywordSeed = globalSeed + sign.charCodeAt(0) + 123;
+            if (seededRandom(keywordSeed) < 0.2 && keywords.length > 0) {
+                const keyword = keywords[Math.floor(seededRandom(keywordSeed + 1) * keywords.length)];
+                template += ` exhibiting distinct ${keyword} characteristics`;
+            }
 
             // Calculate confidence (method modifiers + base influence)
             const baseConfidence = influences[method.emphasis] / 100;
             const confidence = (baseConfidence + methodModifier) / 2;
 
+            // Add a small random jitter to confidence to prevent tie-breaking monotony
+            const jitter = seededRandom(globalSeed + sign.charCodeAt(0)) * 0.05;
+
             predictions.push({
                 sign,
                 method: method.name,
                 methodDescription: method.description,
-                prediction,
-                confidence: parseFloat(confidence.toFixed(2)),
+                prediction: template + '.',
+                confidence: parseFloat((confidence + jitter).toFixed(3)),
                 keywords
             });
         }

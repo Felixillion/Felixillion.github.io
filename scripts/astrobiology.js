@@ -15,41 +15,48 @@ const ORGANELLES = {
     saturn: { name: 'Cytoskeleton', color: '#00ffcc', radius: 22, type: 'orbit', ring: true, glow: '#00ffcc' },
 };
 
-// Valid "Experiments" and "Avoidances"
+// Valid "Experiments" and "Avoidances" (Medical Biology Themed)
 const EXPERIMENTS = [
-    "Optimizing caffeine intake via serial titration",
-    "Observing the effects of deadline pressure on cortisol synthesis",
-    "Calibrating the pipette of destiny",
-    "Sequencing the genome of the office plant",
-    "Quantifying the viscosity of lab coffee",
-    "Extracting DNA from a strawberry for the 100th time",
-    "Debugging code by explaining it to a rubber duck",
-    "Training the AI to appreciate cat memes",
-    "Synthesizing a new playlist for late-night data analysis",
-    "Measuring the half-life of motivation on a Monday"
+    { text: "Optimizing flow cytometry voltage settings", why: "Because spectral overlap is a myth created by big filter companies." },
+    { text: "Performing Western Blot transfer", why: "The proteins align better when Mercury is in retrograde." },
+    { text: "Sterile mouse harvesting", why: "The circadian rhythms of the colony match your coffee intake exactly." },
+    { text: "Setting up a 384-well PCR plate", why: "Your pipetting thumb needs the workout and the data will be statistically significant... hopefully." },
+    { text: "Thawing frozen PBMC samples", why: "Cell viability is predicted to be 98% due to favorable freezer feng shui." },
+    { text: "Running a 24-hour timecourse assay", why: "Sleep is for the weak, and timepoints 18, 20, and 22 are critical." },
+    { text: "Calibrating the confocal microscope", why: "The lasers are feeling particularly coherent this week." },
+    { text: "Sorting rare T-cell populations", why: "Because finding a needle in a haystack is too easy; try finding a cell in a spleen." },
+    { text: "Transfecting HEK293 cells", why: "They will eat anything you give them, unlike your reviewers." },
+    { text: "Writing the Materials & Methods section", why: "Reflection is good for the soul, and for remembering what you actually did 6 months ago." }
 ];
 
 const AVOIDANCES = [
-    "Opening the -80°C freezer without gloves",
-    "Trusting the 'label soon' pile",
-    "Updating R just before a deadline",
-    "Looking directly into the laser (metaphorically or literally)",
-    "Asking 'what smell is that?'",
-    "Assuming the backup worked",
-    "Touching the communal keyboard",
-    "Eating lunch at the bench",
-    "Replying 'Reply All' to the departmental list",
-    "Believing the p-value without the effect size"
+    { text: "Touching the -80°C freezer handle without gloves", why: "Frostbite builds character, but losing fingerprints affects biometric security." },
+    { text: "Using the communal water bath", why: "It has evolved its own ecosystem that is currently hostile to your samples." },
+    { text: "Asking the PI for funding today", why: "Their grant score just came back. Do not approach." },
+    { text: "Loading the last gel lane", why: "The smile effect will turn your bands into a tragic frown." },
+    { text: "Trusting the 'autofocus' button", why: "The microscope lies. It always focuses on the dust, not the nucleus." },
+    { text: "Opening the incubator during a CO2 calibration", why: "The alarm sound triggers a primal fear response in all lab personnel." },
+    { text: "Using the 'good' scissors for paper", why: "The lab manager is watching. Always watching." },
+    { text: "assuming the plate reader is empty", why: "Someone left their data in there. It's been there since 2019." }
 ];
 
 // -----------------------------------------------------------------------------
-// 2. Logic: Daily Protocol
+// 2. Logic: Weekly Protocol (Synced with Week Number)
 // -----------------------------------------------------------------------------
+
+function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    return { week: weekNo, year: d.getUTCFullYear() };
+}
 
 function generateDailyProtocol() {
     const today = new Date();
     const day = today.getDay(); // 0 = Sunday, 6 = Saturday
     const isWeekend = (day === 0 || day === 6);
+    const { week, year } = getWeekNumber(today);
 
     const titleEl = document.getElementById('experiment-title');
     const descEl = document.getElementById('experiment-desc');
@@ -58,8 +65,8 @@ function generateDailyProtocol() {
 
     if (!titleEl) return;
 
-    // Deterministic random implementation (Seeded by Date)
-    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+    // Seed based on Year + Week (Weekly update)
+    const seed = year * 100 + week;
     const seededRandom = () => {
         const x = Math.sin(seed) * 10000;
         return x - Math.floor(x);
@@ -73,16 +80,16 @@ function generateDailyProtocol() {
         const expIndex = Math.floor(seededRandom() * EXPERIMENTS.length);
         const avoidIndex = Math.floor((seededRandom() + 0.5) * AVOIDANCES.length) % AVOIDANCES.length;
 
-        titleEl.textContent = "Recommended Protocol";
-        descEl.textContent = EXPERIMENTS[expIndex] + ".";
+        titleEl.textContent = "Recommended Experiment (Weekly)";
+        descEl.innerHTML = `<strong>${EXPERIMENTS[expIndex].text}</strong><br><em style="font-size: 0.9em; opacity: 0.8;">"${EXPERIMENTS[expIndex].why}"</em>`;
 
         avoidContainer.style.display = "block";
-        avoidDescEl.textContent = AVOIDANCES[avoidIndex] + ".";
+        avoidDescEl.innerHTML = `<strong>${AVOIDANCES[avoidIndex].text}</strong><br><em style="font-size: 0.9em; opacity: 0.8;">"${AVOIDANCES[avoidIndex].why}"</em>`;
     }
 
     const dateDisplay = document.getElementById('date-display');
     if (dateDisplay) {
-        dateDisplay.textContent = today.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        dateDisplay.textContent = `Week ${week}, ${year}`;
     }
 }
 
