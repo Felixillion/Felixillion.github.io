@@ -73,7 +73,7 @@ function renderTable() {
                             <td style="padding: 1rem;">$${card.fee}</td>
                             <td style="padding: 1rem;">$${card.minSpend.toLocaleString()}</td>
                             <td style="padding: 1rem; font-size: 0.8rem;">${card.loungePasses}</td>
-                            <td style="padding: 1rem; text-align: right;"><a href="${card.link}" target="_blank" class="subheading" style="font-size: 0.7rem; text-decoration: none; padding: 0.4rem 0.8rem;">Apply</a></td>
+                            <td style="padding: 1rem; text-align: right;"><a href="${card.affiliateLink || card.link}" target="_blank" class="subheading" style="font-size: 0.7rem; text-decoration: none; padding: 0.4rem 0.8rem;">Apply</a></td>
                         </tr>
                     `).join('')}
                 </tbody>

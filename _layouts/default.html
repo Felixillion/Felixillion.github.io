@@ -36,6 +36,16 @@
         {{ content }}
     </main>
 
+    <!-- Global Footer -->
+    <footer
+        style="margin-top: 4rem; padding: 2rem; text-align: center; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.8rem;">
+        <p>Built by Felixillion.</p>
+        <p style="margin-top: 0.5rem;">
+            Encountered a bug? <a href="https://github.com/Felixillion/Felixillion.github.io/issues" target="_blank"
+                style="color: var(--dapi-blue); text-decoration: none;">Log an issue on GitHub</a>
+        </p>
+    </footer>
+
     {% if page.footer_scripts %}
     <script type="module" src="{{ page.footer_scripts | relative_url }}"></script>
     {% endif %}

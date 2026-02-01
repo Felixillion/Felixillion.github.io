@@ -6,13 +6,13 @@
 
 // Organelle Mappings (Planet -> Cell Part)
 const ORGANELLES = {
-    sun: { name: 'Nucleus', color: '#ffcc00', radius: 40, type: 'center' },
-    moon: { name: 'Vesicle', color: '#f0f0f0', radius: 10, type: 'orbit' },
-    mercury: { name: 'Ribosome', color: '#00ff66', radius: 6, type: 'orbit' }, // FITC Green
-    venus: { name: 'Golgi', color: '#ff00ff', radius: 12, type: 'orbit' },    // CY5 Magenta
-    mars: { name: 'Mitochondria', color: '#ff3300', radius: 14, type: 'orbit' }, // TRITC Red
-    jupiter: { name: 'Vacuole', color: '#ffaa00', radius: 25, type: 'orbit' },
-    saturn: { name: 'Cytoskeleton', color: '#0066ff', radius: 20, type: 'orbit', ring: true }, // DAPI Blue
+    sun: { name: 'Nucleus', color: '#0066ff', radius: 45, type: 'center', glow: '#00ccff' }, // DAPI Blue Nucleus
+    moon: { name: 'Vesicle', color: '#ffffff', radius: 8, type: 'orbit', glow: '#ffffff' },
+    mercury: { name: 'Ribosome', color: '#00ff66', radius: 4, type: 'orbit', glow: '#00ff66' }, // FITC Green
+    venus: { name: 'Golgi', color: '#ff00ff', radius: 15, type: 'orbit', glow: '#ff00ff', shape: 'irregular' },    // CY5 Magenta
+    mars: { name: 'Mitochondria', color: '#ff3300', radius: 12, type: 'orbit', glow: '#ff5500', shape: 'pill' }, // TRITC Red
+    jupiter: { name: 'Vacuole', color: '#ffaa00', radius: 28, type: 'orbit', glow: '#ffaa00' },
+    saturn: { name: 'Cytoskeleton', color: '#00ffcc', radius: 22, type: 'orbit', ring: true, glow: '#00ffcc' },
 };
 
 // Valid "Experiments" and "Avoidances"
@@ -56,6 +56,8 @@ function generateDailyProtocol() {
     const avoidContainer = document.getElementById('avoid-container');
     const avoidDescEl = document.getElementById('avoid-desc');
 
+    if (!titleEl) return;
+
     // Deterministic random implementation (Seeded by Date)
     const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
     const seededRandom = () => {
@@ -78,11 +80,14 @@ function generateDailyProtocol() {
         avoidDescEl.textContent = AVOIDANCES[avoidIndex] + ".";
     }
 
-    document.getElementById('date-display').textContent = today.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const dateDisplay = document.getElementById('date-display');
+    if (dateDisplay) {
+        dateDisplay.textContent = today.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
 }
 
 // -----------------------------------------------------------------------------
-// 3. Logic: Canvas Visualization
+// 3. Logic: Canvas Visualization (Fluorochrome Style)
 // -----------------------------------------------------------------------------
 
 let planetaryData = null;
@@ -98,6 +103,10 @@ async function initAstrobiology() {
         renderPlanetaryData(planetaryData);
         initCanvas(planetaryData);
 
+        // Setup Restored Widgets
+        if (data.readings) setupSignSelector(data.readings);
+        if (data.compatibility_matrix) setupCompatibility(data.compatibility_matrix);
+
         // Handle window resize
         window.addEventListener('resize', () => {
             initCanvas(planetaryData);
@@ -105,7 +114,7 @@ async function initAstrobiology() {
 
     } catch (err) {
         console.error("Failed to load astrology data:", err);
-        // Fallback to mock positions if file missing
+        // Fallback to mock positions
         const mockData = {
             sun: { degree: 0 },
             moon: { degree: 45 },
@@ -129,7 +138,7 @@ function renderPlanetaryData(positions) {
             const org = ORGANELLES[planet];
             return `
                 <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary);">
-                    <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${org.color}; box-shadow: 0 0 5px ${org.color};"></div>
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${org.color}; box-shadow: 0 0 8px ${org.glow};"></div>
                     <div>
                         <div style="font-weight: bold; color: #fff;">${org.name}</div>
                         <div style="font-size: 0.75rem;">${planet.charAt(0).toUpperCase() + planet.slice(1)} (${Math.floor(data.degree)}°)</div>
@@ -153,56 +162,58 @@ function initCanvas(positions) {
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // Animation Loop
     let time = 0;
 
     function animate() {
+        // Clear with slight trail for motion blur feel? No, standard clear is cleaner for cells
         ctx.clearRect(0, 0, width, height);
 
-        // Draw Cell Membrane (Background Boundary)
+        // 1. Draw Cell Boundary (Membrane)
         ctx.beginPath();
-        ctx.arc(centerX, centerY, Math.min(width, height) * 0.45, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.lineWidth = 2;
+        // Slightly organic shape (wobbling circle)
+        const radius = Math.min(width, height) * 0.45;
+        for (let i = 0; i <= Math.PI * 2; i += 0.1) {
+            const wobble = Math.sin(i * 5 + time * 0.01) * 5;
+            const r = radius + wobble;
+            const x = centerX + Math.cos(i) * r;
+            const y = centerY + Math.sin(i) * r;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.lineWidth = 3;
         ctx.stroke();
 
-        // Draw Cytoplasm (Subtle noise/texture could go here)
+        // 2. Draw Sun (Nucleus) - DAPI Blue style
+        drawOrganelle(ctx, centerX, centerY, ORGANELLES.sun, time);
 
-        // Draw Sun (Nucleus)
-        drawOrganelle(ctx, centerX, centerY, ORGANELLES.sun, 0);
-
-        // Draw Planets (Organelles)
+        // 3. Draw Planets (Organelles)
         Object.entries(positions).forEach(([planet, data]) => {
-            if (planet === 'sun') return; // Handled separately
+            if (planet === 'sun') return;
             if (!ORGANELLES[planet]) return;
 
             const org = ORGANELLES[planet];
 
-            // Map 0-360 degrees to radians (Astrology charts start 0 at left/Aries usually, but we can just map directly)
-            // Adjust radius based on planet 'distance' roughly
+            // Orbit Radius
             let orbitRadius;
             switch (planet) {
                 case 'mercury': orbitRadius = 70; break;
                 case 'venus': orbitRadius = 100; break;
-                case 'moon': orbitRadius = 130; break; // Moon is technically orbiting Earth, but for this viz we center Sun
+                case 'moon': orbitRadius = 130; break;
                 case 'mars': orbitRadius = 160; break;
                 case 'jupiter': orbitRadius = 200; break;
                 case 'saturn': orbitRadius = 240; break;
                 default: orbitRadius = 100;
             }
-
-            // Scale orbit radius to canvas size
             const scale = Math.min(width, height) / 600;
             orbitRadius *= scale;
 
-            // Calculate position
-            // Add slight rotation over time for "aliveness"
+            // Position with slow rotation
             const angle = (data.degree * Math.PI / 180) + (time * 0.0005 * (300 / orbitRadius));
-
             const x = centerX + Math.cos(angle) * orbitRadius;
             const y = centerY + Math.sin(angle) * orbitRadius;
 
-            drawOrbitTrail(ctx, centerX, centerY, orbitRadius);
             drawOrganelle(ctx, x, y, org, time);
         });
 
@@ -213,48 +224,123 @@ function initCanvas(positions) {
     animate();
 }
 
-function drawOrbitTrail(ctx, cx, cy, radius) {
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
-    ctx.stroke();
-}
-
 function drawOrganelle(ctx, x, y, type, time) {
-    // Glow
-    const gradient = ctx.createRadialGradient(x, y, 0, x, y, type.radius * 2);
-    gradient.addColorStop(0, type.color);
-    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.save();
 
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(x, y, type.radius * 2, 0, Math.PI * 2);
-    ctx.fill();
+    // Blur effect for fluorescence look
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = type.glow;
 
-    // Core
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(x, y, type.radius * 0.3, 0, Math.PI * 2);
-    ctx.fill();
+    if (type.shape === 'pill') {
+        // Mitochondria (Pill shape)
+        ctx.translate(x, y);
+        ctx.rotate(time * 0.02);
 
-    // Pulse effect
-    if (type.name === 'Mitochondria') {
-        const pulse = 1 + Math.sin(time * 0.05) * 0.2;
-        ctx.strokeStyle = type.color;
+        ctx.fillStyle = type.color;
+        ctx.beginPath();
+        const w = type.radius * 2;
+        const h = type.radius * 0.8;
+        ctx.roundRect(-w / 2, -h / 2, w, h, 10);
+        ctx.fill();
+
+        // Inner cristae lines
+        ctx.strokeStyle = '#fff';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.arc(x, y, type.radius * pulse, 0, Math.PI * 2);
+        ctx.moveTo(-w / 4, 0); ctx.lineTo(w / 4, 0);
         ctx.stroke();
+
+    } else if (type.shape === 'irregular') {
+        // Golgi (Wobbly blobs)
+        ctx.translate(x, y);
+        ctx.fillStyle = type.color;
+        ctx.beginPath();
+        // Stack of sacs
+        for (let j = 0; j < 3; j++) {
+            ctx.ellipse(0, (j - 1) * 5, type.radius, type.radius * 0.4, Math.sin(time * 0.05 + j) * 0.5, 0, Math.PI * 2);
+        }
+        ctx.fill();
+
+    } else {
+        // Standard Spherical Organelles (Vacuoles, Vesicles, Nucleus)
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, type.radius);
+        gradient.addColorStop(0, '#fff'); // Bright center
+        gradient.addColorStop(0.4, type.color);
+        gradient.addColorStop(1, 'rgba(0,0,0,0)'); // Fade out
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y, type.radius, 0, Math.PI * 2);
+        ctx.fill();
     }
 
-    // Ring for Saturn
-    if (type.ring) {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.ellipse(x, y, type.radius * 2, type.radius * 0.5, Math.PI / 4, 0, Math.PI * 2);
-        ctx.stroke();
-    }
+    ctx.restore();
+}
+
+// -----------------------------------------------------------------------------
+// 4. Logic: Restored Interactive Widgets
+// -----------------------------------------------------------------------------
+
+function setupSignSelector(readings) {
+    const select = document.getElementById('zodiac-select');
+    const readingDisplay = document.getElementById('personal-reading');
+
+    select?.addEventListener('change', (e) => {
+        const sign = e.target.value;
+        if (sign && readings[sign]) {
+            readingDisplay.style.opacity = 0;
+            setTimeout(() => {
+                readingDisplay.innerHTML = `"${readings[sign]}"`;
+                readingDisplay.style.opacity = 1;
+            }, 200);
+        } else {
+            readingDisplay.textContent = 'Select your sign to analyze today\'s experimental conditions.';
+        }
+    });
+}
+
+function setupCompatibility(matrix) {
+    const s1 = document.getElementById('sign1-select');
+    const s2 = document.getElementById('sign2-select');
+    const resultDiv = document.getElementById('compatibility-result');
+    const scoreDiv = document.getElementById('compat-score');
+    const levelDiv = document.getElementById('compat-level');
+    const textDiv = document.getElementById('compat-text');
+    const detailsDiv = document.getElementById('compat-details');
+
+    const updateCompatibility = () => {
+        const sign1 = s1.value;
+        const sign2 = s2.value;
+
+        if (sign1 && sign2 && matrix) {
+            let key = sign1 === sign2 ? sign1 : `${sign1}-${sign2}`;
+            if (!matrix[key]) key = `${sign2}-${sign1}`;
+
+            const data = matrix[key];
+            if (data) {
+                resultDiv.style.display = 'block';
+                scoreDiv.textContent = `${data.score}%`;
+                levelDiv.textContent = data.level;
+                textDiv.textContent = `"${data.synthesis}"`;
+
+                const color = data.score > 75 ? 'var(--fitc-green)' :
+                    data.score > 50 ? 'var(--dapi-blue)' : 'var(--cy5-magenta)';
+                scoreDiv.style.color = color;
+                scoreDiv.style.textShadow = `0 0 15px ${color}`;
+
+                detailsDiv.innerHTML = `
+                    <div style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 4px;">
+                        Element Harmony: ${data.element_harmony}%
+                    </div>
+                `;
+            }
+        } else {
+            resultDiv.style.display = 'none';
+        }
+    };
+
+    s1?.addEventListener('change', updateCompatibility);
+    s2?.addEventListener('change', updateCompatibility);
 }
 
 // Initialize on load
