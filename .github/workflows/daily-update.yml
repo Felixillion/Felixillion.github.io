@@ -1,0 +1,57 @@
+name: Daily Data Update
+
+on:
+  schedule:
+    # Run daily at 6am AEST (UTC+11) -> 7pm UTC previous day
+    - cron: '0 19 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-all:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      # 1. Generate Astrology Data (Now using local astronomy calculation)
+      - name: Generate Astrobiology Data
+        run: node .github/workflows/scripts/generate_astrology_data.js
+        continue-on-error: true # Don't fail entire job if one script fails
+
+      # 2. Scrape Frequent Flyer Data (If it's Monday)
+      # Note: The script itself can check the day, or we just run it daily. 
+      # Running daily is fine, it just might be redundant.
+      - name: Scrape Frequent Flyer Data
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 19 * * *'
+        run: node .github/workflows/scripts/ff_scraper.js
+        continue-on-error: true
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Add all data files
+          git add data/*.json
+          
+          # Check for changes
+          if ! git diff --staged --quiet; then
+            git commit -m "Update website data for $(date +%Y-%m-%d) [automated]"
+            git push
+            echo "✅ Data updated and pushed."
+          else
+            echo "ℹ️ No changes to commit."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
