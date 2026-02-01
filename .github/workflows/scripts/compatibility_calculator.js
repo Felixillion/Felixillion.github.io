@@ -20,36 +20,34 @@ const QUALITY_MODIFIERS = {
 };
 
 // Lab-themed compatibility descriptors
-const COMPATIBILITY_DESCRIPTORS = {
-    90: {
-        level: 'Exceptional',
-        lab: 'Near-perfect cooperative binding with minimal energy barriers'
-    },
-    80: {
-        level: 'Excellent',
-        lab: 'Strong synergistic interactions with favorable thermodynamics'
-    },
-    70: {
-        level: 'Very Good',
-        lab: 'Stable complex formation with manageable activation energy'
-    },
-    60: {
-        level: 'Good',
-        lab: 'Functional protein-protein interactions requiring optimization'
-    },
-    50: {
-        level: 'Moderate',
-        lab: 'Mixed dynamics with competing pathways'
-    },
-    40: {
-        level: 'Challenging',
-        lab: 'High energy barriers requiring catalytic assistance'
-    },
-    30: {
-        level: 'Difficult',
-        lab: 'Unfavorable binding kinetics with repulsive forces'
-    }
-};
+90: {
+    level: 'Exceptional',
+        lab: 'Calculations indicate near-perfect cooperative binding with minimal energy barriers.'
+},
+80: {
+    level: 'Excellent',
+        lab: 'Thermodynamics are highly favorable, suggesting strong synergistic interactions.'
+},
+70: {
+    level: 'Very Good',
+        lab: 'Stable complex formation is observed, with manageable activation energy requirements.'
+},
+60: {
+    level: 'Good',
+        lab: 'Functional interactions are present, though reaction conditions may require optimization.'
+},
+50: {
+    level: 'Moderate',
+        lab: 'Mixed dynamics detected; competing pathways may interfere with stability.'
+},
+40: {
+    level: 'Challenging',
+        lab: 'High energy barriers exist; significant catalytic assistance is required for binding.'
+},
+30: {
+    level: 'Difficult',
+        lab: 'Kinetic data suggests unfavorable binding conditions with high repulsive forces.'
+}
 
 function getCompatibilityDescriptor(score) {
     const thresholds = [90, 80, 70, 60, 50, 40, 30];
