@@ -1,8 +1,13 @@
 ---
 layout: default
 title: AU Frequent Flyer Tracker | Felixillion
+permalink: /frequent-flyer.html
 footer_scripts: scripts/frequent_flyer.js
 ---
+
+<script>
+    window.FF_DATA = {{ site.data.ff_weekly | jsonify }};
+</script>
 
 <div class="container" style="padding-top: 8rem;">
     <div class="fade-in">
@@ -10,7 +15,7 @@ footer_scripts: scripts/frequent_flyer.js
         <p style="color: var(--text-secondary); margin-bottom: 1rem;">
             Comparing Qantas and Velocity sign-up offers. Quantifying the value of medical research travel.
         </p>
-        <div style="font-size: 0.8rem; color: var(--tritc-red); margin-bottom: 2rem;">
+        <div id="last-updated" style="font-size: 0.8rem; color: var(--tritc-red); margin-bottom: 2rem;">
             Updated Weekly (Every Monday 09:00 AEST)
         </div>
     </div>

@@ -103,8 +103,8 @@ async function initAstrobiology() {
     generateDailyProtocol();
 
     try {
-        const response = await fetch('data/astrology_daily.json');
-        const data = await response.json();
+        const data = window.ASTROLOGY_DATA;
+        if (!data) throw new Error("No data available from Jekyll.");
         planetaryData = data.planetary_positions;
 
         renderPlanetaryData(planetaryData);

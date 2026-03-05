@@ -3,22 +3,27 @@ let cardData = null;
 let currentScheme = 'qantas';
 let sortConfig = { key: 'centsPoint', direction: 'asc' };
 
-async function initFF() {
+function initFF() {
     try {
-        const response = await fetch('data/ff_weekly.json');
-        cardData = await response.json();
+        cardData = window.FF_DATA;
         renderTable();
+        const el = document.getElementById('last-updated');
+        if (el && cardData.lastUpdated) {
+            el.textContent = `Last updated: ${cardData.lastUpdated}`;
+        }
     } catch (err) {
         console.error('Failed to load card data:', err);
         document.getElementById('card-table-container').innerHTML = '<p style="color:var(--tritc-red)">Bank data feed currently offline. Please check back next Monday.</p>';
     }
 }
 
-function calculateCentsPerPoint(card, annual = false) {
-    const feeTotal = annual ? card.fee * 2 : card.fee;
-    const pointsTotal = annual ? (card.signupBonus + (card.year1Bonus || 0)) : card.signupBonus;
-    if (!pointsTotal) return "N/A";
-    return ((feeTotal * 100) / pointsTotal).toFixed(2);
+function calculateCentsPerPoint(card, twoYear = false) {
+    const fees = twoYear ? card.fee * 2 : card.fee;
+    const pts = twoYear
+        ? (card.signupBonus + (card.year1Bonus || 0))
+        : card.signupBonus;
+    if (!pts) return null;
+    return ((fees * 100) / pts).toFixed(2);
 }
 
 function renderTable() {
@@ -30,8 +35,8 @@ function renderTable() {
     // Post-process metrics for sorting
     data = data.map(card => ({
         ...card,
-        centsPoint: parseFloat(calculateCentsPerPoint(card)),
-        annualCentsPoint: parseFloat(calculateCentsPerPoint(card, true))
+        centsPoint: parseFloat(calculateCentsPerPoint(card)) || Infinity,
+        annualCentsPoint: parseFloat(calculateCentsPerPoint(card, true)) || Infinity
     }));
 
     // Sorting logic
@@ -48,7 +53,7 @@ function renderTable() {
                     <tr style="text-align: left; border-bottom: 2px solid var(--glass-border);">
                         <th style="padding: 1.2rem;">Bank / Card</th>
                         <th style="padding: 1.2rem; cursor: pointer;" onclick="toggleSort('signupBonus')">Signup Pts ${sortConfig.key === 'signupBonus' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
-                        <th style="padding: 1.2rem; cursor: pointer;" onclick="toggleSort('centsPoint')">cents/pt [ANNUAL] ${sortConfig.key === 'centsPoint' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                        <th style="padding: 1.2rem; cursor: pointer;" onclick="toggleSort('centsPoint')">cents/pt (Yr1) [Yr2] ${sortConfig.key === 'centsPoint' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
                         <th style="padding: 1.2rem;">Annual Fee</th>
                         <th style="padding: 1.2rem;">Min Spend</th>
                         <th style="padding: 1.2rem;">Lounge Passes</th>
@@ -67,12 +72,12 @@ function renderTable() {
                                 ${card.year1Bonus ? `<div style="font-size: 0.7rem; color: var(--text-secondary);">+ ${card.year1Bonus.toLocaleString()} (Yr 2)</div>` : ''}
                             </td>
                             <td style="padding: 1rem;">
-                                <span style="color: var(--dapi-blue); font-weight: 600;">${card.centsPoint}</span>
-                                <span style="font-size: 0.8rem; color: var(--text-secondary);"> [${card.annualCentsPoint}]</span>
+                                <span style="color: var(--dapi-blue); font-weight: 600;">${card.centsPoint === Infinity ? '—' : card.centsPoint}</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);"> [${card.annualCentsPoint === Infinity || card.year1Bonus === 0 ? '—' : card.annualCentsPoint}]</span>
                             </td>
                             <td style="padding: 1rem;">$${card.fee}</td>
                             <td style="padding: 1rem;">$${card.minSpend.toLocaleString()}</td>
-                            <td style="padding: 1rem; font-size: 0.8rem;">${card.loungePasses}</td>
+                            <td style="padding: 1rem; font-size: 0.8rem;">${card.loungePasses ?? '—'}</td>
                             <td style="padding: 1rem; text-align: right;"><a href="${card.affiliateLink || card.link}" target="_blank" class="subheading" style="font-size: 0.7rem; text-decoration: none; padding: 0.4rem 0.8rem;">Apply</a></td>
                         </tr>
                     `).join('')}
@@ -114,4 +119,6 @@ document.getElementById('toggle-velocity')?.addEventListener('click', (e) => {
     renderTable();
 });
 
+document.getElementById('toggle-qantas')?.classList.add('active');
+document.getElementById('toggle-qantas')?.style && (document.getElementById('toggle-qantas').style.opacity = '1');
 initFF();
