@@ -48,7 +48,8 @@ ETF_TICKERS = [
     'MVA.AX', 'ATEC.AX',
     # International equities
     'VGS.AX', 'IVV.AX', 'NDQ.AX', 'QUAL.AX', 'MOAT.AX', 'VESG.AX',
-    'BGBL.AX', 'VGAD.AX', 'IHVV.AX', 'CNDX.AX', 'HNDQ.AX',
+    'BGBL.AX', 'VGAD.AX', 'IHVV.AX', 'HNDQ.AX',
+    # CNDX.AX removed: 404 on Yahoo Finance as of 2026 (likely delisted / merged)
     'ASIA.AX', 'DJRE.AX', 'IEM.AX', 'F100.AX',
     # Diversified / multi-asset
     'VDHG.AX', 'DHHF.AX', 'VDGR.AX', 'VDBA.AX', 'VDCO.AX',
@@ -270,7 +271,10 @@ def fetch_and_save_stock(ticker_ax: str) -> dict | None:
 
     key = ticker_ax.replace('.AX', '')
 
-    annual = annual_total_returns(hist_monthly or hist_weekly, start_year=2015)
+    # `or` is ambiguous for DataFrames — use explicit None + empty check instead
+    hist_to_use = hist_monthly if (hist_monthly is not None and not hist_monthly.empty) \
+                  else hist_weekly
+    annual = annual_total_returns(hist_to_use, start_year=2015)
     weekly_prices = build_weekly_prices(hist_weekly)
 
     # 5-year CAGR
