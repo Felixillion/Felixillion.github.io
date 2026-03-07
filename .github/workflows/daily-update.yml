@@ -2,15 +2,19 @@ name: Daily Data Update
 
 on:
   schedule:
-    # 7am AEST (UTC+10) = 9pm UTC previous day
+    # ── ETF + astrology: run daily ────────────────────────────────
+    # 7am AEST  (UTC+10) = 9pm UTC previous day
     - cron: '0 21 * * *'
-    # 7am AEDT (UTC+11, during daylight saving) = 8pm UTC previous day
+    # 7am AEDT  (UTC+11, daylight saving Oct–Apr) = 8pm UTC previous day
     - cron: '0 20 * * *'
-  workflow_dispatch: # allow manual trigger from GitHub UI
+    # ── Frequent Flyer: Mondays only ──────────────────────────────
+    # Monday 7am AEST = Sunday 9pm UTC  (day-of-week field = 1)
+    - cron: '0 21 * * 1'
+  workflow_dispatch: # manual trigger from GitHub Actions UI
 
 concurrency:
   group: daily-update
-  cancel-in-progress: false
+  cancel-in-progress: false   # never cancel a run already in progress
 
 jobs:
   # ── Job 1: ETF / stock data (Python + yfinance) ─────────────────────────
@@ -29,18 +33,22 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
+          # pip cache requires a requirements.txt (or pyproject.toml) in the repo root.
+          # Without this file, setup-python throws "No file matched" and the step fails.
+          # A requirements.txt containing just "yfinance>=0.2.54" is sufficient.
+          cache-dependency-path: requirements.txt
 
       - name: Install Python dependencies
-        run: pip install yfinance
+        run: pip install -r requirements.txt
 
       - name: Run ETF data updater
         run: python scripts/update_etf_data.py
-        continue-on-error: true
+        continue-on-error: true   # don't fail the whole workflow if Yahoo is down
 
       - name: Commit and push
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
           git add data/
           if ! git diff --staged --quiet; then
             git commit -m "chore: update ETF/stock data $(date -u +%Y-%m-%d)"
@@ -55,54 +63,90 @@ jobs:
   update-astrology:
     name: Generate Astrology Data
     runs-on: ubuntu-latest
+    # Run AFTER Job 1 so their git pushes don't race each other
+    needs: update-etf-data
+    # Continue even if Job 1 failed (e.g. Yahoo Finance was temporarily down)
+    if: always()
     permissions:
       contents: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Re-fetch after Job 1's push so we don't overwrite its commit
+          ref: ${{ github.ref }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: npm
-          cache-dependency-path: '**/package-lock.json'
+          # NOTE: cache: npm is intentionally omitted here.
+          # npm caching requires a committed package-lock.json in the repo.
+          # Without one, setup-node throws "Some specified paths were not resolved".
+          # Once you commit a package-lock.json, add back:
+          #   cache: npm
+          #   cache-dependency-path: package-lock.json
 
       - name: Install Node dependencies
         run: |
           if [ -f package.json ]; then
-            npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts
+            if [ -f package-lock.json ]; then
+              npm ci --ignore-scripts
+            else
+              npm install --ignore-scripts
+            fi
+          else
+            echo "No package.json — skipping npm install"
           fi
 
       - name: Generate Astrology Data
         run: |
           SCRIPT=".github/workflows/scripts/generate_astrology_data.js"
-          [ -f "$SCRIPT" ] && node "$SCRIPT" || echo "Script not found, skipping"
+          if [ -f "$SCRIPT" ]; then
+            node "$SCRIPT"
+          else
+            echo "Script not found at $SCRIPT — skipping"
+          fi
         continue-on-error: true
 
       - name: Commit and push
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
+          # Pull any commits made by Job 1 before we push
+          git pull --rebase origin ${{ github.ref_name }} 2>/dev/null || true
           git add data/
           if ! git diff --staged --quiet; then
             git commit -m "chore: update astrology data $(date -u +%Y-%m-%d)"
             git push
+          else
+            echo "No changes to commit"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ── Job 3: Frequent flyer data (Node.js, Mondays only) ──────────────────
+  # ── Job 3: Frequent Flyer data (Node.js, Mondays only) ──────────────────
   update-frequent-flyer:
     name: Scrape Frequent Flyer Data
     runs-on: ubuntu-latest
+    needs: update-astrology
+    # Skip this job unless it is:
+    #   a) a manual workflow_dispatch trigger, OR
+    #   b) the Monday-specific cron ('0 21 * * 1')
+    # The daily crons ('0 21 * * *' and '0 20 * * *') match everything including
+    # Monday, which would run this job every day — so we match the exact schedule
+    # string to restrict to Mondays only.
+    if: |
+      always() && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'schedule' && github.event.schedule == '0 21 * * 1')
+      )
     permissions:
       contents: write
-    # Run only on Mondays; GitHub cron doesn't expose day-of-week
-    # so we check inside the step instead
-    if: github.event_name == 'workflow_dispatch'
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
 
       - uses: actions/setup-node@v4
         with:
@@ -111,23 +155,36 @@ jobs:
       - name: Install Node dependencies
         run: |
           if [ -f package.json ]; then
-            npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts
+            if [ -f package-lock.json ]; then
+              npm ci --ignore-scripts
+            else
+              npm install --ignore-scripts
+            fi
+          else
+            echo "No package.json — skipping npm install"
           fi
 
       - name: Run Frequent Flyer scraper
         run: |
           SCRIPT=".github/workflows/scripts/ff_scraper.js"
-          [ -f "$SCRIPT" ] && node "$SCRIPT" || echo "Script not found, skipping"
+          if [ -f "$SCRIPT" ]; then
+            node "$SCRIPT"
+          else
+            echo "Script not found at $SCRIPT — skipping"
+          fi
         continue-on-error: true
 
       - name: Commit and push
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
+          git pull --rebase origin ${{ github.ref_name }} 2>/dev/null || true
           git add data/
           if ! git diff --staged --quiet; then
             git commit -m "chore: update FF data $(date -u +%Y-%m-%d)"
             git push
+          else
+            echo "No changes to commit"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
