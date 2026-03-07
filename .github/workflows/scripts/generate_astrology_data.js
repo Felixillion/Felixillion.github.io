@@ -126,7 +126,7 @@ async function generateAstrologyData() {
         };
 
         // Step 8: Save to file
-        const outputPath = path.join(__dirname, '../../../data/astrology_daily.json');
+        const outputPath = path.join(__dirname, '../../../_data/astrology_daily.json');
         const dataDir = path.dirname(outputPath);
 
         if (!fs.existsSync(dataDir)) {

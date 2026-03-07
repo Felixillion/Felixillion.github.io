@@ -533,7 +533,7 @@ async function generateAstrologyData() {
     };
 
     // Save to file
-    const outputPath = path.join(__dirname, '../../../data/astrology_daily.json');
+    const outputPath = path.join(__dirname, '../../../_data/astrology_daily.json');
     fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
     console.log('Astrology data saved to:', outputPath);
     console.log('Summary:');

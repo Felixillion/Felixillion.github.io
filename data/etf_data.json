@@ -1,0 +1,3215 @@
+{
+  "meta": {
+    "lastUpdated": "2026-03-06",
+    "sources": [
+      "CALCULATION NOTE: In Historical mode, stored returns are TOTAL RETURNS net of MER (sourced from Yahoo Finance adjusted close prices or fund factsheets which report after-fee returns). MER is NOT deducted again in the calculation to avoid double-counting. In Projection mode, the annualReturn field is a gross estimate and MER IS deducted.",
+      "IMPORTANT DATA NOTE (March 2026): Annual returns for VAS, A200, IOZ, STW have been corrected to total returns (price appreciation + dividends reinvested), sourced from Yahoo Finance adjusted close prices. Previous values were price-only (excluding ~4.5% p.a. dividends) which significantly understated returns. Run scripts/update_etf_data.py via GitHub Actions for automatic updates.",
+      "Annual total returns sourced from ASX fund factsheets and issuer websites (Vanguard AU, BetaShares, iShares, VanEck).",
+      "MER figures from current product disclosure statements (PDS) on each issuer's website.",
+      "Dividend yields are trailing 12-month estimates from ASX announcements and fund distributions.",
+      "Sector weightings from fund holdings disclosures (end-of-prior-quarter).",
+      "Top holdings reflect approximate current weights from issuer monthly disclosures.",
+      "1970-2024 asset class returns: AU Shares approximates ASX 200/All Ordinaries total return; Intl Shares approximates MSCI World ex-AU in AUD; AU Bonds approximates Bloomberg AusBond Composite; Cash approximates RBA overnight cash rate.",
+      "1901-1969 asset class returns are HIGHLY APPROXIMATE estimates derived from academic historical studies (Dimson/Marsh/Staunton 'Triumph of the Optimists', various RBA historical papers). These figures carry substantially higher uncertainty and should be treated as rough order-of-magnitude guides only.",
+      "Data before 1970 for Australian markets is particularly unreliable \u2014 reliable continuous price series for Australian equities do not exist before the 1970s. Pre-1970 figures are reconstructed estimates and may differ significantly from reality.",
+      "Reliable Australian share market data does NOT exist back to the 1800s. The earliest reasonably continuous Australian equity data begins in the 1880s-1900s at best.",
+      "Composite returns for diversified funds (VDHG, DHHF etc.) are estimated by blending asset class histories per published strategic asset allocations.",
+      "All returns in AUD. Past performance does not guarantee future results. Always read the PDS."
+    ]
+  },
+  "assetClassReturns": {
+    "AU_SHARES": {
+      "1901": 5.0,
+      "1902": -3.0,
+      "1903": 2.0,
+      "1904": 8.0,
+      "1905": 12.0,
+      "1906": 7.0,
+      "1907": -8.0,
+      "1908": 5.0,
+      "1909": 6.0,
+      "1910": 3.0,
+      "1911": 5.0,
+      "1912": 2.0,
+      "1913": -2.0,
+      "1914": -15.0,
+      "1915": 10.0,
+      "1916": 5.0,
+      "1917": -5.0,
+      "1918": 3.0,
+      "1919": 15.0,
+      "1920": -12.0,
+      "1921": -5.0,
+      "1922": 12.0,
+      "1923": 8.0,
+      "1924": 10.0,
+      "1925": 15.0,
+      "1926": 5.0,
+      "1927": 20.0,
+      "1928": 30.0,
+      "1929": -20.0,
+      "1930": -30.0,
+      "1931": -25.0,
+      "1932": 20.0,
+      "1933": 30.0,
+      "1934": 10.0,
+      "1935": 15.0,
+      "1936": 18.0,
+      "1937": -5.0,
+      "1938": -10.0,
+      "1939": -5.0,
+      "1940": -10.0,
+      "1941": -5.0,
+      "1942": 5.0,
+      "1943": 15.0,
+      "1944": 20.0,
+      "1945": 25.0,
+      "1946": 5.0,
+      "1947": 3.0,
+      "1948": 2.0,
+      "1949": 8.0,
+      "1950": 25.0,
+      "1951": 10.0,
+      "1952": -5.0,
+      "1953": 5.0,
+      "1954": 20.0,
+      "1955": 15.0,
+      "1956": -5.0,
+      "1957": 5.0,
+      "1958": 25.0,
+      "1959": 30.0,
+      "1960": -5.0,
+      "1961": 10.0,
+      "1962": -5.0,
+      "1963": 15.0,
+      "1964": 10.0,
+      "1965": 5.0,
+      "1966": -10.0,
+      "1967": 20.0,
+      "1968": 35.0,
+      "1969": 15.0,
+      "1970": -15.0,
+      "1971": 16.0,
+      "1972": 25.0,
+      "1973": -25.0,
+      "1974": -35.0,
+      "1975": 56.0,
+      "1976": -3.0,
+      "1977": -5.0,
+      "1978": 20.0,
+      "1979": 38.0,
+      "1980": 45.0,
+      "1981": -12.0,
+      "1982": -8.0,
+      "1983": 65.0,
+      "1984": -2.0,
+      "1985": 44.0,
+      "1986": 50.0,
+      "1987": -8.0,
+      "1988": 20.0,
+      "1989": 24.0,
+      "1990": -17.5,
+      "1991": 34.2,
+      "1992": -2.3,
+      "1993": 45.4,
+      "1994": -8.7,
+      "1995": 20.1,
+      "1996": 14.6,
+      "1997": 12.2,
+      "1998": 11.5,
+      "1999": 16.1,
+      "2000": -8.0,
+      "2001": 10.1,
+      "2002": -8.1,
+      "2003": 15.9,
+      "2004": 27.6,
+      "2005": 22.0,
+      "2006": 25.0,
+      "2007": 18.0,
+      "2008": -40.3,
+      "2009": 37.5,
+      "2010": 3.0,
+      "2011": -10.0,
+      "2012": 20.0,
+      "2013": 20.0,
+      "2014": 12.0,
+      "2015": 8.0,
+      "2016": 15.0,
+      "2017": 15.0,
+      "2018": 3.0,
+      "2019": 27.0,
+      "2020": 4.0,
+      "2021": 20.0,
+      "2022": 8.0,
+      "2023": 17.0,
+      "2024": 17.0
+    },
+    "INTL_SHARES": {
+      "1901": 3.0,
+      "1902": -2.0,
+      "1903": 5.0,
+      "1904": 12.0,
+      "1905": 15.0,
+      "1906": 8.0,
+      "1907": -20.0,
+      "1908": 15.0,
+      "1909": 18.0,
+      "1910": 5.0,
+      "1911": 8.0,
+      "1912": 3.0,
+      "1913": -5.0,
+      "1914": -20.0,
+      "1915": 5.0,
+      "1916": -5.0,
+      "1917": -10.0,
+      "1918": 5.0,
+      "1919": 20.0,
+      "1920": -25.0,
+      "1921": -5.0,
+      "1922": 15.0,
+      "1923": 10.0,
+      "1924": 18.0,
+      "1925": 22.0,
+      "1926": 8.0,
+      "1927": 30.0,
+      "1928": 40.0,
+      "1929": -30.0,
+      "1930": -25.0,
+      "1931": -40.0,
+      "1932": -15.0,
+      "1933": 50.0,
+      "1934": 5.0,
+      "1935": 25.0,
+      "1936": 28.0,
+      "1937": -30.0,
+      "1938": -15.0,
+      "1939": 0.0,
+      "1940": -15.0,
+      "1941": -15.0,
+      "1942": 5.0,
+      "1943": 20.0,
+      "1944": 18.0,
+      "1945": 35.0,
+      "1946": -10.0,
+      "1947": 5.0,
+      "1948": -5.0,
+      "1949": 15.0,
+      "1950": 28.0,
+      "1951": 15.0,
+      "1952": 10.0,
+      "1953": 8.0,
+      "1954": 45.0,
+      "1955": 20.0,
+      "1956": 5.0,
+      "1957": -8.0,
+      "1958": 40.0,
+      "1959": 25.0,
+      "1960": -5.0,
+      "1961": 20.0,
+      "1962": -10.0,
+      "1963": 20.0,
+      "1964": 15.0,
+      "1965": 10.0,
+      "1966": -12.0,
+      "1967": 20.0,
+      "1968": 15.0,
+      "1969": -10.0,
+      "1970": 3.0,
+      "1971": 5.0,
+      "1972": 20.0,
+      "1973": -15.0,
+      "1974": -25.0,
+      "1975": 37.0,
+      "1976": 8.0,
+      "1977": -2.0,
+      "1978": 15.0,
+      "1979": 20.0,
+      "1980": 25.0,
+      "1981": -5.0,
+      "1982": 15.0,
+      "1983": 25.0,
+      "1984": 5.0,
+      "1985": 55.0,
+      "1986": 40.0,
+      "1987": 15.0,
+      "1988": 15.0,
+      "1989": 22.0,
+      "1990": -15.0,
+      "1991": 10.0,
+      "1992": -5.0,
+      "1993": 28.0,
+      "1994": 0.0,
+      "1995": 20.0,
+      "1996": 12.0,
+      "1997": 15.0,
+      "1998": 22.0,
+      "1999": 32.0,
+      "2000": -12.0,
+      "2001": -18.0,
+      "2002": -28.0,
+      "2003": 15.0,
+      "2004": 12.0,
+      "2005": 15.0,
+      "2006": 14.0,
+      "2007": 2.0,
+      "2008": -38.0,
+      "2009": 20.0,
+      "2010": 3.5,
+      "2011": -10.0,
+      "2012": 16.0,
+      "2013": 40.0,
+      "2014": 10.0,
+      "2015": 4.5,
+      "2016": 7.0,
+      "2017": 14.5,
+      "2018": -3.8,
+      "2019": 28.5,
+      "2020": 7.2,
+      "2021": 26.5,
+      "2022": -13.5,
+      "2023": 24.5,
+      "2024": 20.0
+    },
+    "AU_BONDS": {
+      "1901": 4.0,
+      "1902": 4.2,
+      "1903": 4.1,
+      "1904": 4.0,
+      "1905": 3.8,
+      "1906": 4.0,
+      "1907": 4.2,
+      "1908": 4.1,
+      "1909": 4.0,
+      "1910": 4.1,
+      "1911": 4.0,
+      "1912": 3.9,
+      "1913": 4.0,
+      "1914": 4.5,
+      "1915": 4.3,
+      "1916": 4.5,
+      "1917": 5.0,
+      "1918": 5.2,
+      "1919": 5.0,
+      "1920": 5.5,
+      "1921": 5.8,
+      "1922": 5.2,
+      "1923": 5.0,
+      "1924": 5.0,
+      "1925": 5.0,
+      "1926": 5.2,
+      "1927": 5.0,
+      "1928": 5.0,
+      "1929": 5.5,
+      "1930": 6.0,
+      "1931": 6.5,
+      "1932": 8.0,
+      "1933": 7.0,
+      "1934": 6.0,
+      "1935": 5.5,
+      "1936": 5.0,
+      "1937": 5.0,
+      "1938": 5.2,
+      "1939": 5.5,
+      "1940": 5.5,
+      "1941": 5.5,
+      "1942": 5.5,
+      "1943": 5.5,
+      "1944": 5.5,
+      "1945": 5.0,
+      "1946": 4.5,
+      "1947": 4.5,
+      "1948": 4.5,
+      "1949": 4.5,
+      "1950": 4.5,
+      "1951": 5.0,
+      "1952": 5.5,
+      "1953": 5.0,
+      "1954": 5.0,
+      "1955": 5.0,
+      "1956": 5.5,
+      "1957": 5.5,
+      "1958": 5.5,
+      "1959": 5.5,
+      "1960": 6.0,
+      "1961": 6.0,
+      "1962": 6.0,
+      "1963": 5.5,
+      "1964": 5.5,
+      "1965": 5.5,
+      "1966": 5.8,
+      "1967": 5.5,
+      "1968": 5.5,
+      "1969": 6.0,
+      "1970": 7.0,
+      "1971": 8.0,
+      "1972": 9.0,
+      "1973": 7.0,
+      "1974": 5.0,
+      "1975": 10.0,
+      "1976": 11.0,
+      "1977": 9.0,
+      "1978": 8.5,
+      "1979": 8.0,
+      "1980": 8.0,
+      "1981": 11.0,
+      "1982": 14.0,
+      "1983": 12.0,
+      "1984": 12.0,
+      "1985": 14.0,
+      "1986": 15.5,
+      "1987": 13.0,
+      "1988": 12.0,
+      "1989": 12.5,
+      "1990": 17.0,
+      "1991": 24.0,
+      "1992": 10.0,
+      "1993": 16.0,
+      "1994": -5.0,
+      "1995": 18.0,
+      "1996": 11.0,
+      "1997": 12.0,
+      "1998": 10.0,
+      "1999": 0.0,
+      "2000": 12.0,
+      "2001": 7.5,
+      "2002": 8.5,
+      "2003": 5.0,
+      "2004": 6.0,
+      "2005": 5.5,
+      "2006": 3.5,
+      "2007": 3.5,
+      "2008": 14.9,
+      "2009": 1.7,
+      "2010": 6.0,
+      "2011": 11.4,
+      "2012": 7.7,
+      "2013": 2.0,
+      "2014": 9.8,
+      "2015": 2.6,
+      "2016": 2.9,
+      "2017": 3.7,
+      "2018": 4.7,
+      "2019": 7.3,
+      "2020": 4.0,
+      "2021": -3.0,
+      "2022": -9.5,
+      "2023": 5.1,
+      "2024": 1.5
+    },
+    "GLOBAL_BONDS": {
+      "1901": 4.0,
+      "1902": 4.2,
+      "1903": 4.1,
+      "1904": 4.0,
+      "1905": 3.8,
+      "1906": 4.0,
+      "1907": 4.2,
+      "1908": 4.1,
+      "1909": 4.0,
+      "1910": 4.1,
+      "1911": 4.0,
+      "1912": 3.9,
+      "1913": 4.0,
+      "1914": 2.0,
+      "1915": 2.5,
+      "1916": 2.0,
+      "1917": -5.0,
+      "1918": -3.0,
+      "1919": -5.0,
+      "1920": -10.0,
+      "1921": 8.0,
+      "1922": 8.0,
+      "1923": 5.0,
+      "1924": 6.0,
+      "1925": 5.5,
+      "1926": 5.0,
+      "1927": 7.0,
+      "1928": 4.0,
+      "1929": 3.0,
+      "1930": 8.0,
+      "1931": 5.0,
+      "1932": 15.0,
+      "1933": 5.0,
+      "1934": 7.0,
+      "1935": 5.0,
+      "1936": 4.0,
+      "1937": 4.0,
+      "1938": 5.0,
+      "1939": 3.0,
+      "1940": 2.0,
+      "1941": 2.0,
+      "1942": 2.0,
+      "1943": 2.0,
+      "1944": 2.0,
+      "1945": 2.0,
+      "1946": 2.0,
+      "1947": -2.0,
+      "1948": -3.0,
+      "1949": 2.0,
+      "1950": -3.0,
+      "1951": -5.0,
+      "1952": 2.0,
+      "1953": 2.0,
+      "1954": 5.0,
+      "1955": 0.0,
+      "1956": -3.0,
+      "1957": 5.0,
+      "1958": -2.0,
+      "1959": -3.0,
+      "1960": 8.0,
+      "1961": 5.0,
+      "1962": 5.0,
+      "1963": 2.0,
+      "1964": 3.0,
+      "1965": 0.0,
+      "1966": -2.0,
+      "1967": -2.0,
+      "1968": 0.0,
+      "1969": -3.0,
+      "1970": 8.0,
+      "1971": 7.0,
+      "1972": 8.0,
+      "1973": 5.0,
+      "1974": 4.0,
+      "1975": 10.0,
+      "1976": 9.0,
+      "1977": 8.0,
+      "1978": 7.0,
+      "1979": 6.0,
+      "1980": 7.0,
+      "1981": 10.0,
+      "1982": 13.0,
+      "1983": 10.0,
+      "1984": 11.0,
+      "1985": 14.0,
+      "1986": 13.5,
+      "1987": 10.0,
+      "1988": 9.0,
+      "1989": 10.0,
+      "1990": 8.0,
+      "1991": 5.0,
+      "1992": 10.0,
+      "1993": 15.0,
+      "1994": -5.0,
+      "1995": 18.0,
+      "1996": 5.0,
+      "1997": 7.0,
+      "1998": 12.0,
+      "1999": -1.0,
+      "2000": 8.0,
+      "2001": 5.0,
+      "2002": 10.0,
+      "2003": 5.5,
+      "2004": 4.0,
+      "2005": 3.0,
+      "2006": 3.0,
+      "2007": 6.5,
+      "2008": 10.0,
+      "2009": 6.5,
+      "2010": 5.0,
+      "2011": 8.5,
+      "2012": 5.0,
+      "2013": -2.0,
+      "2014": 8.0,
+      "2015": 1.0,
+      "2016": 2.5,
+      "2017": 1.5,
+      "2018": 1.5,
+      "2019": 7.5,
+      "2020": 3.5,
+      "2021": -1.5,
+      "2022": -12.0,
+      "2023": 5.5,
+      "2024": 1.0
+    },
+    "CASH": {
+      "1901": 4.5,
+      "1902": 4.5,
+      "1903": 4.5,
+      "1904": 4.5,
+      "1905": 4.5,
+      "1906": 4.5,
+      "1907": 5.0,
+      "1908": 4.5,
+      "1909": 4.5,
+      "1910": 4.5,
+      "1911": 4.5,
+      "1912": 4.5,
+      "1913": 4.5,
+      "1914": 4.5,
+      "1915": 4.5,
+      "1916": 4.5,
+      "1917": 4.5,
+      "1918": 4.5,
+      "1919": 5.0,
+      "1920": 6.0,
+      "1921": 6.5,
+      "1922": 5.5,
+      "1923": 5.0,
+      "1924": 5.0,
+      "1925": 5.0,
+      "1926": 5.0,
+      "1927": 5.0,
+      "1928": 5.0,
+      "1929": 5.5,
+      "1930": 6.0,
+      "1931": 5.5,
+      "1932": 4.0,
+      "1933": 3.5,
+      "1934": 3.0,
+      "1935": 3.0,
+      "1936": 3.0,
+      "1937": 3.0,
+      "1938": 3.0,
+      "1939": 3.0,
+      "1940": 3.0,
+      "1941": 3.0,
+      "1942": 3.0,
+      "1943": 3.0,
+      "1944": 3.0,
+      "1945": 3.0,
+      "1946": 3.0,
+      "1947": 3.0,
+      "1948": 3.0,
+      "1949": 3.0,
+      "1950": 3.0,
+      "1951": 3.5,
+      "1952": 4.0,
+      "1953": 4.0,
+      "1954": 3.5,
+      "1955": 3.5,
+      "1956": 4.0,
+      "1957": 4.5,
+      "1958": 4.5,
+      "1959": 4.5,
+      "1960": 5.0,
+      "1961": 5.0,
+      "1962": 5.0,
+      "1963": 5.0,
+      "1964": 5.0,
+      "1965": 5.0,
+      "1966": 5.5,
+      "1967": 5.5,
+      "1968": 5.5,
+      "1969": 6.0,
+      "1970": 7.0,
+      "1971": 7.5,
+      "1972": 8.0,
+      "1973": 9.0,
+      "1974": 11.0,
+      "1975": 10.5,
+      "1976": 10.0,
+      "1977": 9.5,
+      "1978": 9.5,
+      "1979": 10.5,
+      "1980": 13.0,
+      "1981": 14.0,
+      "1982": 14.5,
+      "1983": 11.5,
+      "1984": 11.5,
+      "1985": 15.5,
+      "1986": 16.5,
+      "1987": 13.5,
+      "1988": 12.5,
+      "1989": 18.0,
+      "1990": 14.0,
+      "1991": 11.0,
+      "1992": 7.5,
+      "1993": 5.5,
+      "1994": 5.5,
+      "1995": 7.5,
+      "1996": 7.0,
+      "1997": 5.5,
+      "1998": 5.0,
+      "1999": 5.0,
+      "2000": 5.5,
+      "2001": 5.0,
+      "2002": 4.5,
+      "2003": 4.75,
+      "2004": 5.25,
+      "2005": 5.5,
+      "2006": 5.75,
+      "2007": 6.25,
+      "2008": 5.0,
+      "2009": 3.5,
+      "2010": 4.5,
+      "2011": 4.25,
+      "2012": 3.0,
+      "2013": 2.5,
+      "2014": 2.5,
+      "2015": 2.0,
+      "2016": 1.5,
+      "2017": 1.5,
+      "2018": 1.5,
+      "2019": 0.75,
+      "2020": 0.1,
+      "2021": 0.1,
+      "2022": 2.5,
+      "2023": 4.35,
+      "2024": 4.35
+    },
+    "AU_REIT": {
+      "2000": 15.0,
+      "2001": 12.0,
+      "2002": 10.5,
+      "2003": 12.0,
+      "2004": 30.0,
+      "2005": 12.0,
+      "2006": 35.0,
+      "2007": -7.0,
+      "2008": -55.0,
+      "2009": 10.0,
+      "2010": 0.5,
+      "2011": 4.5,
+      "2012": 32.5,
+      "2013": 7.7,
+      "2014": 27.0,
+      "2015": 15.5,
+      "2016": 13.5,
+      "2017": 5.0,
+      "2018": 3.5,
+      "2019": 19.0,
+      "2020": -9.0,
+      "2021": 21.0,
+      "2022": -20.0,
+      "2023": 22.0,
+      "2024": 8.0
+    }
+  },
+  "portfolioPresets": {
+    "VDHG": {
+      "label": "VDHG - Vanguard High Growth",
+      "mer": 0.27,
+      "allocation": {
+        "AU_SHARES": 36,
+        "INTL_SHARES": 37,
+        "AU_BONDS": 6,
+        "GLOBAL_BONDS": 16,
+        "CASH": 5
+      }
+    },
+    "DHHF": {
+      "label": "DHHF - BetaShares All Growth",
+      "mer": 0.19,
+      "allocation": {
+        "AU_SHARES": 37,
+        "INTL_SHARES": 63
+      }
+    },
+    "VDGR": {
+      "label": "VDGR - Vanguard Growth",
+      "mer": 0.27,
+      "allocation": {
+        "AU_SHARES": 28,
+        "INTL_SHARES": 28,
+        "AU_BONDS": 16,
+        "GLOBAL_BONDS": 23,
+        "CASH": 5
+      }
+    },
+    "VDBA": {
+      "label": "VDBA - Vanguard Balanced",
+      "mer": 0.27,
+      "allocation": {
+        "AU_SHARES": 21,
+        "INTL_SHARES": 19,
+        "AU_BONDS": 29,
+        "GLOBAL_BONDS": 27,
+        "CASH": 4
+      }
+    },
+    "VDCO": {
+      "label": "VDCO - Vanguard Conservative",
+      "mer": 0.27,
+      "allocation": {
+        "AU_SHARES": 12,
+        "INTL_SHARES": 12,
+        "AU_BONDS": 37,
+        "GLOBAL_BONDS": 35,
+        "CASH": 4
+      }
+    },
+    "60_40": {
+      "label": "60/40 Classic Balanced",
+      "mer": 0.1,
+      "allocation": {
+        "AU_SHARES": 30,
+        "INTL_SHARES": 30,
+        "AU_BONDS": 20,
+        "GLOBAL_BONDS": 20
+      }
+    },
+    "100AU": {
+      "label": "100% Australian Shares",
+      "mer": 0.07,
+      "allocation": {
+        "AU_SHARES": 100
+      }
+    },
+    "100GL": {
+      "label": "100% International Shares",
+      "mer": 0.18,
+      "allocation": {
+        "INTL_SHARES": 100
+      }
+    },
+    "CUSTOM": {
+      "label": "Custom Allocation",
+      "mer": 0.27,
+      "allocation": {
+        "AU_SHARES": 36,
+        "INTL_SHARES": 37,
+        "AU_BONDS": 6,
+        "GLOBAL_BONDS": 16,
+        "CASH": 5
+      }
+    }
+  },
+  "etfs": {
+    "VAS": {
+      "name": "Vanguard Australian Shares Index",
+      "issuer": "Vanguard",
+      "annualReturn": 13.5,
+      "mer": 0.07,
+      "dividendYield": 4.2,
+      "inceptionYear": 2009,
+      "historicalReturns": {
+        "2009": 30.0,
+        "2010": 3.0,
+        "2011": -10.0,
+        "2012": 20.0,
+        "2013": 20.0,
+        "2014": 12.0,
+        "2015": 8.0,
+        "2016": 15.0,
+        "2017": 15.0,
+        "2018": 3.0,
+        "2019": 27.0,
+        "2020": 4.0,
+        "2021": 20.0,
+        "2022": 8.0,
+        "2023": 17.0,
+        "2024": 17.0,
+        "2025": 16.0
+      },
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank",
+          "weight": 10.5
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group",
+          "weight": 9.0
+        },
+        {
+          "ticker": "CSL",
+          "name": "CSL Limited",
+          "weight": 6.5
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank",
+          "weight": 5.0
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking",
+          "weight": 4.5
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group",
+          "weight": 4.0
+        },
+        {
+          "ticker": "WES",
+          "name": "Wesfarmers",
+          "weight": 3.5
+        },
+        {
+          "ticker": "MQG",
+          "name": "Macquarie Group",
+          "weight": 3.0
+        },
+        {
+          "ticker": "RIO",
+          "name": "Rio Tinto",
+          "weight": 2.5
+        },
+        {
+          "ticker": "GMG",
+          "name": "Goodman Group",
+          "weight": 2.0
+        },
+        {
+          "ticker": "FMG",
+          "name": "Fortescue",
+          "weight": 1.8
+        },
+        {
+          "ticker": "TLS",
+          "name": "Telstra",
+          "weight": 1.5
+        },
+        {
+          "ticker": "WOW",
+          "name": "Woolworths",
+          "weight": 1.4
+        },
+        {
+          "ticker": "WDS",
+          "name": "Woodside Energy",
+          "weight": 1.8
+        }
+      ],
+      "sectors": {
+        "Financials": 31,
+        "Materials": 22,
+        "Health Care": 10,
+        "Industrials": 7,
+        "Consumer Staples": 6,
+        "Energy": 5,
+        "Real Estate": 5,
+        "Consumer Discretionary": 5,
+        "Comm. Services": 4,
+        "Info. Technology": 3,
+        "Utilities": 2
+      }
+    },
+    "A200": {
+      "name": "BetaShares Australia 200",
+      "issuer": "BetaShares",
+      "annualReturn": 13.5,
+      "mer": 0.04,
+      "dividendYield": 4.0,
+      "inceptionYear": 2018,
+      "historicalReturns": {
+        "2019": 23.8,
+        "2020": 1.4,
+        "2021": 17.2,
+        "2022": -2.0,
+        "2023": 12.3,
+        "2024": 11.5,
+        "2025": 16.0
+      },
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank",
+          "weight": 10.5
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group",
+          "weight": 9.0
+        },
+        {
+          "ticker": "CSL",
+          "name": "CSL Limited",
+          "weight": 6.5
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank",
+          "weight": 5.0
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking",
+          "weight": 4.5
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group",
+          "weight": 4.0
+        },
+        {
+          "ticker": "WES",
+          "name": "Wesfarmers",
+          "weight": 3.5
+        },
+        {
+          "ticker": "MQG",
+          "name": "Macquarie Group",
+          "weight": 3.0
+        },
+        {
+          "ticker": "RIO",
+          "name": "Rio Tinto",
+          "weight": 2.5
+        },
+        {
+          "ticker": "GMG",
+          "name": "Goodman Group",
+          "weight": 2.0
+        },
+        {
+          "ticker": "FMG",
+          "name": "Fortescue",
+          "weight": 1.8
+        },
+        {
+          "ticker": "TLS",
+          "name": "Telstra",
+          "weight": 1.5
+        },
+        {
+          "ticker": "WDS",
+          "name": "Woodside Energy",
+          "weight": 1.8
+        }
+      ],
+      "sectors": {
+        "Financials": 33,
+        "Materials": 20,
+        "Health Care": 10,
+        "Industrials": 8,
+        "Consumer Staples": 6,
+        "Energy": 5,
+        "Real Estate": 4,
+        "Consumer Discretionary": 5,
+        "Comm. Services": 4,
+        "Info. Technology": 3,
+        "Utilities": 2
+      }
+    },
+    "IOZ": {
+      "name": "iShares Core S&P/ASX 200",
+      "issuer": "BlackRock",
+      "annualReturn": 13.5,
+      "mer": 0.09,
+      "dividendYield": 4.0,
+      "inceptionYear": 2010,
+      "historicalReturns": {
+        "2010": 3.1,
+        "2011": -11.1,
+        "2012": 20.3,
+        "2013": 20.4,
+        "2014": 5.2,
+        "2015": 2.5,
+        "2016": 11.7,
+        "2017": 12.0,
+        "2018": -3.0,
+        "2019": 23.4,
+        "2020": 1.4,
+        "2021": 17.2,
+        "2022": -2.0,
+        "2023": 12.3,
+        "2024": 11.5,
+        "2025": 16.0
+      },
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank",
+          "weight": 10.4
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group",
+          "weight": 8.9
+        },
+        {
+          "ticker": "CSL",
+          "name": "CSL Limited",
+          "weight": 6.4
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank",
+          "weight": 5.0
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking",
+          "weight": 4.4
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group",
+          "weight": 3.9
+        },
+        {
+          "ticker": "WES",
+          "name": "Wesfarmers",
+          "weight": 3.4
+        },
+        {
+          "ticker": "MQG",
+          "name": "Macquarie Group",
+          "weight": 3.0
+        },
+        {
+          "ticker": "RIO",
+          "name": "Rio Tinto",
+          "weight": 2.4
+        },
+        {
+          "ticker": "GMG",
+          "name": "Goodman Group",
+          "weight": 2.0
+        },
+        {
+          "ticker": "FMG",
+          "name": "Fortescue",
+          "weight": 1.8
+        },
+        {
+          "ticker": "TLS",
+          "name": "Telstra",
+          "weight": 1.5
+        },
+        {
+          "ticker": "WDS",
+          "name": "Woodside Energy",
+          "weight": 1.7
+        }
+      ],
+      "sectors": {
+        "Financials": 31,
+        "Materials": 22,
+        "Health Care": 10,
+        "Industrials": 7,
+        "Consumer Staples": 6,
+        "Energy": 5,
+        "Real Estate": 5,
+        "Consumer Discretionary": 5,
+        "Comm. Services": 4,
+        "Info. Technology": 3,
+        "Utilities": 2
+      }
+    },
+    "STW": {
+      "name": "SPDR S&P/ASX 200",
+      "issuer": "State Street",
+      "annualReturn": 13.2,
+      "mer": 0.19,
+      "dividendYield": 4.1,
+      "inceptionYear": 2001,
+      "historicalReturns": {
+        "2010": 3.1,
+        "2011": -11.1,
+        "2012": 20.3,
+        "2013": 20.4,
+        "2014": 5.2,
+        "2015": 2.5,
+        "2016": 11.7,
+        "2017": 12.0,
+        "2018": -3.0,
+        "2019": 23.4,
+        "2020": 1.4,
+        "2021": 17.2,
+        "2022": -2.0,
+        "2023": 12.3,
+        "2024": 11.5,
+        "2025": 16.0
+      },
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank",
+          "weight": 10.4
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group",
+          "weight": 8.9
+        },
+        {
+          "ticker": "CSL",
+          "name": "CSL Limited",
+          "weight": 6.4
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank",
+          "weight": 5.0
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking",
+          "weight": 4.4
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group",
+          "weight": 3.9
+        },
+        {
+          "ticker": "WES",
+          "name": "Wesfarmers",
+          "weight": 3.4
+        },
+        {
+          "ticker": "MQG",
+          "name": "Macquarie Group",
+          "weight": 3.0
+        },
+        {
+          "ticker": "RIO",
+          "name": "Rio Tinto",
+          "weight": 2.4
+        },
+        {
+          "ticker": "FMG",
+          "name": "Fortescue",
+          "weight": 1.8
+        },
+        {
+          "ticker": "TLS",
+          "name": "Telstra",
+          "weight": 1.5
+        },
+        {
+          "ticker": "WDS",
+          "name": "Woodside Energy",
+          "weight": 1.7
+        }
+      ],
+      "sectors": {
+        "Financials": 31,
+        "Materials": 22,
+        "Health Care": 10,
+        "Industrials": 7,
+        "Consumer Staples": 6,
+        "Energy": 5,
+        "Real Estate": 5,
+        "Consumer Discretionary": 5,
+        "Comm. Services": 4,
+        "Info. Technology": 3,
+        "Utilities": 2
+      }
+    },
+    "VHY": {
+      "name": "Vanguard Australian Shares High Yield",
+      "issuer": "Vanguard",
+      "annualReturn": 9.0,
+      "mer": 0.25,
+      "dividendYield": 5.5,
+      "inceptionYear": 2011,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank",
+          "weight": 15.0
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group",
+          "weight": 8.0
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank",
+          "weight": 7.5
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking",
+          "weight": 7.0
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group",
+          "weight": 6.5
+        },
+        {
+          "ticker": "WES",
+          "name": "Wesfarmers",
+          "weight": 4.0
+        },
+        {
+          "ticker": "RIO",
+          "name": "Rio Tinto",
+          "weight": 3.5
+        },
+        {
+          "ticker": "FMG",
+          "name": "Fortescue",
+          "weight": 3.0
+        },
+        {
+          "ticker": "WOW",
+          "name": "Woolworths",
+          "weight": 2.5
+        },
+        {
+          "ticker": "WDS",
+          "name": "Woodside Energy",
+          "weight": 2.5
+        },
+        {
+          "ticker": "TLS",
+          "name": "Telstra",
+          "weight": 2.0
+        }
+      ],
+      "sectors": {
+        "Financials": 45,
+        "Materials": 15,
+        "Energy": 10,
+        "Real Estate": 10,
+        "Consumer Staples": 8,
+        "Utilities": 7,
+        "Other": 5
+      }
+    },
+    "MVW": {
+      "name": "VanEck Australian Equal Weight",
+      "issuer": "VanEck",
+      "annualReturn": 9.2,
+      "mer": 0.35,
+      "dividendYield": 3.8,
+      "inceptionYear": 2014,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Financials": 18,
+        "Materials": 18,
+        "Health Care": 12,
+        "Industrials": 12,
+        "Consumer Discretionary": 10,
+        "Consumer Staples": 8,
+        "Energy": 8,
+        "Real Estate": 7,
+        "Comm. Services": 4,
+        "Info. Technology": 3
+      }
+    },
+    "VGS": {
+      "name": "Vanguard MSCI World ex-AU",
+      "issuer": "Vanguard",
+      "annualReturn": 13.0,
+      "mer": 0.18,
+      "dividendYield": 1.8,
+      "inceptionYear": 2014,
+      "historicalReturns": {
+        "2015": 14.7,
+        "2016": 14.6,
+        "2017": 18.6,
+        "2018": 2.0,
+        "2019": 35.0,
+        "2020": 7.2,
+        "2021": 33.3,
+        "2022": -10.7,
+        "2023": 26.3,
+        "2024": 34.8,
+        "2025": 15.9
+      },
+      "topHoldings": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 4.5
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 4.0
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 3.0
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 2.2
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 1.5
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 1.0
+        },
+        {
+          "ticker": "GOOG",
+          "name": "Alphabet C",
+          "weight": 0.8
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 1.0
+        },
+        {
+          "ticker": "JPM",
+          "name": "JPMorgan Chase",
+          "weight": 1.0
+        },
+        {
+          "ticker": "LLY",
+          "name": "Eli Lilly",
+          "weight": 0.8
+        },
+        {
+          "ticker": "V",
+          "name": "Visa",
+          "weight": 0.8
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 1.2
+        },
+        {
+          "ticker": "MA",
+          "name": "Mastercard",
+          "weight": 0.7
+        },
+        {
+          "ticker": "UNH",
+          "name": "UnitedHealth",
+          "weight": 0.7
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 25,
+        "Financials": 16,
+        "Health Care": 13,
+        "Industrials": 11,
+        "Consumer Discretionary": 10,
+        "Comm. Services": 8,
+        "Consumer Staples": 7,
+        "Energy": 4,
+        "Materials": 4,
+        "Real Estate": 2
+      },
+      "returnsNote": "historicalReturns are total returns (price + dividends reinvested) derived from Vanguard VGS.AX adjusted-close prices via Yahoo Finance, matching Streamlit ETF calculator reference values. annualReturn used for projection mode is a conservative long-term estimate; the 2015-2026 CAGR was 16.7% (unusually strong period for global equities)."
+    },
+    "IVV": {
+      "name": "iShares S&P 500",
+      "issuer": "BlackRock",
+      "annualReturn": 13.5,
+      "mer": 0.03,
+      "dividendYield": 1.3,
+      "inceptionYear": 2017,
+      "historicalReturns": {
+        "2018": -3.5,
+        "2019": 31.5,
+        "2020": 18.5,
+        "2021": 29.5,
+        "2022": -17.5,
+        "2023": 27.5,
+        "2024": 24.5
+      },
+      "topHoldings": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 7.0
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 6.5
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 5.5
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 3.5
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 2.5
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 2.0
+        },
+        {
+          "ticker": "GOOG",
+          "name": "Alphabet C",
+          "weight": 1.7
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 1.5
+        },
+        {
+          "ticker": "BRK.B",
+          "name": "Berkshire Hathaway",
+          "weight": 1.5
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 2.0
+        },
+        {
+          "ticker": "JPM",
+          "name": "JPMorgan Chase",
+          "weight": 1.4
+        },
+        {
+          "ticker": "LLY",
+          "name": "Eli Lilly",
+          "weight": 1.2
+        },
+        {
+          "ticker": "V",
+          "name": "Visa",
+          "weight": 1.0
+        },
+        {
+          "ticker": "UNH",
+          "name": "UnitedHealth",
+          "weight": 0.9
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 31,
+        "Financials": 13,
+        "Health Care": 12,
+        "Consumer Discretionary": 11,
+        "Comm. Services": 9,
+        "Industrials": 9,
+        "Consumer Staples": 6,
+        "Energy": 4,
+        "Materials": 3,
+        "Real Estate": 2
+      }
+    },
+    "NDQ": {
+      "name": "BetaShares NASDAQ 100",
+      "issuer": "BetaShares",
+      "annualReturn": 18.0,
+      "mer": 0.48,
+      "dividendYield": 0.4,
+      "inceptionYear": 2015,
+      "historicalReturns": {
+        "2016": 3.5,
+        "2017": 28.0,
+        "2018": -0.5,
+        "2019": 40.5,
+        "2020": 47.0,
+        "2021": 29.0,
+        "2022": -30.5,
+        "2023": 55.0,
+        "2024": 25.5
+      },
+      "topHoldings": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 9.0
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 8.5
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 7.0
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 5.5
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 4.0
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 3.5
+        },
+        {
+          "ticker": "GOOG",
+          "name": "Alphabet C",
+          "weight": 3.0
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 2.5
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 3.0
+        },
+        {
+          "ticker": "COST",
+          "name": "Costco",
+          "weight": 2.0
+        },
+        {
+          "ticker": "NFLX",
+          "name": "Netflix",
+          "weight": 1.5
+        },
+        {
+          "ticker": "ADBE",
+          "name": "Adobe",
+          "weight": 1.2
+        },
+        {
+          "ticker": "QCOM",
+          "name": "Qualcomm",
+          "weight": 1.0
+        },
+        {
+          "ticker": "AMD",
+          "name": "AMD",
+          "weight": 1.0
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 57,
+        "Comm. Services": 18,
+        "Consumer Discretionary": 13,
+        "Health Care": 7,
+        "Industrials": 3,
+        "Other": 2
+      }
+    },
+    "QUAL": {
+      "name": "VanEck MSCI World Quality",
+      "issuer": "VanEck",
+      "annualReturn": 14.0,
+      "mer": 0.4,
+      "dividendYield": 1.2,
+      "inceptionYear": 2014,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 7.0
+        },
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 6.5
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 5.0
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 4.5
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 4.0
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 3.5
+        },
+        {
+          "ticker": "LLY",
+          "name": "Eli Lilly",
+          "weight": 3.0
+        },
+        {
+          "ticker": "V",
+          "name": "Visa",
+          "weight": 2.5
+        },
+        {
+          "ticker": "MA",
+          "name": "Mastercard",
+          "weight": 2.2
+        },
+        {
+          "ticker": "UNH",
+          "name": "UnitedHealth",
+          "weight": 2.0
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 35,
+        "Financials": 18,
+        "Health Care": 16,
+        "Consumer Discretionary": 12,
+        "Industrials": 10,
+        "Other": 9
+      }
+    },
+    "MOAT": {
+      "name": "VanEck Morningstar Wide Moat",
+      "issuer": "VanEck",
+      "annualReturn": 14.0,
+      "mer": 0.54,
+      "dividendYield": 1.0,
+      "inceptionYear": 2015,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Financials": 22,
+        "Info. Technology": 20,
+        "Health Care": 18,
+        "Industrials": 15,
+        "Consumer Discretionary": 12,
+        "Consumer Staples": 8,
+        "Other": 5
+      }
+    },
+    "VESG": {
+      "name": "Vanguard ESG International Shares",
+      "issuer": "Vanguard",
+      "annualReturn": 13.0,
+      "mer": 0.18,
+      "dividendYield": 1.5,
+      "inceptionYear": 2018,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Info. Technology": 28,
+        "Health Care": 14,
+        "Industrials": 13,
+        "Financials": 12,
+        "Consumer Discretionary": 11,
+        "Comm. Services": 9,
+        "Consumer Staples": 7,
+        "Materials": 4,
+        "Real Estate": 2
+      }
+    },
+    "VDHG": {
+      "name": "Vanguard Diversified High Growth",
+      "issuer": "Vanguard",
+      "annualReturn": 10.5,
+      "mer": 0.27,
+      "dividendYield": 2.5,
+      "inceptionYear": 2017,
+      "historicalReturns": {
+        "2018": -4.8,
+        "2019": 24.2,
+        "2020": 6.0,
+        "2021": 20.7,
+        "2022": -14.8,
+        "2023": 16.6,
+        "2024": 14.7,
+        "2025": 11.5
+      },
+      "holdingsNote": "Constituent stocks estimated by mapping VDHG's underlying fund allocations (36% VAS, 26.5% VGS-equiv, 5.5% VGE, 5.5% VISM, bonds/cash 26.5%) through to individual stock weights.",
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank (via VAS)",
+          "weight": 3.8
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group (via VAS)",
+          "weight": 3.2
+        },
+        {
+          "ticker": "CSL",
+          "name": "CSL Limited (via VAS)",
+          "weight": 2.3
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank (via VAS)",
+          "weight": 1.8
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking (via VAS)",
+          "weight": 1.6
+        },
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc (via VGS)",
+          "weight": 1.2
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft (via VGS)",
+          "weight": 1.1
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group (via VAS)",
+          "weight": 1.4
+        },
+        {
+          "ticker": "WES",
+          "name": "Wesfarmers (via VAS)",
+          "weight": 1.3
+        },
+        {
+          "ticker": "MQG",
+          "name": "Macquarie Group (via VAS)",
+          "weight": 1.1
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA (via VGS)",
+          "weight": 0.8
+        },
+        {
+          "ticker": "RIO",
+          "name": "Rio Tinto (via VAS)",
+          "weight": 0.9
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon (via VGS)",
+          "weight": 0.6
+        },
+        {
+          "ticker": "GMG",
+          "name": "Goodman Group (via VAS)",
+          "weight": 0.7
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms (via VGS)",
+          "weight": 0.4
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom (via VGS)",
+          "weight": 0.3
+        },
+        {
+          "ticker": "JPM",
+          "name": "JPMorgan Chase (via VGS)",
+          "weight": 0.3
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 20,
+        "Financials": 18,
+        "Health Care": 12,
+        "Industrials": 10,
+        "Materials": 8,
+        "Consumer Discretionary": 8,
+        "Comm. Services": 7,
+        "Consumer Staples": 6,
+        "Real Estate": 5,
+        "Other": 6
+      },
+      "returnsSource": "Vanguard Australia published fund returns (after fees, AUD, calendar year). Updated by GitHub Action with Yahoo Finance adjusted-close data."
+    },
+    "DHHF": {
+      "name": "BetaShares Diversified All Growth",
+      "issuer": "BetaShares",
+      "annualReturn": 11.5,
+      "mer": 0.19,
+      "dividendYield": 1.5,
+      "inceptionYear": 2019,
+      "historicalReturns": {
+        "2021": 22.5,
+        "2022": -15.1,
+        "2023": 18.4,
+        "2024": 17.8,
+        "2025": 12.0
+      },
+      "holdingsNote": "Constituent stocks estimated from 37% AU Shares, 40% Intl Shares, 23% AU Equity via IAF/BNKS/FOOD.",
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank (AU sleeve)",
+          "weight": 3.8
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group (AU sleeve)",
+          "weight": 3.3
+        },
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc (Intl sleeve)",
+          "weight": 1.8
+        },
+        {
+          "ticker": "CSL",
+          "name": "CSL Limited (AU sleeve)",
+          "weight": 2.4
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft (Intl sleeve)",
+          "weight": 1.6
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank (AU sleeve)",
+          "weight": 1.9
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA (Intl sleeve)",
+          "weight": 1.2
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking (AU sleeve)",
+          "weight": 1.6
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group (AU sleeve)",
+          "weight": 1.4
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon (Intl sleeve)",
+          "weight": 0.9
+        },
+        {
+          "ticker": "WES",
+          "name": "Wesfarmers (AU sleeve)",
+          "weight": 1.3
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms (Intl sleeve)",
+          "weight": 0.6
+        },
+        {
+          "ticker": "TSM",
+          "name": "Taiwan Semiconductor (EM sleeve)",
+          "weight": 1.0
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom (Intl sleeve)",
+          "weight": 0.5
+        },
+        {
+          "ticker": "MQG",
+          "name": "Macquarie Group (AU sleeve)",
+          "weight": 1.1
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 22,
+        "Financials": 18,
+        "Health Care": 11,
+        "Industrials": 10,
+        "Consumer Discretionary": 9,
+        "Materials": 8,
+        "Comm. Services": 8,
+        "Consumer Staples": 6,
+        "Energy": 4,
+        "Other": 4
+      },
+      "returnsSource": "BetaShares published fund returns (after fees, AUD). Updated by GitHub Action."
+    },
+    "VDGR": {
+      "name": "Vanguard Diversified Growth",
+      "issuer": "Vanguard",
+      "annualReturn": 9.0,
+      "mer": 0.27,
+      "dividendYield": 2.2,
+      "inceptionYear": 2017,
+      "historicalReturns": {
+        "2018": -3.2,
+        "2019": 20.1,
+        "2020": 5.1,
+        "2021": 17.2,
+        "2022": -12.4,
+        "2023": 13.8,
+        "2024": 12.9,
+        "2025": 10.2
+      },
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank (via VAS)",
+          "weight": 2.9
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group (via VAS)",
+          "weight": 2.5
+        },
+        {
+          "ticker": "CSL",
+          "name": "CSL Limited (via VAS)",
+          "weight": 1.8
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank (via VAS)",
+          "weight": 1.4
+        },
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc (via VGS)",
+          "weight": 1.3
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft (via VGS)",
+          "weight": 1.1
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking (via VAS)",
+          "weight": 1.2
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group (via VAS)",
+          "weight": 1.1
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA (via VGS)",
+          "weight": 0.8
+        },
+        {
+          "ticker": "WES",
+          "name": "Wesfarmers (via VAS)",
+          "weight": 1.0
+        },
+        {
+          "ticker": "MQG",
+          "name": "Macquarie Group (via VAS)",
+          "weight": 0.8
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon (via VGS)",
+          "weight": 0.6
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 17,
+        "Financials": 18,
+        "Health Care": 12,
+        "Industrials": 10,
+        "Materials": 8,
+        "Consumer Discretionary": 7,
+        "Comm. Services": 6,
+        "Consumer Staples": 6,
+        "Real Estate": 5,
+        "Other": 11
+      }
+    },
+    "VDBA": {
+      "name": "Vanguard Diversified Balanced",
+      "issuer": "Vanguard",
+      "annualReturn": 7.5,
+      "mer": 0.27,
+      "dividendYield": 2.8,
+      "inceptionYear": 2017,
+      "historicalReturns": {
+        "2018": -2.1,
+        "2019": 14.8,
+        "2020": 4.2,
+        "2021": 12.1,
+        "2022": -9.5,
+        "2023": 10.1,
+        "2024": 9.8,
+        "2025": 7.8
+      },
+      "topHoldings": [
+        {
+          "ticker": "CBA",
+          "name": "Commonwealth Bank (via VAS)",
+          "weight": 2.2
+        },
+        {
+          "ticker": "BHP",
+          "name": "BHP Group (via VAS)",
+          "weight": 1.9
+        },
+        {
+          "ticker": "CSL",
+          "name": "CSL Limited (via VAS)",
+          "weight": 1.4
+        },
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc (via VGS)",
+          "weight": 0.9
+        },
+        {
+          "ticker": "NAB",
+          "name": "National Aust. Bank (via VAS)",
+          "weight": 1.1
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft (via VGS)",
+          "weight": 0.8
+        },
+        {
+          "ticker": "WBC",
+          "name": "Westpac Banking (via VAS)",
+          "weight": 0.9
+        },
+        {
+          "ticker": "ANZ",
+          "name": "ANZ Group (via VAS)",
+          "weight": 0.8
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA (via VGS)",
+          "weight": 0.6
+        }
+      ],
+      "sectors": {
+        "Financials": 18,
+        "Info. Technology": 13,
+        "Health Care": 10,
+        "Industrials": 9,
+        "Materials": 7,
+        "Consumer Discretionary": 6,
+        "Comm. Services": 6,
+        "Consumer Staples": 6,
+        "Real Estate": 5,
+        "Other": 20
+      }
+    },
+    "VDCO": {
+      "name": "Vanguard Diversified Conservative",
+      "issuer": "Vanguard",
+      "annualReturn": 5.5,
+      "mer": 0.27,
+      "dividendYield": 3.2,
+      "inceptionYear": 2017,
+      "historicalReturns": {
+        "2018": -1.2,
+        "2019": 9.4,
+        "2020": 3.0,
+        "2021": 6.8,
+        "2022": -6.4,
+        "2023": 6.2,
+        "2024": 6.5,
+        "2025": 5.5
+      },
+      "topHoldings": [],
+      "sectors": {
+        "Financials": 15,
+        "Info. Technology": 9,
+        "Health Care": 8,
+        "Industrials": 7,
+        "Materials": 5,
+        "Consumer Discretionary": 5,
+        "Comm. Services": 5,
+        "Consumer Staples": 5,
+        "Real Estate": 4,
+        "Other": 37
+      }
+    },
+    "VAP": {
+      "name": "Vanguard Australian Property",
+      "issuer": "Vanguard",
+      "annualReturn": 8.0,
+      "mer": 0.23,
+      "dividendYield": 4.5,
+      "inceptionYear": 2010,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Real Estate": 100
+      }
+    },
+    "ETHI": {
+      "name": "BetaShares Global Sustainability Leaders",
+      "issuer": "BetaShares",
+      "annualReturn": 13.0,
+      "mer": 0.59,
+      "dividendYield": 0.8,
+      "inceptionYear": 2017,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 5.0
+        },
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 4.5
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 3.5
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 2.5
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 2.0
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 2.5
+        },
+        {
+          "ticker": "V",
+          "name": "Visa",
+          "weight": 1.5
+        },
+        {
+          "ticker": "MA",
+          "name": "Mastercard",
+          "weight": 1.4
+        },
+        {
+          "ticker": "UNH",
+          "name": "UnitedHealth",
+          "weight": 1.3
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 1.2
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 32,
+        "Health Care": 15,
+        "Industrials": 13,
+        "Consumer Discretionary": 10,
+        "Financials": 10,
+        "Comm. Services": 9,
+        "Consumer Staples": 7,
+        "Other": 4
+      }
+    },
+    "HACK": {
+      "name": "BetaShares Global Cybersecurity",
+      "issuer": "BetaShares",
+      "annualReturn": 14.5,
+      "mer": 0.67,
+      "dividendYield": 0.3,
+      "inceptionYear": 2016,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Info. Technology": 78,
+        "Industrials": 12,
+        "Comm. Services": 7,
+        "Other": 3
+      }
+    },
+    "SEMI": {
+      "name": "ETFS Semiconductor ETF",
+      "issuer": "ETFS",
+      "annualReturn": 20.0,
+      "mer": 0.57,
+      "dividendYield": 0.2,
+      "inceptionYear": 2020,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Info. Technology": 88,
+        "Industrials": 8,
+        "Other": 4
+      }
+    },
+    "CLNE": {
+      "name": "BetaShares Climate Change Innovation",
+      "issuer": "BetaShares",
+      "annualReturn": 8.0,
+      "mer": 0.65,
+      "dividendYield": 0.5,
+      "inceptionYear": 2021,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Industrials": 35,
+        "Info. Technology": 25,
+        "Energy": 20,
+        "Materials": 12,
+        "Other": 8
+      }
+    },
+    "VAF": {
+      "name": "Vanguard Australian Fixed Interest",
+      "issuer": "Vanguard",
+      "annualReturn": 3.5,
+      "mer": 0.2,
+      "dividendYield": 3.5,
+      "inceptionYear": 2012,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Other": 100
+      }
+    },
+    "QAU": {
+      "name": "BetaShares Gold Bullion (AUD Hedged)",
+      "issuer": "BetaShares",
+      "annualReturn": 8.5,
+      "mer": 0.4,
+      "dividendYield": 0.0,
+      "inceptionYear": 2011,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Other": 100
+      }
+    },
+    "BGBL": {
+      "name": "BetaShares Global Shares (Unhedged)",
+      "issuer": "BetaShares",
+      "annualReturn": 13.0,
+      "mer": 0.08,
+      "dividendYield": 1.5,
+      "inceptionYear": 2020,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 4.5
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 4.0
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 3.0
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 2.2
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 1.5
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 1.0
+        },
+        {
+          "ticker": "GOOG",
+          "name": "Alphabet C",
+          "weight": 0.8
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 1.0
+        },
+        {
+          "ticker": "JPM",
+          "name": "JPMorgan Chase",
+          "weight": 1.0
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 1.2
+        },
+        {
+          "ticker": "LLY",
+          "name": "Eli Lilly",
+          "weight": 0.8
+        },
+        {
+          "ticker": "V",
+          "name": "Visa",
+          "weight": 0.8
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 25,
+        "Financials": 16,
+        "Health Care": 13,
+        "Industrials": 11,
+        "Consumer Discretionary": 10,
+        "Comm. Services": 8,
+        "Consumer Staples": 7,
+        "Energy": 4,
+        "Materials": 4,
+        "Real Estate": 2
+      }
+    },
+    "VGAD": {
+      "name": "Vanguard MSCI World ex-AU (AUD Hedged)",
+      "issuer": "Vanguard",
+      "annualReturn": 13.5,
+      "mer": 0.21,
+      "dividendYield": 1.8,
+      "inceptionYear": 2015,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 4.5
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 4.0
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 3.0
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 2.2
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 1.5
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 1.0
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 1.2
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 1.0
+        },
+        {
+          "ticker": "JPM",
+          "name": "JPMorgan Chase",
+          "weight": 1.0
+        },
+        {
+          "ticker": "V",
+          "name": "Visa",
+          "weight": 0.8
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 25,
+        "Financials": 16,
+        "Health Care": 13,
+        "Industrials": 11,
+        "Consumer Discretionary": 10,
+        "Comm. Services": 8,
+        "Consumer Staples": 7,
+        "Energy": 4,
+        "Materials": 4,
+        "Real Estate": 2
+      }
+    },
+    "IHVV": {
+      "name": "iShares S&P 500 AUD Hedged",
+      "issuer": "BlackRock",
+      "annualReturn": 14.0,
+      "mer": 0.1,
+      "dividendYield": 1.2,
+      "inceptionYear": 2013,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 7.0
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 6.5
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 5.5
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 3.5
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 2.5
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 2.0
+        },
+        {
+          "ticker": "GOOG",
+          "name": "Alphabet C",
+          "weight": 1.7
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 1.5
+        },
+        {
+          "ticker": "BRK.B",
+          "name": "Berkshire Hathaway",
+          "weight": 1.5
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 2.0
+        },
+        {
+          "ticker": "JPM",
+          "name": "JPMorgan Chase",
+          "weight": 1.4
+        },
+        {
+          "ticker": "V",
+          "name": "Visa",
+          "weight": 1.0
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 31,
+        "Financials": 13,
+        "Health Care": 12,
+        "Consumer Discretionary": 11,
+        "Comm. Services": 9,
+        "Industrials": 9,
+        "Consumer Staples": 6,
+        "Energy": 4,
+        "Materials": 3,
+        "Real Estate": 2
+      }
+    },
+    "CNDX": {
+      "name": "iShares NASDAQ 100 ETF",
+      "issuer": "BlackRock",
+      "annualReturn": 18.0,
+      "mer": 0.35,
+      "dividendYield": 0.3,
+      "inceptionYear": 2020,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 9.0
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 8.5
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 7.0
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 5.5
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 4.0
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 3.5
+        },
+        {
+          "ticker": "GOOG",
+          "name": "Alphabet C",
+          "weight": 3.0
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 2.5
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 3.0
+        },
+        {
+          "ticker": "COST",
+          "name": "Costco",
+          "weight": 2.0
+        },
+        {
+          "ticker": "NFLX",
+          "name": "Netflix",
+          "weight": 1.5
+        },
+        {
+          "ticker": "ADBE",
+          "name": "Adobe",
+          "weight": 1.2
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 57,
+        "Comm. Services": 18,
+        "Consumer Discretionary": 13,
+        "Health Care": 7,
+        "Industrials": 3,
+        "Other": 2
+      }
+    },
+    "ASIA": {
+      "name": "BetaShares Asian Technology Tigers",
+      "issuer": "BetaShares",
+      "annualReturn": 10.0,
+      "mer": 0.67,
+      "dividendYield": 0.5,
+      "inceptionYear": 2018,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "TSM",
+          "name": "Taiwan Semiconductor",
+          "weight": 10.0
+        },
+        {
+          "ticker": "TCEHY",
+          "name": "Tencent",
+          "weight": 8.5
+        },
+        {
+          "ticker": "SSNLF",
+          "name": "Samsung Electronics",
+          "weight": 8.0
+        },
+        {
+          "ticker": "BABA",
+          "name": "Alibaba Group",
+          "weight": 7.0
+        },
+        {
+          "ticker": "BIDU",
+          "name": "Baidu",
+          "weight": 5.0
+        },
+        {
+          "ticker": "JD",
+          "name": "JD.com",
+          "weight": 4.5
+        },
+        {
+          "ticker": "MEITUAN",
+          "name": "Meituan",
+          "weight": 4.0
+        },
+        {
+          "ticker": "NTES",
+          "name": "NetEase",
+          "weight": 3.5
+        },
+        {
+          "ticker": "PDD",
+          "name": "PDD Holdings",
+          "weight": 3.0
+        },
+        {
+          "ticker": "BILI",
+          "name": "Bilibili",
+          "weight": 2.5
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 55,
+        "Comm. Services": 25,
+        "Consumer Discretionary": 12,
+        "Financials": 5,
+        "Other": 3
+      }
+    },
+    "DJRE": {
+      "name": "SPDR Dow Jones Global Real Estate",
+      "issuer": "State Street",
+      "annualReturn": 7.5,
+      "mer": 0.5,
+      "dividendYield": 3.8,
+      "inceptionYear": 2013,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "PLD",
+          "name": "Prologis",
+          "weight": 8.5
+        },
+        {
+          "ticker": "AMT",
+          "name": "American Tower",
+          "weight": 7.0
+        },
+        {
+          "ticker": "EQIX",
+          "name": "Equinix",
+          "weight": 5.5
+        },
+        {
+          "ticker": "WELL",
+          "name": "Welltower",
+          "weight": 4.5
+        },
+        {
+          "ticker": "DLR",
+          "name": "Digital Realty",
+          "weight": 4.0
+        },
+        {
+          "ticker": "SPG",
+          "name": "Simon Property Group",
+          "weight": 3.5
+        },
+        {
+          "ticker": "GMG",
+          "name": "Goodman Group",
+          "weight": 3.0
+        },
+        {
+          "ticker": "O",
+          "name": "Realty Income",
+          "weight": 3.0
+        },
+        {
+          "ticker": "PSA",
+          "name": "Public Storage",
+          "weight": 2.8
+        },
+        {
+          "ticker": "VICI",
+          "name": "VICI Properties",
+          "weight": 2.5
+        }
+      ],
+      "sectors": {
+        "Real Estate": 100
+      }
+    },
+    "MVA": {
+      "name": "VanEck Australian Property ETF",
+      "issuer": "VanEck",
+      "annualReturn": 8.5,
+      "mer": 0.35,
+      "dividendYield": 4.2,
+      "inceptionYear": 2013,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "GMG",
+          "name": "Goodman Group",
+          "weight": 22.0
+        },
+        {
+          "ticker": "SCG",
+          "name": "Scentre Group",
+          "weight": 10.0
+        },
+        {
+          "ticker": "GPT",
+          "name": "GPT Group",
+          "weight": 8.5
+        },
+        {
+          "ticker": "DXS",
+          "name": "Dexus",
+          "weight": 7.5
+        },
+        {
+          "ticker": "MGR",
+          "name": "Mirvac Group",
+          "weight": 7.0
+        },
+        {
+          "ticker": "VCX",
+          "name": "Vicinity Centres",
+          "weight": 6.5
+        },
+        {
+          "ticker": "CLW",
+          "name": "Charter Hall Long WALE",
+          "weight": 5.0
+        },
+        {
+          "ticker": "CHC",
+          "name": "Charter Hall Group",
+          "weight": 5.0
+        },
+        {
+          "ticker": "HDN",
+          "name": "HomeCo Daily Needs REIT",
+          "weight": 4.0
+        },
+        {
+          "ticker": "NSR",
+          "name": "National Storage REIT",
+          "weight": 3.5
+        }
+      ],
+      "sectors": {
+        "Real Estate": 100
+      }
+    },
+    "ATEC": {
+      "name": "BetaShares S&P/ASX Australian Technology",
+      "issuer": "BetaShares",
+      "annualReturn": 13.0,
+      "mer": 0.48,
+      "dividendYield": 0.5,
+      "inceptionYear": 2020,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "WTC",
+          "name": "WiseTech Global",
+          "weight": 18.0
+        },
+        {
+          "ticker": "XRO",
+          "name": "Xero",
+          "weight": 14.0
+        },
+        {
+          "ticker": "REA",
+          "name": "REA Group",
+          "weight": 10.0
+        },
+        {
+          "ticker": "SEK",
+          "name": "SEEK Limited",
+          "weight": 8.0
+        },
+        {
+          "ticker": "CAR",
+          "name": "CAR Group",
+          "weight": 7.5
+        },
+        {
+          "ticker": "CPU",
+          "name": "Computershare",
+          "weight": 7.0
+        },
+        {
+          "ticker": "APX",
+          "name": "Appen",
+          "weight": 5.0
+        },
+        {
+          "ticker": "TLX",
+          "name": "Telix Pharmaceuticals",
+          "weight": 4.5
+        },
+        {
+          "ticker": "NXT",
+          "name": "NextDC",
+          "weight": 4.0
+        },
+        {
+          "ticker": "DDR",
+          "name": "Dicker Data",
+          "weight": 3.0
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 75,
+        "Comm. Services": 15,
+        "Consumer Discretionary": 7,
+        "Other": 3
+      }
+    },
+    "RBTZ": {
+      "name": "BetaShares Global Robotics & AI ETF",
+      "issuer": "BetaShares",
+      "annualReturn": 14.0,
+      "mer": 0.57,
+      "dividendYield": 0.2,
+      "inceptionYear": 2018,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 8.0
+        },
+        {
+          "ticker": "ISRG",
+          "name": "Intuitive Surgical",
+          "weight": 6.0
+        },
+        {
+          "ticker": "FANUC",
+          "name": "FANUC Corp",
+          "weight": 5.5
+        },
+        {
+          "ticker": "ABB",
+          "name": "ABB Ltd",
+          "weight": 5.0
+        },
+        {
+          "ticker": "KEYENCE",
+          "name": "Keyence Corp",
+          "weight": 4.5
+        },
+        {
+          "ticker": "OMRNY",
+          "name": "Omron Corp",
+          "weight": 4.0
+        },
+        {
+          "ticker": "IRBT",
+          "name": "iRobot",
+          "weight": 3.5
+        },
+        {
+          "ticker": "BOTZ",
+          "name": "BOTZ related",
+          "weight": 3.0
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 62,
+        "Industrials": 28,
+        "Health Care": 8,
+        "Other": 2
+      }
+    },
+    "GEAR": {
+      "name": "BetaShares Geared Australian Equity (2x)",
+      "issuer": "BetaShares",
+      "annualReturn": 16.0,
+      "mer": 0.8,
+      "dividendYield": 5.0,
+      "inceptionYear": 2014,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Financials": 31,
+        "Materials": 22,
+        "Health Care": 10,
+        "Industrials": 7,
+        "Consumer Staples": 6,
+        "Energy": 5,
+        "Real Estate": 5,
+        "Consumer Discretionary": 5,
+        "Comm. Services": 4,
+        "Info. Technology": 3,
+        "Utilities": 2
+      }
+    },
+    "F100": {
+      "name": "BetaShares FTSE 100 ETF",
+      "issuer": "BetaShares",
+      "annualReturn": 8.5,
+      "mer": 0.45,
+      "dividendYield": 3.5,
+      "inceptionYear": 2016,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "AZN",
+          "name": "AstraZeneca",
+          "weight": 8.5
+        },
+        {
+          "ticker": "SHEL",
+          "name": "Shell",
+          "weight": 7.5
+        },
+        {
+          "ticker": "HSBA",
+          "name": "HSBC Holdings",
+          "weight": 5.5
+        },
+        {
+          "ticker": "ULVR",
+          "name": "Unilever",
+          "weight": 4.5
+        },
+        {
+          "ticker": "BP",
+          "name": "BP plc",
+          "weight": 4.0
+        },
+        {
+          "ticker": "GSK",
+          "name": "GSK plc",
+          "weight": 4.0
+        },
+        {
+          "ticker": "DGE",
+          "name": "Diageo",
+          "weight": 3.5
+        },
+        {
+          "ticker": "RIO",
+          "name": "Rio Tinto (UK)",
+          "weight": 3.5
+        },
+        {
+          "ticker": "NG",
+          "name": "National Grid",
+          "weight": 3.0
+        },
+        {
+          "ticker": "BA",
+          "name": "BAE Systems",
+          "weight": 2.8
+        }
+      ],
+      "sectors": {
+        "Financials": 22,
+        "Health Care": 16,
+        "Energy": 12,
+        "Consumer Staples": 12,
+        "Industrials": 10,
+        "Materials": 8,
+        "Consumer Discretionary": 7,
+        "Utilities": 5,
+        "Comm. Services": 4,
+        "Other": 4
+      }
+    },
+    "URNM": {
+      "name": "BetaShares Global Uranium ETF",
+      "issuer": "BetaShares",
+      "annualReturn": 15.0,
+      "mer": 0.69,
+      "dividendYield": 0.3,
+      "inceptionYear": 2022,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "CCO",
+          "name": "Cameco Corp",
+          "weight": 20.0
+        },
+        {
+          "ticker": "KAP",
+          "name": "Kazatomprom",
+          "weight": 15.0
+        },
+        {
+          "ticker": "DML",
+          "name": "Deep Yellow",
+          "weight": 7.0
+        },
+        {
+          "ticker": "BOE",
+          "name": "Boss Energy",
+          "weight": 6.5
+        },
+        {
+          "ticker": "PDN",
+          "name": "Paladin Energy",
+          "weight": 6.0
+        },
+        {
+          "ticker": "NXE",
+          "name": "NexGen Energy",
+          "weight": 5.5
+        },
+        {
+          "ticker": "UEC",
+          "name": "Uranium Energy",
+          "weight": 5.0
+        },
+        {
+          "ticker": "URE",
+          "name": "Uranium Royalty Corp",
+          "weight": 4.0
+        }
+      ],
+      "sectors": {
+        "Energy": 70,
+        "Materials": 25,
+        "Other": 5
+      }
+    },
+    "HNDQ": {
+      "name": "BetaShares NASDAQ 100 (AUD Hedged)",
+      "issuer": "BetaShares",
+      "annualReturn": 18.5,
+      "mer": 0.51,
+      "dividendYield": 0.3,
+      "inceptionYear": 2020,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "AAPL",
+          "name": "Apple Inc",
+          "weight": 9.0
+        },
+        {
+          "ticker": "MSFT",
+          "name": "Microsoft",
+          "weight": 8.5
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "weight": 7.0
+        },
+        {
+          "ticker": "AMZN",
+          "name": "Amazon",
+          "weight": 5.5
+        },
+        {
+          "ticker": "META",
+          "name": "Meta Platforms",
+          "weight": 4.0
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet A",
+          "weight": 3.5
+        },
+        {
+          "ticker": "GOOG",
+          "name": "Alphabet C",
+          "weight": 3.0
+        },
+        {
+          "ticker": "TSLA",
+          "name": "Tesla",
+          "weight": 2.5
+        },
+        {
+          "ticker": "AVGO",
+          "name": "Broadcom",
+          "weight": 3.0
+        },
+        {
+          "ticker": "COST",
+          "name": "Costco",
+          "weight": 2.0
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 57,
+        "Comm. Services": 18,
+        "Consumer Discretionary": 13,
+        "Health Care": 7,
+        "Industrials": 3,
+        "Other": 2
+      }
+    },
+    "QPON": {
+      "name": "BetaShares Australian Bank Senior Floating Rate Bond",
+      "issuer": "BetaShares",
+      "annualReturn": 5.5,
+      "mer": 0.22,
+      "dividendYield": 5.5,
+      "inceptionYear": 2016,
+      "historicalReturns": {},
+      "topHoldings": [],
+      "sectors": {
+        "Other": 100
+      }
+    },
+    "IEM": {
+      "name": "iShares MSCI Emerging Markets ETF",
+      "issuer": "BlackRock",
+      "annualReturn": 7.5,
+      "mer": 0.69,
+      "dividendYield": 2.5,
+      "inceptionYear": 2012,
+      "historicalReturns": {},
+      "topHoldings": [
+        {
+          "ticker": "TSM",
+          "name": "Taiwan Semiconductor",
+          "weight": 8.5
+        },
+        {
+          "ticker": "SSNLF",
+          "name": "Samsung Electronics",
+          "weight": 6.0
+        },
+        {
+          "ticker": "TCEHY",
+          "name": "Tencent",
+          "weight": 4.5
+        },
+        {
+          "ticker": "BABA",
+          "name": "Alibaba Group",
+          "weight": 3.5
+        },
+        {
+          "ticker": "MELI",
+          "name": "MercadoLibre",
+          "weight": 2.5
+        },
+        {
+          "ticker": "INFY",
+          "name": "Infosys",
+          "weight": 2.0
+        },
+        {
+          "ticker": "RDY",
+          "name": "Dr Reddy's Labs",
+          "weight": 1.5
+        },
+        {
+          "ticker": "VALE",
+          "name": "Vale SA",
+          "weight": 1.5
+        }
+      ],
+      "sectors": {
+        "Info. Technology": 28,
+        "Financials": 22,
+        "Consumer Discretionary": 14,
+        "Comm. Services": 10,
+        "Materials": 8,
+        "Energy": 6,
+        "Industrials": 5,
+        "Consumer Staples": 4,
+        "Other": 3
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+---
+layout: default
+title: AU ETF Tools | Felixillion
+permalink: /etf-tools.html
+footer_scripts: /scripts/etf_tools.js
+---
+
+<div class="container" style="padding-top: 8rem;">
+    <div class="fade-in">
+        <h2>AU ETF Tools</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+            Australian ETF compounding calculator, portfolio breakdown, overlap analysis, and retirement success simulator.
+            All figures in AUD.
+        </p>
+    </div>
+
+    <div class="card-controls fade-in" style="margin: 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <button id="tab-compound"   class="etf-tab-btn subheading" style="cursor: pointer; background: var(--glass-bg);">📈 Compounding</button>
+        <button id="tab-portfolio"  class="etf-tab-btn subheading" style="cursor: pointer; background: var(--glass-bg);">🥧 Portfolio</button>
+        <button id="tab-overlap"    class="etf-tab-btn subheading" style="cursor: pointer; background: var(--glass-bg);">🔀 Overlap</button>
+        <button id="tab-retirement" class="etf-tab-btn subheading" style="cursor: pointer; background: var(--glass-bg);">🏖 Retirement</button>
+    </div>
+
+    <div id="etf-tool-container" class="glass-card fade-in" style="padding: 1.5rem;">
+        <div style="text-align: center; padding: 4rem; color: var(--text-secondary);">Loading ETF data…</div>
+    </div>
+
+    <section class="fade-in" style="margin-top: 4rem; padding: 2rem; border-top: 1px solid var(--glass-border);">
+        <h3 style="font-size: 1rem; margin-bottom: 1rem;">Terms and Conditions (Disclaimer)</h3>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+            <p>1. <strong>Not Financial Advice:</strong> All information on this page is for educational and illustrative purposes only. It does not constitute financial, tax, or investment advice. Always read the relevant Product Disclosure Statement (PDS) before investing.</p>
+            <p>2. <strong>Past Performance:</strong> Historical returns and simulations shown here do not guarantee future performance. Investment values can rise and fall.</p>
+            <p>3. <strong>Data Accuracy:</strong> Return and MER figures are approximate and updated manually. Always verify current figures on the issuer's website.</p>
+            <p>4. <strong>Tax:</strong> Calculations do not account for capital gains tax (CGT), income tax on distributions, or franking credits.</p>
+            <p>5. <strong>Responsible Investing:</strong> Consider your personal financial situation, goals, and risk tolerance. Seek advice from a licensed financial adviser if needed.</p>
+        </div>
+    </section>
+</div>

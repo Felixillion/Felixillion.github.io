@@ -2,56 +2,132 @@ name: Daily Data Update
 
 on:
   schedule:
-    # Run daily at 6am AEST (UTC+11) -> 7pm UTC previous day
-    - cron: '0 19 * * *'
-  workflow_dispatch:
+    # 7am AEST (UTC+10) = 9pm UTC previous day
+    - cron: '0 21 * * *'
+    # 7am AEDT (UTC+11, during daylight saving) = 8pm UTC previous day
+    - cron: '0 20 * * *'
+  workflow_dispatch: # allow manual trigger from GitHub UI
+
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
 
 jobs:
-  update-all:
+  # ── Job 1: ETF / stock data (Python + yfinance) ─────────────────────────
+  update-etf-data:
+    name: Update ETF & Stock Data
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      
-      - name: Install dependencies
-        run: npm install
-      
-      # 1. Generate Astrology Data (Now using local astronomy calculation)
-      - name: Generate Astrobiology Data
-        run: node .github/workflows/scripts/generate_astrology_data.js
-        continue-on-error: true # Don't fail entire job if one script fails
 
-      # 2. Scrape Frequent Flyer Data (If it's Monday)
-      # Note: The script itself can check the day, or we just run it daily. 
-      # Running daily is fine, it just might be redundant.
-      - name: Scrape Frequent Flyer Data
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 19 * * *'
-        run: node .github/workflows/scripts/ff_scraper.js
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: pip install yfinance
+
+      - name: Run ETF data updater
+        run: python scripts/update_etf_data.py
         continue-on-error: true
 
-      - name: Commit and push changes
+      - name: Commit and push
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          
-          # Add all data files
-          git add data/*.json
-          
-          # Check for changes
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add data/
           if ! git diff --staged --quiet; then
-            git commit -m "Update website data for $(date +%Y-%m-%d) [automated]"
+            git commit -m "chore: update ETF/stock data $(date -u +%Y-%m-%d)"
             git push
-            echo "✅ Data updated and pushed."
           else
-            echo "ℹ️ No changes to commit."
+            echo "No changes to commit"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Job 2: Astrology data (Node.js) ─────────────────────────────────────
+  update-astrology:
+    name: Generate Astrology Data
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Node dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts
+          fi
+
+      - name: Generate Astrology Data
+        run: |
+          SCRIPT=".github/workflows/scripts/generate_astrology_data.js"
+          [ -f "$SCRIPT" ] && node "$SCRIPT" || echo "Script not found, skipping"
+        continue-on-error: true
+
+      - name: Commit and push
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add data/
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update astrology data $(date -u +%Y-%m-%d)"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Job 3: Frequent flyer data (Node.js, Mondays only) ──────────────────
+  update-frequent-flyer:
+    name: Scrape Frequent Flyer Data
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    # Run only on Mondays; GitHub cron doesn't expose day-of-week
+    # so we check inside the step instead
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Node dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm ci --ignore-scripts 2>/dev/null || npm install --ignore-scripts
+          fi
+
+      - name: Run Frequent Flyer scraper
+        run: |
+          SCRIPT=".github/workflows/scripts/ff_scraper.js"
+          [ -f "$SCRIPT" ] && node "$SCRIPT" || echo "Script not found, skipping"
+        continue-on-error: true
+
+      - name: Commit and push
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add data/
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update FF data $(date -u +%Y-%m-%d)"
+            git push
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

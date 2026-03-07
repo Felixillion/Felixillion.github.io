@@ -27,7 +27,7 @@ function scrubCards() {
         ]
     };
 
-    const dataPath = path.join(__dirname, '../../../data/ff_weekly.json');
+    const dataPath = path.join(__dirname, '../../../_data/ff_weekly.json');
     fs.writeFileSync(dataPath, JSON.stringify(data, null, 4));
 }
 
