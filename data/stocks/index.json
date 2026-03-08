@@ -571,7 +571,7 @@
         "2016": 12.5,
         "2017": 25.7,
         "2018": -4.1,
-        "2019": 15.2,
+        "2019": 15.3,
         "2020": 8.2,
         "2021": 1.0,
         "2022": -14.4,
@@ -1010,7 +1010,7 @@
       "marketCap": 143061712896,
       "sector": "Financial Services",
       "industry": "Banks - Diversified",
-      "dividendYield": 3.59,
+      "dividendYield": 3.63,
       "mer": null,
       "annualReturn": 18.0,
       "historicalReturns": {
@@ -1038,7 +1038,7 @@
       "marketCap": 140153864192,
       "sector": "Financial Services",
       "industry": "Banks - Diversified",
-      "dividendYield": 3.72,
+      "dividendYield": 3.76,
       "mer": null,
       "annualReturn": 17.0,
       "historicalReturns": {
@@ -1066,7 +1066,7 @@
       "marketCap": 112308420608,
       "sector": "Financial Services",
       "industry": "Banks - Diversified",
-      "dividendYield": 4.4,
+      "dividendYield": 4.41,
       "mer": null,
       "annualReturn": 12.3,
       "historicalReturns": {
@@ -1122,7 +1122,7 @@
       "marketCap": 268180357120,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 3.53,
+      "dividendYield": 3.69,
       "mer": null,
       "annualReturn": 12.0,
       "historicalReturns": {
@@ -1150,7 +1150,7 @@
       "marketCap": 257871495168,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 3.54,
+      "dividendYield": 3.67,
       "mer": null,
       "annualReturn": 13.7,
       "historicalReturns": {
@@ -1178,7 +1178,7 @@
       "marketCap": 59270074368,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 6.4,
+      "dividendYield": 6.44,
       "mer": null,
       "annualReturn": 8.2,
       "historicalReturns": {
@@ -1206,7 +1206,7 @@
       "marketCap": 20165978112,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 2.04,
+      "dividendYield": 2.09,
       "mer": null,
       "annualReturn": 14.3,
       "historicalReturns": {
@@ -1261,7 +1261,7 @@
       "marketCap": 7005281280,
       "sector": "Energy",
       "industry": "Thermal Coal",
-      "dividendYield": 92.0,
+      "dividendYield": 94.0,
       "mer": null,
       "annualReturn": 45.5,
       "historicalReturns": {
@@ -1342,7 +1342,7 @@
       "exchange": "ASX",
       "currentPrice": 4.76,
       "currency": "AUD",
-      "marketCap": 15331336192,
+      "marketCap": 15331957760,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
       "dividendYield": 0,
@@ -1370,7 +1370,7 @@
       "exchange": "ASX",
       "currentPrice": 12.16,
       "currency": "AUD",
-      "marketCap": 5463833600,
+      "marketCap": 5464198656,
       "sector": "Energy",
       "industry": "Uranium",
       "dividendYield": 0,
@@ -1429,7 +1429,7 @@
       "marketCap": 38601240576,
       "sector": "Basic Materials",
       "industry": "Gold",
-      "dividendYield": 1.7,
+      "dividendYield": 1.85,
       "mer": null,
       "annualReturn": 27.0,
       "historicalReturns": {
@@ -1457,7 +1457,7 @@
       "marketCap": 30032889856,
       "sector": "Basic Materials",
       "industry": "Gold",
-      "dividendYield": 2.54,
+      "dividendYield": 2.7,
       "mer": null,
       "annualReturn": 32.9,
       "historicalReturns": {
@@ -1513,7 +1513,7 @@
       "marketCap": 11268625408,
       "sector": "Healthcare",
       "industry": "Diagnostics & Research",
-      "dividendYield": 4.66,
+      "dividendYield": 4.74,
       "mer": null,
       "annualReturn": -2.6,
       "historicalReturns": {
@@ -1541,7 +1541,7 @@
       "marketCap": 11775686656,
       "sector": "Healthcare",
       "industry": "Medical Devices",
-      "dividendYield": 2.32,
+      "dividendYield": 2.39,
       "mer": null,
       "annualReturn": -1.2,
       "historicalReturns": {
@@ -1569,7 +1569,7 @@
       "marketCap": 52648173568,
       "sector": "Healthcare",
       "industry": "Medical Instruments & Supplies",
-      "dividendYield": 95.0,
+      "dividendYield": 96.0,
       "mer": null,
       "annualReturn": 8.9,
       "historicalReturns": {
@@ -1597,7 +1597,7 @@
       "marketCap": 13863164928,
       "sector": "Healthcare",
       "industry": "Health Information Services",
-      "dividendYield": 53.0,
+      "dividendYield": 48.0,
       "mer": null,
       "annualReturn": 25.1,
       "historicalReturns": {
@@ -1625,7 +1625,7 @@
       "marketCap": 86077136896,
       "sector": "Consumer Cyclical",
       "industry": "Home Improvement Retail",
-      "dividendYield": 2.82,
+      "dividendYield": 2.81,
       "mer": null,
       "annualReturn": 12.7,
       "historicalReturns": {
@@ -1653,7 +1653,7 @@
       "marketCap": 43965358080,
       "sector": "Consumer Defensive",
       "industry": "Grocery Stores",
-      "dividendYield": 2.51,
+      "dividendYield": 2.5,
       "mer": null,
       "annualReturn": 4.8,
       "historicalReturns": {
@@ -1681,7 +1681,7 @@
       "marketCap": 28386228224,
       "sector": "Consumer Defensive",
       "industry": "Grocery Stores",
-      "dividendYield": 3.43,
+      "dividendYield": 3.45,
       "mer": null,
       "annualReturn": 9.9,
       "historicalReturns": {
@@ -1705,7 +1705,7 @@
       "marketCap": 8532424192,
       "sector": "Consumer Cyclical",
       "industry": "Specialty Retail",
-      "dividendYield": 4.08,
+      "dividendYield": 4.04,
       "mer": null,
       "annualReturn": 16.0,
       "historicalReturns": {
@@ -1733,7 +1733,7 @@
       "marketCap": 6803196416,
       "sector": "Consumer Cyclical",
       "industry": "Specialty Retail",
-      "dividendYield": 5.25,
+      "dividendYield": 5.31,
       "mer": null,
       "annualReturn": 6.1,
       "historicalReturns": {
@@ -1761,7 +1761,7 @@
       "marketCap": 2092829184,
       "sector": "Consumer Cyclical",
       "industry": "Apparel Retail",
-      "dividendYield": 3.88,
+      "dividendYield": 3.82,
       "mer": null,
       "annualReturn": -7.1,
       "historicalReturns": {
@@ -1789,7 +1789,7 @@
       "marketCap": 17718790144,
       "sector": "Technology",
       "industry": "Software - Application",
-      "dividendYield": 45.0,
+      "dividendYield": 40.0,
       "mer": null,
       "annualReturn": 14.8,
       "historicalReturns": {
@@ -1843,7 +1843,7 @@
       "marketCap": 22989715456,
       "sector": "Communication Services",
       "industry": "Internet Content & Information",
-      "dividendYield": 1.49,
+      "dividendYield": 1.43,
       "mer": null,
       "annualReturn": 6.1,
       "historicalReturns": {
@@ -1871,7 +1871,7 @@
       "marketCap": 17704429568,
       "sector": "Financial Services",
       "industry": "Capital Markets",
-      "dividendYield": 3.61,
+      "dividendYield": 3.59,
       "mer": null,
       "annualReturn": 19.2,
       "historicalReturns": {
@@ -1899,7 +1899,7 @@
       "marketCap": 10073908224,
       "sector": "Communication Services",
       "industry": "Internet Content & Information",
-      "dividendYield": 3.3,
+      "dividendYield": 3.19,
       "mer": null,
       "annualReturn": 11.0,
       "historicalReturns": {
@@ -1927,7 +1927,7 @@
       "marketCap": 6047737856,
       "sector": "Communication Services",
       "industry": "Internet Content & Information",
-      "dividendYield": 2.99,
+      "dividendYield": 2.89,
       "mer": null,
       "annualReturn": -7.5,
       "historicalReturns": {
@@ -2005,7 +2005,7 @@
       "marketCap": 44306608128,
       "sector": "Industrials",
       "industry": "Infrastructure Operations",
-      "dividendYield": 4.81,
+      "dividendYield": 4.79,
       "mer": null,
       "annualReturn": 6.0,
       "historicalReturns": {
@@ -2061,7 +2061,7 @@
       "marketCap": 58975870976,
       "sector": "Communication Services",
       "industry": "Telecom Services",
-      "dividendYield": 4.05,
+      "dividendYield": 4.01,
       "mer": null,
       "annualReturn": 16.1,
       "historicalReturns": {
@@ -2089,7 +2089,7 @@
       "marketCap": 58458828800,
       "sector": "Energy",
       "industry": "Oil & Gas E&P",
-      "dividendYield": 5.43,
+      "dividendYield": 5.37,
       "mer": null,
       "annualReturn": 12.3,
       "historicalReturns": {
@@ -2117,7 +2117,7 @@
       "marketCap": 24228386816,
       "sector": "Energy",
       "industry": "Oil & Gas E&P",
-      "dividendYield": 4.76,
+      "dividendYield": 4.67,
       "mer": null,
       "annualReturn": 5.4,
       "historicalReturns": {
@@ -2145,7 +2145,7 @@
       "marketCap": 28568287232,
       "sector": "Consumer Cyclical",
       "industry": "Packaging & Containers",
-      "dividendYield": 6.07,
+      "dividendYield": 6.3,
       "mer": null,
       "annualReturn": 0.9,
       "historicalReturns": {
@@ -2170,10 +2170,10 @@
       "exchange": "ASX",
       "currentPrice": 24.4,
       "currency": "AUD",
-      "marketCap": 33125664768,
+      "marketCap": 33121828864,
       "sector": "Industrials",
       "industry": "Specialty Business Services",
-      "dividendYield": 2.63,
+      "dividendYield": 2.65,
       "mer": null,
       "annualReturn": 22.8,
       "historicalReturns": {
@@ -2201,7 +2201,7 @@
       "marketCap": 13497737216,
       "sector": "Industrials",
       "industry": "Airlines",
-      "dividendYield": 4.36,
+      "dividendYield": 4.44,
       "mer": null,
       "annualReturn": 12.1,
       "historicalReturns": {
@@ -2285,7 +2285,7 @@
       "marketCap": 18959407104,
       "sector": "Real Estate",
       "industry": "REIT - Retail",
-      "dividendYield": 4.83,
+      "dividendYield": 4.88,
       "mer": null,
       "annualReturn": 9.9,
       "historicalReturns": {
@@ -2313,7 +2313,7 @@
       "marketCap": 9156460544,
       "sector": "Real Estate",
       "industry": "REIT - Diversified",
-      "dividendYield": 4.9,
+      "dividendYield": 5.02,
       "mer": null,
       "annualReturn": 6.8,
       "historicalReturns": {
@@ -2341,7 +2341,7 @@
       "marketCap": 6883617280,
       "sector": "Real Estate",
       "industry": "REIT - Office",
-      "dividendYield": 5.76,
+      "dividendYield": 5.83,
       "mer": null,
       "annualReturn": -1.6,
       "historicalReturns": {
@@ -2369,7 +2369,7 @@
       "marketCap": 7497134080,
       "sector": "Real Estate",
       "industry": "REIT - Diversified",
-      "dividendYield": 4.72,
+      "dividendYield": 4.84,
       "mer": null,
       "annualReturn": -0.2,
       "historicalReturns": {
@@ -2397,7 +2397,7 @@
       "marketCap": 9923480576,
       "sector": "Real Estate",
       "industry": "REIT - Diversified",
-      "dividendYield": 2.35,
+      "dividendYield": 2.37,
       "mer": null,
       "annualReturn": 16.0,
       "historicalReturns": {
@@ -2425,7 +2425,7 @@
       "marketCap": 31605526528,
       "sector": "Financial Services",
       "industry": "Insurance - Property & Casualty",
-      "dividendYield": 5.24,
+      "dividendYield": 5.21,
       "mer": null,
       "annualReturn": 21.2,
       "historicalReturns": {
@@ -2453,7 +2453,7 @@
       "marketCap": 15539914752,
       "sector": "Financial Services",
       "industry": "Insurance - Property & Casualty",
-      "dividendYield": 4.73,
+      "dividendYield": 4.72,
       "mer": null,
       "annualReturn": 10.9,
       "historicalReturns": {
@@ -2481,7 +2481,7 @@
       "marketCap": 15583903744,
       "sector": "Financial Services",
       "industry": "Insurance - Property & Casualty",
-      "dividendYield": 2.38,
+      "dividendYield": 2.36,
       "mer": null,
       "annualReturn": 7.7,
       "historicalReturns": {
@@ -2509,7 +2509,7 @@
       "marketCap": 2118302720,
       "sector": "Financial Services",
       "industry": "Asset Management",
-      "dividendYield": 6.19,
+      "dividendYield": 5.66,
       "mer": null,
       "annualReturn": -16.3,
       "historicalReturns": {
@@ -2534,10 +2534,10 @@
       "exchange": "ASX",
       "currentPrice": 6.89,
       "currency": "AUD",
-      "marketCap": 8677391360,
+      "marketCap": 8652466176,
       "sector": "Financial Services",
       "industry": "Asset Management",
-      "dividendYield": 3.86,
+      "dividendYield": 3.85,
       "mer": null,
       "annualReturn": 2.7,
       "historicalReturns": {
@@ -2565,7 +2565,7 @@
       "marketCap": 6768398336,
       "sector": "Financial Services",
       "industry": "Asset Management",
-      "dividendYield": 4.12,
+      "dividendYield": 4.15,
       "mer": null,
       "annualReturn": 4.8,
       "historicalReturns": {
