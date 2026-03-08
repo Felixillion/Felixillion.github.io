@@ -47,7 +47,7 @@ ETF_TICKERS = [
     'VAS.AX', 'A200.AX', 'IOZ.AX', 'STW.AX', 'VHY.AX', 'MVW.AX', 'VAP.AX',
     'MVA.AX', 'ATEC.AX',
     # International equities
-    'VGS.AX', 'IVV.AX', 'NDQ.AX', 'QUAL.AX', 'MOAT.AX', 'VESG.AX',
+    'VGS.AX', 'IVV.AX', 'VTS.AX', 'NDQ.AX', 'QUAL.AX', 'MOAT.AX', 'VESG.AX',
     'BGBL.AX', 'VGAD.AX', 'IHVV.AX', 'HNDQ.AX',
     # CNDX.AX removed: 404 on Yahoo Finance as of 2026 (likely delisted / merged)
     'ASIA.AX', 'DJRE.AX', 'IEM.AX', 'F100.AX',

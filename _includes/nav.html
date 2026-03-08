@@ -45,15 +45,25 @@
   padding: .4rem .7rem; border-radius: 6px;
   color: var(--text-secondary); text-decoration: none;
   font-size: .85rem; font-weight: 500;
-  transition: color .2s, background .2s; white-space: nowrap;
+  transition: color .2s, background .2s, border-color .2s; white-space: nowrap;
+  border: 1px solid transparent;
 }
-.nav-link:hover, .nav-link.active { color: white; background: rgba(255,255,255,.07); }
-.nav-link-cta {
-  border: 1px solid rgba(56,189,248,.35);
-  color: var(--dapi-blue) !important;
-  margin-left: .25rem;
-}
-.nav-link-cta:hover { background: rgba(56,189,248,.08) !important; }
+.nav-link:hover { color: white; background: rgba(255,255,255,.07); }
+
+/* Active state: each page gets a distinct accent matching site palette */
+.nav-link.active                          { color: white !important; border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.06); }
+.nav-link[href*="gallery"].active         { color: var(--fitc-green) !important; border-color: rgba(57,255,20,.35); background: rgba(57,255,20,.06); }
+.nav-link[href*="astrobiology"].active    { color: #c084fc !important; border-color: rgba(192,132,252,.35); background: rgba(192,132,252,.06); }
+.nav-link[href*="frequent-flyer"].active  { color: #fbbf24 !important; border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.06); }
+.nav-link[href*="etf-tools"].active,
+.nav-link-cta.active                      { color: var(--dapi-blue) !important; border-color: rgba(56,189,248,.35); background: rgba(56,189,248,.08); }
+
+/* Mobile active */
+.nav-mobile-link.active                          { color: white !important; background: rgba(255,255,255,.05); }
+.nav-mobile-link[href*="gallery"].active         { color: var(--fitc-green) !important; background: rgba(57,255,20,.05); }
+.nav-mobile-link[href*="astrobiology"].active    { color: #c084fc !important; background: rgba(192,132,252,.05); }
+.nav-mobile-link[href*="frequent-flyer"].active  { color: #fbbf24 !important; background: rgba(251,191,36,.05); }
+.nav-mobile-link[href*="etf-tools"].active       { color: var(--dapi-blue) !important; background: rgba(56,189,248,.06); }
 #nav-hamburger {
   display: none;
   background: transparent; cursor: pointer;

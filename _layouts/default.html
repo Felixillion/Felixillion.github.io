@@ -50,7 +50,8 @@
   </footer>
 
   {% if page.footer_scripts %}
-  <script type="module" src="{{ page.footer_scripts | relative_url }}"></script>
+  <!-- ?v={{ site.time | date: '%Y%m%d%H%M' }} busts browser cache on each Jekyll build -->
+  <script type="module" src="{{ page.footer_scripts | relative_url }}?v={{ site.time | date: '%Y%m%d%H%M' }}"></script>
   {% endif %}
 </body>
 
