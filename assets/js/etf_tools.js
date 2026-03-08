@@ -13,6 +13,34 @@ const MOS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 const rerender = debounce(() => renderETFTools(), 60);
 
+// ── Australian CPI by year (ABS 6401.0, calendar-year average, %) ────────────
+// Used in historical mode so the inflation-adjustment uses REAL past CPI
+// rather than a flat user assumption. 2025 is the current estimate.
+const AU_CPI_YR = {
+  2000:4.5, 2001:4.4, 2002:3.0, 2003:2.8, 2004:2.3, 2005:2.7,
+  2006:3.5, 2007:2.3, 2008:4.4, 2009:1.8, 2010:2.8, 2011:3.3,
+  2012:1.8, 2013:2.4, 2014:2.5, 2015:1.5, 2016:1.3, 2017:1.9,
+  2018:1.9, 2019:1.6, 2020:0.9, 2021:3.8, 2022:7.8, 2023:5.4,
+  2024:3.8, 2025:2.8
+};
+
+// ── Franking credit tax profiles ─────────────────────────────────
+// Franking credits are tax offsets attached to dividends from Australian companies.
+// The company has already paid 30% corporate tax; the credit refunds that to investors
+// whose marginal rate is below 30% — and the FULL credit is refunded to tax-exempt
+// entities (NFPs, charities, pension-phase super). This can substantially boost
+// effective returns for low-tax investors.
+const TAX_PROFILES = {
+  'nfp':    { label:'NFP / Charity (0%)',           rate:0.00 },
+  'pension':{ label:'Super — Pension Phase (0%)',    rate:0.00 },
+  'super15':{ label:'Super — Accumulation (15%)',    rate:0.15 },
+  'ind_0':  { label:'Individual — 0% (≤$18,200)',   rate:0.00 },
+  'ind_19': { label:'Individual — 19% ($18k–$45k)', rate:0.19 },
+  'ind_32': { label:'Individual — 32.5% ($45k–$120k)', rate:0.325 },
+  'ind_37': { label:'Individual — 37% ($120k–$180k)',  rate:0.37 },
+  'ind_47': { label:'Individual — 47% (>$180k)',    rate:0.47 },
+};
+
 // Returns historical annual returns for a ticker — uses _liveCache (data/stocks/) first
 function getHistoricalReturns(ticker) {
   const key = ticker.replace('.AX', '');
@@ -39,8 +67,11 @@ let compState = {
   histStartDay: 1,  histStartMonth: 0,  histStartYear: 2015,
   histEndDay: 31,   histEndMonth: 11,   histEndYear: CY - 1,
   drip: true,
-  showInflation: false,   // ← overlay real (CPI-adjusted) portfolio value
-  inflationRate: 2.5,     // ← % p.a. CPI assumption for the overlay
+  showInflation: false,
+  inflationRate: 2.5,
+  // Franking credits: only meaningful for AU equity ETFs (frankingPct > 0 in etf_data)
+  frankingMode: false,
+  taxProfile: 'ind_32',   // default: 32.5% most common bracket
   custom: { name:'My ETF', annualReturn:10.0, mer:0.20, dividendYield:2.0, inceptionYear:2015 }
 };
 
@@ -169,10 +200,20 @@ function calcMonthly() {
 
   // Push starting snapshot
   let monthsElapsed = 0;
+  let cpiAccum = 1.0;   // tracks cumulative price level from start date
+  let frankingCum = 0;  // cumulative franking credit cash received
   data.push({ date: months[0].label, label: months[0].label,
     value: Math.round(bal), contributions: Math.round(contrib), dividends: Math.round(divs),
-    inflAdj: Math.round(bal),   // real value = nominal at t=0
+    inflAdj: Math.round(bal), frankingCum: 0,
     isDivPayment: false, ts: months[0].ts });
+
+  // Franking credit setup
+  // Additional annual cash per $1 of balance = dividendYield × frankingPct × (30/70) × (1 − margRate)
+  // This is the portion of the 30% corporate tax that is refunded to investors below that rate.
+  const frankingPct   = compState.frankingMode ? (etf.frankingPct || 0) : 0;
+  const margRate      = TAX_PROFILES[compState.taxProfile]?.rate ?? 0.325;
+  const CORP_TAX      = 0.30;
+  const frankingBoostAnnual = (etf.dividendYield / 100) * frankingPct * (CORP_TAX / (1 - CORP_TAX)) * (1 - margRate);
 
   for (let i = 0; i < months.length; i++) {
     const mo = months[i];
@@ -181,6 +222,7 @@ function calcMonthly() {
       : etf.annualReturn;
 
     // ── MER treatment ──────────────────────────────────────────────
+    // Historical returns from fund prices already net of MER; projection uses gross estimate.
     const merDeduction = mode === 'historical' ? 0 : (etf.mer / 100);
     const divDeduction = drip ? 0 : (etf.dividendYield / 100);
 
@@ -190,11 +232,22 @@ function calcMonthly() {
     bal = bal * (1 + mRate) + monthly * mo.frac;
     contrib += monthly * mo.frac;
     divs += mDiv;
+
+    // ── Franking credit cash (reinvested each month) ──────────────
+    // The ATO refund is effectively annual; we distribute it monthly for smoothness.
+    const frankingCashMonth = bal * frankingBoostAnnual * mo.frac / 12;
+    if (frankingPct > 0) { bal += frankingCashMonth; frankingCum += frankingCashMonth; }
+
     monthsElapsed += mo.frac;
 
-    // Inflation-adjusted value: deflate by CPI to express in today's dollars
-    const cpiDeflator = Math.pow(1 + compState.inflationRate / 100, monthsElapsed / 12);
-    const inflAdj = Math.round(bal / cpiDeflator);
+    // ── Inflation adjustment ──────────────────────────────────────
+    // Historical mode: use real ABS CPI year-by-year (AU_CPI_YR lookup)
+    // Projection mode: use user's flat CPI assumption
+    const yearCPI = mode === 'historical'
+      ? (AU_CPI_YR[mo.y] ?? 2.7)   // 2.7 = long-run Aus average for years not in table
+      : compState.inflationRate;
+    cpiAccum *= Math.pow(1 + yearCPI / 100, mo.frac / 12);
+    const inflAdj = Math.round(bal / cpiAccum);
 
     const nextMo = months[i+1];
     const isYearBoundary = !nextMo || nextMo.m === 0;
@@ -203,14 +256,12 @@ function calcMonthly() {
     const isDivPayment = !drip && [1,4,7,10].includes(mo.m);
 
     data.push({
-      date: mo.label,
-      label: xAxisLabel,
+      date: mo.label, label: xAxisLabel,
       value: Math.round(bal),
       contributions: Math.round(contrib),
       dividends: Math.round(divs),
-      inflAdj,
-      isDivPayment,
-      ts: mo.ts
+      inflAdj, frankingCum: Math.round(frankingCum),
+      isDivPayment, ts: mo.ts
     });
   }
 
@@ -336,6 +387,7 @@ function attachChartListeners() {
         const contributions = Math.round(loP.contributions + t * (hiP.contributions - loP.contributions));
         const dividends     = Math.round(loP.dividends     + t * (hiP.dividends     - loP.dividends));
         const inflAdj       = Math.round((loP.inflAdj||loP.value) + t * ((hiP.inflAdj||hiP.value) - (loP.inflAdj||loP.value)));
+        const frankingCum   = Math.round((loP.frankingCum||0) + t * ((hiP.frankingCum||0) - (loP.frankingCum||0)));
 
         // Interpolate timestamp → daily date string
         let dateStr = loP.date;
@@ -348,9 +400,10 @@ function attachChartListeners() {
         if (xline) { xline.setAttribute('x1',(frac*cw).toFixed(1)); xline.setAttribute('x2',(frac*cw).toFixed(1)); xline.setAttribute('opacity','0.5'); }
         let h = `<div style="color:#94a3b8;margin-bottom:.3rem;font-weight:600;">${dateStr}</div>`;
         h += `<div style="color:#4ade80;">Value: <strong>${fmtAUD(value)}</strong></div>`;
-        if (compState.showInflation) h += `<div style="color:#fb923c;">Real (${compState.inflationRate}% CPI): <strong>${fmtAUD(inflAdj)}</strong></div>`;
+        if (compState.showInflation) h += `<div style="color:#fb923c;">Real (${compState.mode==='historical'?'ABS CPI':compState.inflationRate+'%'}): <strong>${fmtAUD(inflAdj)}</strong></div>`;
         h += `<div style="color:#38bdf8;">Contributed: ${fmtAUD(contributions)}</div>`;
         h += `<div style="color:#f59e0b;">Gains: ${fmtAUD(value - contributions)}</div>`;
+        if (compState.frankingMode && frankingCum > 0) h += `<div style="color:#fbbf24;">Franking received: ${fmtAUD(frankingCum)}</div>`;
         if (!compState.drip && dividends) {
           h += `<div style="color:#a78bfa;">Cumulative Dividends: ${fmtAUD(dividends)}</div>`;
           if (loP.isDivPayment && t < 0.5) h += `<div style="color:#f59e0b;font-size:.68rem;">◆ Dividend payment month</div>`;
@@ -491,11 +544,11 @@ function renderCompounding() {
     projStartDay, projStartMonth, projStartYear, years,
     histStartDay, histStartMonth, histStartYear,
     histEndDay,   histEndMonth,   histEndYear, drip, custom, liveTickerInput,
-    showInflation, inflationRate } = compState;
+    showInflation, inflationRate, frankingMode, taxProfile } = compState;
   const etf = getETF(ticker);
   if (!etf) return `<p style="color:#ef4444;padding:2rem;">ETF data unavailable.</p>`;
   _lastCompData = calcMonthly();
-  const final = _lastCompData[_lastCompData.length - 1] ?? {value:0,contributions:0,dividends:0};
+  const final = _lastCompData[_lastCompData.length - 1] ?? {value:0,contributions:0,dividends:0,frankingCum:0};
   const durMo = mode==='projection' ? years*12
     : (() => {
         const a = new Date(histStartYear, histStartMonth, histStartDay);
@@ -514,8 +567,21 @@ function renderCompounding() {
   const liveLoaded = ticker==='LIVE' && !!_liveCache[liveKey];
   const livePending = ticker==='LIVE' && !_liveCache[liveKey] && !!liveTicker;
 
+  // Franking: show button only for AU equity ETFs
+  const frankingPct = etf.frankingPct || 0;
+  const hasFranking  = frankingPct > 0;
+  const margRate     = TAX_PROFILES[taxProfile]?.rate ?? 0.325;
+  const CORP_TAX     = 0.30;
+  // Annual effective boost per $1 for the chosen tax profile
+  const frankingBoostAnnualPct = (etf.dividendYield / 100) * frankingPct * (CORP_TAX / (1 - CORP_TAX)) * (1 - margRate) * 100;
+
+  // CPI description: project uses flat rate; historical uses real ABS data
+  const cpiDesc = mode === 'historical'
+    ? `Real ABS CPI used year-by-year (e.g. 7.8% in 2022, 0.9% in 2020)`
+    : `2.5% = RBA mid-band target (2–3%). Long-run Aus avg ≈ 2.7% p.a. since 2000.`;
+
   return `<div>
-  <!-- Mode / DRP / Inflation row -->
+  <!-- Mode / DRP / Inflation / Franking row -->
   <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.2rem;align-items:center;">
     <div style="display:flex;gap:.5rem;">
       <button class="mode-btn ${mode==='projection'?'mode-active':''}" data-mode="projection">📈 Projection</button>
@@ -526,14 +592,36 @@ function renderCompounding() {
       <button class="mode-btn ${drip?'mode-active':''}"  id="drip-on">DRP On ♻</button>
       <button class="mode-btn ${!drip?'mode-active':''}" id="drip-off">DRP Off 💸</button>
       <button class="mode-btn ${showInflation?'mode-active infl-active':''}" id="infl-toggle"
-        title="Show real (CPI-adjusted) portfolio value">🏷 Real Value</button>
-      ${showInflation?`<div style="display:flex;align-items:center;gap:.3rem;">
-        <input id="infl-rate" type="number" class="etf-input" style="width:56px;padding:.3rem .5rem;"
-          value="${inflationRate}" min="0" max="20" step=".5"/>
-        <span style="color:var(--text-secondary);font-size:.8rem;">% CPI</span>
+        title="${cpiDesc}">🏷 Real Value</button>
+      ${showInflation?`<div style="display:flex;align-items:center;gap:.3rem;" title="${cpiDesc}">
+        ${mode==='historical'
+          ?`<span style="font-size:.75rem;color:#fb923c;">ABS CPI</span>`
+          :`<input id="infl-rate" type="number" class="etf-input" style="width:56px;padding:.3rem .5rem;"
+              value="${inflationRate}" min="0" max="20" step=".5"/>
+            <span style="color:var(--text-secondary);font-size:.8rem;">% CPI</span>`}
       </div>`:''}
+      ${hasFranking?`<button class="mode-btn ${frankingMode?'mode-active frank-active':''}" id="frank-toggle"
+        title="Model Australian dividend imputation (franking credits). The company has already paid 30% corporate tax; credits below that rate are refunded to you."
+        >🏦 Franking</button>`:''}
     </div>
   </div>
+  ${frankingMode && hasFranking ? `<div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+    <div style="font-size:.78rem;color:var(--text-secondary);">Tax profile:</div>
+    <select id="tax-profile" class="etf-select" style="flex:1;min-width:180px;">
+      ${Object.entries(TAX_PROFILES).map(([k,v])=>`<option value="${k}" ${k===taxProfile?'selected':''}>${v.label}</option>`).join('')}
+    </select>
+    <div style="font-size:.78rem;color:#fbbf24;">
+      Franking: <strong>${(frankingPct*100).toFixed(0)}%</strong> franked
+      &nbsp;→&nbsp; +<strong>${frankingBoostAnnualPct.toFixed(2)}%</strong> effective boost p.a.
+      ${taxProfile==='nfp'||taxProfile==='pension'||taxProfile==='ind_0'
+        ?`<span style="color:#4ade80;"> ✓ Full credit refund</span>`
+        :taxProfile==='super15'||taxProfile==='ind_19'
+        ?`<span style="color:#4ade80;"> ✓ Partial refund</span>`
+        :taxProfile==='ind_32'
+        ?`<span style="color:#f59e0b;"> ≈ Near breakeven</span>`
+        :`<span style="color:#94a3b8;"> Credit offsets tax (no refund)</span>`}
+    </div>
+  </div>` : ''}
   ${mode==='historical'&&!hasHist?`<div style="font-size:.75rem;color:#f59e0b;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:.5rem .8rem;margin-bottom:1rem;">
     ⚠ No year-by-year data for <strong>${ticker==='LIVE'?liveTicker:ticker}</strong>. ${ticker==='LIVE'&&!liveLoaded&&liveTicker?'Stock file not yet fetched — run the GitHub Action to populate data/stocks/.':'All periods use the average return ('+etf.annualReturn+'%).'}
   </div>`:''}
@@ -632,25 +720,29 @@ function renderCompounding() {
   </div>
 
   <!-- Summary cards -->
-  <div style="display:grid;grid-template-columns:repeat(${drip?3:4},1fr);gap:1rem;margin-bottom:1.2rem;" class="resp-grid-2">
+  <div style="display:grid;grid-template-columns:repeat(${frankingMode&&hasFranking ? (drip?4:5) : (drip?3:4)},1fr);gap:1rem;margin-bottom:1.2rem;" class="resp-grid-2">
     ${sc('Final Value',    fmtAUD(final.value), 'var(--fitc-green)')}
     ${sc('Contributed',    fmtAUD(totalC),       'var(--dapi-blue)')}
     ${sc('Gains',          fmtAUD(gains),         '#f59e0b')}
     ${!drip ? sc('Dividends Paid', fmtAUD(final.dividends), '#a78bfa') : ''}
+    ${frankingMode&&hasFranking ? sc('Franking Credits', fmtAUD(final.frankingCum||0), '#fbbf24') : ''}
   </div>
 
   ${buildChart(_lastCompData, drip, 'comp-svg', 'comp-tip')}
   <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem;font-size:.75rem;color:var(--text-secondary);">
     <span><span style="color:#4ade80;">——</span> Portfolio Value (nominal)</span>
     <span><span style="color:#38bdf8;">- -</span> Contributed</span>
-    ${showInflation?`<span><span style="color:#fb923c;">--</span> Real Value (${inflationRate}% CPI adj.)</span>`:''}
+    ${showInflation?`<span><span style="color:#fb923c;">--</span> Real Value (${mode==='historical'?'ABS CPI':inflationRate+'%'} adj.)</span>`:''}
     ${!drip?`<span><span style="color:#f59e0b;">··</span> Dividends paid out &nbsp; <span style="color:#f59e0b;">◆</span> = quarterly payment</span>`:''}
   </div>
   ${dlRow(['dl-csv-comp','⬇ Data (CSV)'],['dl-png-comp','⬇ Chart (PNG)'])}
   <p style="font-size:.7rem;color:#475569;margin-top:.75rem;text-align:center;">
     ${mode==='historical'
-      ?'Returns are approximate annual figures; intra-year returns linearly interpolated per day. Excludes tax, CGT, brokerage, inflation.'
-      :'Projected from historical average return. Past performance not indicative. Excludes tax, CGT, and inflation.'}
+      ?`Returns are approximate annual figures; intra-year returns linearly interpolated per day. Excludes tax, CGT, brokerage.
+        ${showInflation?' Real Value uses actual ABS CPI by year.':''}
+        ${frankingMode&&hasFranking?` Franking: ${TAX_PROFILES[taxProfile].label} profile applied.`:''}`
+      :`Projected from historical average return. Past performance not indicative. Excludes tax, CGT.
+        ${showInflation?` Real Value uses ${inflationRate}% p.a. CPI (RBA target: 2–3%).`:''}`}
   </p>
   </div>`;
 }
@@ -1228,6 +1320,8 @@ function attachListeners() {
     document.getElementById('drip-off')?.addEventListener('click',()=>{ compState.drip=false; rerender(); });
     document.getElementById('infl-toggle')?.addEventListener('click', ()=>{ compState.showInflation=!compState.showInflation; rerender(); });
     document.getElementById('infl-rate')?.addEventListener('change', e=>{ compState.inflationRate=Number(e.target.value)||2.5; rerender(); });
+    document.getElementById('frank-toggle')?.addEventListener('click', ()=>{ compState.frankingMode=!compState.frankingMode; rerender(); });
+    document.getElementById('tax-profile')?.addEventListener('change', e=>{ compState.taxProfile=e.target.value; rerender(); });
 
     // Live ticker: sync input field value; Load button fetches price file
     document.getElementById('live-ticker-input')?.addEventListener('input', e=>{
@@ -1400,6 +1494,7 @@ _css.textContent=`
   .overlap-active       { border-color:var(--fitc-green)!important;background:rgba(74,222,128,.08)!important;color:var(--fitc-green)!important; }
   .pair-cell:hover { opacity:.75; }
   .infl-active  { border-color:#fb923c!important;background:rgba(251,146,60,.08)!important;color:#fb923c!important; }
+  .frank-active { border-color:#fbbf24!important;background:rgba(251,191,36,.08)!important;color:#fbbf24!important; }
   optgroup { color:var(--text-secondary);font-size:.75rem; }
 
   /* ── Responsive / mobile ────────────────────────────────────────── */

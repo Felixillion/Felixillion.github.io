@@ -58,6 +58,8 @@ ETF_TICKERS = [
     'URNM.AX', 'GEAR.AX',
     # Fixed income / other
     'VAF.AX', 'QAU.AX', 'QPON.AX',
+    # Actively managed / LICs — for comparison with passive ETFs
+    'AFI.AX', 'ARG.AX', 'WAM.AX', 'WGB.AX', 'MFF.AX', 'PMC.AX',
 ]
 
 # Asset class proxies for the retirement simulator

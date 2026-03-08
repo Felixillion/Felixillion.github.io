@@ -2,37 +2,62 @@
 layout: default
 title: AU ETF Tools | Felixillion
 permalink: /etf-tools.html
-footer_scripts: /scripts/etf_tools.js
+description: "Australian ETF compounding calculator, portfolio analyser, sector overlap checker and retirement simulator. Compare active vs passive funds, model franking credits and inflation-adjusted returns."
+footer_scripts: assets/js/etf_tools.js
 ---
 
-<div class="container" style="padding-top: 8rem;">
-    <div class="fade-in">
-        <h2>AU ETF Tools</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-            Australian ETF compounding calculator, portfolio breakdown, overlap analysis, and retirement success simulator.
-            All figures in AUD.
-        </p>
-    </div>
+<div class="container" style="padding-top:6rem;padding-bottom:4rem;">
 
-    <div class="card-controls fade-in" style="margin: 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
-        <button id="tab-compound"   class="etf-tab-btn subheading" style="cursor: pointer; background: var(--glass-bg);">📈 Compounding</button>
-        <button id="tab-portfolio"  class="etf-tab-btn subheading" style="cursor: pointer; background: var(--glass-bg);">🥧 Portfolio</button>
-        <button id="tab-overlap"    class="etf-tab-btn subheading" style="cursor: pointer; background: var(--glass-bg);">🔀 Overlap</button>
-        <button id="tab-retirement" class="etf-tab-btn subheading" style="cursor: pointer; background: var(--glass-bg);">🏖 Retirement</button>
-    </div>
+  <!-- Page header -->
+  <div class="fade-in" style="margin-bottom:2rem;">
+    <h2 style="margin-bottom:.5rem;">AU ETF Tools</h2>
+    <p style="color:var(--text-secondary);font-size:.95rem;">
+      Compound, compare, overlap-check and model retirement — using real historical returns from Australian funds.
+    </p>
+  </div>
 
-    <div id="etf-tool-container" class="glass-card fade-in" style="padding: 1.5rem;">
-        <div style="text-align: center; padding: 4rem; color: var(--text-secondary);">Loading ETF data…</div>
-    </div>
+  <!-- Tab navigation -->
+  <div class="fade-in" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;
+    border-bottom:1px solid var(--glass-border);padding-bottom:.75rem;">
+    <button id="tab-compound"  class="etf-tab-btn" style="padding:.5rem 1.1rem;border-radius:8px;
+      border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);
+      cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s;">
+      📈 Compounding
+    </button>
+    <button id="tab-portfolio" class="etf-tab-btn" style="padding:.5rem 1.1rem;border-radius:8px;
+      border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);
+      cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s;">
+      🥧 Portfolio
+    </button>
+    <button id="tab-overlap"   class="etf-tab-btn" style="padding:.5rem 1.1rem;border-radius:8px;
+      border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);
+      cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s;">
+      🔬 Overlap
+    </button>
+    <button id="tab-retirement" class="etf-tab-btn" style="padding:.5rem 1.1rem;border-radius:8px;
+      border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);
+      cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s;">
+      🏖 Retirement
+    </button>
+  </div>
 
-    <section class="fade-in" style="margin-top: 4rem; padding: 2rem; border-top: 1px solid var(--glass-border);">
-        <h3 style="font-size: 1rem; margin-bottom: 1rem;">Terms and Conditions (Disclaimer)</h3>
-        <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
-            <p>1. <strong>Not Financial Advice:</strong> All information on this page is for educational and illustrative purposes only. It does not constitute financial, tax, or investment advice. Always read the relevant Product Disclosure Statement (PDS) before investing.</p>
-            <p>2. <strong>Past Performance:</strong> Historical returns and simulations shown here do not guarantee future performance. Investment values can rise and fall.</p>
-            <p>3. <strong>Data Accuracy:</strong> Return and MER figures are approximate and updated manually. Always verify current figures on the issuer's website.</p>
-            <p>4. <strong>Tax:</strong> Calculations do not account for capital gains tax (CGT), income tax on distributions, or franking credits.</p>
-            <p>5. <strong>Responsible Investing:</strong> Consider your personal financial situation, goals, and risk tolerance. Seek advice from a licensed financial adviser if needed.</p>
-        </div>
-    </section>
+  <!-- Tool container — populated by etf_tools.js -->
+  <div id="etf-tool-container" class="glass-card fade-in">
+    <div style="text-align:center;padding:4rem;color:var(--text-secondary);">
+      Loading ETF tools…
+    </div>
+  </div>
+
+  <!-- Tab active style injected by etf_tools.js; mirror it here for initial paint -->
+  <style>
+    .etf-tab-active {
+      border-color: var(--dapi-blue) !important;
+      background: rgba(56,189,248,.08) !important;
+      color: var(--dapi-blue) !important;
+    }
+    @media (max-width: 480px) {
+      .etf-tab-btn { font-size: .78rem !important; padding: .4rem .7rem !important; }
+    }
+  </style>
+
 </div>

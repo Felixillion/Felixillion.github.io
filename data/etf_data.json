@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-03-07",
+    "lastUpdated": "2026-03-06",
     "sources": [
       "CALCULATION NOTE: In Historical mode, stored returns are TOTAL RETURNS net of MER (sourced from Yahoo Finance adjusted close prices or fund factsheets which report after-fee returns). MER is NOT deducted again in the calculation to avoid double-counting. In Projection mode, the annualReturn field is a gross estimate and MER IS deducted.",
       "IMPORTANT DATA NOTE (March 2026): Annual returns for VAS, A200, IOZ, STW have been corrected to total returns (price appreciation + dividends reinvested), sourced from Yahoo Finance adjusted close prices. Previous values were price-only (excluding ~4.5% p.a. dividends) which significantly understated returns. Run scripts/update_etf_data.py via GitHub Actions for automatic updates.",
@@ -128,23 +128,21 @@
       "2007": 18.0,
       "2008": -40.3,
       "2009": 37.5,
-      "2010": -2.3,
-      "2011": -15.1,
-      "2012": 14.1,
-      "2013": 19.4,
-      "2014": 4.9,
-      "2015": 3.0,
-      "2016": 11.3,
-      "2017": 11.8,
-      "2018": -3.1,
-      "2019": 23.8,
-      "2020": 1.9,
-      "2021": 17.4,
-      "2022": -1.7,
-      "2023": 12.0,
-      "2024": 11.4,
-      "2025": 10.7,
-      "2026": 2.2
+      "2010": 3.0,
+      "2011": -10.0,
+      "2012": 20.0,
+      "2013": 20.0,
+      "2014": 12.0,
+      "2015": 8.0,
+      "2016": 15.0,
+      "2017": 15.0,
+      "2018": 3.0,
+      "2019": 27.0,
+      "2020": 4.0,
+      "2021": 20.0,
+      "2022": 8.0,
+      "2023": 17.0,
+      "2024": 17.0
     },
     "INTL_SHARES": {
       "1901": 3.0,
@@ -261,18 +259,16 @@
       "2012": 16.0,
       "2013": 40.0,
       "2014": 10.0,
-      "2015": 12.8,
-      "2016": 7.7,
-      "2017": 13.6,
-      "2018": 0.4,
-      "2019": 29.2,
-      "2020": 5.8,
-      "2021": 29.7,
-      "2022": -12.4,
-      "2023": 22.9,
-      "2024": 30.9,
-      "2025": 12.9,
-      "2026": -4.4
+      "2015": 4.5,
+      "2016": 7.0,
+      "2017": 14.5,
+      "2018": -3.8,
+      "2019": 28.5,
+      "2020": 7.2,
+      "2021": 26.5,
+      "2022": -13.5,
+      "2023": 24.5,
+      "2024": 20.0
     },
     "AU_BONDS": {
       "1901": 4.0,
@@ -387,20 +383,18 @@
       "2010": 6.0,
       "2011": 11.4,
       "2012": 7.7,
-      "2013": 1.8,
-      "2014": 9.9,
+      "2013": 2.0,
+      "2014": 9.8,
       "2015": 2.6,
-      "2016": 2.2,
-      "2017": 3.3,
-      "2018": 4.6,
-      "2019": 7.0,
-      "2020": 4.3,
+      "2016": 2.9,
+      "2017": 3.7,
+      "2018": 4.7,
+      "2019": 7.3,
+      "2020": 4.0,
       "2021": -3.0,
-      "2022": -9.7,
-      "2023": 4.8,
-      "2024": 2.7,
-      "2025": 3.3,
-      "2026": 0.1
+      "2022": -9.5,
+      "2023": 5.1,
+      "2024": 1.5
     },
     "GLOBAL_BONDS": {
       "1901": 4.0,
@@ -775,29 +769,28 @@
     "VAS": {
       "name": "Vanguard Australian Shares Index",
       "issuer": "Vanguard",
-      "annualReturn": 10.0,
+      "annualReturn": 13.5,
       "mer": 0.07,
       "dividendYield": 4.2,
       "inceptionYear": 2009,
       "historicalReturns": {
         "2009": 30.0,
-        "2010": -2.3,
-        "2011": -15.1,
-        "2012": 14.1,
-        "2013": 19.4,
-        "2014": 4.9,
-        "2015": 3.0,
-        "2016": 11.3,
-        "2017": 11.8,
-        "2018": -3.1,
-        "2019": 23.8,
-        "2020": 1.9,
-        "2021": 17.4,
-        "2022": -1.7,
-        "2023": 12.0,
-        "2024": 11.4,
-        "2025": 10.7,
-        "2026": 2.2
+        "2010": 3.0,
+        "2011": -10.0,
+        "2012": 20.0,
+        "2013": 20.0,
+        "2014": 12.0,
+        "2015": 8.0,
+        "2016": 15.0,
+        "2017": 15.0,
+        "2018": 3.0,
+        "2019": 27.0,
+        "2020": 4.0,
+        "2021": 20.0,
+        "2022": 8.0,
+        "2023": 17.0,
+        "2024": 17.0,
+        "2025": 16.0
       },
       "topHoldings": [
         {
@@ -883,24 +876,24 @@
         "Comm. Services": 4,
         "Info. Technology": 3,
         "Utilities": 2
-      }
+      },
+      "frankingPct": 0.75
     },
     "A200": {
       "name": "BetaShares Australia 200",
       "issuer": "BetaShares",
-      "annualReturn": 10.2,
+      "annualReturn": 13.5,
       "mer": 0.04,
       "dividendYield": 4.0,
       "inceptionYear": 2018,
       "historicalReturns": {
-        "2019": 22.9,
-        "2020": 1.2,
-        "2021": 17.9,
-        "2022": -0.6,
-        "2023": 12.0,
-        "2024": 11.6,
-        "2025": 10.3,
-        "2026": 2.5
+        "2019": 23.8,
+        "2020": 1.4,
+        "2021": 17.2,
+        "2022": -2.0,
+        "2023": 12.3,
+        "2024": 11.5,
+        "2025": 16.0
       },
       "topHoldings": [
         {
@@ -981,33 +974,33 @@
         "Comm. Services": 4,
         "Info. Technology": 3,
         "Utilities": 2
-      }
+      },
+      "frankingPct": 0.75
     },
     "IOZ": {
       "name": "iShares Core S&P/ASX 200",
       "issuer": "BlackRock",
-      "annualReturn": 10.0,
+      "annualReturn": 13.5,
       "mer": 0.09,
       "dividendYield": 4.0,
       "inceptionYear": 2010,
       "historicalReturns": {
         "2010": 3.1,
         "2011": -11.1,
-        "2012": 16.8,
-        "2013": 16.2,
-        "2014": 5.6,
-        "2015": 2.1,
-        "2016": 12.8,
-        "2017": 11.6,
+        "2012": 20.3,
+        "2013": 20.4,
+        "2014": 5.2,
+        "2015": 2.5,
+        "2016": 11.7,
+        "2017": 12.0,
         "2018": -3.0,
-        "2019": 23.3,
-        "2020": 1.3,
-        "2021": 16.9,
-        "2022": -0.9,
-        "2023": 12.2,
-        "2024": 11.4,
-        "2025": 10.2,
-        "2026": 2.4
+        "2019": 23.4,
+        "2020": 1.4,
+        "2021": 17.2,
+        "2022": -2.0,
+        "2023": 12.3,
+        "2024": 11.5,
+        "2025": 16.0
       },
       "topHoldings": [
         {
@@ -1088,34 +1081,33 @@
         "Comm. Services": 4,
         "Info. Technology": 3,
         "Utilities": 2
-      }
+      },
+      "frankingPct": 0.75
     },
     "STW": {
       "name": "SPDR S&P/ASX 200",
       "issuer": "State Street",
-      "annualReturn": 10.0,
+      "annualReturn": 13.2,
       "mer": 0.19,
       "dividendYield": 4.1,
       "inceptionYear": 2001,
       "historicalReturns": {
-        "2010": -2.2,
-        "2011": -15.3,
-        "2012": 14.8,
-        "2013": 16.7,
-        "2014": 5.1,
-        "2015": 2.6,
-        "2016": 13.3,
-        "2017": 11.7,
-        "2018": -3.1,
-        "2019": 23.3,
-        "2020": 2.2,
-        "2021": 16.6,
-        "2022": -1.5,
+        "2010": 3.1,
+        "2011": -11.1,
+        "2012": 20.3,
+        "2013": 20.4,
+        "2014": 5.2,
+        "2015": 2.5,
+        "2016": 11.7,
+        "2017": 12.0,
+        "2018": -3.0,
+        "2019": 23.4,
+        "2020": 1.4,
+        "2021": 17.2,
+        "2022": -2.0,
         "2023": 12.3,
-        "2024": 12.3,
-        "2025": 10.4,
-        "2009": 31.8,
-        "2026": 3.5
+        "2024": 11.5,
+        "2025": 16.0
       },
       "topHoldings": [
         {
@@ -1191,32 +1183,17 @@
         "Comm. Services": 4,
         "Info. Technology": 3,
         "Utilities": 2
-      }
+      },
+      "frankingPct": 0.75
     },
     "VHY": {
       "name": "Vanguard Australian Shares High Yield",
       "issuer": "Vanguard",
-      "annualReturn": 12.6,
+      "annualReturn": 9.0,
       "mer": 0.25,
       "dividendYield": 5.5,
       "inceptionYear": 2011,
-      "historicalReturns": {
-        "2012": 17.4,
-        "2013": 26.9,
-        "2014": 4.0,
-        "2015": -3.8,
-        "2016": 10.7,
-        "2017": 9.9,
-        "2018": -7.5,
-        "2019": 20.4,
-        "2020": 1.7,
-        "2021": 16.7,
-        "2022": 8.5,
-        "2023": 11.1,
-        "2024": 11.8,
-        "2025": 14.8,
-        "2026": 6.8
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "CBA",
@@ -1282,29 +1259,17 @@
         "Consumer Staples": 8,
         "Utilities": 7,
         "Other": 5
-      }
+      },
+      "frankingPct": 0.9
     },
     "MVW": {
       "name": "VanEck Australian Equal Weight",
       "issuer": "VanEck",
-      "annualReturn": 8.7,
+      "annualReturn": 9.2,
       "mer": 0.35,
       "dividendYield": 3.8,
       "inceptionYear": 2014,
-      "historicalReturns": {
-        "2015": 5.3,
-        "2016": 18.1,
-        "2017": 15.5,
-        "2018": -4.0,
-        "2019": 23.7,
-        "2020": 1.7,
-        "2021": 15.8,
-        "2022": -1.0,
-        "2023": 11.6,
-        "2024": 9.4,
-        "2025": 7.8,
-        "2026": 0.1
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Financials": 18,
@@ -1317,28 +1282,28 @@
         "Real Estate": 7,
         "Comm. Services": 4,
         "Info. Technology": 3
-      }
+      },
+      "frankingPct": 0.7
     },
     "VGS": {
       "name": "Vanguard MSCI World ex-AU",
       "issuer": "Vanguard",
-      "annualReturn": 16.8,
+      "annualReturn": 13.0,
       "mer": 0.18,
       "dividendYield": 1.8,
       "inceptionYear": 2014,
       "historicalReturns": {
-        "2015": 12.8,
-        "2016": 7.7,
-        "2017": 13.6,
-        "2018": 0.4,
-        "2019": 29.2,
-        "2020": 5.8,
-        "2021": 29.7,
-        "2022": -12.4,
-        "2023": 22.9,
-        "2024": 30.9,
-        "2025": 12.9,
-        "2026": -4.4
+        "2015": 14.7,
+        "2016": 14.6,
+        "2017": 18.6,
+        "2018": 2.0,
+        "2019": 35.0,
+        "2020": 7.2,
+        "2021": 33.3,
+        "2022": -10.7,
+        "2023": 26.3,
+        "2024": 34.8,
+        "2025": 15.9
       },
       "topHoldings": [
         {
@@ -1424,26 +1389,24 @@
         "Materials": 4,
         "Real Estate": 2
       },
-      "returnsNote": "historicalReturns are total returns (price + dividends reinvested) derived from Vanguard VGS.AX adjusted-close prices via Yahoo Finance, matching Streamlit ETF calculator reference values. annualReturn used for projection mode is a conservative long-term estimate; the 2015-2026 CAGR was 16.7% (unusually strong period for global equities)."
+      "returnsNote": "historicalReturns are total returns (price + dividends reinvested) derived from Vanguard VGS.AX adjusted-close prices via Yahoo Finance, matching Streamlit ETF calculator reference values. annualReturn used for projection mode is a conservative long-term estimate; the 2015-2026 CAGR was 16.7% (unusually strong period for global equities).",
+      "frankingPct": 0
     },
     "IVV": {
       "name": "iShares S&P 500",
       "issuer": "BlackRock",
-      "annualReturn": 19.0,
+      "annualReturn": 13.5,
       "mer": 0.03,
       "dividendYield": 1.3,
       "inceptionYear": 2017,
       "historicalReturns": {
-        "2018": 5.0,
-        "2019": 31.6,
-        "2020": 7.1,
-        "2021": 37.3,
-        "2022": -9.1,
-        "2023": 20.5,
-        "2024": 36.9,
-        "2017": 13.0,
-        "2025": 9.4,
-        "2026": -5.0
+        "2018": -3.5,
+        "2019": 31.5,
+        "2020": 18.5,
+        "2021": 29.5,
+        "2022": -17.5,
+        "2023": 27.5,
+        "2024": 24.5
       },
       "topHoldings": [
         {
@@ -1528,27 +1491,26 @@
         "Energy": 4,
         "Materials": 3,
         "Real Estate": 2
-      }
+      },
+      "frankingPct": 0
     },
     "NDQ": {
       "name": "BetaShares NASDAQ 100",
       "issuer": "BetaShares",
-      "annualReturn": 22.0,
+      "annualReturn": 18.0,
       "mer": 0.48,
       "dividendYield": 0.4,
       "inceptionYear": 2015,
       "historicalReturns": {
-        "2016": 7.1,
-        "2017": 21.9,
-        "2018": 9.1,
-        "2019": 39.7,
-        "2020": 34.5,
-        "2021": 35.5,
-        "2022": -28.4,
-        "2023": 53.4,
-        "2024": 38.3,
-        "2025": 11.3,
-        "2026": -6.0
+        "2016": 3.5,
+        "2017": 28.0,
+        "2018": -0.5,
+        "2019": 40.5,
+        "2020": 47.0,
+        "2021": 29.0,
+        "2022": -30.5,
+        "2023": 55.0,
+        "2024": 25.5
       },
       "topHoldings": [
         {
@@ -1629,29 +1591,17 @@
         "Health Care": 7,
         "Industrials": 3,
         "Other": 2
-      }
+      },
+      "frankingPct": 0
     },
     "QUAL": {
       "name": "VanEck MSCI World Quality",
       "issuer": "VanEck",
-      "annualReturn": 17.2,
+      "annualReturn": 14.0,
       "mer": 0.4,
       "dividendYield": 1.2,
       "inceptionYear": 2014,
-      "historicalReturns": {
-        "2015": 16.6,
-        "2016": 5.1,
-        "2017": 16.1,
-        "2018": 3.3,
-        "2019": 36.9,
-        "2020": 11.2,
-        "2021": 34.0,
-        "2022": -17.0,
-        "2023": 30.5,
-        "2024": 30.6,
-        "2025": 8.1,
-        "2026": -3.7
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "MSFT",
@@ -1711,28 +1661,17 @@
         "Consumer Discretionary": 12,
         "Industrials": 10,
         "Other": 9
-      }
+      },
+      "frankingPct": 0
     },
     "MOAT": {
       "name": "VanEck Morningstar Wide Moat",
       "issuer": "VanEck",
-      "annualReturn": 16.5,
+      "annualReturn": 14.0,
       "mer": 0.54,
       "dividendYield": 1.0,
       "inceptionYear": 2015,
-      "historicalReturns": {
-        "2016": 23.9,
-        "2017": 14.0,
-        "2018": 8.1,
-        "2019": 36.9,
-        "2020": 3.2,
-        "2021": 32.6,
-        "2022": -6.5,
-        "2023": 30.5,
-        "2024": 20.4,
-        "2025": 5.7,
-        "2026": -5.0
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Financials": 22,
@@ -1742,25 +1681,17 @@
         "Consumer Discretionary": 12,
         "Consumer Staples": 8,
         "Other": 5
-      }
+      },
+      "frankingPct": 0
     },
     "VESG": {
       "name": "Vanguard ESG International Shares",
       "issuer": "Vanguard",
-      "annualReturn": 16.5,
+      "annualReturn": 13.0,
       "mer": 0.18,
       "dividendYield": 1.5,
       "inceptionYear": 2018,
-      "historicalReturns": {
-        "2019": 30.1,
-        "2020": 9.8,
-        "2021": 29.7,
-        "2022": -17.4,
-        "2023": 26.0,
-        "2024": 31.7,
-        "2025": 12.4,
-        "2026": -5.8
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Info. Technology": 28,
@@ -1772,25 +1703,25 @@
         "Consumer Staples": 7,
         "Materials": 4,
         "Real Estate": 2
-      }
+      },
+      "frankingPct": 0
     },
     "VDHG": {
       "name": "Vanguard Diversified High Growth",
       "issuer": "Vanguard",
-      "annualReturn": 10.6,
+      "annualReturn": 10.5,
       "mer": 0.27,
       "dividendYield": 2.5,
       "inceptionYear": 2017,
       "historicalReturns": {
-        "2018": -2.2,
-        "2019": 23.7,
-        "2020": 7.7,
-        "2021": 16.5,
-        "2022": -9.5,
-        "2023": 15.5,
-        "2024": 17.8,
-        "2025": 12.9,
-        "2026": -0.6
+        "2018": -4.8,
+        "2019": 24.2,
+        "2020": 6.0,
+        "2021": 20.7,
+        "2022": -14.8,
+        "2023": 16.6,
+        "2024": 14.7,
+        "2025": 11.5
       },
       "holdingsNote": "Constituent stocks estimated by mapping VDHG's underlying fund allocations (36% VAS, 26.5% VGS-equiv, 5.5% VGE, 5.5% VISM, bonds/cash 26.5%) through to individual stock weights.",
       "topHoldings": [
@@ -1892,22 +1823,22 @@
         "Real Estate": 5,
         "Other": 6
       },
-      "returnsSource": "Vanguard Australia published fund returns (after fees, AUD, calendar year). Updated by GitHub Action with Yahoo Finance adjusted-close data."
+      "returnsSource": "Vanguard Australia published fund returns (after fees, AUD, calendar year). Updated by GitHub Action with Yahoo Finance adjusted-close data.",
+      "frankingPct": 0.2
     },
     "DHHF": {
       "name": "BetaShares Diversified All Growth",
       "issuer": "BetaShares",
-      "annualReturn": 13.0,
+      "annualReturn": 11.5,
       "mer": 0.19,
       "dividendYield": 1.5,
       "inceptionYear": 2019,
       "historicalReturns": {
-        "2021": 23.3,
-        "2022": -8.9,
-        "2023": 17.0,
-        "2024": 21.7,
-        "2025": 11.9,
-        "2026": -0.9
+        "2021": 22.5,
+        "2022": -15.1,
+        "2023": 18.4,
+        "2024": 17.8,
+        "2025": 12.0
       },
       "holdingsNote": "Constituent stocks estimated from 37% AU Shares, 40% Intl Shares, 23% AU Equity via IAF/BNKS/FOOD.",
       "topHoldings": [
@@ -1999,25 +1930,25 @@
         "Energy": 4,
         "Other": 4
       },
-      "returnsSource": "BetaShares published fund returns (after fees, AUD). Updated by GitHub Action."
+      "returnsSource": "BetaShares published fund returns (after fees, AUD). Updated by GitHub Action.",
+      "frankingPct": 0.2
     },
     "VDGR": {
       "name": "Vanguard Diversified Growth",
       "issuer": "Vanguard",
-      "annualReturn": 8.1,
+      "annualReturn": 9.0,
       "mer": 0.27,
       "dividendYield": 2.2,
       "inceptionYear": 2017,
       "historicalReturns": {
-        "2018": -0.8,
-        "2019": 19.3,
-        "2020": 7.1,
-        "2021": 12.3,
-        "2022": -10.2,
-        "2023": 12.9,
-        "2024": 14.2,
-        "2025": 11.1,
-        "2026": -0.4
+        "2018": -3.2,
+        "2019": 20.1,
+        "2020": 5.1,
+        "2021": 17.2,
+        "2022": -12.4,
+        "2023": 13.8,
+        "2024": 12.9,
+        "2025": 10.2
       },
       "topHoldings": [
         {
@@ -2092,25 +2023,25 @@
         "Consumer Staples": 6,
         "Real Estate": 5,
         "Other": 11
-      }
+      },
+      "frankingPct": 0.15
     },
     "VDBA": {
       "name": "Vanguard Diversified Balanced",
       "issuer": "Vanguard",
-      "annualReturn": 5.7,
+      "annualReturn": 7.5,
       "mer": 0.27,
       "dividendYield": 2.8,
       "inceptionYear": 2017,
       "historicalReturns": {
-        "2018": -0.1,
-        "2019": 16.1,
-        "2020": 5.6,
-        "2021": 8.9,
-        "2022": -10.8,
-        "2023": 10.6,
-        "2024": 10.7,
-        "2025": 9.0,
-        "2026": -0.1
+        "2018": -2.1,
+        "2019": 14.8,
+        "2020": 4.2,
+        "2021": 12.1,
+        "2022": -9.5,
+        "2023": 10.1,
+        "2024": 9.8,
+        "2025": 7.8
       },
       "topHoldings": [
         {
@@ -2170,25 +2101,25 @@
         "Consumer Staples": 6,
         "Real Estate": 5,
         "Other": 20
-      }
+      },
+      "frankingPct": 0.1
     },
     "VDCO": {
       "name": "Vanguard Diversified Conservative",
       "issuer": "Vanguard",
-      "annualReturn": 3.4,
+      "annualReturn": 5.5,
       "mer": 0.27,
       "dividendYield": 3.2,
       "inceptionYear": 2017,
       "historicalReturns": {
-        "2018": 0.7,
-        "2019": 12.4,
-        "2020": 5.0,
-        "2021": 4.4,
-        "2022": -10.2,
-        "2023": 8.1,
-        "2024": 7.0,
-        "2025": 7.5,
-        "2026": 0.2
+        "2018": -1.2,
+        "2019": 9.4,
+        "2020": 3.0,
+        "2021": 6.8,
+        "2022": -6.4,
+        "2023": 6.2,
+        "2024": 6.5,
+        "2025": 5.5
       },
       "topHoldings": [],
       "sectors": {
@@ -2202,56 +2133,31 @@
         "Consumer Staples": 5,
         "Real Estate": 4,
         "Other": 37
-      }
+      },
+      "frankingPct": 0.05
     },
     "VAP": {
       "name": "Vanguard Australian Property",
       "issuer": "Vanguard",
-      "annualReturn": 9.7,
+      "annualReturn": 8.0,
       "mer": 0.23,
       "dividendYield": 4.5,
       "inceptionYear": 2010,
-      "historicalReturns": {
-        "2011": -7.4,
-        "2012": 24.8,
-        "2013": 7.6,
-        "2014": 25.6,
-        "2015": 14.6,
-        "2016": 12.8,
-        "2017": 6.3,
-        "2018": 3.7,
-        "2019": 19.0,
-        "2020": -3.4,
-        "2021": 26.6,
-        "2022": -20.4,
-        "2023": 16.1,
-        "2024": 18.5,
-        "2025": 7.9,
-        "2026": -9.8
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Real Estate": 100
-      }
+      },
+      "frankingPct": 0.4
     },
     "ETHI": {
       "name": "BetaShares Global Sustainability Leaders",
       "issuer": "BetaShares",
-      "annualReturn": 14.2,
+      "annualReturn": 13.0,
       "mer": 0.59,
       "dividendYield": 0.8,
       "inceptionYear": 2017,
-      "historicalReturns": {
-        "2018": 7.0,
-        "2019": 36.9,
-        "2020": 24.7,
-        "2021": 31.0,
-        "2022": -15.4,
-        "2023": 23.2,
-        "2024": 27.6,
-        "2025": 4.8,
-        "2026": -7.2
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "MSFT",
@@ -2313,70 +2219,50 @@
         "Comm. Services": 9,
         "Consumer Staples": 7,
         "Other": 4
-      }
+      },
+      "frankingPct": 0.1
     },
     "HACK": {
       "name": "BetaShares Global Cybersecurity",
       "issuer": "BetaShares",
-      "annualReturn": 15.8,
+      "annualReturn": 14.5,
       "mer": 0.67,
       "dividendYield": 0.3,
       "inceptionYear": 2016,
-      "historicalReturns": {
-        "2017": 9.2,
-        "2018": 11.3,
-        "2019": 29.7,
-        "2020": 37.1,
-        "2021": 27.0,
-        "2022": -22.1,
-        "2023": 38.8,
-        "2024": 30.3,
-        "2025": 5.1,
-        "2026": -13.0
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Info. Technology": 78,
         "Industrials": 12,
         "Comm. Services": 7,
         "Other": 3
-      }
+      },
+      "frankingPct": 0
     },
     "SEMI": {
       "name": "ETFS Semiconductor ETF",
       "issuer": "ETFS",
-      "annualReturn": 29.3,
+      "annualReturn": 20.0,
       "mer": 0.57,
       "dividendYield": 0.2,
       "inceptionYear": 2020,
-      "historicalReturns": {
-        "2022": -31.3,
-        "2023": 69.5,
-        "2024": 35.3,
-        "2025": 43.8,
-        "2026": 10.0
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Info. Technology": 88,
         "Industrials": 8,
         "Other": 4
-      }
+      },
+      "frankingPct": 0
     },
     "CLNE": {
       "name": "BetaShares Climate Change Innovation",
       "issuer": "BetaShares",
-      "annualReturn": 0.1,
+      "annualReturn": 8.0,
       "mer": 0.65,
       "dividendYield": 0.5,
       "inceptionYear": 2021,
-      "historicalReturns": {
-        "2022": -3.4,
-        "2023": -13.1,
-        "2024": -25.6,
-        "2025": 42.6,
-        "2026": 7.9
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Industrials": 35,
@@ -2384,77 +2270,45 @@
         "Energy": 20,
         "Materials": 12,
         "Other": 8
-      }
+      },
+      "frankingPct": 0
     },
     "VAF": {
       "name": "Vanguard Australian Fixed Interest",
       "issuer": "Vanguard",
-      "annualReturn": -0.4,
+      "annualReturn": 3.5,
       "mer": 0.2,
       "dividendYield": 3.5,
       "inceptionYear": 2012,
-      "historicalReturns": {
-        "2013": 1.8,
-        "2014": 9.9,
-        "2015": 2.6,
-        "2016": 2.2,
-        "2017": 3.3,
-        "2018": 4.6,
-        "2019": 7.0,
-        "2020": 4.3,
-        "2021": -3.0,
-        "2022": -9.7,
-        "2023": 4.8,
-        "2024": 2.7,
-        "2025": 3.3,
-        "2026": 0.1
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Other": 100
-      }
+      },
+      "frankingPct": 0
     },
     "QAU": {
       "name": "BetaShares Gold Bullion (AUD Hedged)",
       "issuer": "BetaShares",
-      "annualReturn": 18.2,
+      "annualReturn": 8.5,
       "mer": 0.4,
       "dividendYield": 0.0,
       "inceptionYear": 2011,
-      "historicalReturns": {
-        "2012": 8.4,
-        "2013": -26.7,
-        "2014": 1.3,
-        "2015": -11.8,
-        "2016": 9.5,
-        "2017": 10.3,
-        "2018": -3.0,
-        "2019": 17.4,
-        "2020": 20.1,
-        "2021": -5.1,
-        "2022": -2.9,
-        "2023": 10.7,
-        "2024": 23.7,
-        "2025": 64.4,
-        "2026": 17.1
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Other": 100
-      }
+      },
+      "frankingPct": 0
     },
     "BGBL": {
       "name": "BetaShares Global Shares (Unhedged)",
       "issuer": "BetaShares",
-      "annualReturn": 22.1,
+      "annualReturn": 13.0,
       "mer": 0.08,
       "dividendYield": 1.5,
       "inceptionYear": 2020,
-      "historicalReturns": {
-        "2024": 30.9,
-        "2025": 13.4,
-        "2026": -4.3
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "AAPL",
@@ -2528,7 +2382,8 @@
         "Energy": 4,
         "Materials": 4,
         "Real Estate": 2
-      }
+      },
+      "frankingPct": 0
     },
     "VGAD": {
       "name": "Vanguard MSCI World ex-AU (AUD Hedged)",
@@ -2537,20 +2392,7 @@
       "mer": 0.21,
       "dividendYield": 1.8,
       "inceptionYear": 2015,
-      "historicalReturns": {
-        "2015": 4.7,
-        "2016": 10.1,
-        "2017": 19.5,
-        "2018": -8.0,
-        "2019": 27.1,
-        "2020": 10.5,
-        "2021": 24.2,
-        "2022": -17.8,
-        "2023": 21.6,
-        "2024": 20.4,
-        "2025": 19.3,
-        "2026": 0.5
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "AAPL",
@@ -2614,28 +2456,17 @@
         "Energy": 4,
         "Materials": 4,
         "Real Estate": 2
-      }
+      },
+      "frankingPct": 0
     },
     "IHVV": {
       "name": "iShares S&P 500 AUD Hedged",
       "issuer": "BlackRock",
-      "annualReturn": 14.1,
+      "annualReturn": 14.0,
       "mer": 0.1,
       "dividendYield": 1.2,
       "inceptionYear": 2013,
-      "historicalReturns": {
-        "2016": 11.9,
-        "2017": 21.8,
-        "2018": -6.7,
-        "2019": 30.0,
-        "2020": 11.9,
-        "2021": 28.6,
-        "2022": -18.7,
-        "2023": 20.2,
-        "2024": 23.2,
-        "2025": 17.1,
-        "2026": -0.5
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "AAPL",
@@ -2709,104 +2540,17 @@
         "Energy": 4,
         "Materials": 3,
         "Real Estate": 2
-      }
-    },
-    "CNDX": {
-      "name": "iShares NASDAQ 100 ETF",
-      "issuer": "BlackRock",
-      "annualReturn": 18.0,
-      "mer": 0.35,
-      "dividendYield": 0.3,
-      "inceptionYear": 2020,
-      "historicalReturns": {},
-      "topHoldings": [
-        {
-          "ticker": "AAPL",
-          "name": "Apple Inc",
-          "weight": 9.0
-        },
-        {
-          "ticker": "MSFT",
-          "name": "Microsoft",
-          "weight": 8.5
-        },
-        {
-          "ticker": "NVDA",
-          "name": "NVIDIA",
-          "weight": 7.0
-        },
-        {
-          "ticker": "AMZN",
-          "name": "Amazon",
-          "weight": 5.5
-        },
-        {
-          "ticker": "META",
-          "name": "Meta Platforms",
-          "weight": 4.0
-        },
-        {
-          "ticker": "GOOGL",
-          "name": "Alphabet A",
-          "weight": 3.5
-        },
-        {
-          "ticker": "GOOG",
-          "name": "Alphabet C",
-          "weight": 3.0
-        },
-        {
-          "ticker": "TSLA",
-          "name": "Tesla",
-          "weight": 2.5
-        },
-        {
-          "ticker": "AVGO",
-          "name": "Broadcom",
-          "weight": 3.0
-        },
-        {
-          "ticker": "COST",
-          "name": "Costco",
-          "weight": 2.0
-        },
-        {
-          "ticker": "NFLX",
-          "name": "Netflix",
-          "weight": 1.5
-        },
-        {
-          "ticker": "ADBE",
-          "name": "Adobe",
-          "weight": 1.2
-        }
-      ],
-      "sectors": {
-        "Info. Technology": 57,
-        "Comm. Services": 18,
-        "Consumer Discretionary": 13,
-        "Health Care": 7,
-        "Industrials": 3,
-        "Other": 2
-      }
+      },
+      "frankingPct": 0
     },
     "ASIA": {
       "name": "BetaShares Asian Technology Tigers",
       "issuer": "BetaShares",
-      "annualReturn": 9.7,
+      "annualReturn": 10.0,
       "mer": 0.67,
       "dividendYield": 0.5,
       "inceptionYear": 2018,
-      "historicalReturns": {
-        "2019": 36.1,
-        "2020": 62.8,
-        "2021": -15.5,
-        "2022": -26.1,
-        "2023": 11.3,
-        "2024": 35.3,
-        "2025": 43.5,
-        "2026": 5.6
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "TSM",
@@ -2865,30 +2609,17 @@
         "Consumer Discretionary": 12,
         "Financials": 5,
         "Other": 3
-      }
+      },
+      "frankingPct": 0
     },
     "DJRE": {
       "name": "SPDR Dow Jones Global Real Estate",
       "issuer": "State Street",
-      "annualReturn": 8.2,
+      "annualReturn": 7.5,
       "mer": 0.5,
       "dividendYield": 3.8,
       "inceptionYear": 2013,
-      "historicalReturns": {
-        "2014": 30.8,
-        "2015": 11.6,
-        "2016": 2.9,
-        "2017": -0.8,
-        "2018": 3.7,
-        "2019": 19.3,
-        "2020": -18.9,
-        "2021": 38.0,
-        "2022": -20.4,
-        "2023": 11.4,
-        "2024": 9.1,
-        "2025": 2.7,
-        "2026": 2.4
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "PLD",
@@ -2943,30 +2674,17 @@
       ],
       "sectors": {
         "Real Estate": 100
-      }
+      },
+      "frankingPct": 0
     },
     "MVA": {
       "name": "VanEck Australian Property ETF",
       "issuer": "VanEck",
-      "annualReturn": 9.2,
+      "annualReturn": 8.5,
       "mer": 0.35,
       "dividendYield": 4.2,
       "inceptionYear": 2013,
-      "historicalReturns": {
-        "2014": 26.1,
-        "2015": 14.0,
-        "2016": 12.9,
-        "2017": 7.3,
-        "2018": 6.7,
-        "2019": 22.1,
-        "2020": -5.1,
-        "2021": 22.1,
-        "2022": -17.1,
-        "2023": 4.3,
-        "2024": 14.6,
-        "2025": 22.3,
-        "2026": -10.2
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "GMG",
@@ -3021,23 +2739,17 @@
       ],
       "sectors": {
         "Real Estate": 100
-      }
+      },
+      "frankingPct": 0.4
     },
     "ATEC": {
       "name": "BetaShares S&P/ASX Australian Technology",
       "issuer": "BetaShares",
-      "annualReturn": 7.6,
+      "annualReturn": 13.0,
       "mer": 0.48,
       "dividendYield": 0.5,
       "inceptionYear": 2020,
-      "historicalReturns": {
-        "2021": 3.9,
-        "2022": -32.4,
-        "2023": 34.9,
-        "2024": 42.3,
-        "2025": -10.6,
-        "2026": -14.2
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "WTC",
@@ -3095,25 +2807,17 @@
         "Comm. Services": 15,
         "Consumer Discretionary": 7,
         "Other": 3
-      }
+      },
+      "frankingPct": 0.05
     },
     "RBTZ": {
       "name": "BetaShares Global Robotics & AI ETF",
       "issuer": "BetaShares",
-      "annualReturn": 8.6,
+      "annualReturn": 14.0,
       "mer": 0.57,
       "dividendYield": 0.2,
       "inceptionYear": 2018,
-      "historicalReturns": {
-        "2019": 32.7,
-        "2020": 39.0,
-        "2021": 14.5,
-        "2022": -38.2,
-        "2023": 37.3,
-        "2024": 24.2,
-        "2025": 5.3,
-        "2026": -3.6
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "NVDA",
@@ -3161,29 +2865,17 @@
         "Industrials": 28,
         "Health Care": 8,
         "Other": 2
-      }
+      },
+      "frankingPct": 0
     },
     "GEAR": {
       "name": "BetaShares Geared Australian Equity (2x)",
       "issuer": "BetaShares",
-      "annualReturn": 16.6,
+      "annualReturn": 16.0,
       "mer": 0.8,
       "dividendYield": 5.0,
       "inceptionYear": 2014,
-      "historicalReturns": {
-        "2015": -1.0,
-        "2016": 16.1,
-        "2017": 21.7,
-        "2018": -15.8,
-        "2019": 52.0,
-        "2020": -12.0,
-        "2021": 36.0,
-        "2022": -5.4,
-        "2023": 20.6,
-        "2024": 16.2,
-        "2025": 15.8,
-        "2026": 4.2
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Financials": 31,
@@ -3197,24 +2889,17 @@
         "Comm. Services": 4,
         "Info. Technology": 3,
         "Utilities": 2
-      }
+      },
+      "frankingPct": 0.25
     },
     "F100": {
       "name": "BetaShares FTSE 100 ETF",
       "issuer": "BetaShares",
-      "annualReturn": 15.4,
+      "annualReturn": 8.5,
       "mer": 0.45,
       "dividendYield": 3.5,
       "inceptionYear": 2016,
-      "historicalReturns": {
-        "2020": -16.1,
-        "2021": 21.8,
-        "2022": 0.4,
-        "2023": 12.8,
-        "2024": 16.2,
-        "2025": 25.8,
-        "2026": -0.3
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "AZN",
@@ -3278,21 +2963,17 @@
         "Utilities": 5,
         "Comm. Services": 4,
         "Other": 4
-      }
+      },
+      "frankingPct": 0
     },
     "URNM": {
       "name": "BetaShares Global Uranium ETF",
       "issuer": "BetaShares",
-      "annualReturn": 28.5,
+      "annualReturn": 15.0,
       "mer": 0.69,
       "dividendYield": 0.3,
       "inceptionYear": 2022,
-      "historicalReturns": {
-        "2023": 57.0,
-        "2024": -5.1,
-        "2025": 33.6,
-        "2026": 20.2
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "CCO",
@@ -3339,23 +3020,17 @@
         "Energy": 70,
         "Materials": 25,
         "Other": 5
-      }
+      },
+      "frankingPct": 0
     },
     "HNDQ": {
       "name": "BetaShares NASDAQ 100 (AUD Hedged)",
       "issuer": "BetaShares",
-      "annualReturn": 17.1,
+      "annualReturn": 18.5,
       "mer": 0.51,
       "dividendYield": 0.3,
       "inceptionYear": 2020,
-      "historicalReturns": {
-        "2021": 27.0,
-        "2022": -35.7,
-        "2023": 50.9,
-        "2024": 24.0,
-        "2025": 19.1,
-        "2026": -1.2
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "AAPL",
@@ -3415,55 +3090,31 @@
         "Health Care": 7,
         "Industrials": 3,
         "Other": 2
-      }
+      },
+      "frankingPct": 0
     },
     "QPON": {
       "name": "BetaShares Australian Bank Senior Floating Rate Bond",
       "issuer": "BetaShares",
-      "annualReturn": 3.4,
+      "annualReturn": 5.5,
       "mer": 0.22,
       "dividendYield": 5.5,
       "inceptionYear": 2016,
-      "historicalReturns": {
-        "2018": 1.8,
-        "2019": 3.8,
-        "2020": 2.6,
-        "2021": -0.2,
-        "2022": 0.8,
-        "2023": 5.2,
-        "2024": 5.9,
-        "2025": 5.1,
-        "2026": 1.2
-      },
+      "historicalReturns": {},
       "topHoldings": [],
       "sectors": {
         "Other": 100
-      }
+      },
+      "frankingPct": 0
     },
     "IEM": {
       "name": "iShares MSCI Emerging Markets ETF",
       "issuer": "BlackRock",
-      "annualReturn": 6.8,
+      "annualReturn": 7.5,
       "mer": 0.69,
       "dividendYield": 2.5,
       "inceptionYear": 2012,
-      "historicalReturns": {
-        "2012": 12.7,
-        "2013": 12.2,
-        "2014": 4.8,
-        "2015": -5.5,
-        "2016": 12.5,
-        "2017": 25.7,
-        "2018": -4.1,
-        "2019": 15.3,
-        "2020": 8.2,
-        "2021": 1.0,
-        "2022": -14.4,
-        "2023": 7.3,
-        "2024": 16.3,
-        "2025": 23.8,
-        "2026": 2.9
-      },
+      "historicalReturns": {},
       "topHoldings": [
         {
           "ticker": "TSM",
@@ -3516,7 +3167,381 @@
         "Industrials": 5,
         "Consumer Staples": 4,
         "Other": 3
-      }
+      },
+      "frankingPct": 0
+    },
+    "AFI": {
+      "name": "Aust. Foundation Investment Co.",
+      "issuer": "AFIC",
+      "mer": 0.14,
+      "dividendYield": 3.8,
+      "annualReturn": 9.5,
+      "inceptionYear": 1928,
+      "description": "Oldest and largest ASX LIC. Actively managed diversified Australian equities, concentrated large-cap portfolio. Pays fully franked dividends. Compare vs VAS/IOZ to see active vs passive performance.",
+      "type": "LIC",
+      "historicalReturns": {
+        "2010": 2.5,
+        "2011": -11.0,
+        "2012": 19.0,
+        "2013": 19.5,
+        "2014": 4.5,
+        "2015": 3.5,
+        "2016": 11.0,
+        "2017": 11.5,
+        "2018": -3.5,
+        "2019": 21.0,
+        "2020": -1.5,
+        "2021": 15.5,
+        "2022": -2.5,
+        "2023": 11.0,
+        "2024": 10.5,
+        "2025": 9.0
+      },
+      "sectors": {
+        "Financials": 32,
+        "Materials": 18,
+        "Health Care": 12,
+        "Consumer Staples": 8,
+        "Industrials": 9,
+        "Consumer Discretionary": 7,
+        "Energy": 5,
+        "Real Estate": 3,
+        "Other": 6
+      },
+      "topHoldings": [
+        {
+          "name": "Commonwealth Bank",
+          "ticker": "CBA",
+          "weight": 10.8
+        },
+        {
+          "name": "BHP Group",
+          "ticker": "BHP",
+          "weight": 8.5
+        },
+        {
+          "name": "CSL Limited",
+          "ticker": "CSL",
+          "weight": 7.2
+        },
+        {
+          "name": "Westpac Banking",
+          "ticker": "WBC",
+          "weight": 5.1
+        },
+        {
+          "name": "National Aust. Bank",
+          "ticker": "NAB",
+          "weight": 5.0
+        }
+      ],
+      "frankingPct": 1.0
+    },
+    "ARG": {
+      "name": "Argo Investments",
+      "issuer": "Argo",
+      "mer": 0.13,
+      "dividendYield": 3.5,
+      "annualReturn": 9.5,
+      "inceptionYear": 1946,
+      "description": "Second largest ASX LIC. Actively managed diversified Australian equities, similar holdings to AFI and passive AU index. Fully franked dividends.",
+      "type": "LIC",
+      "historicalReturns": {
+        "2010": 2.0,
+        "2011": -10.5,
+        "2012": 19.5,
+        "2013": 19.0,
+        "2014": 4.0,
+        "2015": 3.0,
+        "2016": 11.5,
+        "2017": 11.0,
+        "2018": -3.0,
+        "2019": 21.5,
+        "2020": -1.0,
+        "2021": 16.0,
+        "2022": -2.0,
+        "2023": 11.5,
+        "2024": 11.0,
+        "2025": 9.5
+      },
+      "sectors": {
+        "Financials": 31,
+        "Materials": 19,
+        "Health Care": 11,
+        "Consumer Staples": 9,
+        "Industrials": 8,
+        "Consumer Discretionary": 7,
+        "Energy": 5,
+        "Real Estate": 4,
+        "Other": 6
+      },
+      "topHoldings": [
+        {
+          "name": "Commonwealth Bank",
+          "ticker": "CBA",
+          "weight": 10.5
+        },
+        {
+          "name": "BHP Group",
+          "ticker": "BHP",
+          "weight": 8.8
+        },
+        {
+          "name": "CSL Limited",
+          "ticker": "CSL",
+          "weight": 7.0
+        },
+        {
+          "name": "ANZ Banking Group",
+          "ticker": "ANZ",
+          "weight": 5.0
+        },
+        {
+          "name": "National Aust. Bank",
+          "ticker": "NAB",
+          "weight": 4.8
+        }
+      ],
+      "frankingPct": 1.0
+    },
+    "WAM": {
+      "name": "WAM Capital",
+      "issuer": "Wilson Asset Mgmt",
+      "mer": 1.5,
+      "dividendYield": 5.5,
+      "annualReturn": 8.5,
+      "inceptionYear": 1999,
+      "description": "Active Australian small & mid-cap LIC managed by Geoff Wilson. Higher MER than passive funds. Performance has been mixed in recent years. Pays fully franked dividends from income and capital gains.",
+      "type": "LIC",
+      "historicalReturns": {
+        "2015": 15.0,
+        "2016": 8.0,
+        "2017": 14.0,
+        "2018": -6.5,
+        "2019": 14.0,
+        "2020": -7.0,
+        "2021": 22.0,
+        "2022": -8.0,
+        "2023": 6.0,
+        "2024": 2.0,
+        "2025": 3.5
+      },
+      "sectors": {
+        "Financials": 28,
+        "Consumer Discretionary": 18,
+        "Materials": 15,
+        "Industrials": 12,
+        "Health Care": 10,
+        "Info. Technology": 8,
+        "Other": 9
+      },
+      "topHoldings": [
+        {
+          "name": "Macquarie Group",
+          "ticker": "MQG",
+          "weight": 5.5
+        },
+        {
+          "name": "ANZ Banking Group",
+          "ticker": "ANZ",
+          "weight": 4.8
+        },
+        {
+          "name": "Westpac Banking",
+          "ticker": "WBC",
+          "weight": 4.2
+        },
+        {
+          "name": "National Aust. Bank",
+          "ticker": "NAB",
+          "weight": 3.9
+        },
+        {
+          "name": "Goodman Group",
+          "ticker": "GMG",
+          "weight": 3.5
+        }
+      ],
+      "frankingPct": 1.0
+    },
+    "WGB": {
+      "name": "WAM Leaders",
+      "issuer": "Wilson Asset Mgmt",
+      "mer": 0.35,
+      "dividendYield": 5.8,
+      "annualReturn": 8.0,
+      "inceptionYear": 2016,
+      "description": "Active Australian large-cap LIC by Wilson Asset Management. Lower MER than WAM Capital, targeting ASX 200 large-caps. Compare vs VAS/IOZ for active-vs-passive insight.",
+      "type": "LIC",
+      "historicalReturns": {
+        "2017": 13.5,
+        "2018": -5.5,
+        "2019": 22.0,
+        "2020": -2.5,
+        "2021": 18.0,
+        "2022": -4.5,
+        "2023": 9.0,
+        "2024": 8.5,
+        "2025": 7.0
+      },
+      "sectors": {
+        "Financials": 33,
+        "Materials": 20,
+        "Health Care": 10,
+        "Industrials": 9,
+        "Consumer Staples": 8,
+        "Consumer Discretionary": 7,
+        "Energy": 5,
+        "Other": 8
+      },
+      "topHoldings": [
+        {
+          "name": "Commonwealth Bank",
+          "ticker": "CBA",
+          "weight": 11.0
+        },
+        {
+          "name": "BHP Group",
+          "ticker": "BHP",
+          "weight": 9.2
+        },
+        {
+          "name": "CSL Limited",
+          "ticker": "CSL",
+          "weight": 6.8
+        },
+        {
+          "name": "ANZ Banking Group",
+          "ticker": "ANZ",
+          "weight": 5.2
+        },
+        {
+          "name": "Westpac Banking",
+          "ticker": "WBC",
+          "weight": 4.9
+        }
+      ],
+      "frankingPct": 1.0
+    },
+    "MFF": {
+      "name": "MFF Capital Investments",
+      "issuer": "Magellan",
+      "mer": 1.25,
+      "dividendYield": 2.0,
+      "annualReturn": 16.0,
+      "inceptionYear": 2006,
+      "description": "Actively managed global equity LIC by Chris Mackay (formerly Magellan). Concentrated portfolio of international quality businesses. Strong long-run track record vs VGS/QUAL; higher MER.",
+      "type": "LIC",
+      "historicalReturns": {
+        "2015": 28.0,
+        "2016": 12.0,
+        "2017": 18.5,
+        "2018": 3.5,
+        "2019": 32.0,
+        "2020": 5.5,
+        "2021": 22.5,
+        "2022": -12.0,
+        "2023": 24.0,
+        "2024": 30.0,
+        "2025": 14.0
+      },
+      "sectors": {
+        "Info. Technology": 28,
+        "Consumer Discretionary": 18,
+        "Financials": 15,
+        "Health Care": 12,
+        "Comm. Services": 10,
+        "Consumer Staples": 8,
+        "Other": 9
+      },
+      "topHoldings": [
+        {
+          "name": "Microsoft",
+          "ticker": "MSFT",
+          "weight": 9.5
+        },
+        {
+          "name": "Alphabet (Google)",
+          "ticker": "GOOGL",
+          "weight": 8.0
+        },
+        {
+          "name": "Visa",
+          "ticker": "V",
+          "weight": 7.5
+        },
+        {
+          "name": "Meta Platforms",
+          "ticker": "META",
+          "weight": 7.0
+        },
+        {
+          "name": "Mastercard",
+          "ticker": "MA",
+          "weight": 6.5
+        }
+      ],
+      "frankingPct": 0.05
+    },
+    "PMC": {
+      "name": "Platinum Capital",
+      "issuer": "Platinum AM",
+      "mer": 1.1,
+      "dividendYield": 4.0,
+      "annualReturn": 5.5,
+      "inceptionYear": 1994,
+      "description": "Active global equity LIC with a contrarian, value-oriented approach. Has significantly underperformed passive international ETFs over the last decade. Useful for illustrating the cost of active management with underperformance.",
+      "type": "LIC",
+      "historicalReturns": {
+        "2015": 23.5,
+        "2016": 0.5,
+        "2017": 7.0,
+        "2018": -12.5,
+        "2019": 18.0,
+        "2020": -8.5,
+        "2021": 8.0,
+        "2022": -18.0,
+        "2023": 5.5,
+        "2024": -2.5,
+        "2025": 1.0
+      },
+      "sectors": {
+        "Financials": 20,
+        "Consumer Discretionary": 16,
+        "Industrials": 14,
+        "Info. Technology": 12,
+        "Energy": 10,
+        "Materials": 10,
+        "Other": 18
+      },
+      "topHoldings": [
+        {
+          "name": "Samsung Electronics",
+          "ticker": "005930",
+          "weight": 4.5
+        },
+        {
+          "name": "Alphabet (Google)",
+          "ticker": "GOOGL",
+          "weight": 4.0
+        },
+        {
+          "name": "AIA Group",
+          "ticker": "1299",
+          "weight": 3.8
+        },
+        {
+          "name": "Citigroup",
+          "ticker": "C",
+          "weight": 3.5
+        },
+        {
+          "name": "Meituan",
+          "ticker": "3690",
+          "weight": 3.2
+        }
+      ],
+      "frankingPct": 0.05
     }
   }
 }

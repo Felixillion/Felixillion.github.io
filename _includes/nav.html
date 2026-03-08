@@ -1,22 +1,118 @@
-<nav>
-    <div class="container">
-        <div class="logo"><a href="{{ '/' | relative_url }}"
-                style="text-decoration: none; color: inherit;">Felixillion</a></div>
-        <ul>
-            <li><a href="{{ '/' | relative_url }}" {% if page.url=="/" %}class="active" {% endif %}>Home</a></li>
-            <li><a href="{{ '/gallery.html' | relative_url }}" {% if page.url=="/gallery.html" %}class="active" {% endif
-                    %}>Gallery</a></li>
-            <li><a href="{{ '/astrobiology.html' | relative_url }}" {% if page.url contains "astrobiology"
-                    %}class="active" style="color: var(--fitc-green);" {% endif %}>Astrobiology</a></li>
-            <li><a href="{{ '/frequent-flyer.html' | relative_url }}" {% if page.url=="/frequent-flyer.html"
-                    %}class="active" {% endif %}>Frequent Flyer</a></li>
-        </ul>
+<nav id="site-nav">
+  <div class="container nav-inner">
+    <a href="{{ '/' | relative_url }}" class="nav-brand">🧬 Felixillion</a>
+
+    <!-- Desktop links -->
+    <div class="nav-desktop">
+      <a href="{{ '/gallery.html' | relative_url }}" class="nav-link">Gallery</a>
+      <a href="{{ '/astrobiology.html' | relative_url }}" class="nav-link">🔭 Cosmic Lab</a>
+      <a href="{{ '/frequent-flyer.html' | relative_url }}" class="nav-link">✈ FF Points</a>
+      <a href="{{ '/etf-tools.html' | relative_url }}" class="nav-link nav-link-cta">📊 ETF Tools</a>
     </div>
+
+    <button id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="nav-mobile" aria-hidden="true">
+    <a href="{{ '/' | relative_url }}" class="nav-mobile-link">🏠 Home</a>
+    <a href="{{ '/gallery.html' | relative_url }}" class="nav-mobile-link">🖼 Gallery</a>
+    <a href="{{ '/astrobiology.html' | relative_url }}" class="nav-mobile-link">🔭 Cosmic Lab</a>
+    <a href="{{ '/frequent-flyer.html' | relative_url }}" class="nav-mobile-link">✈ FF Points</a>
+    <a href="{{ '/etf-tools.html' | relative_url }}" class="nav-mobile-link nav-mobile-cta">📊 ETF Tools</a>
+  </div>
 </nav>
 
 <style>
-    /* Add active class style locally if not in main CSS yet, though it should be in style.css */
-    nav a.active {
-        color: var(--fitc-green);
-    }
+#site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(2, 8, 24, 0.88);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--glass-border);
+}
+.nav-inner {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 1rem;
+  padding-top: .6rem; padding-bottom: .6rem;
+}
+.nav-brand {
+  font-family: 'Outfit', sans-serif; font-weight: 800;
+  font-size: 1.05rem; color: white; text-decoration: none;
+  white-space: nowrap; letter-spacing: -.01em;
+}
+.nav-desktop { display: flex; align-items: center; gap: .15rem; }
+.nav-link {
+  padding: .4rem .7rem; border-radius: 6px;
+  color: var(--text-secondary); text-decoration: none;
+  font-size: .85rem; font-weight: 500;
+  transition: color .2s, background .2s; white-space: nowrap;
+}
+.nav-link:hover, .nav-link.active { color: white; background: rgba(255,255,255,.07); }
+.nav-link-cta {
+  border: 1px solid rgba(56,189,248,.35);
+  color: var(--dapi-blue) !important;
+  margin-left: .25rem;
+}
+.nav-link-cta:hover { background: rgba(56,189,248,.08) !important; }
+#nav-hamburger {
+  display: none;
+  background: transparent; cursor: pointer;
+  border: 1px solid var(--glass-border); color: white;
+  border-radius: 8px; padding: .38rem .65rem;
+  font-size: 1.05rem; line-height: 1;
+  transition: background .2s;
+}
+#nav-hamburger:hover { background: rgba(255,255,255,.07); }
+#nav-mobile {
+  display: none; flex-direction: column; gap: .15rem;
+  padding: .5rem 1rem .75rem;
+  border-top: 1px solid var(--glass-border);
+}
+#nav-mobile.open { display: flex; }
+.nav-mobile-link {
+  display: block; padding: .6rem .8rem; border-radius: 8px;
+  color: var(--text-secondary); text-decoration: none;
+  font-size: .9rem; font-weight: 500;
+  transition: background .15s, color .15s;
+}
+.nav-mobile-link:hover, .nav-mobile-link.active { background: rgba(255,255,255,.05); color: white; }
+.nav-mobile-cta { color: var(--dapi-blue) !important; }
+/* Responsive */
+@media (max-width: 640px) {
+  .nav-desktop  { display: none; }
+  #nav-hamburger { display: block; }
+}
 </style>
+
+<script>
+(function () {
+  const btn  = document.getElementById('nav-hamburger');
+  const menu = document.getElementById('nav-mobile');
+  if (!btn || !menu) return;
+
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    btn.textContent = open ? '✕' : '☰';
+    btn.setAttribute('aria-expanded', open);
+    menu.setAttribute('aria-hidden', !open);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', e => {
+    if (!document.getElementById('site-nav').contains(e.target)) {
+      menu.classList.remove('open');
+      btn.textContent = '☰';
+      btn.setAttribute('aria-expanded', false);
+    }
+  });
+
+  // Mark active link
+  const here = window.location.pathname.replace(/\/$/, '') || '/';
+  document.querySelectorAll('.nav-link, .nav-mobile-link').forEach(a => {
+    const href = (a.getAttribute('href') || '').replace(/\/$/, '') || '/';
+    if (href === here || (here.endsWith(href) && href !== '/')) {
+      a.classList.add('active');
+    }
+  });
+})();
+</script>

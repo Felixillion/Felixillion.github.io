@@ -20,8 +20,14 @@
 const fs   = require('fs');
 const path = require('path');
 
-// ── Output path ────────────────────────────────────────────────────────────────
-const OUT_PATH = path.join(__dirname, '..', '..', '..', 'data', 'astrology_daily.json');
+// ── Output paths ────────────────────────────────────────────────────────────────
+// The file is written to TWO locations:
+//   data/astrology_daily.json   → served as a static file, fetched by JS (fetch('/data/...'))
+//   _data/astrology_daily.json  → read by Jekyll at build time as site.data.astrology_daily
+// Both are committed by the GitHub Action so Jekyll re-builds with fresh data on push.
+const REPO_ROOT  = path.join(__dirname, '..', '..', '..');
+const OUT_DATA   = path.join(REPO_ROOT, 'data',  'astrology_daily.json');
+const OUT_JDATA  = path.join(REPO_ROOT, '_data', 'astrology_daily.json');
 
 // ── Zodiac reference data ──────────────────────────────────────────────────────
 const SIGNS = [
@@ -474,12 +480,13 @@ function main() {
     ],
   };
 
-  // Write output
-  const outDir = path.dirname(OUT_PATH);
-  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
-
-  fs.writeFileSync(OUT_PATH, JSON.stringify(output, null, 2));
-  console.log(`✅ Wrote ${OUT_PATH}`);
+  // Write to both data/ (static fetch) and _data/ (Jekyll site.data)
+  for (const outPath of [OUT_DATA, OUT_JDATA]) {
+    const outDir = path.dirname(outPath);
+    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(outPath, JSON.stringify(output, null, 2));
+    console.log(`✅ Wrote ${outPath}`);
+  }
   console.log(`   Date: ${dateStr}`);
   console.log(`   Sun: ${positions.sun.sign} ${positions.sun.degree}°`);
   console.log(`   Moon: ${positions.moon.sign} ${positions.moon.degree}° (${positions.moon.phase})`);
