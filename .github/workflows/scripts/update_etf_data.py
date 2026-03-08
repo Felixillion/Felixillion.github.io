@@ -14,7 +14,7 @@ Data source: Yahoo Finance via the `yfinance` library.
 
 Usage:
   pip install yfinance
-  python scripts/update_etf_data.py
+  python .github/workflows/scripts/update_etf_data.py
 
 Or via GitHub Actions (see .github/workflows/daily-update.yml).
 """

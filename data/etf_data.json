@@ -3,7 +3,7 @@
     "lastUpdated": "2026-03-08",
     "sources": [
       "CALCULATION NOTE: In Historical mode, stored returns are TOTAL RETURNS net of MER (sourced from Yahoo Finance adjusted close prices or fund factsheets which report after-fee returns). MER is NOT deducted again in the calculation to avoid double-counting. In Projection mode, the annualReturn field is a gross estimate and MER IS deducted.",
-      "IMPORTANT DATA NOTE (March 2026): Annual returns for VAS, A200, IOZ, STW have been corrected to total returns (price appreciation + dividends reinvested), sourced from Yahoo Finance adjusted close prices. Previous values were price-only (excluding ~4.5% p.a. dividends) which significantly understated returns. Run scripts/update_etf_data.py via GitHub Actions for automatic updates.",
+      "IMPORTANT DATA NOTE (March 2026): Annual returns for VAS, A200, IOZ, STW have been corrected to total returns (price appreciation + dividends reinvested), sourced from Yahoo Finance adjusted close prices. Previous values were price-only (excluding ~4.5% p.a. dividends) which significantly understated returns. Run .github/workflows/scripts/update_etf_data.py via GitHub Actions for automatic updates.",
       "Annual total returns sourced from ASX fund factsheets and issuer websites (Vanguard AU, BetaShares, iShares, VanEck).",
       "MER figures from current product disclosure statements (PDS) on each issuer's website.",
       "Dividend yields are trailing 12-month estimates from ASX announcements and fund distributions.",

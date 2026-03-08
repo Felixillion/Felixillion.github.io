@@ -42,7 +42,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run ETF data updater
-        run: python scripts/update_etf_data.py
+        run: python .github/workflows/scripts/update_etf_data.py
         continue-on-error: true   # don't fail the whole workflow if Yahoo is down
 
       - name: Commit and push
