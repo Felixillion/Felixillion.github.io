@@ -20,8 +20,7 @@
   function resize() {
     W = canvas.width  = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    if (currentTheme === 'composer') initComposer();
-    if (currentTheme === 'cats')     initCats();
+    if (currentTheme) INITS[currentTheme]?.();
   }
   window.addEventListener('resize', resize);
   resize();
@@ -374,25 +373,242 @@
   }
 
   // ══════════════════════════════════════════════════════════════════════════
+  //  THEME 4 — CV  (warm academic: floating mathematical / Greek symbols)
+  // ══════════════════════════════════════════════════════════════════════════
+  const CV_SYMS = 'αβγδεζηθλμνξπρστυφψω∂∇∫∑∏ΔΣΩ∞≈≠±√∝∈∀∃⊂∪∩⊕∠∥⊥ℵℏℒℝ'.split('').filter(c=>c.trim());
+  let cvGlyphs = [], cvTime = 0;
+
+  function initCV() {
+    cvTime = 0;
+    cvGlyphs = Array.from({length:45}, () => ({
+      g: CV_SYMS[Math.floor(Math.random()*CV_SYMS.length)],
+      x: Math.random()*W, y: Math.random()*H,
+      sz: 11 + Math.random()*30,
+      vx: (Math.random()-.5)*.11, vy: (Math.random()-.5)*.09,
+      alpha: .05 + Math.random()*.22,
+      phase: Math.random()*Math.PI*2, pspd: .18+Math.random()*.35,
+      color: Math.random()<.55 ? '#e2b96e' : (Math.random()<.5 ? '#a78bfa' : '#94a3b8'),
+    }));
+  }
+
+  function stepCV() {
+    cvTime += .007;
+    ctx.fillStyle='rgba(10,5,2,0.22)'; ctx.fillRect(0,0,W,H);
+    // Warm amber radial
+    const rg=ctx.createRadialGradient(W*.5,H*.45,0,W*.5,H*.45,Math.min(W,H)*.55);
+    rg.addColorStop(0,'rgba(226,185,110,0.07)'); rg.addColorStop(1,'transparent');
+    ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+    ctx.fontKerning='normal';
+    for(const g of cvGlyphs){
+      g.x+=g.vx; g.y+=g.vy;
+      if(g.x<-30)g.x=W+30; if(g.x>W+30)g.x=-30;
+      if(g.y<-30)g.y=H+30; if(g.y>H+30)g.y=-30;
+      const a=g.alpha+Math.sin(cvTime*g.pspd+g.phase)*.06;
+      ctx.globalAlpha=Math.max(.02,a); ctx.fillStyle=g.color;
+      ctx.font=`${g.sz}px Georgia,serif`;
+      ctx.fillText(g.g, g.x, g.y);
+    }
+    ctx.globalAlpha=1;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  THEME 5 — Gallery  (IMC / spectral flow: vibrant fluorescent cell blobs)
+  // ══════════════════════════════════════════════════════════════════════════
+  const GAL_COLORS=['#ff00ff','#39ff14','#38bdf8','#ff4136','#fbbf24','#a78bfa','#00ffcc','#ff69b4'];
+  let galParts=[], galTime=0;
+
+  function initGallery() {
+    galTime=0; galParts=[];
+    const n=Math.min(72,Math.floor((W*H)/10000));
+    // Six loose fluorescent clusters — like an IMC image
+    const centres=Array.from({length:6},()=>({
+      x: W*.1+Math.random()*W*.8, y: H*.1+Math.random()*H*.8,
+      col: GAL_COLORS[Math.floor(Math.random()*GAL_COLORS.length)],
+    }));
+    for(let i=0;i<n;i++){
+      const c=centres[i%centres.length];
+      galParts.push({
+        x:c.x+(Math.random()-.5)*150, y:c.y+(Math.random()-.5)*100,
+        vx:(Math.random()-.5)*.18, vy:(Math.random()-.5)*.15,
+        r:Math.random()*5+2, color:c.col,
+        alpha:Math.random()*.55+.2,
+        phase:Math.random()*Math.PI*2,
+      });
+    }
+  }
+
+  function stepGallery() {
+    galTime+=.016;
+    ctx.fillStyle='rgba(2,2,12,0.26)'; ctx.fillRect(0,0,W,H);
+    for(const p of galParts){
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      const pulse=.7+.3*Math.sin(galTime*2+p.phase);
+      const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*7);
+      g.addColorStop(0,p.color); g.addColorStop(.35,p.color+'66'); g.addColorStop(1,'transparent');
+      ctx.globalAlpha=p.alpha*pulse; ctx.fillStyle=g;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*7,0,Math.PI*2); ctx.fill();
+      // Bright core
+      ctx.globalAlpha=p.alpha*pulse*.8;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.color; ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  THEME 6 — FF Points  (flight: star field + airplane contrails)
+  // ══════════════════════════════════════════════════════════════════════════
+  let ffStars=[], ffPlanes=[], ffTime=0;
+
+  function initFF() {
+    ffTime=0;
+    ffStars=Array.from({length:130},()=>({
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.4+.2,
+      alpha:Math.random()*.55+.1,
+      ph:Math.random()*Math.PI*2, sp:.25+Math.random()*.7,
+    }));
+    ffPlanes=Array.from({length:4},()=>({
+      x:-60+Math.random()*W, y:.1*H+Math.random()*.8*H,
+      ang:(Math.random()-.5)*.25,
+      spd:.55+Math.random()*.5,
+      trail:[],
+      col:Math.random()<.5?'#38bdf8':'#ffffff',
+    }));
+  }
+
+  function stepFF() {
+    ffTime+=.01;
+    ctx.fillStyle='rgba(2,4,18,0.22)'; ctx.fillRect(0,0,W,H);
+    // Subtle blue tint from below
+    const bg=ctx.createLinearGradient(0,H*.6,0,H);
+    bg.addColorStop(0,'transparent'); bg.addColorStop(1,'rgba(30,58,120,0.12)');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+    for(const s of ffStars){
+      const a=s.alpha*(.6+.4*Math.sin(ffTime*s.sp+s.ph));
+      ctx.globalAlpha=a; ctx.fillStyle='#e2e8f0';
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+    }
+
+    for(const p of ffPlanes){
+      p.x+=Math.cos(p.ang)*p.spd; p.y+=Math.sin(p.ang)*p.spd*.4;
+      if(p.x>W+60){p.x=-60; p.y=.1*H+Math.random()*.8*H; p.trail=[];}
+      p.trail.push({x:p.x,y:p.y});
+      if(p.trail.length>90)p.trail.shift();
+      // Contrail
+      ctx.setLineDash([5,5]);
+      for(let i=1;i<p.trail.length;i++){
+        const f=i/p.trail.length;
+        ctx.globalAlpha=f*.28; ctx.strokeStyle=p.col;
+        ctx.lineWidth=Math.max(.3,1.8-f*1.4);
+        ctx.beginPath(); ctx.moveTo(p.trail[i-1].x,p.trail[i-1].y);
+        ctx.lineTo(p.trail[i].x,p.trail[i].y); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      // Plane body (small delta wing silhouette)
+      ctx.globalAlpha=.88; ctx.fillStyle=p.col;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.ang);
+      ctx.beginPath(); ctx.moveTo(10,0); ctx.lineTo(-6,-4); ctx.lineTo(-3,0); ctx.lineTo(-6,4); ctx.closePath();
+      ctx.fill(); ctx.restore();
+    }
+    ctx.globalAlpha=1;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  THEME 7 — ETF Tools  (finance: animated candlestick bars + green glow)
+  // ══════════════════════════════════════════════════════════════════════════
+  let etfBars=[], etfDots=[], etfTime=0;
+
+  function initETF() {
+    etfTime=0;
+    const n=Math.max(12, Math.floor(W/24));
+    etfBars=Array.from({length:n},(_, i)=>{
+      const h=40+Math.random()*H*.38;
+      return {
+        x:(i+.5)*(W/n), h, th:40+Math.random()*H*.38,
+        spd:.012+Math.random()*.018,
+        col:Math.random()<.68?'#39ff14':'#ef4444',
+      };
+    });
+    etfDots=Array.from({length:35},()=>({
+      x:Math.random()*W, y:H*.7+Math.random()*H*.3,
+      vy:-.25-.35*Math.random(),
+      alpha:Math.random()*.45+.1,
+      life:Math.random(), decay:.002+Math.random()*.004,
+    }));
+  }
+
+  function stepETF() {
+    etfTime+=.013;
+    ctx.fillStyle='rgba(2,10,3,0.24)'; ctx.fillRect(0,0,W,H);
+    // Subtle green radial glow
+    const rg=ctx.createRadialGradient(W*.5,H,0,W*.5,H,H);
+    rg.addColorStop(0,'rgba(57,255,20,0.06)'); rg.addColorStop(.6,'transparent');
+    ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+
+    const bw=Math.max(6,(W/etfBars.length)*.62);
+    for(const b of etfBars){
+      b.h+=(b.th-b.h)*b.spd;
+      if(Math.abs(b.h-b.th)<1){b.th=40+Math.random()*H*.42; b.col=b.th>b.h?'#39ff14':'#ef4444';}
+      const by=H-b.h;
+      ctx.globalAlpha=.18; ctx.fillStyle=b.col;
+      ctx.fillRect(b.x-bw/2,by,bw,b.h);
+      // Candle top
+      ctx.globalAlpha=.55; ctx.fillRect(b.x-bw/2,by,bw,2);
+      // Wick
+      ctx.globalAlpha=.25; ctx.strokeStyle=b.col; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(b.x,by-8); ctx.lineTo(b.x,by); ctx.stroke();
+    }
+
+    // Rising particles
+    for(const d of etfDots){
+      d.y+=d.vy; d.life-=d.decay;
+      if(d.life<=0){d.y=H; d.x=Math.random()*W; d.life=.7+Math.random()*.5;}
+      ctx.globalAlpha=d.life*d.alpha; ctx.fillStyle='#39ff14';
+      ctx.beginPath(); ctx.arc(d.x,d.y,1.3,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
   //  Loop + theme switching
   // ══════════════════════════════════════════════════════════════════════════
-  const STEPS={bio:stepBio,composer:stepComposer,cats:stepCats};
-  const INITS={bio:initBio,composer:initComposer,cats:initCats};
+  const STEPS={bio:stepBio,composer:stepComposer,cats:stepCats,cv:stepCV,gallery:stepGallery,ff:stepFF,etf:stepETF};
+  const INITS={bio:initBio,composer:initComposer,cats:initCats,cv:initCV,gallery:initGallery,ff:initFF,etf:initETF};
 
   function loop() { if(currentTheme) STEPS[currentTheme]?.(); requestAnimationFrame(loop); }
 
   function activateTheme(t) {
-    if (t===currentTheme) return;
-    currentTheme=t; ctx.clearRect(0,0,W,H); INITS[t]?.(); show();
+    if (t === currentTheme) { show(); return; } // same theme — re-show without re-init
+    currentTheme = t;
+    ctx.clearRect(0, 0, W, H);
+    INITS[t]?.();
+    show();
   }
 
   document.querySelectorAll('[data-hero]').forEach(el=>{
     const t=el.dataset.hero;
     el.addEventListener('mouseenter',()=>activateTheme(t));
     el.addEventListener('mouseleave',()=>hide());
-    el.addEventListener('touchstart',()=>activateTheme(t),{passive:true});
-    el.addEventListener('touchend',  ()=>hide(),           {passive:true});
+
+    if(el.tagName==='A'){
+      // Nav links: show animation on touchstart; page navigates on touchend naturally
+      el.addEventListener('touchstart',()=>activateTheme(t),{passive:true});
+    } else {
+      // Identity spans: tap to toggle — tap same span again to hide, tap elsewhere hides too
+      el.addEventListener('touchstart',e=>{
+        e.stopPropagation();
+        if(currentTheme===t && backdrop.style.opacity==='1'){ hide(); }
+        else { activateTheme(t); }
+      },{passive:true});
+    }
   });
+
+  // Tap on anything that isn't a data-hero element collapses the backdrop on mobile
+  document.addEventListener('touchstart',()=>hide(),{passive:true});
 
   loop();
 })();

@@ -3,7 +3,6 @@ layout: default
 title: Dr Lord Felix Merlin Daniel Marsh-Wakefield | Portfolio
 description: "Bioinformagician and computational researcher specialising in spatial biology and multi-omics. Exploring ETF investing, travel hacking, and cosmic curiosity."
 footer_scripts: assets/js/hero.js
-head_scripts: '<script type="module" src="assets/js/home_interactions.js"></script>'
 ---
 
 <!-- Full-viewport animated backdrop (populated by hero.js on subheading hover) -->
@@ -23,10 +22,10 @@ head_scripts: '<script type="module" src="assets/js/home_interactions.js"></scri
       <span class="subheading" data-hero="cats"     style="cursor:default;">Lover of Cats</span>
     </div>
     <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
-      <a href="{{ '/cv.html' | relative_url }}"              class="subheading" style="text-decoration:none;">📄 CV</a>
-      <a href="{{ '/gallery.html' | relative_url }}"         class="subheading" style="text-decoration:none;">View Gallery</a>
-      <a href="{{ '/frequent-flyer.html' | relative_url }}"  class="subheading" style="text-decoration:none;">Explore FF Points</a>
-      <a href="{{ '/etf-tools.html' | relative_url }}"       class="subheading" style="text-decoration:none;">ETF Tools</a>
+      <a href="{{ '/cv.html' | relative_url }}"              class="subheading" data-hero="cv"      style="text-decoration:none;">📄 CV</a>
+      <a href="{{ '/gallery.html' | relative_url }}"         class="subheading" data-hero="gallery" style="text-decoration:none;">🔬 Gallery</a>
+      <a href="{{ '/frequent-flyer.html' | relative_url }}"  class="subheading" data-hero="ff"      style="text-decoration:none;">✈️ FF Points</a>
+      <a href="{{ '/etf-tools.html' | relative_url }}"       class="subheading" data-hero="etf"     style="text-decoration:none;">📊 ETF Tools</a>
     </div>
   </div>
 </section>
