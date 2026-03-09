@@ -3,28 +3,28 @@
   "planetary_positions": {
     "sun": {
       "sign": "Pisces",
-      "degree": 18.4,
+      "degree": 18.8,
       "retrograde": false
     },
     "moon": {
       "sign": "Scorpio",
-      "degree": 22.7,
+      "degree": 26.7,
       "retrograde": false,
-      "phase": "Waning Gibbous"
+      "phase": "Last Quarter"
     },
     "mercury": {
       "sign": "Virgo",
-      "degree": 23.5,
+      "degree": 24.8,
       "retrograde": false
     },
     "venus": {
       "sign": "Aries",
-      "degree": 23.3,
+      "degree": 23.9,
       "retrograde": false
     },
     "mars": {
       "sign": "Aquarius",
-      "degree": 26.9,
+      "degree": 27.1,
       "retrograde": false
     },
     "jupiter": {
@@ -39,7 +39,7 @@
     },
     "uranus": {
       "sign": "Gemini",
-      "degree": 6.1,
+      "degree": 6.2,
       "retrograde": false
     },
     "neptune": {
@@ -51,19 +51,11 @@
   "major_aspects": [
     {
       "planets": [
-        "Mercury",
-        "Venus"
-      ],
-      "type": "quincunx",
-      "orb": 0.2
-    },
-    {
-      "planets": [
         "Moon",
-        "Venus"
+        "Mars"
       ],
-      "type": "quincunx",
-      "orb": 0.6
+      "type": "square",
+      "orb": 0.4
     },
     {
       "planets": [
@@ -71,7 +63,15 @@
         "Jupiter"
       ],
       "type": "trine",
-      "orb": 0.8
+      "orb": 0.5
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Venus"
+      ],
+      "type": "quincunx",
+      "orb": 1
     },
     {
       "planets": [
@@ -79,15 +79,23 @@
         "Mercury"
       ],
       "type": "sextile",
-      "orb": 0.8
+      "orb": 1.9
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Mars"
+      ],
+      "type": "quincunx",
+      "orb": 2.3
     },
     {
       "planets": [
         "Moon",
-        "Jupiter"
+        "Venus"
       ],
-      "type": "trine",
-      "orb": 3.5
+      "type": "quincunx",
+      "orb": 2.8
     },
     {
       "planets": [
@@ -95,7 +103,7 @@
         "Mars"
       ],
       "type": "sextile",
-      "orb": 3.6
+      "orb": 3.2
     },
     {
       "planets": [
@@ -103,30 +111,22 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 3.8
-    },
-    {
-      "planets": [
-        "Venus",
-        "Jupiter"
-      ],
-      "type": "square",
-      "orb": 4.1
+      "orb": 3.9
     }
   ],
   "readings": {
-    "Aries": "High-velocity particle detected. Collision imminent — harness the momentum before decay.",
-    "Taurus": "Crystal lattice integrity verified. Structural persistence exceeds all stress-test parameters.",
-    "Gemini": "Synaptic cross-talk elevated. Reduce cognitive load; parallel processing exceeds bandwidth.",
-    "Cancer": "Immune response primed. Threat neutralised at the boundary before reaching the core.",
-    "Leo": "Signal-to-noise ratio excellent. The sample stands out from background — no amplification needed.",
-    "Virgo": "Calibration curve linear across five orders of magnitude. Measurement uncertainty negligible.",
-    "Libra": "Phase diagram intersection: triple point. All three states coexist — a rare stability window.",
-    "Scorpio": "Redox potential maximally negative. Strong reductant active — old bonds will be broken today.",
-    "Sagittarius": "Long-read sequencing initiated. Full-length transcript reveals structure invisible to short reads.",
-    "Capricorn": "Compression test passed at maximum load. Material yields precisely at the theoretical limit.",
-    "Aquarius": "Atmospheric anomaly recorded. Standard model fails — new physics required to explain the signal.",
-    "Pisces": "Diffusion coefficient elevated. Solute dispersing freely through the medium without direction."
+    "Aries": "Plasma state achieved. Too hot for liquid, too energised for solid — a unique phase of matter.",
+    "Taurus": "Van der Waals interactions accumulating. Individually weak, collectively they hold everything in place.",
+    "Gemini": "Neurotransmitter reuptake rapid. Recovery between thoughts faster than average — process more cycles.",
+    "Cancer": "The basement membrane holds. Structural anchor of the epithelium — unseen, essential, permanent.",
+    "Leo": "Expression construct driven by CMV promoter — maximum constitutive transcription. Always on, always high.",
+    "Virgo": "Protein sequence confirmed by Edman degradation. Every residue identified in order — no ambiguity.",
+    "Libra": "Bilateral symmetry verified. Left and right halves superimposable — developmental precision confirmed.",
+    "Scorpio": "Transposon mobilisation event. Genetic elements jumping to new loci — the genome editing itself.",
+    "Sagittarius": "GWAS identifies locus on novel chromosome region. The answer was always outside the candidate gene list.",
+    "Capricorn": "Inorganic mineral matrix: apatite and collagen — hard tissue engineering at its most durable.",
+    "Aquarius": "Quasicrystal symmetry confirmed. Fivefold rotational symmetry in solid state — forbidden by old theory.",
+    "Pisces": "Sol-gel transition approaching. The boundary between fluid and solid dissolves under current conditions."
   },
   "compatibility_matrix": {
     "Aries-Aries": {
@@ -138,7 +138,7 @@
     "Aries-Taurus": {
       "score": 55,
       "level": "Moderate",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Endothermic dissolution: fire supplies the energy the earth needs to release its minerals.",
       "element_harmony": 55
     },
     "Aries-Gemini": {
@@ -156,13 +156,13 @@
     "Aries-Leo": {
       "score": 72,
       "level": "Strong",
-      "synthesis": "Thermal runaway risk. Regulate heat exchange or the reaction overshoots.",
+      "synthesis": "Thermite reaction: iron oxide meets aluminium. Produces molten iron and blinding light.",
       "element_harmony": 88
     },
     "Aries-Virgo": {
       "score": 61,
       "level": "Compatible",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Smelting: ore reduced by coke combustion. Fire extracts the metal earth has stored for aeons.",
       "element_harmony": 55
     },
     "Aries-Libra": {
@@ -174,19 +174,19 @@
     "Aries-Scorpio": {
       "score": 37,
       "level": "Volatile",
-      "synthesis": "Steam generated at interface. Energy converts but both phases are changed by contact.",
+      "synthesis": "Hydrothermal chemistry: water under pressure, heated by magma — extreme chemistry at the interface.",
       "element_harmony": 35
     },
     "Aries-Sagittarius": {
       "score": 83,
       "level": "Excellent",
-      "synthesis": "Thermal runaway risk. Regulate heat exchange or the reaction overshoots.",
+      "synthesis": "Incandescent pairing. Both emit at peak luminosity — the combined spectrum blinds the detector.",
       "element_harmony": 88
     },
     "Aries-Capricorn": {
       "score": 46,
       "level": "Challenging",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Smelting: ore reduced by coke combustion. Fire extracts the metal earth has stored for aeons.",
       "element_harmony": 55
     },
     "Aries-Aquarius": {
@@ -198,97 +198,97 @@
     "Aries-Pisces": {
       "score": 46,
       "level": "Challenging",
-      "synthesis": "Phase separation likely. Requires surfactant or emulsifier for stable suspension.",
+      "synthesis": "Steam generated at interface. Energy converts but both phases are changed by contact.",
       "element_harmony": 35
     },
     "Taurus-Taurus": {
       "score": 73,
       "level": "Strong",
-      "synthesis": "Crystal lattice formation perfect. Highly reproducible, long-duration results.",
+      "synthesis": "Tectonic compression: two plates collide, neither subducts — mountain range generated instead.",
       "element_harmony": 90
     },
     "Taurus-Gemini": {
       "score": 65,
       "level": "Compatible",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Desert varnish: windborne minerals coat rock surfaces over centuries. Air leaves its mark on earth.",
       "element_harmony": 60
     },
     "Taurus-Cancer": {
       "score": 68,
       "level": "Compatible",
-      "synthesis": "Saturated matrix supports life. Water activates nutrients locked in terrestrial substrate.",
+      "synthesis": "Mineral dissolution: water carries ions from the rock into solution — geochemical mobilisation.",
       "element_harmony": 78
     },
     "Taurus-Leo": {
       "score": 51,
       "level": "Moderate",
-      "synthesis": "Cooling rate mismatch. Rapid quench produces amorphous glass; slow cool yields crystal.",
+      "synthesis": "Wildfires leave nutrient-rich ash. Destruction by fire enables geological regeneration.",
       "element_harmony": 55
     },
     "Taurus-Virgo": {
       "score": 78,
       "level": "Strong",
-      "synthesis": "Crystal lattice formation perfect. Highly reproducible, long-duration results.",
+      "synthesis": "Compressive force builds — pressure either forges diamonds or fractures the substrate.",
       "element_harmony": 90
     },
     "Taurus-Libra": {
       "score": 51,
       "level": "Moderate",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Fluidised bed reactor: air blown upward suspends solid particles. Efficient contact between phases.",
       "element_harmony": 60
     },
     "Taurus-Scorpio": {
       "score": 60,
       "level": "Compatible",
-      "synthesis": "Over-saturation leads to anoxic conditions. Drainage required to prevent root rot.",
+      "synthesis": "Microbial mat at sediment-water interface — most productive zone in the aquatic ecosystem.",
       "element_harmony": 78
     },
     "Taurus-Sagittarius": {
       "score": 61,
       "level": "Compatible",
-      "synthesis": "Magma interface: creative heat meets resistant substrate — transformation possible.",
+      "synthesis": "Endothermic dissolution: fire supplies the energy the earth needs to release its minerals.",
       "element_harmony": 55
     },
     "Taurus-Capricorn": {
       "score": 72,
       "level": "Strong",
-      "synthesis": "Crystal lattice formation perfect. Highly reproducible, long-duration results.",
+      "synthesis": "Tectonic compression: two plates collide, neither subducts — mountain range generated instead.",
       "element_harmony": 90
     },
     "Taurus-Aquarius": {
       "score": 49,
       "level": "Challenging",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Desert varnish: windborne minerals coat rock surfaces over centuries. Air leaves its mark on earth.",
       "element_harmony": 60
     },
     "Taurus-Pisces": {
       "score": 74,
       "level": "Strong",
-      "synthesis": "Saturated matrix supports life. Water activates nutrients locked in terrestrial substrate.",
+      "synthesis": "Over-saturation leads to anoxic conditions. Drainage required to prevent root rot.",
       "element_harmony": 78
     },
     "Gemini-Gemini": {
       "score": 84,
       "level": "Excellent",
-      "synthesis": "Turbulence possible at high Reynolds number. Ground the system before resonance builds.",
+      "synthesis": "Vortex pair: two counter-rotating vortices propagate forward — more coherent than either alone.",
       "element_harmony": 87
     },
     "Gemini-Cancer": {
       "score": 67,
       "level": "Compatible",
-      "synthesis": "Gas exchange at liquid surface. Oxygen transfer drives the aerobic metabolism.",
+      "synthesis": "Henry's law: gas solubility proportional to partial pressure. The ocean breathes with the atmosphere.",
       "element_harmony": 68
     },
     "Gemini-Leo": {
       "score": 78,
       "level": "Strong",
-      "synthesis": "Oxygen-fed combustion — air accelerates the fire's reach and intensity.",
+      "synthesis": "Fire whirl: thermal updraft induces rotational air flow — fire becomes a vortex of itself.",
       "element_harmony": 82
     },
     "Gemini-Virgo": {
       "score": 66,
       "level": "Compatible",
-      "synthesis": "Erosion possible. Persistent airflow reshapes even the most resistant substrate over time.",
+      "synthesis": "Sand dune dynamics: air and sand enter feedback — dunes migrate, shape, and reproduce.",
       "element_harmony": 60
     },
     "Gemini-Libra": {
@@ -300,25 +300,25 @@
     "Gemini-Scorpio": {
       "score": 65,
       "level": "Compatible",
-      "synthesis": "Gas exchange at liquid surface. Oxygen transfer drives the aerobic metabolism.",
+      "synthesis": "Bubble nucleation: dissolved gas released at depressurisation — champagne physics.",
       "element_harmony": 68
     },
     "Gemini-Sagittarius": {
       "score": 83,
       "level": "Excellent",
-      "synthesis": "Oxygen-fed combustion — air accelerates the fire's reach and intensity.",
+      "synthesis": "Fuel-air ratio must be monitored. Excess oxidiser without fuel produces nothing but heat loss.",
       "element_harmony": 82
     },
     "Gemini-Capricorn": {
       "score": 64,
       "level": "Compatible",
-      "synthesis": "Erosion possible. Persistent airflow reshapes even the most resistant substrate over time.",
+      "synthesis": "Sand dune dynamics: air and sand enter feedback — dunes migrate, shape, and reproduce.",
       "element_harmony": 60
     },
     "Gemini-Aquarius": {
       "score": 77,
       "level": "Strong",
-      "synthesis": "Turbulence possible at high Reynolds number. Ground the system before resonance builds.",
+      "synthesis": "Syngas mixture: hydrogen and carbon monoxide, each combustible, together more versatile.",
       "element_harmony": 87
     },
     "Gemini-Pisces": {
@@ -336,13 +336,13 @@
     "Cancer-Leo": {
       "score": 45,
       "level": "Challenging",
-      "synthesis": "Phase separation likely. Requires surfactant or emulsifier for stable suspension.",
+      "synthesis": "Steam generated at interface. Energy converts but both phases are changed by contact.",
       "element_harmony": 35
     },
     "Cancer-Virgo": {
       "score": 74,
       "level": "Strong",
-      "synthesis": "Over-saturation leads to anoxic conditions. Drainage required to prevent root rot.",
+      "synthesis": "Alluvial deposition: slowing water drops its sediment load. Delta formed from continental erosion.",
       "element_harmony": 78
     },
     "Cancer-Libra": {
@@ -360,7 +360,7 @@
     "Cancer-Sagittarius": {
       "score": 50,
       "level": "Moderate",
-      "synthesis": "Phase separation likely. Requires surfactant or emulsifier for stable suspension.",
+      "synthesis": "Emulsification under high shear: droplets stabilised by interfacial surfactant. Uneasy but possible.",
       "element_harmony": 35
     },
     "Cancer-Capricorn": {
@@ -372,25 +372,25 @@
     "Cancer-Aquarius": {
       "score": 61,
       "level": "Compatible",
-      "synthesis": "Evaporation without containment. Volatile pairing — powerful but requires sealed vessel.",
+      "synthesis": "Atmospheric deposition: dissolved aerosols deposited by rain — chemical bridge between air and ocean.",
       "element_harmony": 68
     },
     "Cancer-Pisces": {
       "score": 83,
       "level": "Excellent",
-      "synthesis": "Dilution without limit. Maintain concentration; boundaryless diffusion loses potency.",
+      "synthesis": "Marine chemocline: two water masses of different salinity in stable stratified coexistence.",
       "element_harmony": 92
     },
     "Leo-Leo": {
       "score": 70,
       "level": "Strong",
-      "synthesis": "Thermal runaway risk. Regulate heat exchange or the reaction overshoots.",
+      "synthesis": "Autocatalytic ignition. The presence of the second flame lowers activation energy for both.",
       "element_harmony": 88
     },
     "Leo-Virgo": {
       "score": 59,
       "level": "Moderate",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Cooling rate mismatch. Rapid quench produces amorphous glass; slow cool yields crystal.",
       "element_harmony": 55
     },
     "Leo-Libra": {
@@ -402,19 +402,19 @@
     "Leo-Scorpio": {
       "score": 34,
       "level": "Volatile",
-      "synthesis": "Phase separation likely. Requires surfactant or emulsifier for stable suspension.",
+      "synthesis": "Emulsification under high shear: droplets stabilised by interfacial surfactant. Uneasy but possible.",
       "element_harmony": 35
     },
     "Leo-Sagittarius": {
       "score": 83,
       "level": "Excellent",
-      "synthesis": "Thermal runaway risk. Regulate heat exchange or the reaction overshoots.",
+      "synthesis": "Autocatalytic ignition. The presence of the second flame lowers activation energy for both.",
       "element_harmony": 88
     },
     "Leo-Capricorn": {
       "score": 54,
       "level": "Moderate",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Cooling rate mismatch. Rapid quench produces amorphous glass; slow cool yields crystal.",
       "element_harmony": 55
     },
     "Leo-Aquarius": {
@@ -426,73 +426,73 @@
     "Leo-Pisces": {
       "score": 49,
       "level": "Challenging",
-      "synthesis": "Phase separation likely. Requires surfactant or emulsifier for stable suspension.",
+      "synthesis": "Emulsification under high shear: droplets stabilised by interfacial surfactant. Uneasy but possible.",
       "element_harmony": 35
     },
     "Virgo-Virgo": {
       "score": 87,
       "level": "Excellent",
-      "synthesis": "Crystal lattice formation perfect. Highly reproducible, long-duration results.",
+      "synthesis": "Compressive force builds — pressure either forges diamonds or fractures the substrate.",
       "element_harmony": 90
     },
     "Virgo-Libra": {
       "score": 58,
       "level": "Moderate",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Sand dune dynamics: air and sand enter feedback — dunes migrate, shape, and reproduce.",
       "element_harmony": 60
     },
     "Virgo-Scorpio": {
       "score": 74,
       "level": "Strong",
-      "synthesis": "Saturated matrix supports life. Water activates nutrients locked in terrestrial substrate.",
+      "synthesis": "Soil weathering: water infiltrates cracks, expands on freezing — mechanical breakdown of rock.",
       "element_harmony": 78
     },
     "Virgo-Sagittarius": {
       "score": 66,
       "level": "Compatible",
-      "synthesis": "Cooling rate mismatch. Rapid quench produces amorphous glass; slow cool yields crystal.",
+      "synthesis": "Geothermal gradient: deep heat drives surface productivity. The fire below feeds the earth above.",
       "element_harmony": 55
     },
     "Virgo-Capricorn": {
       "score": 84,
       "level": "Excellent",
-      "synthesis": "Compressive force builds — pressure either forges diamonds or fractures the substrate.",
+      "synthesis": "Double fertilisation event in angiosperms: two sperm, two products, one highly stable seed.",
       "element_harmony": 90
     },
     "Virgo-Aquarius": {
       "score": 66,
       "level": "Compatible",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Aeolian transport: wind carries sediment across continents, deposits it as loess — slow geography.",
       "element_harmony": 60
     },
     "Virgo-Pisces": {
       "score": 78,
       "level": "Strong",
-      "synthesis": "Saturated matrix supports life. Water activates nutrients locked in terrestrial substrate.",
+      "synthesis": "Over-saturation leads to anoxic conditions. Drainage required to prevent root rot.",
       "element_harmony": 78
     },
     "Libra-Libra": {
       "score": 68,
       "level": "Compatible",
-      "synthesis": "Turbulence possible at high Reynolds number. Ground the system before resonance builds.",
+      "synthesis": "Vortex pair: two counter-rotating vortices propagate forward — more coherent than either alone.",
       "element_harmony": 87
     },
     "Libra-Scorpio": {
       "score": 57,
       "level": "Moderate",
-      "synthesis": "Gas exchange at liquid surface. Oxygen transfer drives the aerobic metabolism.",
+      "synthesis": "Evaporation without containment. Volatile pairing — powerful but requires sealed vessel.",
       "element_harmony": 68
     },
     "Libra-Sagittarius": {
       "score": 77,
       "level": "Strong",
-      "synthesis": "Fuel-air ratio must be monitored. Excess oxidiser without fuel produces nothing but heat loss.",
+      "synthesis": "Oxy-fuel cutting torch: enriched oxygen concentrates heat to 3,500°C — cleaves steel.",
       "element_harmony": 82
     },
     "Libra-Capricorn": {
       "score": 48,
       "level": "Challenging",
-      "synthesis": "Dust suspension in gas phase. Settled earth needs air movement to reach its potential.",
+      "synthesis": "Erosion possible. Persistent airflow reshapes even the most resistant substrate over time.",
       "element_harmony": 60
     },
     "Libra-Aquarius": {
@@ -516,37 +516,37 @@
     "Scorpio-Sagittarius": {
       "score": 45,
       "level": "Challenging",
-      "synthesis": "Steam generated at interface. Energy converts but both phases are changed by contact.",
+      "synthesis": "Fire suppression: water absorbs latent heat of vaporisation, extinguishing — water ultimately wins.",
       "element_harmony": 35
     },
     "Scorpio-Capricorn": {
       "score": 66,
       "level": "Compatible",
-      "synthesis": "Over-saturation leads to anoxic conditions. Drainage required to prevent root rot.",
+      "synthesis": "Hydraulic fracturing: water pressure exceeds tensile strength — the earth yields.",
       "element_harmony": 78
     },
     "Scorpio-Aquarius": {
       "score": 56,
       "level": "Moderate",
-      "synthesis": "Gas exchange at liquid surface. Oxygen transfer drives the aerobic metabolism.",
+      "synthesis": "Henry's law: gas solubility proportional to partial pressure. The ocean breathes with the atmosphere.",
       "element_harmony": 68
     },
     "Scorpio-Pisces": {
       "score": 82,
       "level": "Excellent",
-      "synthesis": "Dilution without limit. Maintain concentration; boundaryless diffusion loses potency.",
+      "synthesis": "Interfacial tension between two aqueous phases drops to zero — spontaneous emulsification occurs.",
       "element_harmony": 92
     },
     "Sagittarius-Sagittarius": {
       "score": 88,
       "level": "Excellent",
-      "synthesis": "Exothermic cascade — self-sustaining combustion reaction.",
+      "synthesis": "Two plasma arcs in proximity — electromagnetic pinch effect draws them together.",
       "element_harmony": 88
     },
     "Sagittarius-Capricorn": {
       "score": 54,
       "level": "Moderate",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Wildfires leave nutrient-rich ash. Destruction by fire enables geological regeneration.",
       "element_harmony": 55
     },
     "Sagittarius-Aquarius": {
@@ -558,43 +558,43 @@
     "Sagittarius-Pisces": {
       "score": 49,
       "level": "Challenging",
-      "synthesis": "Phase separation likely. Requires surfactant or emulsifier for stable suspension.",
+      "synthesis": "Emulsification under high shear: droplets stabilised by interfacial surfactant. Uneasy but possible.",
       "element_harmony": 35
     },
     "Capricorn-Capricorn": {
       "score": 73,
       "level": "Strong",
-      "synthesis": "Compressive force builds — pressure either forges diamonds or fractures the substrate.",
+      "synthesis": "Alloy formation: two metals mixed produce hardness exceeding either component. Bronze logic.",
       "element_harmony": 90
     },
     "Capricorn-Aquarius": {
       "score": 58,
       "level": "Moderate",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "synthesis": "Erosion possible. Persistent airflow reshapes even the most resistant substrate over time.",
       "element_harmony": 60
     },
     "Capricorn-Pisces": {
       "score": 69,
       "level": "Compatible",
-      "synthesis": "Saturated matrix supports life. Water activates nutrients locked in terrestrial substrate.",
+      "synthesis": "Soil weathering: water infiltrates cracks, expands on freezing — mechanical breakdown of rock.",
       "element_harmony": 78
     },
     "Aquarius-Aquarius": {
       "score": 68,
       "level": "Compatible",
-      "synthesis": "Turbulence possible at high Reynolds number. Ground the system before resonance builds.",
+      "synthesis": "Combinatorial explosion of states: two independent bits generate four possible configurations.",
       "element_harmony": 87
     },
     "Aquarius-Pisces": {
       "score": 68,
       "level": "Compatible",
-      "synthesis": "Gas exchange at liquid surface. Oxygen transfer drives the aerobic metabolism.",
+      "synthesis": "Evaporation without containment. Volatile pairing — powerful but requires sealed vessel.",
       "element_harmony": 68
     },
     "Pisces-Pisces": {
       "score": 87,
       "level": "Excellent",
-      "synthesis": "Dilution without limit. Maintain concentration; boundaryless diffusion loses potency.",
+      "synthesis": "Interfacial tension between two aqueous phases drops to zero — spontaneous emulsification occurs.",
       "element_harmony": 92
     }
   },
