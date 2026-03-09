@@ -1,6 +1,6 @@
 {
-  "_comment_affiliate": "To add an affiliate link for a card, set its 'affiliateLink' field to your referral URL. The JS will use affiliateLink over link when present. Example: \"affiliateLink\": \"https://refer.amex.com.au/your-ref-code\"",
-  "lastUpdated": "2026-03-08",
+  "_comment_affiliate": "To add an affiliate link, set 'affiliateLink' to your referral URL. Leave empty to use the official bank link.",
+  "lastUpdated": "2026-03-09",
   "qantas": [
     {
       "bank": "AMEX",
@@ -10,6 +10,7 @@
       "fee": 450,
       "minSpend": 3000,
       "link": "https://www.americanexpress.com/au/credit-cards/qantas-ultimate-card/",
+      "affiliateLink": "",
       "loungePasses": "2 Qantas + 2 Amex",
       "notes": "Best lounge access; Qantas Club + Centurion Lounge."
     },
@@ -21,8 +22,9 @@
       "fee": 249,
       "minSpend": 1500,
       "link": "https://www.americanexpress.com/au/credit-cards/qantas-premium-card/",
+      "affiliateLink": "",
       "loungePasses": "2 Qantas",
-      "notes": "Lower-fee AMEX Qantas option. Good value for light travellers."
+      "notes": "Lower-fee AMEX Qantas option."
     },
     {
       "bank": "ANZ",
@@ -32,8 +34,9 @@
       "fee": 425,
       "minSpend": 5000,
       "link": "https://www.anz.com.au/personal/credit-cards/frequent-flyer-black/",
+      "affiliateLink": "",
       "loungePasses": "2 Qantas Club",
-      "notes": "Highest bonus from a Big 4 bank. Good earn rate on everyday spend."
+      "notes": "Highest bonus from a Big 4 bank."
     },
     {
       "bank": "ANZ",
@@ -43,8 +46,8 @@
       "fee": 295,
       "minSpend": 2000,
       "link": "https://www.anz.com.au/personal/credit-cards/frequent-flyer-platinum/",
-      "loungePasses": "None",
-      "notes": "Lower-fee entry point for ANZ Qantas earning."
+      "affiliateLink": "",
+      "loungePasses": "None"
     },
     {
       "bank": "NAB",
@@ -54,8 +57,9 @@
       "fee": 295,
       "minSpend": 3000,
       "link": "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-signature-card",
+      "affiliateLink": "",
       "loungePasses": "None",
-      "notes": "Year 2 bonus of 30k points is unusual \u2014 good for long-term holders."
+      "notes": "Year 2 bonus of 30k is unusual — good for long-term holders."
     },
     {
       "bank": "NAB",
@@ -65,6 +69,7 @@
       "fee": 150,
       "minSpend": 2500,
       "link": "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-premium-card",
+      "affiliateLink": "",
       "loungePasses": "None"
     },
     {
@@ -75,6 +80,7 @@
       "fee": 250,
       "minSpend": 6000,
       "link": "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-qantas/",
+      "affiliateLink": "",
       "loungePasses": "2 Qantas Club",
       "notes": "High minimum spend to unlock full bonus."
     },
@@ -86,6 +92,7 @@
       "fee": 150,
       "minSpend": 3000,
       "link": "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-platinum-qantas/",
+      "affiliateLink": "",
       "loungePasses": "None"
     },
     {
@@ -96,6 +103,7 @@
       "fee": 350,
       "minSpend": 2500,
       "link": "https://www.commbank.com.au/credit-cards/ultimate-awards.html",
+      "affiliateLink": "",
       "loungePasses": "None"
     },
     {
@@ -106,6 +114,7 @@
       "fee": 279,
       "minSpend": 3000,
       "link": "https://www.bankofmelbourne.com.au/personal/credit-cards/qantas/amplify-signature",
+      "affiliateLink": "",
       "loungePasses": "2 Qantas Club"
     },
     {
@@ -116,6 +125,7 @@
       "fee": 279,
       "minSpend": 3000,
       "link": "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-signature",
+      "affiliateLink": "",
       "loungePasses": "2 Qantas Club"
     },
     {
@@ -126,6 +136,7 @@
       "fee": 99,
       "minSpend": 2000,
       "link": "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-platinum",
+      "affiliateLink": "",
       "loungePasses": "None"
     },
     {
@@ -136,6 +147,7 @@
       "fee": 199,
       "minSpend": 2500,
       "link": "https://www.hsbc.com.au/credit-cards/products/platinum-qantas/",
+      "affiliateLink": "",
       "loungePasses": "None"
     }
   ],
@@ -148,8 +160,9 @@
       "fee": 375,
       "minSpend": 3000,
       "link": "https://www.americanexpress.com/au/credit-cards/velocity-platinum-card/",
+      "affiliateLink": "",
       "loungePasses": "2 Virgin + 2 Amex",
-      "notes": "Best Velocity card on the market. Priority Pass worth more than the fee alone."
+      "notes": "Best Velocity card on the market."
     },
     {
       "bank": "Virgin Money",
@@ -159,6 +172,7 @@
       "fee": 289,
       "minSpend": 4000,
       "link": "https://virginmoney.com.au/credit-cards/velocity-high-flyer",
+      "affiliateLink": "",
       "loungePasses": "2 Virgin",
       "notes": "Year 2 bonus of 20k makes this competitive over two years."
     },
@@ -170,8 +184,9 @@
       "fee": 64,
       "minSpend": 1500,
       "link": "https://virginmoney.com.au/credit-cards/velocity-flyer-card",
+      "affiliateLink": "",
       "loungePasses": "None",
-      "notes": "Lowest fee Velocity card. Good entry point or secondary card."
+      "notes": "Lowest-fee Velocity card. Good entry point."
     },
     {
       "bank": "Westpac",
@@ -181,6 +196,7 @@
       "fee": 250,
       "minSpend": 6000,
       "link": "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-velocity/",
+      "affiliateLink": "",
       "loungePasses": "2 Virgin"
     },
     {
@@ -191,6 +207,7 @@
       "fee": 150,
       "minSpend": 1500,
       "link": "https://www.nab.com.au/personal/credit-cards/nab-velocity-rewards-premium-card",
+      "affiliateLink": "",
       "loungePasses": "None"
     }
   ]
