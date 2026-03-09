@@ -1,0 +1,395 @@
+---
+layout: default
+title: CV | Felixillion
+permalink: /cv.html
+description: "Academic CV of Dr Felix Marsh-Wakefield — bioinformatician specialising in spatial biology, multi-omics, and high-dimensional flow cytometry."
+---
+
+<!--
+  ══════════════════════════════════════════════════════════════
+  CV PAGE — update the CONFIG block below when details change.
+  Publications fetch live from ORCID (no GitHub Action needed).
+  ══════════════════════════════════════════════════════════════
+-->
+<script>
+window.CV_CONFIG = {
+  // ── Your ORCID ID ─────────────────────────────────────────
+  // Fill this in to enable live publication fetching.
+  // Find yours at https://orcid.org/
+  orcid: '0000-0002-6839-7628',
+
+  // ── Google Scholar ─────────────────────────────────────────
+  scholarUrl: 'https://scholar.google.com/citations?user=6PaVkisAAAAJ&hl=en',
+
+  // ── GitHub ─────────────────────────────────────────────────
+  github: 'Felixillion',
+
+  // ── Short bio for the Biosketch card ──────────────────────
+  // This is what people use for talk introductions. Keep to ~75 words.
+  biosketch: `Dr Felix Marsh-Wakefield is an immunologist and bioinformatician
+  specialising in spatial biology, multi-omics integration, and high-dimensional
+  immune profiling. He develops analytical frameworks for imaging mass cytometry,
+  single-cell RNA sequencing, and in situ transcriptomics, with applications in
+  immunology and oncology.`,
+
+  // ── Current role ───────────────────────────────────────────
+  currentRole:   'Senior Research Officer',
+  currentInstitution: 'Centenary Institute',
+  currentDept:        'Liver Injury & Cancer Program',
+
+  // ── Research interests (shown as tags) ─────────────────────
+  researchInterests: [
+    'Spatial Biology', 'Multi-omics', 'Imaging Mass Cytometry',
+    'Single-cell RNA-seq', 'Flow Cytometry', 'Bioinformatics',
+    'Tumour Immunology', 'R / Python', 'Machine Learning',
+  ],
+
+  // ── Education ──────────────────────────────────────────────
+  education: [
+    { degree: 'PhD', field: 'Immunology', institution: 'The University of Sydney', year: '2018' },
+    { degree: 'GradCertEdStudies (Higher Ed)', field: 'Higher Education', institution: 'The University of Sydney', year: '2016' },
+    { degree: 'BMedSc (Hons I)', field: 'Medical Science', institution: 'The University of Sydney', year: '2012' },
+  ],
+
+  // ── Key software / tools ───────────────────────────────────
+  software: [
+    { name: 'Spectre', 
+    description: 'A computational toolkit in R for the integration, exploration, and analysis of high-dimensional single-cell cytometry and imaging data.', 
+    url: 'https://immunedynamics.io/Spectre/' },
+  ],
+
+  // ── Selected talks ─────────────────────────────────────────
+  talks: [
+    { title: '[Talk title]', event: '[Conference / Institute]', year: '[Year]', invited: true },
+  ],
+
+  // ── Awards ─────────────────────────────────────────────────
+  awards: [
+    { award: '[Award name]', body: '[Awarding body]', year: '[Year]' },
+  ],
+
+  // ── Manually listed select publications ───────────────────
+  // These appear ONLY if ORCID fetch fails or ORCID is blank.
+  // Once ORCID is set, all publications come from there automatically.
+  fallbackPublications: [
+    {
+      title:   '[Publication title]',
+      authors: '[Author list]',
+      journal: '[Journal]',
+      year:    '[Year]',
+      doi:     '',
+    },
+  ],
+};
+</script>
+
+<style>
+.cv-section { margin-bottom: 3rem; }
+.cv-section h3 {
+  font-size: .8rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--text-secondary); margin-bottom: 1.2rem;
+  border-bottom: 1px solid var(--glass-border); padding-bottom: .5rem;
+}
+.cv-tag {
+  display: inline-block; padding: .25rem .65rem; border-radius: 999px;
+  font-size: .74rem; background: rgba(56,189,248,.1);
+  border: 1px solid rgba(56,189,248,.25); color: #38bdf8;
+  margin: .2rem;
+}
+.cv-pub {
+  padding: .9rem 0; border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.cv-pub:last-child { border-bottom: none; }
+.cv-pub .pub-title { color: white; font-size: .9rem; font-weight: 600; margin-bottom: .25rem; }
+.cv-pub .pub-meta  { font-size: .78rem; color: var(--text-secondary); }
+.cv-pub .pub-doi   { font-size: .74rem; color: var(--dapi-blue); text-decoration: none; }
+.cv-pub .pub-doi:hover { text-decoration: underline; }
+.copy-btn {
+  background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.3);
+  color: #38bdf8; border-radius: 8px; padding: .35rem .8rem;
+  font-size: .74rem; cursor: pointer; transition: background .2s;
+}
+.copy-btn:hover { background: rgba(56,189,248,.22); }
+.copy-btn.copied { color: var(--fitc-green); border-color: var(--fitc-green); background: rgba(57,255,20,.1); }
+</style>
+
+<div class="container" style="padding-top:8rem;max-width:820px;">
+
+  <!-- ── Header ── -->
+  <div class="fade-in" style="margin-bottom:3rem;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <h2 style="margin-bottom:.3rem;">Dr Felix Marsh-Wakefield</h2>
+        <div id="cv-role" style="color:var(--text-secondary);font-size:.95rem;"></div>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;" id="cv-links">
+        <!-- links injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Biosketch ── -->
+  <div class="glass-card fade-in cv-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h3 style="margin:0;border:none;padding:0;">🎤 Biosketch</h3>
+      <button class="copy-btn" id="copy-bio-btn">Copy</button>
+    </div>
+    <p id="cv-biosketch"
+       style="line-height:1.75;color:var(--text-secondary);font-style:italic;white-space:pre-wrap;"></p>
+    <p style="font-size:.72rem;color:#475569;margin-top:.75rem;">
+      ↑ Use this for conference introductions, grant bios, and speaker profiles.
+    </p>
+  </div>
+
+  <!-- ── Research Interests ── -->
+  <div class="glass-card fade-in cv-section">
+    <h3>Research Interests</h3>
+    <div id="cv-interests"></div>
+  </div>
+
+  <!-- ── Publications ── -->
+  <div class="glass-card fade-in cv-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+      <h3 style="margin:0;border:none;padding:0;">Publications</h3>
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        <span id="pub-source" style="font-size:.7rem;color:#475569;"></span>
+        <a id="scholar-link" href="#" target="_blank"
+           style="font-size:.74rem;color:var(--fitc-green);text-decoration:none;display:none;">
+          Google Scholar ↗
+        </a>
+      </div>
+    </div>
+    <div id="pub-loading" style="color:var(--text-secondary);font-size:.85rem;padding:1rem 0;">
+      Fetching publications from ORCID…
+    </div>
+    <div id="cv-pubs"></div>
+  </div>
+
+  <!-- ── Education ── -->
+  <div class="glass-card fade-in cv-section">
+    <h3>Education</h3>
+    <div id="cv-edu"></div>
+  </div>
+
+  <!-- ── Software & Tools ── -->
+  <div class="glass-card fade-in cv-section" id="cv-software-section">
+    <h3>Software & Tools</h3>
+    <div id="cv-software"></div>
+  </div>
+
+  <!-- ── Selected Talks ── -->
+  <div class="glass-card fade-in cv-section" id="cv-talks-section">
+    <h3>Selected Talks</h3>
+    <div id="cv-talks"></div>
+  </div>
+
+  <!-- ── Awards ── -->
+  <div class="glass-card fade-in cv-section" id="cv-awards-section">
+    <h3>Awards & Honours</h3>
+    <div id="cv-awards"></div>
+  </div>
+
+</div>
+
+<script>
+(async function () {
+  const C = window.CV_CONFIG;
+
+  // ── Header ───────────────────────────────────────────────────────────────
+  const roleEl = document.getElementById('cv-role');
+  if (roleEl) roleEl.textContent = `${C.currentRole} · ${C.currentDept}, ${C.currentInstitution}`;
+
+  // External links
+  const linksEl = document.getElementById('cv-links');
+  if (linksEl) {
+    const LINK_STYLE = 'font-size:.74rem;padding:.3rem .7rem;border-radius:8px;text-decoration:none;border:1px solid;white-space:nowrap;';
+    if (C.orcid)     linksEl.innerHTML += `<a href="https://orcid.org/${C.orcid}" target="_blank" style="${LINK_STYLE}color:#a6ce39;border-color:rgba(166,206,57,.35);background:rgba(166,206,57,.07);">🆔 ORCID</a>`;
+    if (C.scholarUrl) linksEl.innerHTML += `<a href="${C.scholarUrl}" target="_blank" style="${LINK_STYLE}color:var(--fitc-green);border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.06);">📚 Scholar</a>`;
+    if (C.github)    linksEl.innerHTML += `<a href="https://github.com/${C.github}" target="_blank" style="${LINK_STYLE}color:white;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.05);">🐙 GitHub</a>`;
+  }
+
+  // ── Biosketch ────────────────────────────────────────────────────────────
+  const bioEl = document.getElementById('cv-biosketch');
+  if (bioEl) bioEl.textContent = C.biosketch.trim();
+
+  document.getElementById('copy-bio-btn')?.addEventListener('click', function () {
+    navigator.clipboard.writeText(C.biosketch.trim()).then(() => {
+      this.textContent = 'Copied ✓';
+      this.classList.add('copied');
+      setTimeout(() => { this.textContent = 'Copy'; this.classList.remove('copied'); }, 2500);
+    });
+  });
+
+  // Google Scholar link (also inside pubs section)
+  if (C.scholarUrl) {
+    const sl = document.getElementById('scholar-link');
+    if (sl) { sl.href = C.scholarUrl; sl.style.display = 'inline'; }
+  }
+
+  // ── Research Interests ───────────────────────────────────────────────────
+  const intEl = document.getElementById('cv-interests');
+  if (intEl) intEl.innerHTML = C.researchInterests.map(t => `<span class="cv-tag">${t}</span>`).join('');
+
+  // ── Education ────────────────────────────────────────────────────────────
+  const eduEl = document.getElementById('cv-edu');
+  if (eduEl) {
+    eduEl.innerHTML = C.education.map(e => `
+      <div style="display:flex;justify-content:space-between;padding:.6rem 0;
+                  border-bottom:1px solid rgba(255,255,255,.05);flex-wrap:wrap;gap:.3rem;">
+        <div>
+          <span style="color:white;font-weight:600;">${e.degree}</span>
+          <span style="color:var(--text-secondary);"> · ${e.field}</span><br>
+          <span style="font-size:.82rem;color:var(--text-secondary);">${e.institution}</span>
+        </div>
+        <span style="color:#475569;font-size:.82rem;">${e.year}</span>
+      </div>
+    `).join('');
+  }
+
+  // ── Software ─────────────────────────────────────────────────────────────
+  const swEl = document.getElementById('cv-software');
+  const hasReal = s => s.name && !s.name.startsWith('[');
+  const realSw = C.software.filter(hasReal);
+  if (!realSw.length) {
+    document.getElementById('cv-software-section').style.display = 'none';
+  } else {
+    swEl.innerHTML = realSw.map(s => `
+      <div style="padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05);">
+        ${s.url ? `<a href="${s.url}" target="_blank" style="color:var(--dapi-blue);font-weight:600;text-decoration:none;">${s.name} ↗</a>`
+                : `<span style="color:var(--dapi-blue);font-weight:600;">${s.name}</span>`}
+        <span style="color:var(--text-secondary);font-size:.82rem;"> — ${s.description}</span>
+      </div>
+    `).join('');
+  }
+
+  // ── Talks ────────────────────────────────────────────────────────────────
+  const talksEl = document.getElementById('cv-talks');
+  const realTalks = C.talks.filter(t => !t.title.startsWith('['));
+  if (!realTalks.length) {
+    document.getElementById('cv-talks-section').style.display = 'none';
+  } else {
+    talksEl.innerHTML = realTalks.map(t => `
+      <div style="padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.3rem;">
+        <div>
+          ${t.invited ? '<span style="font-size:.68rem;color:#a78bfa;margin-right:.4rem;">★ INVITED</span>' : ''}
+          <span style="color:white;font-size:.9rem;">${t.title}</span><br>
+          <span style="font-size:.8rem;color:var(--text-secondary);">${t.event}</span>
+        </div>
+        <span style="color:#475569;font-size:.82rem;">${t.year}</span>
+      </div>
+    `).join('');
+  }
+
+  // ── Awards ───────────────────────────────────────────────────────────────
+  const awardsEl = document.getElementById('cv-awards');
+  const realAwards = C.awards.filter(a => !a.award.startsWith('['));
+  if (!realAwards.length) {
+    document.getElementById('cv-awards-section').style.display = 'none';
+  } else {
+    awardsEl.innerHTML = realAwards.map(a => `
+      <div style="padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.3rem;">
+        <div>
+          <span style="color:white;font-size:.9rem;">${a.award}</span><br>
+          <span style="font-size:.8rem;color:var(--text-secondary);">${a.body}</span>
+        </div>
+        <span style="color:#475569;font-size:.82rem;">${a.year}</span>
+      </div>
+    `).join('');
+  }
+
+  // ── Publications (ORCID live fetch) ──────────────────────────────────────
+  const pubsEl   = document.getElementById('cv-pubs');
+  const loadEl   = document.getElementById('pub-loading');
+  const srcLabel = document.getElementById('pub-source');
+
+  function renderPubs(pubs, source) {
+    if (loadEl) loadEl.style.display = 'none';
+    if (srcLabel) {
+      // Add ORCID link inline with source label
+      const orcidHtml = C.orcid
+        ? ` · <a href="https://orcid.org/${C.orcid}" target="_blank"
+               style="color:#a6ce39;text-decoration:none;">View on ORCID ↗</a>`
+        : '';
+      srcLabel.innerHTML = source + orcidHtml;
+    }
+    if (!pubs || !pubs.length) {
+      pubsEl.innerHTML = '<p style="color:var(--text-secondary);font-size:.85rem;">No publications found.</p>';
+      return;
+    }
+
+    const INITIAL_SHOW = 5;
+    const renderPub = p => {
+      const doi = p.doi ? `<a class="pub-doi" href="https://doi.org/${p.doi}" target="_blank">DOI: ${p.doi} ↗</a>` : '';
+      return `<div class="cv-pub">
+        <div class="pub-title">${p.title}</div>
+        <div class="pub-meta">${[p.authors, p.journal, p.year].filter(Boolean).join(' · ')}</div>
+        ${doi ? `<div style="margin-top:.25rem;">${doi}</div>` : ''}
+      </div>`;
+    };
+
+    const visible = pubs.slice(0, INITIAL_SHOW);
+    const hidden  = pubs.slice(INITIAL_SHOW);
+
+    pubsEl.innerHTML = visible.map(renderPub).join('');
+
+    if (hidden.length > 0) {
+      const moreDiv = document.createElement('div');
+      moreDiv.id = 'pub-hidden';
+      moreDiv.style.display = 'none';
+      moreDiv.innerHTML = hidden.map(renderPub).join('');
+      pubsEl.appendChild(moreDiv);
+
+      const btn = document.createElement('button');
+      btn.id = 'pub-show-more';
+      btn.className = 'copy-btn';
+      btn.style.marginTop = '.75rem';
+      btn.textContent = `Show ${hidden.length} more publication${hidden.length === 1 ? '' : 's'}`;
+      btn.addEventListener('click', function () {
+        const moreEl = document.getElementById('pub-hidden');
+        const isHidden = moreEl.style.display === 'none';
+        moreEl.style.display = isHidden ? 'block' : 'none';
+        this.textContent = isHidden
+          ? 'Show fewer'
+          : `Show ${hidden.length} more publication${hidden.length === 1 ? '' : 's'}`;
+      });
+      pubsEl.appendChild(btn);
+    }
+  }
+
+  function parseOrcidWorks(data) {
+    const groups = data?.group || [];
+    return groups.map(g => {
+      const ws  = g['work-summary']?.[0];
+      const ids = ws?.['external-ids']?.['external-id'] || [];
+      const doi = ids.find(id => id['external-id-type'] === 'doi')?.['external-id-value'] || '';
+      const year = ws?.['publication-date']?.year?.value || '';
+      const journal = ws?.['journal-title']?.value || '';
+      const title = ws?.title?.title?.value || 'Untitled';
+      return { title, journal, year, doi, authors: '' };
+    }).sort((a, b) => (b.year || 0) - (a.year || 0));
+  }
+
+  if (C.orcid && C.orcid.match(/^\d{4}-\d{4}-\d{4}-\d{4}$/)) {
+    try {
+      const res  = await fetch(`https://pub.orcid.org/v3.0/${C.orcid}/works`, {
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) throw new Error(`ORCID returned ${res.status}`);
+      const data = await res.json();
+      const pubs = parseOrcidWorks(data);
+      renderPubs(pubs, `Live from ORCID · ${pubs.length} works`);
+    } catch (err) {
+      console.warn('ORCID fetch failed, using fallback:', err.message);
+      renderPubs(C.fallbackPublications.filter(p => !p.title.startsWith('[')), 'Manually curated');
+    }
+  } else {
+    // No ORCID configured — show fallback list if populated
+    const fallback = C.fallbackPublications.filter(p => !p.title.startsWith('['));
+    if (fallback.length) {
+      renderPubs(fallback, 'Manually curated — add your ORCID to enable auto-fetch');
+    } else {
+      if (loadEl) loadEl.textContent = 'Add your ORCID ID to CV_CONFIG to enable automatic publication fetching.';
+    }
+  }
+})();
+</script>

@@ -1,29 +1,52 @@
-// Spatial Gallery Implementation with JSON manifest
-async function initGallery() {
-    const galleryGrid = document.getElementById('gallery-grid');
-    if (!galleryGrid) return;
+// assets/js/gallery.js
+// Reads from window.GALLERY_DATA (injected by Jekyll via site.data.gallery)
+// To add images: edit _data/gallery.json and place files in assets/gallery/
 
-    try {
-        const response = await fetch('data/gallery.json');
-        const images = await response.json();
+function initGallery() {
+  const grid = document.getElementById('gallery-grid');
+  if (!grid) return;
 
-        galleryGrid.innerHTML = `
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
-                ${images.map((img, i) => `
-                    <div class="glass-card fade-in" style="padding: 1rem; cursor: pointer; border-color: ${img.color};">
-                        <div style="height: 220px; background: url('${img.image}') center/cover no-repeat, linear-gradient(45deg, ${img.color}33, #111); border-radius: 12px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                            <span style="font-size: 0.7rem; color: #fff; font-weight: bold; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 4px; position: absolute; top: 10px; left: 10px;">${img.type}</span>
-                        </div>
-                        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #fff;">${img.title}</h3>
-                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">${img.description}</p>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    } catch (err) {
-        console.error('Failed to load gallery data:', err);
-        galleryGrid.innerHTML = '<p>To add images, place JSON in data/gallery.json and images in assets/gallery/</p>';
-    }
+  const images = window.GALLERY_DATA;
+
+  if (!images || !images.length) {
+    grid.innerHTML = `
+      <div style="text-align:center;padding:4rem;color:var(--text-secondary);">
+        <p style="font-size:1.1rem;margin-bottom:1rem;">Gallery coming soon.</p>
+        <p style="font-size:.85rem;">
+          To add images, edit <code>_data/gallery.json</code> and
+          place image files in <code>assets/gallery/</code>.
+        </p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2rem;">
+      ${images.map(img => `
+        <div class="glass-card" style="padding:1rem;cursor:pointer;border-color:${img.color || 'var(--glass-border)'};
+             transition:transform .25s,box-shadow .25s;"
+             onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,.4)'"
+             onmouseout="this.style.transform='';this.style.boxShadow=''">
+          <div style="height:220px;
+               background:url('${img.image}') center/cover no-repeat,
+                 linear-gradient(135deg,${img.color || '#38bdf8'}22 0%,#111 100%);
+               border-radius:10px;margin-bottom:1rem;
+               display:flex;align-items:flex-start;justify-content:flex-start;
+               position:relative;overflow:hidden;">
+            <span style="font-size:.68rem;color:#fff;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+                 background:rgba(0,0,0,.55);padding:.3rem .7rem;border-radius:0 0 6px 0;
+                 backdrop-filter:blur(4px);">
+              ${img.type || ''}
+            </span>
+          </div>
+          <h3 style="font-size:1rem;margin-bottom:.4rem;color:#fff;">${img.title}</h3>
+          <p style="font-size:.82rem;color:var(--text-secondary);line-height:1.5;">
+            ${img.description}
+          </p>
+        </div>
+      `).join('')}
+    </div>
+  `;
 }
 
 initGallery();

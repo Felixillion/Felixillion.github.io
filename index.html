@@ -6,19 +6,27 @@ footer_scripts: assets/js/hero.js
 head_scripts: '<script type="module" src="assets/js/home_interactions.js"></script>'
 ---
 
+<!-- Full-viewport animated backdrop (populated by hero.js on subheading hover) -->
+<div id="hero-backdrop" aria-hidden="true"
+  style="position:fixed;inset:0;z-index:1;pointer-events:none;
+         opacity:0;transition:opacity .7s ease;overflow:hidden;">
+  <canvas id="hero-canvas" style="width:100%;height:100%;display:block;"></canvas>
+</div>
+
 <!-- Hero Section -->
-<section id="home" class="hero">
+<section id="home" class="hero" style="position:relative;z-index:2;">
   <div class="container fade-in">
     <h1>Dr Lord Felix Merlin Daniel Marsh-Wakefield</h1>
     <div class="subheadings">
-      <span class="subheading">Bioinformagician</span>
-      <span class="subheading">Composer of Worlds</span>
-      <span class="subheading">Lover of Cats</span>
+      <span class="subheading" data-hero="bio"      style="cursor:default;">Bioinformagician</span>
+      <span class="subheading" data-hero="composer" style="cursor:default;">Composer of Worlds</span>
+      <span class="subheading" data-hero="cats"     style="cursor:default;">Lover of Cats</span>
     </div>
     <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
-      <a href="{{ '/gallery.html' | relative_url }}" class="subheading" style="text-decoration:none;">View Gallery</a>
-      <a href="{{ '/frequent-flyer.html' | relative_url }}" class="subheading" style="text-decoration:none;">Explore FF Points</a>
-      <a href="{{ '/etf-tools.html' | relative_url }}" class="subheading" style="text-decoration:none;">ETF Tools</a>
+      <a href="{{ '/cv.html' | relative_url }}"              class="subheading" style="text-decoration:none;">📄 CV</a>
+      <a href="{{ '/gallery.html' | relative_url }}"         class="subheading" style="text-decoration:none;">View Gallery</a>
+      <a href="{{ '/frequent-flyer.html' | relative_url }}"  class="subheading" style="text-decoration:none;">Explore FF Points</a>
+      <a href="{{ '/etf-tools.html' | relative_url }}"       class="subheading" style="text-decoration:none;">ETF Tools</a>
     </div>
   </div>
 </section>

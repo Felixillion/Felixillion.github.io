@@ -4,7 +4,8 @@
 
     <!-- Desktop links -->
     <div class="nav-desktop">
-      <a href="{{ '/gallery.html' | relative_url }}" class="nav-link">Gallery</a>
+      <a href="{{ '/gallery.html' | relative_url }}" class="nav-link">🔬 Gallery</a>
+      <a href="{{ '/cv.html' | relative_url }}" class="nav-link">📄 CV</a>
       <a href="{{ '/astrobiology.html' | relative_url }}" class="nav-link">🔭 Cosmic Lab</a>
       <a href="{{ '/frequent-flyer.html' | relative_url }}" class="nav-link">✈ FF Points</a>
       <a href="{{ '/etf-tools.html' | relative_url }}" class="nav-link nav-link-cta">📊 ETF Tools</a>
@@ -16,7 +17,8 @@
   <!-- Mobile dropdown -->
   <div id="nav-mobile" aria-hidden="true">
     <a href="{{ '/' | relative_url }}" class="nav-mobile-link">🏠 Home</a>
-    <a href="{{ '/gallery.html' | relative_url }}" class="nav-mobile-link">🖼 Gallery</a>
+    <a href="{{ '/gallery.html' | relative_url }}" class="nav-mobile-link">🔬 Gallery</a>
+    <a href="{{ '/cv.html' | relative_url }}" class="nav-mobile-link">📄 CV</a>
     <a href="{{ '/astrobiology.html' | relative_url }}" class="nav-mobile-link">🔭 Cosmic Lab</a>
     <a href="{{ '/frequent-flyer.html' | relative_url }}" class="nav-mobile-link">✈ FF Points</a>
     <a href="{{ '/etf-tools.html' | relative_url }}" class="nav-mobile-link nav-mobile-cta">📊 ETF Tools</a>
@@ -53,6 +55,7 @@
 /* Active state: each page gets a distinct accent matching site palette */
 .nav-link.active                          { color: white !important; border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.06); }
 .nav-link[href*="gallery"].active         { color: var(--fitc-green) !important; border-color: rgba(57,255,20,.35); background: rgba(57,255,20,.06); }
+.nav-link[href*="cv"].active              { color: #e2b96e !important; border-color: rgba(226,185,110,.35); background: rgba(226,185,110,.06); }
 .nav-link[href*="astrobiology"].active    { color: #c084fc !important; border-color: rgba(192,132,252,.35); background: rgba(192,132,252,.06); }
 .nav-link[href*="frequent-flyer"].active  { color: #fbbf24 !important; border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.06); }
 .nav-link[href*="etf-tools"].active,
@@ -61,6 +64,7 @@
 /* Mobile active */
 .nav-mobile-link.active                          { color: white !important; background: rgba(255,255,255,.05); }
 .nav-mobile-link[href*="gallery"].active         { color: var(--fitc-green) !important; background: rgba(57,255,20,.05); }
+.nav-mobile-link[href*="cv"].active              { color: #e2b96e !important; background: rgba(226,185,110,.05); }
 .nav-mobile-link[href*="astrobiology"].active    { color: #c084fc !important; background: rgba(192,132,252,.05); }
 .nav-mobile-link[href*="frequent-flyer"].active  { color: #fbbf24 !important; background: rgba(251,191,36,.05); }
 .nav-mobile-link[href*="etf-tools"].active       { color: var(--dapi-blue) !important; background: rgba(56,189,248,.06); }

@@ -178,7 +178,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
           git pull --rebase origin ${{ github.ref_name }} 2>/dev/null || true
-          git add data/
+          git add data/ _data/
           if ! git diff --staged --quiet; then
             git commit -m "chore: update FF data $(date -u +%Y-%m-%d)"
             git push

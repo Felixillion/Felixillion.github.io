@@ -1,34 +1,184 @@
-const fs = require('fs');
+/**
+ * .github/workflows/scripts/ff_scraper.js
+ *
+ * ── What this script does ──────────────────────────────────────────────────
+ * This is NOT an actual web scraper. Bank card pages use heavy JS, CAPTCHAs,
+ * and WAFs that block automated access. Instead, this script maintains a
+ * manually-curated dataset of current offers and writes it to _data/ff_weekly.json
+ * so the Jekyll site can serve it.
+ *
+ * ── How to update ─────────────────────────────────────────────────────────
+ * When a bank changes a bonus/fee, edit the relevant card object below and
+ * commit. The GitHub Actions workflow will then write this to _data/ on next run.
+ *
+ * ── Affiliate links ───────────────────────────────────────────────────────
+ * To earn a referral commission, set affiliateLink to your referral URL.
+ * Leave as "" to use the official bank link. The JS falls back to link when
+ * affiliateLink is falsy (empty string counts as falsy).
+ *
+ * ── Removed cards (and why) ───────────────────────────────────────────────
+ * Citi Qantas Prestige     — Citi Australia exited retail banking (sold to NAB 2022); product closed
+ * Citi Velocity Platinum   — same reason; citibank.com.au now redirects to NAB
+ * Bankwest Halo Platinum   — Bankwest stopped issuing all new credit cards December 2022
+ * Coles Rewards Mastercard — earns Flybuys, NOT Velocity points; wrong category
+ *
+ * ── Path note ─────────────────────────────────────────────────────────────
+ * __dirname = .github/workflows/scripts/
+ * '../../../_data/ff_weekly.json' resolves to <repo_root>/_data/ff_weekly.json ✓
+ */
+
+'use strict';
+const fs   = require('fs');
 const path = require('path');
 
-function scrubCards() {
-    const data = {
-        lastUpdated: new Date().toISOString().split('T')[0],
-        qantas: [
-            { bank: "AMEX", name: "Qantas Ultimate", signupBonus: 100000, year1Bonus: 0, fee: 450, minSpend: 3000, link: "https://www.americanexpress.com/au/credit-cards/qantas-ultimate-card/", affiliateLink: "", loungePasses: "2 Qantas / 2 Amex" },
-            { bank: "ANZ", name: "Frequent Flyer Black", signupBonus: 130000, year1Bonus: 0, fee: 425, minSpend: 5000, link: "https://www.anz.com.au/personal/credit-cards/frequent-flyer-black/", affiliateLink: "", loungePasses: "2 Qantas Club" },
-            { bank: "NAB", name: "Qantas Rewards Signature", signupBonus: 90000, year1Bonus: 30000, fee: 295, minSpend: 3000, link: "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-signature-card", affiliateLink: "", loungePasses: "None" },
-            { bank: "Westpac", name: "Altitude Black", signupBonus: 90000, year1Bonus: 30000, fee: 250, minSpend: 6000, link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-qantas/", affiliateLink: "", loungePasses: "2 Qantas Club" },
-            { bank: "CBA", name: "Ultimate Awards (Qantas)", signupBonus: 60000, year1Bonus: 0, fee: 350, minSpend: 2500, link: "https://www.commbank.com.au/credit-cards/ultimate-awards.html", affiliateLink: "", loungePasses: "None" },
-            { bank: "Citi", name: "Qantas Prestige", signupBonus: 100000, year1Bonus: 0, fee: 700, minSpend: 5000, link: "https://www.citibank.com.au/aus/cards/qantas/prestige.htm", affiliateLink: "", loungePasses: "Priority Pass" },
-            { bank: "BOM", name: "Amplify Signature (Qantas)", signupBonus: 90000, year1Bonus: 0, fee: 279, minSpend: 3000, link: "https://www.bankofmelbourne.com.au/personal/credit-cards/qantas/amplify-signature", affiliateLink: "", loungePasses: "2 Qantas Club" },
-            { bank: "HSBC", name: "Platinum Qantas", signupBonus: 70000, year1Bonus: 0, fee: 199, minSpend: 2500, link: "https://www.hsbc.com.au/credit-cards/products/platinum-qantas/", affiliateLink: "", loungePasses: "None" },
-            { bank: "St.George", name: "Amplify Signature (Qantas)", signupBonus: 90000, year1Bonus: 0, fee: 279, minSpend: 3000, link: "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-signature", affiliateLink: "", loungePasses: "2 Qantas Club" },
-            { bank: "Woolworths", name: "Qantas Platinum", signupBonus: 0, year1Bonus: 0, fee: 169, minSpend: 0, link: "https://cards.woolworths.com.au/credit-cards/qantas-platinum-credit-card", affiliateLink: "", loungePasses: "None" }
-        ],
-        velocity: [
-            { bank: "AMEX", name: "Velocity Platinum", signupBonus: 100000, year1Bonus: 0, fee: 375, minSpend: 3000, link: "https://www.americanexpress.com/au/credit-cards/velocity-platinum-card/", affiliateLink: "", loungePasses: "2 Virgin / 2 Amex" },
-            { bank: "Bankwest", name: "Halo Platinum (Velocity)", signupBonus: 60000, year1Bonus: 0, fee: 150, minSpend: 2000, link: "https://www.bankwest.com.au/personal/credit-cards/halo-platinum", affiliateLink: "", loungePasses: "None" },
-            { bank: "Virgin Money", name: "Velocity High Flyer", signupBonus: 80000, year1Bonus: 20000, fee: 289, minSpend: 4000, link: "https://virginmoney.com.au/credit-cards/velocity-high-flyer", affiliateLink: "", loungePasses: "2 Virgin" },
-            { bank: "Westpac", name: "Altitude Black (Velocity)", signupBonus: 90000, year1Bonus: 30000, fee: 250, minSpend: 6000, link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-velocity/", affiliateLink: "", loungePasses: "2 Virgin" },
-            { bank: "NAB", name: "Velocity Rewards Premium", signupBonus: 60000, year1Bonus: 20000, fee: 150, minSpend: 1500, link: "https://www.nab.com.au/personal/credit-cards/nab-velocity-rewards-premium-card", affiliateLink: "", loungePasses: "None" },
-            { bank: "Citi", name: "Velocity Rewards Platinum", signupBonus: 80000, year1Bonus: 0, fee: 250, minSpend: 3000, link: "https://www.citibank.com.au/aus/cards/velocity/platinum.htm", affiliateLink: "", loungePasses: "None" },
-            { bank: "Coles", name: "Rewards Mastercard", signupBonus: 30000, year1Bonus: 0, fee: 99, minSpend: 3000, link: "https://www.coles.com.au/credit-cards/rewards-mastercard", affiliateLink: "", loungePasses: "None" }
-        ]
-    };
+const REPO_ROOT = path.join(__dirname, '..', '..', '..');
 
-    const dataPath = path.join(__dirname, '../../../_data/ff_weekly.json');
-    fs.writeFileSync(dataPath, JSON.stringify(data, null, 4));
-}
+const data = {
+  _comment_affiliate: "To add an affiliate link, set 'affiliateLink' to your referral URL. Leave empty to use the official bank link.",
+  lastUpdated: new Date().toISOString().split('T')[0],
 
-scrubCards();
+  qantas: [
+    {
+      bank: "AMEX", name: "Qantas Ultimate",
+      signupBonus: 100000, year1Bonus: 0, fee: 450, minSpend: 3000,
+      link: "https://www.americanexpress.com/au/credit-cards/qantas-ultimate-card/",
+      affiliateLink: "",
+      loungePasses: "2 Qantas + 2 Amex",
+      notes: "Best lounge access; Qantas Club + Centurion Lounge.",
+    },
+    {
+      bank: "AMEX", name: "Qantas Premium",
+      signupBonus: 55000, year1Bonus: 0, fee: 249, minSpend: 1500,
+      link: "https://www.americanexpress.com/au/credit-cards/qantas-premium-card/",
+      affiliateLink: "",
+      loungePasses: "2 Qantas",
+      notes: "Lower-fee AMEX Qantas option.",
+    },
+    {
+      bank: "ANZ", name: "Frequent Flyer Black",
+      signupBonus: 130000, year1Bonus: 0, fee: 425, minSpend: 5000,
+      link: "https://www.anz.com.au/personal/credit-cards/frequent-flyer-black/",
+      affiliateLink: "",
+      loungePasses: "2 Qantas Club",
+      notes: "Highest bonus from a Big 4 bank.",
+    },
+    {
+      bank: "ANZ", name: "Frequent Flyer Platinum",
+      signupBonus: 70000, year1Bonus: 0, fee: 295, minSpend: 2000,
+      link: "https://www.anz.com.au/personal/credit-cards/frequent-flyer-platinum/",
+      affiliateLink: "",
+      loungePasses: "None",
+    },
+    {
+      bank: "NAB", name: "Qantas Rewards Signature",
+      signupBonus: 90000, year1Bonus: 30000, fee: 295, minSpend: 3000,
+      link: "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-signature-card",
+      affiliateLink: "",
+      loungePasses: "None",
+      notes: "Year 2 bonus of 30k is unusual — good for long-term holders.",
+    },
+    {
+      bank: "NAB", name: "Qantas Rewards Premium",
+      signupBonus: 60000, year1Bonus: 0, fee: 150, minSpend: 2500,
+      link: "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-premium-card",
+      affiliateLink: "",
+      loungePasses: "None",
+    },
+    {
+      bank: "Westpac", name: "Altitude Black (Qantas)",
+      signupBonus: 90000, year1Bonus: 30000, fee: 250, minSpend: 6000,
+      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-qantas/",
+      affiliateLink: "",
+      loungePasses: "2 Qantas Club",
+      notes: "High minimum spend to unlock full bonus.",
+    },
+    {
+      bank: "Westpac", name: "Altitude Platinum (Qantas)",
+      signupBonus: 60000, year1Bonus: 0, fee: 150, minSpend: 3000,
+      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-platinum-qantas/",
+      affiliateLink: "",
+      loungePasses: "None",
+    },
+    {
+      bank: "CBA", name: "Ultimate Awards (Qantas)",
+      signupBonus: 60000, year1Bonus: 0, fee: 350, minSpend: 2500,
+      link: "https://www.commbank.com.au/credit-cards/ultimate-awards.html",
+      affiliateLink: "",
+      loungePasses: "None",
+    },
+    {
+      bank: "BOM", name: "Amplify Signature (Qantas)",
+      signupBonus: 90000, year1Bonus: 0, fee: 279, minSpend: 3000,
+      link: "https://www.bankofmelbourne.com.au/personal/credit-cards/qantas/amplify-signature",
+      affiliateLink: "",
+      loungePasses: "2 Qantas Club",
+    },
+    {
+      bank: "St.George", name: "Amplify Signature (Qantas)",
+      signupBonus: 90000, year1Bonus: 0, fee: 279, minSpend: 3000,
+      link: "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-signature",
+      affiliateLink: "",
+      loungePasses: "2 Qantas Club",
+    },
+    {
+      bank: "St.George", name: "Amplify Platinum (Qantas)",
+      signupBonus: 60000, year1Bonus: 0, fee: 99, minSpend: 2000,
+      link: "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-platinum",
+      affiliateLink: "",
+      loungePasses: "None",
+    },
+    {
+      bank: "HSBC", name: "Platinum Qantas",
+      signupBonus: 70000, year1Bonus: 0, fee: 199, minSpend: 2500,
+      link: "https://www.hsbc.com.au/credit-cards/products/platinum-qantas/",
+      affiliateLink: "",
+      loungePasses: "None",
+    },
+  ],
+
+  velocity: [
+    {
+      bank: "AMEX", name: "Velocity Platinum",
+      signupBonus: 100000, year1Bonus: 0, fee: 375, minSpend: 3000,
+      link: "https://www.americanexpress.com/au/credit-cards/velocity-platinum-card/",
+      affiliateLink: "",
+      loungePasses: "2 Virgin + 2 Amex",
+      notes: "Best Velocity card on the market.",
+    },
+    {
+      bank: "Virgin Money", name: "Velocity High Flyer",
+      signupBonus: 80000, year1Bonus: 20000, fee: 289, minSpend: 4000,
+      link: "https://virginmoney.com.au/credit-cards/velocity-high-flyer",
+      affiliateLink: "",
+      loungePasses: "2 Virgin",
+      notes: "Year 2 bonus of 20k makes this competitive over two years.",
+    },
+    {
+      bank: "Virgin Money", name: "Velocity Flyer",
+      signupBonus: 30000, year1Bonus: 0, fee: 64, minSpend: 1500,
+      link: "https://virginmoney.com.au/credit-cards/velocity-flyer-card",
+      affiliateLink: "",
+      loungePasses: "None",
+      notes: "Lowest-fee Velocity card. Good entry point.",
+    },
+    {
+      bank: "Westpac", name: "Altitude Black (Velocity)",
+      signupBonus: 90000, year1Bonus: 30000, fee: 250, minSpend: 6000,
+      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-velocity/",
+      affiliateLink: "",
+      loungePasses: "2 Virgin",
+    },
+    {
+      bank: "NAB", name: "Velocity Rewards Premium",
+      signupBonus: 60000, year1Bonus: 20000, fee: 150, minSpend: 1500,
+      link: "https://www.nab.com.au/personal/credit-cards/nab-velocity-rewards-premium-card",
+      affiliateLink: "",
+      loungePasses: "None",
+    },
+  ],
+};
+
+const outPath = path.join(REPO_ROOT, '_data', 'ff_weekly.json');
+fs.mkdirSync(path.dirname(outPath), { recursive: true });
+fs.writeFileSync(outPath, JSON.stringify(data, null, 2));
+console.log(`✅ Wrote ${outPath} (${data.qantas.length} Qantas, ${data.velocity.length} Velocity)`);

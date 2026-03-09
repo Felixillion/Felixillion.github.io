@@ -2,16 +2,20 @@
 layout: default
 title: Spatial Gallery | Felixillion
 permalink: /gallery.html
+description: "High-resolution spatial biology datasets across diverse modalities: IMC, Xenium, and COMET."
 footer_scripts: assets/js/gallery.js
 ---
 
-<div class="container" style="padding-top: 8rem;">
-    <h2 class="fade-in">Spatial Gallery</h2>
-    <p class="fade-in" style="color: var(--text-secondary); margin-bottom: 3rem;">
-        A collection of high-resolution datasets across diverse modalities: IMC, Xenium, and COMET.
-    </p>
+<script>
+  window.GALLERY_DATA = {{ site.data.gallery | jsonify }};
+</script>
 
-    <div id="gallery-grid" class="fade-in">
-        <!-- Gallery injected by JS -->
-    </div>
+<div class="container" style="padding-top:8rem;">
+  <h2 class="fade-in">Spatial Gallery</h2>
+  <p class="fade-in" style="color:var(--text-secondary);margin-bottom:3rem;">
+    A collection of high-resolution datasets across diverse modalities: IMC, Xenium, and COMET.
+  </p>
+  <div id="gallery-grid" class="fade-in">
+    <!-- Gallery injected by gallery.js -->
+  </div>
 </div>

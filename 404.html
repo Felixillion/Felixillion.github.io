@@ -1,25 +1,120 @@
 ---
+layout: default
+title: 404 — Page Not Found | Felixillion
 permalink: /404.html
-layout: page
+description: "This page doesn't exist — yet."
 ---
 
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
+<style>
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+@keyframes pulse404 { 0%,100%{opacity:1;text-shadow:0 0 40px #38bdf8,0 0 80px #38bdf855} 50%{opacity:.85;text-shadow:0 0 60px #38bdf8,0 0 120px #38bdf844} }
+@keyframes scanline { 0%{top:-10%} 100%{top:110%} }
 </style>
 
-<div class="container">
-  <h1>404</h1>
+<!-- Animated particle canvas (reuses bio palette) -->
+<canvas id="c404" style="position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;"></canvas>
 
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
+<div style="position:relative;z-index:1;min-height:80vh;display:flex;align-items:center;justify-content:center;padding:8rem 2rem 2rem;">
+  <div style="text-align:center;max-width:620px;">
+
+    <!-- Glowing 404 number -->
+    <div style="font-family:'Outfit',sans-serif;font-size:clamp(6rem,20vw,11rem);font-weight:800;
+                color:#38bdf8;line-height:1;letter-spacing:-.04em;
+                animation:pulse404 3s ease-in-out infinite;margin-bottom:.5rem;">
+      404
+    </div>
+
+    <!-- Molecule decoration -->
+    <div style="font-size:2.5rem;animation:float 4s ease-in-out infinite;margin-bottom:1.5rem;">🧬</div>
+
+    <h2 style="font-size:1.3rem;margin-bottom:.75rem;color:white;">
+      Sequence not found in reference genome
+    </h2>
+
+    <p style="color:var(--text-secondary);line-height:1.75;margin-bottom:.5rem;font-size:.9rem;">
+      The locus you're looking for doesn't map to any known page.
+      It may have been deleted, moved, or never existed in this assembly.
+    </p>
+    <p style="color:#475569;font-size:.8rem;font-style:italic;margin-bottom:2.5rem;">
+      Error: <code style="color:#f59e0b;background:rgba(245,158,11,.1);padding:.1rem .4rem;border-radius:4px;">
+        NULL_REFERENCE — coordinates outside scaffold boundary
+      </code>
+    </p>
+
+    <!-- Action buttons -->
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;">
+      <a href="{{ '/' | relative_url }}" class="subheading" style="text-decoration:none;padding:.7rem 1.4rem;">
+        🏠 Return to Base
+      </a>
+      <a href="{{ '/gallery.html' | relative_url }}" class="subheading" style="text-decoration:none;padding:.7rem 1.4rem;">
+        🖼 View Gallery
+      </a>
+      <a href="{{ '/etf-tools.html' | relative_url }}" class="subheading" style="text-decoration:none;padding:.7rem 1.4rem;">
+        📊 ETF Tools
+      </a>
+    </div>
+
+    <!-- Mini terminal readout -->
+    <div style="background:#0a0f1e;border:1px solid var(--glass-border);border-radius:10px;
+                padding:1.2rem 1.4rem;text-align:left;font-family:monospace;font-size:.78rem;max-width:420px;margin:0 auto;">
+      <div style="color:#475569;margin-bottom:.5rem;">— SYSTEM LOG ——————————————</div>
+      <div><span style="color:#38bdf8;">[INFO]</span>  <span style="color:var(--text-secondary);">Received GET request for unknown path</span></div>
+      <div><span style="color:#f59e0b;">[WARN]</span>  <span style="color:var(--text-secondary);">Route not found in Jekyll sitemap</span></div>
+      <div><span style="color:#ef4444;">[ERROR]</span> <span style="color:var(--text-secondary);">404 — returning to index</span></div>
+      <div style="margin-top:.6rem;color:#39ff14;">
+        > <span id="cursor-line">scanning for nearest valid node_</span>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<script>
+// Reuse bio particle animation from hero.js — standalone version
+(function(){
+  const canvas = document.getElementById('c404');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  const PALETTE = ['#39ff14','#38bdf8','#ff4136','#ff00ff','#ffffff','#fbbf24'];
+  let particles = [];
+
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    particles = [];
+    const n = Math.min(90, Math.floor(W*H/12000));
+    for(let i=0;i<n;i++){
+      particles.push({
+        x:Math.random()*W, y:Math.random()*H,
+        vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28,
+        r:Math.random()*2+.4,
+        color:PALETTE[Math.floor(Math.random()*PALETTE.length)],
+        alpha:Math.random()*.45+.15,
+      });
+    }
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw(){
+    ctx.fillStyle='rgba(2,8,24,.18)'; ctx.fillRect(0,0,W,H);
+    for(const p of particles){
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+      g.addColorStop(0,p.color); g.addColorStop(.4,p.color+'55'); g.addColorStop(1,'transparent');
+      ctx.globalAlpha=p.alpha; ctx.fillStyle=g;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  // Blinking cursor in terminal
+  const cl = document.getElementById('cursor-line');
+  if(cl) setInterval(()=>{ cl.style.opacity=cl.style.opacity==='0'?'1':'0'; },600);
+})();
+</script>
