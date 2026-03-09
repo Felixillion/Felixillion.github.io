@@ -69,6 +69,7 @@ function dayOpts(y, m, sel) {
 let compState = {
   mode: 'projection', ticker: 'VAS',
   liveTickerInput: '',
+  compareTickers: [],          // up to 4 extra tickers for comparison overlay
   initial: 10000, monthly: 500,
   projStartDay: 1, projStartMonth: NOW.getMonth(), projStartYear: CY, years: 20,
   histStartDay: 1,  histStartMonth: 0,  histStartYear: 2015,
@@ -366,6 +367,77 @@ function buildChart(data, drip, svgId, tipId) {
   </div>`;
 }
 
+// Run calcMonthly for a specific ticker without mutating compState permanently
+function calcMonthlyFor(ticker) {
+  const prev = compState.ticker;
+  compState.ticker = ticker;
+  const data = calcMonthly();
+  compState.ticker = prev;
+  return data;
+}
+
+const COMPARE_PALETTE = ['#38bdf8','#f59e0b','#a78bfa','#fb923c','#84cc16'];
+
+function buildComparisonChart(seriesMap) {
+  // seriesMap: { ticker: { data, label, color } }
+  // Store globally so the tooltip handler can access live data
+  window._lastCmpSeries = seriesMap;
+
+  const entries = Object.entries(seriesMap);
+  const P={t:28,r:12,b:40,l:68}, W=820, H=270, cw=W-P.l-P.r, ch=H-P.t-P.b;
+
+  const allVals = entries.flatMap(([,s])=>s.data.map(d=>d.value));
+  const maxV    = Math.max(...allVals, 1);
+
+  const xs = (i, len) => (i / Math.max(len-1,1)) * cw;
+  const ys = v => ch - Math.min(v/maxV,1)*ch;
+  const yTicks = [0,.25,.5,.75,1].map(t=>({ y:ch-t*ch, lbl:fmtAUD(t*maxV) }));
+
+  // X-axis labels from the primary series
+  const primary = entries[0]?.[1];
+  const labeled = primary?.data.filter(d=>d.label) ?? [];
+  const step    = Math.max(1, Math.ceil(labeled.length/9));
+  const xLabels = labeled.filter((_,i)=>i%step===0||i===labeled.length-1);
+
+  const paths = entries.map(([tk,s])=>{
+    const d = s.data.map((p,i)=>`${i===0?'M':'L'}${xs(i,s.data.length).toFixed(1)},${ys(p.value).toFixed(1)}`).join(' ');
+    return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.5" opacity="0.9"/>`;
+  }).join('');
+
+  // Legend items — spaced across the top, show final values
+  const legendItems = entries.map(([tk,s],i)=>{
+    const last = s.data[s.data.length-1];
+    const lx = (i * (cw / entries.length)).toFixed(1);
+    return `<text x="${lx}" y="-10" font-size="9" font-family="sans-serif" fill="${s.color}">■ ${s.label}  ${fmtAUD(last?.value??0)}</text>`;
+  }).join('');
+
+  return `<div style="position:relative;margin-bottom:1.5rem;">
+  <div style="font-size:.78rem;color:#94a3b8;font-weight:600;margin-bottom:.5rem;">Portfolio Value — Comparison</div>
+  <svg id="comp-cmp-svg" width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible;display:block;cursor:crosshair;">
+    <rect width="${W}" height="${H}" fill="#020818" rx="8"/>
+    <g transform="translate(${P.l},${P.t})">
+      ${yTicks.map(t=>`
+        <line x1="0" y1="${t.y.toFixed(1)}" x2="${cw}" y2="${t.y.toFixed(1)}" stroke="#1e293b" stroke-dasharray="3,3"/>
+        <text x="-8" y="${(t.y+4).toFixed(1)}" text-anchor="end" fill="#475569" font-size="10" font-family="monospace">${t.lbl}</text>
+      `).join('')}
+      ${xLabels.map(d=>{
+        const i = primary.data.indexOf(d);
+        const x = xs(i, primary.data.length).toFixed(1);
+        return `<line x1="${x}" y1="0" x2="${x}" y2="${ch}" stroke="#1e293b" stroke-dasharray="3,3"/>
+          <text x="${x}" y="${ch+22}" text-anchor="middle" fill="#475569" font-size="9">${d.label}</text>`;
+      }).join('')}
+      ${paths}
+      ${legendItems}
+      <line id="comp-cmp-svg-xline" x1="0" y1="0" x2="0" y2="${ch}" stroke="#475569" stroke-width="1" opacity="0" pointer-events="none"/>
+      <rect id="comp-cmp-svg-overlay" x="0" y="0" width="${cw}" height="${ch}" fill="transparent"
+        data-svg="comp-cmp-svg" data-tip="comp-cmp-tip" data-pl="${P.l}" data-cw="${cw}" data-len="${primary.data.length}" data-type="comparison"/>
+    </g>
+  </svg>
+  <div id="comp-cmp-tip" style="display:none;position:absolute;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.6rem .8rem;font-size:.75rem;pointer-events:none;z-index:100;min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,.5);white-space:nowrap;"></div>
+  </div>`;
+}
+
+
 function buildRetChart(sims, retirementYears) {
   const P={t:12,r:12,b:40,l:68}, W=820,H=270, cw=W-P.l-P.r, ch=H-P.t-P.b;
   const pv = retState.portfolioValue;
@@ -468,10 +540,56 @@ function attachChartListeners() {
         h += `<div style="color:#94a3b8;font-size:.7rem;">10th pct: ${fmtAUD(p10)} · 90th pct: ${fmtAUD(p90)}</div>`;
         h += `<div style="color:${aliveN===sims.length?'#4ade80':'#f59e0b'};">Still surviving: ${aliveN}/${sims.length}</div>`;
         tip.innerHTML = h;
+      } else if (type === 'comparison' && window._lastCmpSeries) {
+        // Comparison chart: show each series value at hovered position
+        const seriesEntries = Object.values(window._lastCmpSeries);
+        const primaryData = seriesEntries[0]?.data || [];
+        const exactIdx = frac * (primaryData.length - 1);
+        const lo = Math.floor(exactIdx);
+        const hi = Math.min(lo + 1, primaryData.length - 1);
+        const t  = exactIdx - lo;
+        const loP = primaryData[lo];
+        const hiP = primaryData[hi];
+        if (!loP) return;
+
+        // Interpolate date from primary series timestamps
+        let dateStr = loP.date;
+        if (loP.ts && hiP?.ts) {
+          const ts = loP.ts + t * (hiP.ts - loP.ts);
+          const d  = new Date(ts);
+          dateStr  = `${d.getDate()} ${MOS[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        if (xline) { xline.setAttribute('x1',(frac*cw).toFixed(1)); xline.setAttribute('x2',(frac*cw).toFixed(1)); xline.setAttribute('opacity','0.5'); }
+
+        let h = `<div style="color:#94a3b8;margin-bottom:.4rem;font-weight:600;">${dateStr}</div>`;
+        for (const s of seriesEntries) {
+          const sLo = s.data[lo];
+          const sHi = s.data[Math.min(hi, s.data.length - 1)];
+          if (!sLo) continue;
+          const val    = Math.round(sLo.value        + t * ((sHi?.value        ?? sLo.value)        - sLo.value));
+          const contrib= Math.round(sLo.contributions + t * ((sHi?.contributions ?? sLo.contributions) - sLo.contributions));
+          const gain   = val - contrib;
+          h += `<div style="color:${s.color};margin-bottom:.15rem;"><strong>${s.label}:</strong> ${fmtAUD(val)}`;
+          h += ` <span style="color:#64748b;font-size:.68rem;">(+${fmtAUD(gain)} gains)</span></div>`;
+        }
+        // Delta line when exactly 2 series selected
+        if (seriesEntries.length === 2) {
+          const s0Lo = seriesEntries[0].data[lo], s0Hi = seriesEntries[0].data[Math.min(hi, seriesEntries[0].data.length-1)];
+          const s1Lo = seriesEntries[1].data[lo], s1Hi = seriesEntries[1].data[Math.min(hi, seriesEntries[1].data.length-1)];
+          if (s0Lo && s1Lo) {
+            const v0 = Math.round(s0Lo.value + t * ((s0Hi?.value ?? s0Lo.value) - s0Lo.value));
+            const v1 = Math.round(s1Lo.value + t * ((s1Hi?.value ?? s1Lo.value) - s1Lo.value));
+            const diff = v0 - v1;
+            h += `<div style="border-top:1px solid #1e293b;margin-top:.3rem;padding-top:.3rem;color:${diff>=0?'#4ade80':'#ef4444'};font-size:.7rem;">`;
+            h += `Δ ${diff>=0?'+':''}${fmtAUD(diff)} (${seriesEntries[0].label} vs ${seriesEntries[1].label})</div>`;
+          }
+        }
+        tip.innerHTML = h;
       }
 
-      const tipW = 200;
       const lx = e.clientX - rect.left + 14;
+      const tipW = 200;
       tip.style.left  = (lx + tipW > rect.width) ? `${lx - tipW - 20}px` : `${lx}px`;
       tip.style.top   = `${Math.max(0, e.clientY - rect.top - 30)}px`;
       tip.style.display = 'block';
@@ -585,10 +703,29 @@ function renderCompounding() {
     projStartDay, projStartMonth, projStartYear, years,
     histStartDay, histStartMonth, histStartYear,
     histEndDay,   histEndMonth,   histEndYear, drip, custom, liveTickerInput,
-    showInflation, inflationRate, frankingMode, taxProfile, useCustomAlloc, customAlloc } = compState;
+    showInflation, inflationRate, frankingMode, taxProfile, useCustomAlloc, customAlloc,
+    compareTickers } = compState;
   const etf = getETF(ticker);
   if (!etf) return `<p style="color:#ef4444;padding:2rem;">ETF data unavailable.</p>`;
   _lastCompData = calcMonthly();
+
+  // Build comparison series (portfolio value only — same date range/params, different ticker)
+  const hasComparison = compareTickers && compareTickers.length > 0;
+  const comparisonSeries = {};
+  if (hasComparison) {
+    const primaryColor = '#4ade80';
+    comparisonSeries[ticker] = { data: _lastCompData, label: ticker, color: primaryColor };
+    compareTickers.forEach((ct, i) => {
+      const ctEtf = getETF(ct);
+      if (ctEtf) {
+        comparisonSeries[ct] = {
+          data: calcMonthlyFor(ct),
+          label: ct,
+          color: COMPARE_PALETTE[i % COMPARE_PALETTE.length]
+        };
+      }
+    });
+  }
   const final = _lastCompData[_lastCompData.length - 1] ?? {value:0,contributions:0,dividends:0,frankingCum:0};
   const durMo = mode==='projection' ? years*12
     : (() => {
@@ -717,6 +854,37 @@ function renderCompounding() {
     </div>
   </div>
 
+  <!-- Compare with selector -->
+  <div style="background:#0a0f1e;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.2rem;">
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.5rem;">
+      <span class="etf-label" style="margin-bottom:0;color:#38bdf8;">📊 Compare with other ETFs</span>
+      <span style="font-size:.7rem;color:#475569;">Add up to 4 ETFs — same investment amount &amp; date range, overlaid on a single chart</span>
+      ${compareTickers.length>0?`<button id="comp-clear-cmp" style="margin-left:auto;font-size:.72rem;color:#ef4444;background:transparent;border:1px solid rgba(239,68,68,.3);border-radius:4px;padding:.2rem .5rem;cursor:pointer;">✕ Clear all</button>`:''}
+    </div>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+      ${['VAS','A200','DHHF','VDHG','VGS','BGBL','NDQ','IVV','VTS','VHY','AFI','ARG','ETHI','SEMI','URNM'].filter(t=>t!==ticker).map(t=>{
+        const on = compareTickers.includes(t);
+        const etfT = getETF(t);
+        return `<button class="comp-cmp-btn ${on?'comp-cmp-on':''}" data-cmp="${t}"
+          style="font-size:.72rem;padding:.25rem .55rem;border-radius:5px;border:1px solid ${on?'rgba(56,189,248,.5)':'var(--glass-border)'};
+          background:${on?'rgba(56,189,248,.1)':'transparent'};color:${on?'#38bdf8':'#64748b'};cursor:pointer;transition:all .2s;"
+          title="${etfT?.name??t}">${t}</button>`;
+      }).join('')}
+      <select id="comp-cmp-extra" class="etf-select" style="font-size:.72rem;padding:.2rem .5rem;max-width:180px;" title="Add any ETF to comparison">
+        <option value="">+ more…</option>
+        ${tickerOpts('',false)}
+      </select>
+    </div>
+    ${compareTickers.length>0?`<div style="margin-top:.5rem;font-size:.7rem;color:#38bdf8;">
+      Comparing: ${compareTickers.map((t,i)=>`<span style="background:rgba(56,189,248,.08);padding:.1rem .35rem;border-radius:3px;margin-right:.3rem;">${t}</span>`).join('')}
+      <span style="color:#475569;margin-left:.5rem;">— comparison chart appears below the main chart</span>
+    </div>`:
+    `<div style="margin-top:.4rem;font-size:.68rem;color:#334155;">
+      Click any ticker above to add it to the comparison. The comparison chart (portfolio value only) will appear below the main chart.
+      Each ticker uses the same initial/monthly/date-range settings.
+    </div>`}
+  </div>
+
   <!-- Custom ETF panel -->
   ${ticker==='CUSTOM'?`<div style="background:#0a0f1e;border:1px dashed #334155;border-radius:8px;padding:1rem;margin-bottom:1.2rem;">
     <div class="etf-label" style="margin-bottom:.5rem;">Custom ETF / Portfolio parameters</div>
@@ -735,10 +903,27 @@ function renderCompounding() {
         Derive return from asset class allocation
       </label>
       <span style="font-size:.7rem;color:#475569;">
-        (uses long-run asset class averages: AU eq 9.5%, Intl eq 10.2%, AU bonds 4.0%, Global bonds 3.5%, Cash 2.5%)
+        (uses long-run asset class averages: AU eq 9.5%, Intl (ex-US) 9.8%, US 10.8%, AU bonds 4.0%, Global bonds 3.5%, Cash 2.5%)
       </span>
     </div>
     ${useCustomAlloc?`
+    <!-- Allocation presets -->
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;flex-wrap:wrap;">
+      <label class="etf-label" style="margin-bottom:0;white-space:nowrap;">Load preset:</label>
+      <select id="ca-preset" class="etf-select" style="max-width:260px;font-size:.78rem;">
+        <option value="">— select to load —</option>
+        <option value="VDHG">VDHG-like (36% AU / 37% Intl / 6% AUB / 16% GB / 5% Cash)</option>
+        <option value="DHHF">DHHF-like (37% AU / 26% Intl / 37% US)</option>
+        <option value="VDGR">VDGR-like (28% AU / 28% Intl / 16% AUB / 23% GB / 5% Cash)</option>
+        <option value="VDBA">VDBA-like (21% AU / 19% Intl / 29% AUB / 27% GB / 4% Cash)</option>
+        <option value="60_40">60/40 Classic (30% AU / 30% Intl / 20% AUB / 20% GB)</option>
+        <option value="100AU">100% AU Shares</option>
+        <option value="100GL">100% International (ex-US)</option>
+        <option value="100US">100% US Shares (S&amp;P 500 / CRSP)</option>
+        <option value="AU50_US50">50% AU / 50% US</option>
+      </select>
+      <span style="font-size:.68rem;color:#475569;">Presets unlock data back to 1901 for longer historical runs</span>
+    </div>
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:.5rem;margin-bottom:.4rem;" class="resp-grid-2">
       ${['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'].map(k=>{
         const labels={AU_SHARES:'AU Shares',INTL_SHARES:'Intl (ex-US)',US_SHARES:'US Shares',AU_BONDS:'AU Bonds',GLOBAL_BONDS:'Global Bonds',CASH:'Cash'};
@@ -819,6 +1004,8 @@ function renderCompounding() {
     ${frankingMode&&hasFranking ? sc('Franking Credits', fmtAUD(final.frankingCum||0), '#fbbf24') : ''}
   </div>
 
+  ${hasComparison ? buildComparisonChart(comparisonSeries) : ''}
+  ${hasComparison ? dlRow(['dl-csv-cmp','⬇ Comparison (CSV)'],['dl-png-cmp','⬇ Comparison (PNG)']) : ''}
   ${buildChart(_lastCompData, drip, 'comp-svg', 'comp-tip')}
   <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem;font-size:.75rem;color:var(--text-secondary);">
     <span><span style="color:#4ade80;">——</span> Portfolio Value (nominal)</span>
@@ -1592,51 +1779,84 @@ function dlCompCSV() {
   const etf = getETF(compState.ticker);
   const isHist = compState.mode === 'historical';
   const frankOn = compState.frankingMode && (etf.frankingPct||0) > 0;
+  const inflOn  = compState.showInflation;
   const taxLabel = TAX_PROFILES[compState.taxProfile]?.label ?? compState.taxProfile;
-  const cpiNote  = isHist
-    ? 'ABS CPI (real, year-by-year)'
-    : `${compState.inflationRate}% p.a. (user assumption)`;
+  const frankBoostPct = frankOn
+    ? ((etf.dividendYield/100)*(etf.frankingPct)*(0.30/0.70)*(1-(TAX_PROFILES[compState.taxProfile]?.rate??0.30))*100).toFixed(2)
+    : '0';
 
-  // Header metadata rows
-  const meta = [
-    `ETF: ${compState.ticker} — ${etf.name}`,
-    `Mode: ${isHist ? 'Historical' : 'Projection'} | DRP: ${compState.drip?'On':'Off'} | Initial: $${compState.initial} | Monthly: $${compState.monthly}`,
-    `Return: ${etf.annualReturn?.toFixed?.(1)??'—'}% p.a. | MER: ${etf.mer}% | Yield: ${etf.dividendYield}%`,
-    `Inflation overlay: ${compState.showInflation ? 'On — '+cpiNote : 'Off'}`,
-    frankOn
-      ? `Franking credits: On | ${(etf.frankingPct*100).toFixed(0)}% franked | Tax profile: ${taxLabel} | Effective boost: +${((etf.dividendYield/100)*(etf.frankingPct)*(0.30/0.70)*(1-(TAX_PROFILES[compState.taxProfile]?.rate??0.30))*100).toFixed(2)}% p.a.`
-      : `Franking credits: Off`,
-    '',
-  ];
-
-  // Column headers — include all data columns
+  // Column list — build first so we know the width for padding meta rows
   const cols = [
-    'Date', 'Portfolio Value (AUD)', 'Total Contributed (AUD)', 'Gains (AUD)',
-    ...(!compState.drip ? ['Dividends Paid (AUD)'] : []),
-    ...(compState.showInflation ? ['Real Value (CPI-adj AUD)'] : []),
-    ...(frankOn ? ['Cumulative Franking Credits (AUD)'] : []),
+    'Date',
+    'Portfolio Value ($)',
+    'Total Contributed ($)',
+    'Gains ($)',
+    ...(!compState.drip ? ['Dividends Paid ($)'] : []),
+    ...(inflOn  ? ['Real Value CPI-adj ($)'] : []),
+    ...(frankOn ? ['Cumulative Franking Credits ($)'] : []),
+  ];
+  const ncols = cols.length;
+  const pad = (arr) => [...arr, ...Array(Math.max(0, ncols - arr.length)).fill('')];
+
+  // Meta block — all rows padded to ncols so Excel aligns them with the data
+  const meta = [
+    pad(['ETF', `${compState.ticker} - ${etf.name}`]),
+    pad(['Mode', isHist ? 'Historical' : 'Projection']),
+    pad(['DRP', compState.drip ? 'On (reinvested)' : 'Off (paid out)']),
+    pad(['Initial', `$${compState.initial.toLocaleString()}`]),
+    pad(['Monthly', `$${compState.monthly.toLocaleString()}`]),
+    pad(['Return p.a.', `${etf.annualReturn?.toFixed?.(1) ?? '-'}%`]),
+    pad(['MER', `${etf.mer}%`]),
+    pad(['Dividend Yield', `${etf.dividendYield}%`]),
+    pad(['Inflation', inflOn
+      ? (isHist ? 'ABS CPI year-by-year' : `${compState.inflationRate}% p.a. (assumed)`)
+      : 'Off']),
+    pad(['Franking Credits', frankOn
+      ? `On - ${(etf.frankingPct*100).toFixed(0)}% franked - ${frankBoostPct}% p.a. boost (${taxLabel})`
+      : 'Off']),
+    pad(Array(ncols).fill('')), // blank separator
   ];
 
-  // In historical mode emit every monthly row; in projection mode every row has a label
-  // _lastCompData always has all months — we filter to labelled rows only for projection
-  // but emit ALL rows for historical (gives the monthly granularity shown on the chart)
-  const rows = isHist
-    ? _lastCompData   // all monthly data points
-    : _lastCompData.filter(d => d.label);   // yearly tick marks only for projection
+  const rows = isHist ? _lastCompData : _lastCompData.filter(d => d.label);
 
   csvDL([
     ...meta,
     cols,
     ...rows.map(d => [
       d.date,
-      d.value,
-      d.contributions,
-      d.value - d.contributions,
-      ...(!compState.drip ? [d.dividends] : []),
-      ...(compState.showInflation ? [d.inflAdj] : []),
-      ...(frankOn ? [d.frankingCum ?? 0] : []),
+      Math.round(d.value   || 0),
+      Math.round(d.contributions || 0),
+      Math.round((d.value || 0) - (d.contributions || 0)),
+      ...(!compState.drip ? [Math.round(d.dividends || 0)] : []),
+      ...(inflOn  ? [Math.round(d.inflAdj    ?? d.value ?? 0)] : []),
+      ...(frankOn ? [Math.round(d.frankingCum ?? 0)]           : []),
     ])
   ], `${compState.ticker}_compounding_${compState.mode}.csv`);
+}
+function dlCmpCSV() {
+  // Export all comparison series side-by-side (portfolio value per month/year)
+  const primary = { ticker: compState.ticker, data: _lastCompData };
+  const all = [primary, ...compState.compareTickers.map(t => ({ ticker: t, data: calcMonthlyFor(t) }))];
+  const isHist = compState.mode === 'historical';
+
+  // Use the primary series dates as the index
+  const dateRows = (isHist ? primary.data : primary.data.filter(d=>d.label)).map(d => d.date);
+
+  const header = ['Date', ...all.map(s => `${s.ticker} Portfolio Value ($)`)];
+  const pad = n => n == null || isNaN(n) ? '' : Math.round(n);
+
+  csvDL([
+    [`Comparison: ${all.map(s=>s.ticker).join(' vs ')} | Mode: ${isHist?'Historical':'Projection'} | Initial: $${compState.initial.toLocaleString()} | Monthly: $${compState.monthly.toLocaleString()}`],
+    [],
+    header,
+    ...dateRows.map((date, i) => [
+      date,
+      ...all.map(s => {
+        const filtered = isHist ? s.data : s.data.filter(d => d.label);
+        return pad(filtered[i]?.value);
+      })
+    ])
+  ], `comparison_${all.map(s=>s.ticker).join('_')}.csv`);
 }
 function dlPortCSV() {
   const tot=holdings.reduce((s,h)=>s+h.amount,0), secs=calcSectorTotals();
@@ -1766,6 +1986,15 @@ function attachListeners() {
     document.getElementById('cust-use-alloc')?.addEventListener('change',e=>{
       compState.useCustomAlloc=e.target.checked; rerender();
     });
+    // Preset loader for custom allocation
+    document.getElementById('ca-preset')?.addEventListener('change',e=>{
+      const key = e.target.value;
+      if (!key || !etfData?.portfolioPresets[key]) return;
+      const presetAlloc = etfData.portfolioPresets[key]?.allocation || {};
+      const allKeys = ['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'];
+      allKeys.forEach(k=>{ compState.customAlloc[k] = presetAlloc[k] ?? 0; });
+      rerender();
+    });
     // Custom allocation sliders/inputs
     const caKeys=['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'];
     caKeys.forEach(k=>{
@@ -1777,7 +2006,31 @@ function attachListeners() {
       rng?.addEventListener('input', e=>set(e.target.value));
     });
 
+    // Comparison ETF toggle buttons
+    document.querySelectorAll('.comp-cmp-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const t = btn.dataset.cmp;
+        const idx = compState.compareTickers.indexOf(t);
+        if (idx>=0) compState.compareTickers.splice(idx,1);
+        else if (compState.compareTickers.length < 4) compState.compareTickers.push(t);
+        rerender();
+      });
+    });
+    document.getElementById('comp-cmp-extra')?.addEventListener('change',e=>{
+      const t = e.target.value;
+      if (t && t!==compState.ticker && !compState.compareTickers.includes(t) && compState.compareTickers.length<4) {
+        compState.compareTickers.push(t);
+        rerender();
+      }
+      e.target.value='';
+    });
+    document.getElementById('comp-clear-cmp')?.addEventListener('click',()=>{
+      compState.compareTickers=[]; rerender();
+    });
+
     document.getElementById('dl-csv-comp')?.addEventListener('click',dlCompCSV);
+    document.getElementById('dl-csv-cmp')?.addEventListener('click',dlCmpCSV);
+    document.getElementById('dl-png-cmp')?.addEventListener('click',()=>pngDL('comp-cmp-svg','comparison_chart.png'));
     document.getElementById('dl-png-comp')?.addEventListener('click',()=>pngDL('comp-svg',`${compState.ticker}_chart.png`));
   }
 
