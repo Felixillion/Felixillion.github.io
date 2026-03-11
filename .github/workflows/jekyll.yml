@@ -29,7 +29,12 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
-          bundler-cache: true  # runs bundle install and caches gems automatically
+          bundler-cache: false   # we handle install manually so we can add the linux platform first
+
+      - name: Add linux platform and install gems
+        run: |
+          bundle lock --add-platform x86_64-linux
+          bundle install --jobs 4 --retry 3
 
       - name: Setup Pages
         id: pages
