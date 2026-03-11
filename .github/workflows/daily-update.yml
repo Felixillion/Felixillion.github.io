@@ -16,6 +16,11 @@ concurrency:
   group: daily-update
   cancel-in-progress: false   # never cancel a run already in progress
 
+# Opt into Node.js 24 for all actions in this workflow (avoids Node 20 deprecation warnings).
+# Remove once actions/checkout, actions/setup-node etc. ship Node-24-native versions.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   # ── Job 1: ETF / stock data (Python + yfinance) ─────────────────────────
   update-etf-data:
@@ -78,7 +83,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           # NOTE: cache: npm is intentionally omitted here.
           # npm caching requires a committed package-lock.json in the repo.
           # Without one, setup-node throws "Some specified paths were not resolved".
@@ -149,7 +154,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install Node dependencies
         run: |

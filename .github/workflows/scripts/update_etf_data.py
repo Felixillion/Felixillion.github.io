@@ -37,7 +37,7 @@ except ImportError:
 BASE_DIR   = Path(__file__).parent.parent
 DATA_DIR   = BASE_DIR / 'data'
 STOCKS_DIR = DATA_DIR / 'stocks'
-STOCKS_DIR.mkdir(exist_ok=True)
+STOCKS_DIR.mkdir(parents=True, exist_ok=True)   # parents=True creates data/ if missing in fresh checkout
 
 # ---------------------------------------------------------------------------
 # ETF tickers (Yahoo Finance uses .AX suffix for ASX-listed securities)
