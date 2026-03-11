@@ -52,8 +52,8 @@
   </footer>
 
   {% if page.footer_scripts %}
-  <!-- ?v={{ site.time | date: '%Y%m%d%H%M' }} busts browser cache on each Jekyll build -->
-  <script type="module" src="{{ page.footer_scripts | relative_url }}?v={{ site.time | date: '%Y%m%d%H%M' }}"></script>
+  <!-- ?v= busts browser cache on each build. defer (not module) so download starts during HTML parse -->
+  <script defer src="{{ page.footer_scripts | relative_url }}?v={{ site.time | date: '%Y%m%d%H%M' }}"></script>
   {% endif %}
 </body>
 

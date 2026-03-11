@@ -32,13 +32,13 @@ const EXPERIMENTS = [
     { text: "Designing a multiplexed IMC panel", why: "More markers, more problems, more papers. The trade-off is celestially favourable today." },
     { text: "Extracting RNA from FFPE tissue", why: "Degraded RNA is still RNA, and your RIN score is spiritually non-zero." },
     { text: "Performing Seurat clustering on sc-RNAseq data", why: "Leiden resolution 0.8 is cosmically aligned. Trust the clusters." },
-    { text: "Running a CyTOF acquisition", why: "Metal isotopes don't lie, and neither does the universe on a day like today." },
+    { text: "Running a mass cytometry acquisition", why: "Metal isotopes don't lie, and neither does the universe on a day like today." },
     { text: "Optimising antigen retrieval conditions", why: "The epitopes are buried but not gone. So is the truth." },
     { text: "Plating a limiting dilution assay", why: "Poisson statistics are simply the universe admitting it works in probability, like everything else." },
     { text: "Annotating cell clusters in Scanpy", why: "You know these cells better than they know themselves. Name them." },
     { text: "Running a flow cytometry compensation matrix", why: "Spectral spillover is not a failure. It is an opportunity to do maths." },
     { text: "Establishing a new cell line from primary tissue", why: "Passage 1 is always hopeful. Passage 12 is wisdom. Today is passage 1." },
-    { text: "Imaging a tissue section on the Xenium platform", why: "Spatial context is everything. The neighbourhood defines the cell." },
+    { text: "Imaging a tissue section for spatial transcriptomics", why: "Spatial context is everything. The neighbourhood defines the cell." },
     { text: "Processing a CITE-seq library", why: "Surface proteins and transcriptomics together — why would you measure only half the truth?" },
     { text: "Performing a cytokine bead array", why: "Thirty-seven analytes from one tube is efficient science, and efficiency is cosmically favoured." },
     { text: "Designing a pooled CRISPR screen", why: "The library contains the answer. You are simply the selection pressure." },
@@ -46,7 +46,7 @@ const EXPERIMENTS = [
     { text: "Annotating a spatial transcriptomics dataset", why: "Geography matters in science as in life. Where a gene is expressed is half the story." },
     { text: "Running your PI's favourite assay that you think is outdated", why: "Perspective is relative. ELISA still has its uses, and so does your PI." },
     { text: "Setting up overnight cell culture for tomorrow's assay", why: "Preparation is nine-tenths of the experiment. Your cells will be ready if you are." },
-    { text: "Analysing spectral flow cytometry data with SpectroFlo", why: "Unmixing is not just a technical step. It is a philosophy of separating what does not belong together." },
+    { text: "Unmixing a spectral flow cytometry dataset", why: "Separating overlapping signals is not just a technical step. It is a philosophy of finding what does not belong together." },
 ];
 
 const AVOIDANCES = [
@@ -72,7 +72,7 @@ const AVOIDANCES = [
     { text: "Relying on the autoclave that 'should be done by now'", why: "It is not done. It was never going to be done. You needed it two hours ago." },
     { text: "Thawing your only remaining aliquot without a backup plan", why: "If this aliquot has been through three freeze-thaw cycles, the universe requests you reconsider." },
     { text: "Submitting a manuscript to a journal without reading the author guidelines", why: "The references must be numbered, not alphabetised. You will find this out on revision request 2." },
-    { text: "Trusting the Nanodrop reading for your RNA without also running a gel", why: "Protein contamination elevates A260 in ways the Nanodrop finds charming and you will not." },
+    { text: "Trusting the spectrophotometer reading for your RNA without also running a gel", why: "Protein contamination elevates A260 in ways the instrument finds charming and you will not." },
     { text: "Adding DMSO stock straight to the cells without pre-warming", why: "They were happy. They were proliferating. They had plans." },
     { text: "Scheduling two staining panels for the same day to 'save time'", why: "Time is not saved. It is redistributed into a single, spectacular crunch." },
     { text: "Not labelling your tubes before you start", why: "There will be twelve unlabelled tubes. They will all look identical. One of them is your positive control." },
