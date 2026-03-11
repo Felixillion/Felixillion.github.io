@@ -75,9 +75,9 @@
 
   function drawTopHatBack(x,y,sz,angle,alpha){
     const TW=sz, BRX=sz*1.65, BRY=sz*0.26;
-    ctx.save(); ctx.translate(x,y); ctx.rotate(angle);
+    ctx.save(); ctx.translate(x,y); ctx.rotate(angle); ctx.scale(1,-1); // flip: crown→bottom, opening→top
     ctx.globalAlpha=alpha;
-    // Back half of brim — lower semicircle (angles 0→PI, canvas y>0 = behind)
+    // Back half of brim — now the UPPER arc (y<0 after flip = visual top)
     ctx.fillStyle='#12122a';
     ctx.beginPath(); ctx.ellipse(0,0,BRX,BRY,0,0,Math.PI); ctx.fill();
     ctx.restore();
@@ -85,7 +85,7 @@
 
   function drawTopHatFront(x,y,sz,angle,alpha){
     const TW=sz, TH=sz*2.4, BRX=sz*1.65, BRY=sz*0.26, CRY=sz*0.21;
-    ctx.save(); ctx.translate(x,y); ctx.rotate(angle);
+    ctx.save(); ctx.translate(x,y); ctx.rotate(angle); ctx.scale(1,-1); // flip: crown→bottom, cylinder→below
     ctx.globalAlpha=alpha;
 
     // ── Cylinder body — horizontal shading + vertical top-light/bottom-dark ──
@@ -154,93 +154,108 @@
   }
 
   // ── Bunny ─────────────────────────────────────────────────────────────────
-  // drawBunnyLocal: right-side-up, in hat-local space.
-  // Ears at BY-sz*2.85 (most-negative Y = highest = emerge through crown FIRST).
-  // Paws at BY+sz*0.52 (positive Y = lowest = last to clear the crown opening).
+  //
+  // HAT GEOMETRY (world/bunny-local space — NO scale flip applied here):
+  //   drawTopHatFront/Back both apply ctx.scale(1,-1).
+  //   After that flip, on screen:
+  //     brim opening  = y=0   (the translate point h.x,h.y)
+  //     cylinder body = y=0 → y=+TH  (goes DOWNWARD on screen)
+  //     crown         = y=+TH (below brim on screen — closed end)
+  //
+  //   Bunny draw uses translate+rotate but NO scale flip, so in local coords:
+  //     y < 0  =  ABOVE brim  (visible, upward on screen)
+  //     y > 0  =  inside hat  (hidden by cylinder drawn in step 3)
+  //
+  //   Bunny emerges UPWARD: clip to y<0, ears first (most negative Y).
+  //   emerge=0 → ear tips at y=0 (BY−sz*2.85=0  → BY= sz*2.85)
+  //   emerge=1 → paws at y=0    (BY+sz*0.52=0  → BY=−sz*0.52)
+  //   BY = sz*2.85 − emerge * sz*3.37
+  //
   function drawBunnyLocal(sz, BY) {
-    // ── Ears — most upward part, appear first ────────────────────────────────
+    // ── Ears — most upward (most negative Y), appear first ───────────────────
     function drawEar(sign) {
-      const ex=sign*sz*.32;
-      ctx.fillStyle='#ecdde4';
+      const ex = sign * sz * .32;
+      ctx.fillStyle = '#ecdde4';
       ctx.beginPath();
-      ctx.moveTo(ex,          BY-sz*1.05);   // base at head top
+      ctx.moveTo(ex,              BY - sz * 1.05);   // ear base at head top
       ctx.bezierCurveTo(
-        ex+sign*sz*.28, BY-sz*1.55,
-        ex+sign*sz*.22, BY-sz*2.55,
-        ex,             BY-sz*2.85);         // tip — highest, appears first through crown
+        ex + sign*sz*.28, BY - sz*1.55,
+        ex + sign*sz*.22, BY - sz*2.55,
+        ex,               BY - sz*2.85);             // tip — most upward, appear first
       ctx.bezierCurveTo(
-        ex-sign*sz*.18, BY-sz*2.55,
-        ex-sign*sz*.12, BY-sz*1.55,
-        ex-sign*sz*.18, BY-sz*1.05);
+        ex - sign*sz*.18, BY - sz*2.55,
+        ex - sign*sz*.12, BY - sz*1.55,
+        ex - sign*sz*.18, BY - sz*1.05);
       ctx.closePath(); ctx.fill();
-      ctx.fillStyle='#f9a8c4';
+      ctx.fillStyle = '#f9a8c4';
       ctx.beginPath();
-      ctx.moveTo(ex,           BY-sz*1.2);
-      ctx.bezierCurveTo(ex+sign*sz*.14,BY-sz*1.6, ex+sign*sz*.10,BY-sz*2.4, ex,BY-sz*2.62);
-      ctx.bezierCurveTo(ex-sign*sz*.10,BY-sz*2.4, ex-sign*sz*.06,BY-sz*1.6, ex-sign*sz*.10,BY-sz*1.2);
+      ctx.moveTo(ex,               BY - sz*1.2);
+      ctx.bezierCurveTo(ex+sign*sz*.14, BY-sz*1.6, ex+sign*sz*.10, BY-sz*2.4, ex, BY-sz*2.62);
+      ctx.bezierCurveTo(ex-sign*sz*.10, BY-sz*2.4, ex-sign*sz*.06, BY-sz*1.6, ex-sign*sz*.10, BY-sz*1.2);
       ctx.closePath(); ctx.fill();
     }
     drawEar(-1); drawEar(1);
 
     // ── Head ─────────────────────────────────────────────────────────────────
-    ctx.fillStyle='#ecdde4';
-    ctx.beginPath(); ctx.arc(0,BY-sz*.82,sz*.68,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.18)';
-    ctx.beginPath(); ctx.ellipse(-sz*.1,BY-sz*1.05,sz*.3,sz*.18,-.3,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#ecdde4';
+    ctx.beginPath(); ctx.arc(0, BY - sz*.82, sz*.68, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.beginPath(); ctx.ellipse(-sz*.1, BY - sz*1.05, sz*.3, sz*.18, -.3, 0, Math.PI*2); ctx.fill();
 
     // ── Eyes ─────────────────────────────────────────────────────────────────
-    ctx.fillStyle='#ff69b4';
-    ctx.beginPath(); ctx.ellipse(-sz*.24,BY-sz*.88,sz*.145,sz*.13,0,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse( sz*.24,BY-sz*.88,sz*.145,sz*.13,0,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#1c1917';
-    ctx.beginPath(); ctx.ellipse(-sz*.23,BY-sz*.88,sz*.068,sz*.092,0,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse( sz*.23,BY-sz*.88,sz*.068,sz*.092,0,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,.85)';
-    ctx.beginPath(); ctx.arc(-sz*.20,BY-sz*.94,sz*.028,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc( sz*.26,BY-sz*.94,sz*.028,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#ff69b4';
+    ctx.beginPath(); ctx.ellipse(-sz*.24, BY-sz*.88, sz*.145, sz*.13, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse( sz*.24, BY-sz*.88, sz*.145, sz*.13, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#1c1917';
+    ctx.beginPath(); ctx.ellipse(-sz*.23, BY-sz*.88, sz*.068, sz*.092, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse( sz*.23, BY-sz*.88, sz*.068, sz*.092, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    ctx.beginPath(); ctx.arc(-sz*.20, BY-sz*.94, sz*.028, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc( sz*.26, BY-sz*.94, sz*.028, 0, Math.PI*2); ctx.fill();
 
     // ── Nose + mouth ─────────────────────────────────────────────────────────
-    ctx.fillStyle='#f4a0b5';
+    ctx.fillStyle = '#f4a0b5';
     ctx.beginPath();
-    ctx.moveTo(0,BY-sz*.52); ctx.lineTo(-sz*.09,BY-sz*.58); ctx.lineTo(sz*.09,BY-sz*.58);
+    ctx.moveTo(0, BY-sz*.52);
+    ctx.lineTo(-sz*.09, BY-sz*.58); ctx.lineTo(sz*.09, BY-sz*.58);
     ctx.closePath(); ctx.fill();
-    ctx.strokeStyle='#c87090'; ctx.lineWidth=sz*.042; ctx.lineCap='round';
-    ctx.beginPath(); ctx.moveTo(0,BY-sz*.52);
-    ctx.quadraticCurveTo(-sz*.12,BY-sz*.44,-sz*.16,BY-sz*.4); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0,BY-sz*.52);
-    ctx.quadraticCurveTo( sz*.12,BY-sz*.44, sz*.16,BY-sz*.4); ctx.stroke();
+    ctx.strokeStyle = '#c87090'; ctx.lineWidth = sz*.042; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(0, BY-sz*.52);
+    ctx.quadraticCurveTo(-sz*.12, BY-sz*.44, -sz*.16, BY-sz*.4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, BY-sz*.52);
+    ctx.quadraticCurveTo( sz*.12, BY-sz*.44,  sz*.16, BY-sz*.4); ctx.stroke();
 
     // ── Whiskers ─────────────────────────────────────────────────────────────
-    ctx.strokeStyle='rgba(255,225,235,.68)'; ctx.lineWidth=sz*.024;
-    [[-1,0],[-1,1],[1,0],[1,1]].forEach(([s,row])=>{
+    ctx.strokeStyle = 'rgba(255,225,235,.68)'; ctx.lineWidth = sz*.024;
+    [[-1,0],[-1,1],[1,0],[1,1]].forEach(([s,row]) => {
       ctx.beginPath();
-      ctx.moveTo(s*sz*.12, BY-sz*(.52+row*.08));
-      ctx.lineTo(s*sz*.72, BY-sz*(.56+row*.10));
+      ctx.moveTo(s*sz*.12, BY - sz*(.52+row*.08));
+      ctx.lineTo(s*sz*.72, BY - sz*(.56+row*.10));
       ctx.stroke();
     });
 
     // ── Cheek blush ──────────────────────────────────────────────────────────
-    ctx.fillStyle='rgba(255,160,185,.3)';
-    ctx.beginPath(); ctx.ellipse(-sz*.36,BY-sz*.78,sz*.2,sz*.13,0,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse( sz*.36,BY-sz*.78,sz*.2,sz*.13,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,160,185,.3)';
+    ctx.beginPath(); ctx.ellipse(-sz*.36, BY-sz*.78, sz*.2, sz*.13, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse( sz*.36, BY-sz*.78, sz*.2, sz*.13, 0, 0, Math.PI*2); ctx.fill();
 
     // ── Body ─────────────────────────────────────────────────────────────────
-    ctx.fillStyle='#ecdde4';
-    ctx.beginPath(); ctx.ellipse(0,BY+sz*.08,sz*.52,sz*.68,0,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.22)';
-    ctx.beginPath(); ctx.ellipse(0,BY+sz*.06,sz*.28,sz*.36,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#ecdde4';
+    ctx.beginPath(); ctx.ellipse(0, BY+sz*.08, sz*.52, sz*.68, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    ctx.beginPath(); ctx.ellipse(0, BY+sz*.06, sz*.28, sz*.36, 0, 0, Math.PI*2); ctx.fill();
 
-    // ── Paws — last to emerge (lowest point) ─────────────────────────────────
+    // ── Paws — least negative Y, last to leave hat opening ───────────────────
     function drawPaw(sign) {
-      const px=sign*sz*.34, py=BY+sz*.52;
-      ctx.fillStyle='#e8ccd5';
-      ctx.beginPath(); ctx.ellipse(px,py,sz*.19,sz*.12,sign*.25,0,Math.PI*2); ctx.fill();
-      for(let t=-1;t<=1;t++){
-        ctx.fillStyle='#e2c8d0';
-        ctx.beginPath(); ctx.arc(px+sign*sz*.02+t*sz*.07, py+sz*.09, sz*.055, 0, Math.PI*2); ctx.fill();
+      const px = sign*sz*.34, py = BY + sz*.52;
+      ctx.fillStyle = '#e8ccd5';
+      ctx.beginPath(); ctx.ellipse(px, py, sz*.19, sz*.12, sign*.25, 0, Math.PI*2); ctx.fill();
+      for (let t = -1; t <= 1; t++) {
+        ctx.fillStyle = '#e2c8d0';
+        ctx.beginPath(); ctx.arc(px + sign*sz*.02 + t*sz*.07, py + sz*.09, sz*.055, 0, Math.PI*2); ctx.fill();
       }
-      ctx.fillStyle='rgba(200,140,160,0.4)';
-      ctx.beginPath(); ctx.ellipse(px,py,sz*.09,sz*.06,sign*.15,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba(200,140,160,0.4)';
+      ctx.beginPath(); ctx.ellipse(px, py, sz*.09, sz*.06, sign*.15, 0, Math.PI*2); ctx.fill();
     }
     drawPaw(-1); drawPaw(1);
   }
@@ -321,31 +336,30 @@
     // 1) Back brim for every hat (behind everything)
     for(const h of topHats) drawTopHatBack(h.x,h.y,h.sz,h.angle,h.alpha);
 
-    // 2) Sparkles + bunny — rises upward through CROWN (top of hat, y=-TH in local space).
-    //    Clip to y<-TH so bunny is only visible above the crown opening.
-    //    emerge=0 → ear tips exactly at crown level; emerge=1 → paws just clear.
+    // 2) Sparkles + bunny — bunny emerges UPWARD through the brim opening (y=0).
+    //    Clip to y<0 (above brim on screen). Cylinder (step 3) is at y>0 (below brim)
+    //    so it naturally occludes any part of the bunny still inside the hat.
+    //    emerge=0 → ear tips at y=0; emerge=1 → paws at y=0.
     for(const b of bunnies){
       const h=b.hat;
-      const TH=h.sz*2.4; // crown at local y=-TH
-      // Crown in world coords (for sparkles)
-      const crownX=h.x+Math.sin(h.angle)*TH, crownY=h.y-Math.cos(h.angle)*TH;
+      // Sparkles radiate from brim centre (world: h.x, h.y)
       for(const sp of b.sparksBurst){
         if(sp.life>0){
           sp.life-=.014;
           ctx.globalAlpha=Math.max(0,sp.life*.6); ctx.fillStyle=sp.col;
           ctx.beginPath();
-          ctx.arc(crownX+sp.vx*(1-sp.life)*40, crownY+sp.vy*(1-sp.life)*40, 1.8, 0, Math.PI*2);
+          ctx.arc(h.x+sp.vx*(1-sp.life)*42, h.y+sp.vy*(1-sp.life)*42, 1.8, 0, Math.PI*2);
           ctx.fill();
         }
       }
-      // BY formula: emerge=0 → ear tips at crown (BY-sz*2.85=-TH → BY=-TH+sz*2.85)
-      //             emerge=1 → paws just above crown (BY+sz*0.52=-TH → BY=-TH-sz*0.52)
-      const BY=-TH + b.sz*2.85 - b.emerge*b.sz*3.37;
+      // BY: emerge=0 → ear tips at brim (BY−sz*2.85=0 → BY=sz*2.85)
+      //     emerge=1 → paws at brim    (BY+sz*0.52=0 → BY=−sz*0.52)
+      const BY = b.sz*2.85 - b.emerge*b.sz*3.37;
       ctx.save();
       ctx.translate(h.x,h.y); ctx.rotate(h.angle);
       ctx.globalAlpha=Math.min(1,b.emerge*2.2);
-      // Clip: only show y < -TH (above crown)
-      ctx.beginPath(); ctx.rect(-5000,-5000,10000,5000-TH); ctx.clip();
+      // Clip: only show y < 0 (strictly above brim opening)
+      ctx.beginPath(); ctx.rect(-5000,-5000,10000,5000); ctx.clip();
       drawBunnyLocal(b.sz, BY);
       ctx.restore();
     }

@@ -57,6 +57,16 @@ function getHistoricalReturns(ticker) {
   return etfData?.etfs[key]?.historicalReturns || {};
 }
 
+// Returns year-by-year dividend yields for accurate DRP-off historical mode.
+// Stored by update_etf_data.py using actual dividends / prior-year close price.
+function getHistoricalDivYields(ticker) {
+  const key = ticker.replace('.AX', '');
+  const cached = _liveCache[key];
+  if (cached?.historicalDividendYields && Object.keys(cached.historicalDividendYields).length > 0)
+    return cached.historicalDividendYields;
+  return etfData?.etfs[key]?.historicalDividendYields || {};
+}
+
 // ── Days in month ─────────────────────────────────────────────────
 function daysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
 function dayOpts(y, m, sel) {
@@ -187,6 +197,14 @@ function calcMonthly() {
   const historicalRets = ticker === 'LIVE'
     ? (getHistoricalReturns(compState.liveTickerInput.trim().toUpperCase()) ?? {})
     : getHistoricalReturns(ticker);
+  // Year-by-year actual dividend yields (used in historical DRP-off mode to accurately
+  // split total return into capital growth + cash dividends, rather than using a static
+  // current yield which can be off by several percent for variable-yield stocks like VAP/CBA)
+  const historicalDivYields = mode === 'historical' && !drip
+    ? (ticker === 'LIVE'
+        ? getHistoricalDivYields(compState.liveTickerInput.trim().toUpperCase())
+        : getHistoricalDivYields(ticker))
+    : {};
   const data = [];
   let bal = initial, contrib = initial, divs = 0;
 
@@ -266,11 +284,16 @@ function calcMonthly() {
     // ── MER treatment ──────────────────────────────────────────────
     // Historical returns from fund prices already net of MER; projection uses gross estimate.
     const merDeduction = mode === 'historical' ? 0 : (etf.mer / 100);
-    const divDeduction = drip ? 0 : (etf.dividendYield / 100);
+    // DRP-off: use the actual historical yield for this year when available (much more
+    // accurate than the static current yield, especially for variable-dividend stocks).
+    const divYieldForYear = mode === 'historical'
+      ? ((historicalDivYields[String(mo.y)] ?? etf.dividendYield) || 0)
+      : etf.dividendYield;
+    const divDeduction = drip ? 0 : (divYieldForYear / 100);
 
     const netAnnual = (rawReturn / 100) - merDeduction - divDeduction;
     const mRate = Math.pow(1 + netAnnual, mo.frac / 12) - 1;
-    const mDiv  = drip ? 0 : bal * (etf.dividendYield / 100) * mo.frac / 12;
+    const mDiv  = drip ? 0 : bal * (divYieldForYear / 100) * mo.frac / 12;
     bal = bal * (1 + mRate) + monthly * mo.frac;
     contrib += monthly * mo.frac;
     divs += mDiv;
@@ -620,6 +643,50 @@ function donut(slices, colors, sz) {
 const _liveCache = {};
 let _stockIndex = null;  // populated on first lookup
 
+// ── Per-ticker price cache (weekly prices for start/end sanity cards) ──────
+// Populated lazily when historical mode is active. Keyed by short ticker (no .AX).
+const _priceCache = {};
+const _pricePending = {};
+
+/** Find the weekly price entry closest to a given calendar date. */
+function priceNearDate(weeklyPrices, y, m, d) {
+  if (!weeklyPrices || weeklyPrices.length === 0) return null;
+  const target = new Date(y, m, d).getTime();
+  let best = null, bestDiff = Infinity;
+  for (const p of weeklyPrices) {
+    const diff = Math.abs(new Date(p.date).getTime() - target);
+    if (diff < bestDiff) { bestDiff = diff; best = p; }
+  }
+  return best; // { date: 'YYYY-MM-DD', close: number }
+}
+
+/** Return the Yahoo Finance history URL for a ticker (ASX assumed). */
+function yahooUrl(ticker) {
+  const key = ticker?.replace('.AX','') || '';
+  return `https://finance.yahoo.com/quote/${key}.AX/history/`;
+}
+
+/**
+ * Load weekly prices for a preset ticker into _priceCache.
+ * Fires rerender() once when data arrives so the cards update.
+ * Idempotent — safe to call on every render.
+ */
+function ensurePriceData(ticker) {
+  const key = (ticker === 'LIVE')
+    ? compState.liveTickerInput.trim().toUpperCase().replace('.AX','')
+    : ticker;
+  if (!key || key === 'CUSTOM' || _priceCache[key] !== undefined || _pricePending[key]) return;
+  _pricePending[key] = true;
+  const axKey = key.endsWith('.AX') ? key : `${key}.AX`;
+  fetch(`/data/stocks/${axKey}.json`)
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      _priceCache[key] = d ? { weeklyPrices: d.weeklyPrices || [], currentPrice: d.currentPrice } : null;
+    })
+    .catch(() => { _priceCache[key] = null; })
+    .finally(() => { delete _pricePending[key]; rerender(); });
+}
+
 async function fetchStockIndex() {
   if (_stockIndex) return _stockIndex;
   try {
@@ -693,6 +760,8 @@ function tickerOpts(sel, custom=false) {
 const yrOpts=(f,t,s)=>Array.from({length:t-f+1},(_,i)=>f+i).map(y=>`<option value="${y}" ${y===s?'selected':''}>${y}</option>`).join('');
 const moOpts=s=>MOS.map((m,i)=>`<option value="${i}" ${i===s?'selected':''}>${m}</option>`).join('');
 const sc=(l,v,c,sz='1.4rem')=>`<div class="etf-stat-card"><div class="etf-stat-label">${l}</div><div class="etf-stat-value" style="color:${c};font-size:${sz};">${v}</div></div>`;
+// scSub: stat card with a small subtitle line below the value
+const scSub=(l,v,c,sub,sz='1.4rem')=>`<div class="etf-stat-card"><div class="etf-stat-label">${l}</div><div class="etf-stat-value" style="color:${c};font-size:${sz};">${v}</div>${sub?`<div style="font-size:.62rem;color:#475569;margin-top:.25rem;line-height:1.3;">${sub}</div>`:''}</div>`;
 const dlRow=(...bs)=>`<div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;flex-wrap:wrap;">${bs.map(([id,l])=>`<button id="${id}" class="dl-btn">${l}</button>`).join('')}</div>`;
 
 // ══════════════════════════════════════════════════════════════════
@@ -744,6 +813,40 @@ function renderCompounding() {
   const liveKey = liveTicker.replace('.AX', '');
   const liveLoaded = ticker==='LIVE' && !!_liveCache[liveKey];
   const livePending = ticker==='LIVE' && !_liveCache[liveKey] && !!liveTicker;
+
+  // ── Price-per-unit lookup for Start/End Value sanity cards ────────────────
+  // Load stock file lazily (fires rerender when data arrives).
+  const priceKey = ticker === 'LIVE' ? liveKey : ticker;
+  if (mode === 'historical' && priceKey && priceKey !== 'CUSTOM') ensurePriceData(ticker);
+  const priceData = _priceCache[priceKey];
+  const wp = priceData?.weeklyPrices || [];
+  // Live tickers already have prices in _liveCache
+  const livePrices = ticker === 'LIVE' ? (_liveCache[liveKey]?._weeklyPrices || []) : [];
+  const allPrices = wp.length ? wp : livePrices;
+
+  // Format: "~$12.34 (nearest: 3 Jan 2020)"
+  function priceSubtitle(y, m, d) {
+    const p = priceNearDate(allPrices, y, m, d);
+    if (!p) return '';
+    const dt = new Date(p.date + 'T00:00:00');
+    const dStr = dt.toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'});
+    return `~$${p.close.toFixed(2)}/unit<br>(nearest: ${dStr})`;
+  }
+
+  const yUrl = (ticker !== 'CUSTOM')
+    ? `<a href="${yahooUrl(ticker === 'LIVE' ? liveTicker : ticker)}" target="_blank" rel="noopener"
+         style="color:#38bdf8;font-size:.65rem;text-decoration:none;" title="View on Yahoo Finance">
+         ↗ Yahoo Finance</a>`
+    : '';
+
+  // Subtitle for End Value card — include real value if inflation is on
+  function endValueSub(y, m, d) {
+    const price = priceSubtitle(y, m, d);
+    const realPart = showInflation && final.inflAdj
+      ? `Real: <span style="color:#fb923c;">${fmtAUD(final.inflAdj)}</span>`
+      : '';
+    return [price, realPart, yUrl].filter(Boolean).join('<br>');
+  }
 
   // Franking: show button only for AU equity ETFs
   const frankingPct = etf.frankingPct || 0;
@@ -996,13 +1099,22 @@ function renderCompounding() {
   </div>
 
   <!-- Summary cards -->
-  <div style="display:grid;grid-template-columns:repeat(${frankingMode&&hasFranking ? (drip?4:5) : (drip?3:4)},1fr);gap:1rem;margin-bottom:1.2rem;" class="resp-grid-2">
-    ${sc('Final Value',    fmtAUD(final.value), 'var(--fitc-green)')}
-    ${sc('Contributed',    fmtAUD(totalC),       'var(--dapi-blue)')}
-    ${sc('Gains',          fmtAUD(gains),         '#f59e0b')}
+  <div style="display:grid;grid-template-columns:repeat(${frankingMode&&hasFranking ? (drip?5:6) : (drip?4:5)},1fr);gap:1rem;margin-bottom:1.2rem;" class="resp-grid-2">
+    ${scSub('Start Value', fmtAUD(initial), '#94a3b8',
+        mode==='historical' ? priceSubtitle(histStartYear, histStartMonth, histStartDay) : '')}
+    ${scSub('End Value',   fmtAUD(final.value), 'var(--fitc-green)',
+        mode==='historical' ? endValueSub(histEndYear, histEndMonth, histEndDay) : (yUrl || ''))}
+    ${sc('Contributed',   fmtAUD(totalC),            'var(--dapi-blue)')}
+    ${sc('Gains',         fmtAUD(gains),              '#f59e0b')}
     ${!drip ? sc('Dividends Paid', fmtAUD(final.dividends), '#a78bfa') : ''}
     ${frankingMode&&hasFranking ? sc('Franking Credits', fmtAUD(final.frankingCum||0), '#fbbf24') : ''}
   </div>
+  <!-- Historical data note -->
+  ${mode==='historical' ? `<div style="font-size:.67rem;color:#334155;margin-bottom:.75rem;line-height:1.5;">
+    ℹ Returns are based on <strong style="color:#475569;">annual total returns</strong> (last trading day of each calendar year).
+    Prices shown are the nearest available weekly data point — Yahoo may not have data for weekends/holidays.
+    ${ticker!=='CUSTOM' ? `Source: <a href="${yahooUrl(ticker==='LIVE'?liveTicker:ticker)}" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;">${ticker==='LIVE'?liveTicker:ticker}.AX on Yahoo Finance ↗</a>` : ''}
+  </div>` : ''}
 
   ${hasComparison ? buildComparisonChart(comparisonSeries) : ''}
   ${hasComparison ? dlRow(['dl-csv-cmp','⬇ Comparison (CSV)'],['dl-png-cmp','⬇ Comparison (PNG)']) : ''}
@@ -1059,7 +1171,7 @@ function renderPortfolio() {
     <div id="holdings-list">${rows}</div>
     <button id="add-holding" style="background:transparent;border:1px dashed #334155;color:var(--text-secondary);border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-size:.85rem;width:100%;margin-bottom:1.5rem;">+ Add ETF</button>
     ${tot>0?`
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;" class="resp-grid-2">
       ${sc('Total',fmtAUD(tot),'var(--fitc-green)','1.2rem')}
       ${sc('Holdings',`${holdings.length} ETFs`,'var(--dapi-blue)','1.2rem')}
       ${sc('Wtd Yield',`${wY}%`,'#f59e0b','1.2rem')}
@@ -1488,7 +1600,7 @@ function renderRetirement() {
     ${customAllocPanel}
 
     <!-- Controls row 2 -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:.75rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:.75rem;" class="resp-grid-2">
       <div><label class="etf-label">Duration</label>
         <select id="ret-yrs" class="etf-select">${[10,15,20,25,30,35,40].map(y=>`<option value="${y}" ${y===retirementYears?'selected':''}>${y} years</option>`).join('')}</select></div>
       <div><label class="etf-label">Withdrawal Timing</label>
@@ -1665,7 +1777,7 @@ function renderRetirement() {
     </div>
 
     <!-- KPI cards -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.2rem;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.2rem;" class="resp-grid-2">
       ${sc('Historical Success Rate',`${rate}%`,srC,'1.6rem')}
       ${sc('Periods Tested',`${sims.length}`,`var(--dapi-blue)`,'1.2rem')}
       ${sc('Withdrawal Rate',`${wr}%`,'#f59e0b','1.2rem')}
@@ -1682,20 +1794,25 @@ function renderRetirement() {
 
     <!-- Outcome heatmap -->
     <div class="etf-label" style="margin:1.5rem 0 .5rem;">Outcome by Retirement Start Year <span style="color:#475569;text-transform:none;font-size:.7rem;">(hover cells for details)</span></div>
-    ${earlyN>0?`<div style="font-size:.72rem;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:.5rem .8rem;margin-bottom:.5rem;line-height:1.6;">
-      <strong style="color:#f59e0b;">Why do 1900–1940s retirements show many failures?</strong>
-      <span style="color:#94a3b8;"> — this is historically correct, not a data error.</span><br>
-      Those retiring <strong>1927–1933</strong> hit the <strong>Great Depression</strong> almost immediately (sequence-of-returns risk at its worst).
-      Those retiring <strong>1900–1915</strong> faced a different problem: their retirement window <em>spanned</em> multiple crises —
-      WWI economic disruption (1914–18), the post-war recession (1920–21), <em>and</em> the Great Depression (1929–33) — often striking mid-retirement when reserves were already reduced.
-      See the methodology section for a full explanation. Pre-1970 return data (dashed borders) also carries ±2–5% uncertainty.
-    </div>`:''}
+    ${earlyN>0?`<details style="font-size:.72rem;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:.5rem .8rem;margin-bottom:.5rem;line-height:1.6;">
+      <summary style="cursor:pointer;font-weight:600;color:#f59e0b;list-style:none;display:flex;align-items:center;gap:.4rem;">
+        <span style="font-size:.8rem;">▶</span> Why do 1900–1940s retirements show many failures?
+        <span style="color:#94a3b8;font-weight:400;"> — click to expand</span>
+      </summary>
+      <div style="margin-top:.5rem;color:#94a3b8;">
+        <span style="color:#94a3b8;">This is historically correct, not a data error.</span><br>
+        Those retiring <strong>1927–1933</strong> hit the <strong>Great Depression</strong> almost immediately (sequence-of-returns risk at its worst).
+        Those retiring <strong>1900–1915</strong> faced a different problem: their retirement window <em>spanned</em> multiple crises —
+        WWI economic disruption (1914–18), the post-war recession (1920–21), <em>and</em> the Great Depression (1929–33) — often striking mid-retirement when reserves were already reduced.
+        See the methodology section above for a full explanation. Pre-1970 return data (dashed borders) also carries ±2–5% uncertainty.
+      </div>
+    </details>`:''}
     <!-- Spending smile note -->
     <div style="font-size:.7rem;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.12);border-radius:6px;padding:.4rem .75rem;margin-bottom:.5rem;line-height:1.5;color:#64748b;">
       <strong style="color:#86efac;">Note on spending:</strong> This assumes constant inflation-adjusted withdrawals.
       In reality, most people spend less in mid-retirement (the "spending smile" — Blanchett, 2013).
       Some simulated <span style="color:#ef4444;">failures</span> would succeed with naturally declining spending. The tool is therefore conservative.
-      <span style="cursor:pointer;color:#38bdf8;" onclick="document.querySelector('details')?.setAttribute('open','')"> See methodology ↗</span>
+      See methodology above for full details.
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:3px;">
       ${sims.map(s=>{
@@ -1729,15 +1846,19 @@ function renderRetirement() {
 // ── Source footer ──────────────────────────────────────────────────
 function sourceFooter() {
   if(!etfData) return '';
-  return `<div style="margin-top:2rem;padding:1rem 1.2rem;background:#0a0f1e;border:1px solid var(--glass-border);border-radius:10px;font-size:.75rem;color:#475569;line-height:1.8;">
+  // Filter out developer-only notes (these are internal calculation notes, not user info)
+  const userSources = (etfData.meta.sources || []).filter(s =>
+    !s.startsWith('CALCULATION NOTE:') && !s.startsWith('IMPORTANT DATA NOTE')
+  );
+  return `<div style="margin-top:2rem;padding:1rem 1.2rem;background:#0a0f1e;border:1px solid var(--glass-border);border-radius:10px;font-size:.75rem;color:#475569;line-height:1.8;overflow-wrap:break-word;word-break:break-word;">
     <div style="color:#94a3b8;font-weight:600;margin-bottom:.4rem;">About this data</div>
-    ${etfData.meta.sources.map(s=>`<div>· ${s}</div>`).join('')}
-    <div style="margin-top:.6rem;padding-top:.6rem;border-top:1px solid #1e293b;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
-      <span style="font-family:monospace;font-size:.7rem;color:#334155;">
+    ${userSources.map(s=>`<div style="overflow-wrap:break-word;">· ${s}</div>`).join('')}
+    <div style="margin-top:.6rem;padding-top:.6rem;border-top:1px solid #1e293b;">
+      <span style="font-family:monospace;font-size:.7rem;color:#334155;display:block;margin-bottom:.2rem;">
         etf_tools.js ${ETF_TOOLS_VERSION}
       </span>
-      <span style="font-size:.7rem;color:#334155;">
-        Tax rates loaded: NFP 0% · Super Acc 15% · Ind <strong style="color:#4ade80;">16%</strong>/$18k–$45k ·
+      <span style="font-size:.7rem;color:#334155;display:block;overflow-wrap:break-word;word-break:break-word;">
+        Tax rates: NFP 0% · Super Acc 15% · Ind <strong style="color:#4ade80;">16%</strong>/$18k–$45k ·
         <strong style="color:#4ade80;">30%</strong>/$45k–$135k · <strong style="color:#4ade80;">37%</strong>/$135k–$190k ·
         <strong style="color:#4ade80;">45%</strong>/$190k+ (ATO 2025-26 Stage 3)
       </span>

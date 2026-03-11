@@ -26,6 +26,16 @@
   <!-- Global scripts -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
 
+  <!-- GoatCounter analytics — privacy-friendly, no cookies, no personal data collected.
+       Full privacy policy at /privacy.html -->
+  <script data-goatcounter="https://felixillion.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+
+  <!-- Hide nav brand on mobile — hamburger + page content provide all context -->
+  <style>
+    @media (max-width: 640px) { .nav-brand { display: none; } }
+  </style>
+
   {% if page.head_scripts %}
   {{ page.head_scripts }}
   {% endif %}

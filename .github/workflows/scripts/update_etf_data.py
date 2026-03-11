@@ -164,7 +164,60 @@ def annual_total_returns(hist, start_year: int = 2009) -> dict:
     return returns
 
 
-def build_weekly_prices(hist, max_weeks: int = 520) -> list:
+def annual_dividend_yields(ticker_str: str, start_year: int = 2009) -> dict:
+    """
+    Compute actual dividend yield per calendar year using the raw (unadjusted)
+    dividend series and unadjusted prices.
+
+    Dividend yield for year Y  =  sum(dividends paid in Y)  /  price at end of Y-1
+
+    This is used by the compounding calculator (DRP Off mode) to split the total
+    return (from adjusted-close prices) into:
+      - capital growth  ≈  total_return − dividend_yield
+      - cash dividends  =  balance × dividend_yield
+
+    Using the actual historical yield rather than a static current yield fixes
+    ~$4K-level errors for high-yield, variable-dividend stocks like VAP or CBA.
+    """
+    try:
+        t = yf.Ticker(ticker_str)
+
+        # Raw dividends (not adjusted for splits)
+        divs = t.dividends
+        if divs is None or divs.empty:
+            return {}
+        if divs.index.tzinfo is not None:
+            divs.index = divs.index.tz_localize(None)
+
+        # Unadjusted monthly prices for the year-start (end-of-prior-year) price
+        hist_raw = t.history(period='20y', interval='1mo', auto_adjust=False)
+        if hist_raw is None or hist_raw.empty:
+            return {}
+        if hist_raw.index.tzinfo is not None:
+            hist_raw.index = hist_raw.index.tz_localize(None)
+
+        result = {}
+        today_year = date.today().year
+
+        for yr in range(start_year, today_year + 1):
+            yr_divs = float(divs[divs.index.year == yr].sum())
+            if yr_divs == 0:
+                continue
+            prior_data = hist_raw[hist_raw.index.year == yr - 1]
+            if prior_data.empty:
+                continue
+            start_price = float(prior_data['Close'].iloc[-1])
+            if start_price <= 0:
+                continue
+            result[str(yr)] = round((yr_divs / start_price) * 100, 2)
+
+        return result
+    except Exception as e:
+        print(f"    ⚠ Div yield error for {ticker_str}: {e}")
+        return {}
+
+
+
     """Return last N weeks of weekly closing prices for charting."""
     if hist is None:
         return []
@@ -207,11 +260,16 @@ def update_etf_returns(etf_data: dict) -> dict:
             print("no returns calculated")
             continue
 
-        # Merge: only update years that actually have data (don't overwrite
-        # pre-existing historical estimates for years before Yahoo has data)
+        # Merge historical returns
         existing = etf_data['etfs'][key].get('historicalReturns', {})
         existing.update(new_returns)
         etf_data['etfs'][key]['historicalReturns'] = existing
+
+        # Merge year-by-year dividend yields (used for accurate DRP-off calculation)
+        div_yields = annual_dividend_yields(ticker_ax, start_year=max(inception, 2009))
+        existing_dy = etf_data['etfs'][key].get('historicalDividendYields', {})
+        existing_dy.update(div_yields)
+        etf_data['etfs'][key]['historicalDividendYields'] = existing_dy
 
         # Update long-run average return (5-year CAGR as annualReturn)
         cur_yr = date.today().year
@@ -277,6 +335,7 @@ def fetch_and_save_stock(ticker_ax: str) -> dict | None:
     hist_to_use = hist_monthly if (hist_monthly is not None and not hist_monthly.empty) \
                   else hist_weekly
     annual = annual_total_returns(hist_to_use, start_year=2015)
+    div_yields = annual_dividend_yields(ticker_ax, start_year=2015)
     weekly_prices = build_weekly_prices(hist_weekly)
 
     # 5-year CAGR
@@ -304,6 +363,7 @@ def fetch_and_save_stock(ticker_ax: str) -> dict | None:
         'mer': None,  # ETF-specific, not in Yahoo Finance
         'annualReturn': cagr,
         'historicalReturns': annual,
+        'historicalDividendYields': div_yields,
         'weeklyPrices': weekly_prices,
         'lastUpdated': str(date.today()),
     }
