@@ -1446,21 +1446,35 @@
       const b=etfBills[bi];
       b.x+=b.vx; b.y+=b.vy; b.angle+=b.spin; b.flap+=.055;
       b.vy+=Math.sin(etfTime*1.3+bi*1.1)*.006; b.vy*=.99;
-      if(b.x>W+50){b.x=-50; b.y=H*.18+Math.random()*H*.6;}
+      // Wrap right→left as before; bills escaping left are "lost" — respawn on right
+      if(b.x>W+50){b.x=-50; b.y=H*.18+Math.random()*H*.6; b.vx=0.5+Math.random()*0.55; b.vy=(Math.random()-.5)*.2;}
+      if(b.x<-50) {b.x=W+50; b.y=H*.18+Math.random()*H*.6; b.vx=0.5+Math.random()*0.55; b.vy=(Math.random()-.5)*.2;}
       if(b.y<H*.05||b.y>H*.92){b.vy*=-1;}
       ctx.globalAlpha=1; drawBill(b);
     }
     // Creature AI
     const c=etfCreature;
+    // Retarget immediately if current target has escaped off-screen
     const tgt=etfBills[c.targetIdx];
-    if(tgt){
-      const dx=tgt.x-c.x, dy=tgt.y-c.y, dist=Math.hypot(dx,dy);
+    if(!tgt || tgt.x < -20 || tgt.x > W+20){
+      let m=Infinity;
+      etfBills.forEach((b,i)=>{ const d=Math.hypot(b.x-c.x,b.y-c.y); if(d<m){m=d;c.targetIdx=i;} });
+    }
+    const tgt2=etfBills[c.targetIdx];
+    if(tgt2){
+      const dx=tgt2.x-c.x, dy=tgt2.y-c.y, dist=Math.hypot(dx,dy);
       if(dist>5){ c.vx+=(dx/dist)*.11; c.vy+=(dy/dist)*.06; }
-      if(dist<110){
-        const f=(110-dist)/110;
-        tgt.vx+=Math.sign(dx)*f*.85+.22; tgt.vy+=(dy/Math.max(1,dist))*f*.35;
-        const bs=Math.hypot(tgt.vx,tgt.vy);
-        if(bs>2.8){tgt.vx=tgt.vx/bs*2.8; tgt.vy=tgt.vy/bs*2.8;}
+    }
+    // ALL bills flee from creature when nearby (not just the one being chased)
+    for(let bi=0;bi<etfBills.length;bi++){
+      const b=etfBills[bi];
+      const dx=b.x-c.x, dy=b.y-c.y, dist=Math.hypot(dx,dy);
+      if(dist<120 && dist>0){
+        const f=(120-dist)/120;
+        b.vx+=(dx/dist)*f*0.9;
+        b.vy+=(dy/dist)*f*0.45;
+        const bs=Math.hypot(b.vx,b.vy);
+        if(bs>3.2){b.vx=b.vx/bs*3.2; b.vy=b.vy/bs*3.2;}
       }
     }
     const cs=Math.hypot(c.vx,c.vy); if(cs>1.3){c.vx=c.vx/cs*1.3; c.vy=c.vy/cs*1.3;}
@@ -1470,7 +1484,7 @@
     c.dir=c.vx>=0?1:-1;
     c.legPh+=Math.hypot(c.vx,c.vy)*.32;
     c.hopPh+=.14;
-    // Retarget nearest bill when stuck
+    // Retarget nearest bill when otherwise stuck
     if(Math.hypot(c.vx,c.vy)<.07){
       let m=Infinity;
       etfBills.forEach((b,i)=>{const d=Math.hypot(b.x-c.x,b.y-c.y); if(d<m){m=d;c.targetIdx=i;}});

@@ -183,9 +183,13 @@ function getETF(ticker) {
   return etfData?.etfs[ticker] ?? null;
 }
 
-// ── Monthly compounding with day-precision ─────────────────────────
-// Data is annual — intra-year returns are linearly interpolated per day.
-// A partial first/last month uses (daysInPeriod/daysInMonth) fraction.
+// ── Daily compounding ────────────────────────────────────────────────
+// Steps one calendar day at a time so every tooltip position snaps to an
+// exactly-calculated value — no intra-period interpolation needed.
+// Maths identical to the old monthly loop: (1+r)^(1/365.25) per day
+// compounds to exactly (1+r) over a year.
+// Monthly contributions are spread evenly across each day of the month.
+// 20-year period ≈ 7 300 points — fast to compute, fine for SVG.
 function calcMonthly() {
   const { mode, ticker, initial, monthly,
     projStartDay, projStartMonth, projStartYear, years,
@@ -193,141 +197,89 @@ function calcMonthly() {
     histEndDay,   histEndMonth,   histEndYear, drip } = compState;
   const etf = getETF(ticker);
   if (!etf) return [];
-  // Use live price cache returns if available, fall back to stored historicalReturns
+
   const historicalRets = ticker === 'LIVE'
     ? (getHistoricalReturns(compState.liveTickerInput.trim().toUpperCase()) ?? {})
     : getHistoricalReturns(ticker);
-  // Year-by-year actual dividend yields (used in historical DRP-off mode to accurately
-  // split total return into capital growth + cash dividends, rather than using a static
-  // current yield which can be off by several percent for variable-yield stocks like VAP/CBA)
   const historicalDivYields = mode === 'historical' && !drip
     ? (ticker === 'LIVE'
         ? getHistoricalDivYields(compState.liveTickerInput.trim().toUpperCase())
         : getHistoricalDivYields(ticker))
     : {};
+
+  const frankingPct         = compState.frankingMode ? (etf.frankingPct || 0) : 0;
+  const margRate            = TAX_PROFILES[compState.taxProfile]?.rate ?? 0.325;
+  const CORP_TAX            = 0.30;
+  const frankingBoostAnnual = (etf.dividendYield / 100) * frankingPct
+                              * (CORP_TAX / (1 - CORP_TAX)) * (1 - margRate);
+
+  const startDate = mode === 'projection'
+    ? new Date(projStartYear,  projStartMonth,  projStartDay)
+    : new Date(histStartYear,  histStartMonth,  histStartDay);
+  const endDate   = mode === 'projection'
+    ? new Date(projStartYear + years, projStartMonth, projStartDay)
+    : new Date(histEndYear,    histEndMonth,    histEndDay);
+
   const data = [];
   let bal = initial, contrib = initial, divs = 0;
+  let cpiAccum = 1.0, frankingCum = 0;
 
-  // Build list of months to step through + their calendar year for return lookup
-  // Each element: { calYear, frac (0-1, fraction of month to apply), label, snap }
-  let months = [];
+  // Starting snapshot
+  const s0 = startDate;
+  const startLabel = fmtDate(s0.getDate(), s0.getMonth(), s0.getFullYear());
+  data.push({ date: startLabel, label: startLabel,
+    value: Math.round(bal), contributions: Math.round(contrib),
+    dividends: 0, inflAdj: Math.round(bal),
+    frankingCum: 0, isDivPayment: false, ts: startDate.getTime() });
 
-  if (mode === 'projection') {
-    const totalFullMonths = years * 12;
-    const startMonthDays = daysInMonth(projStartYear, projStartMonth);
-    const startFrac = (startMonthDays - projStartDay + 1) / startMonthDays;
-    months.push({ y: projStartYear, m: projStartMonth, frac: startFrac,
-      label: fmtDate(projStartDay, projStartMonth, projStartYear), snapBefore: true,
-      ts: new Date(projStartYear, projStartMonth, projStartDay).getTime() });
+  const MS_DAY = 86400000;
+  let ts  = startDate.getTime() + MS_DAY;
+  const endTs = endDate.getTime();
 
-    for (let i = 0; i < totalFullMonths; i++) {
-      const d = new Date(projStartYear, projStartMonth + 1 + i);
-      // Use last day of month as the end-of-month timestamp
-      const lastDay = daysInMonth(d.getFullYear(), d.getMonth());
-      months.push({ y: d.getFullYear(), m: d.getMonth(), frac: 1.0,
-        label: fmtDate(1, d.getMonth(), d.getFullYear()), snapBefore: false,
-        ts: new Date(d.getFullYear(), d.getMonth(), lastDay).getTime() });
-    }
-    months[months.length-1].labelAfter = fmtDate(projStartDay, projStartMonth, projStartYear + years);
+  while (ts <= endTs) {
+    const cur = new Date(ts);
+    const y = cur.getFullYear(), m = cur.getMonth(), d = cur.getDate();
 
-  } else {
-    // Historical: day-exact range
-    const sm = daysInMonth(histStartYear, histStartMonth);
-    const startFrac = (sm - histStartDay + 1) / sm;
-    months.push({ y: histStartYear, m: histStartMonth, frac: startFrac,
-      label: fmtDate(histStartDay, histStartMonth, histStartYear), snapBefore: true,
-      ts: new Date(histStartYear, histStartMonth, histStartDay).getTime() });
-
-    let cy = histStartYear, cm = histStartMonth + 1;
-    if (cm > 11) { cm = 0; cy++; }
-    while (cy < histEndYear || (cy === histEndYear && cm < histEndMonth)) {
-      const lastDay = daysInMonth(cy, cm);
-      months.push({ y: cy, m: cm, frac: 1.0,
-        label: fmtDate(1, cm, cy), snapBefore: false,
-        ts: new Date(cy, cm, lastDay).getTime() });
-      cm++;
-      if (cm > 11) { cm = 0; cy++; }
-    }
-
-    if (!(histEndYear === histStartYear && histEndMonth === histStartMonth)) {
-      const em = daysInMonth(histEndYear, histEndMonth);
-      const endFrac = histEndDay / em;
-      months.push({ y: histEndYear, m: histEndMonth, frac: endFrac,
-        label: fmtDate(histEndDay, histEndMonth, histEndYear), snapBefore: false, isLast: true,
-        ts: new Date(histEndYear, histEndMonth, histEndDay).getTime() });
-    }
-  }
-
-  // Push starting snapshot
-  let monthsElapsed = 0;
-  let cpiAccum = 1.0;   // tracks cumulative price level from start date
-  let frankingCum = 0;  // cumulative franking credit cash received
-  data.push({ date: months[0].label, label: months[0].label,
-    value: Math.round(bal), contributions: Math.round(contrib), dividends: Math.round(divs),
-    inflAdj: Math.round(bal), frankingCum: 0,
-    isDivPayment: false, ts: months[0].ts });
-
-  // Franking credit setup
-  // Additional annual cash per $1 of balance = dividendYield × frankingPct × (30/70) × (1 − margRate)
-  // This is the portion of the 30% corporate tax that is refunded to investors below that rate.
-  const frankingPct   = compState.frankingMode ? (etf.frankingPct || 0) : 0;
-  const margRate      = TAX_PROFILES[compState.taxProfile]?.rate ?? 0.325;
-  const CORP_TAX      = 0.30;
-  const frankingBoostAnnual = (etf.dividendYield / 100) * frankingPct * (CORP_TAX / (1 - CORP_TAX)) * (1 - margRate);
-
-  for (let i = 0; i < months.length; i++) {
-    const mo = months[i];
-    const rawReturn = mode==='historical'
-      ? (historicalRets[mo.y] ?? etf.annualReturn)
+    const rawReturn = mode === 'historical'
+      ? (historicalRets[y] ?? etf.annualReturn)
       : etf.annualReturn;
-
-    // ── MER treatment ──────────────────────────────────────────────
-    // Historical returns from fund prices already net of MER; projection uses gross estimate.
     const merDeduction = mode === 'historical' ? 0 : (etf.mer / 100);
-    // DRP-off: use the actual historical yield for this year when available (much more
-    // accurate than the static current yield, especially for variable-dividend stocks).
     const divYieldForYear = mode === 'historical'
-      ? ((historicalDivYields[String(mo.y)] ?? etf.dividendYield) || 0)
+      ? ((historicalDivYields[String(y)] ?? etf.dividendYield) || 0)
       : etf.dividendYield;
-    const divDeduction = drip ? 0 : (divYieldForYear / 100);
+    const netAnnual = (rawReturn / 100) - merDeduction - (drip ? 0 : divYieldForYear / 100);
 
-    const netAnnual = (rawReturn / 100) - merDeduction - divDeduction;
-    const mRate = Math.pow(1 + netAnnual, mo.frac / 12) - 1;
-    const mDiv  = drip ? 0 : bal * (divYieldForYear / 100) * mo.frac / 12;
-    bal = bal * (1 + mRate) + monthly * mo.frac;
-    contrib += monthly * mo.frac;
-    divs += mDiv;
+    const dailyGrowth   = Math.pow(1 + netAnnual,              1 / 365.25) - 1;
+    const dailyDiv      = drip ? 0 : bal * (divYieldForYear / 100) / 365.25;
+    const dailyContrib  = monthly / daysInMonth(y, m);
+    const dailyFranking = frankingPct > 0 ? bal * frankingBoostAnnual / 365.25 : 0;
 
-    // ── Franking credit cash (reinvested each month) ──────────────
-    // The ATO refund is effectively annual; we distribute it monthly for smoothness.
-    const frankingCashMonth = bal * frankingBoostAnnual * mo.frac / 12;
-    if (frankingPct > 0) { bal += frankingCashMonth; frankingCum += frankingCashMonth; }
+    bal     = bal * (1 + dailyGrowth) + dailyContrib;
+    contrib += dailyContrib;
+    divs    += dailyDiv;
+    if (frankingPct > 0) { bal += dailyFranking; frankingCum += dailyFranking; }
 
-    monthsElapsed += mo.frac;
+    const yearCPI = mode === 'historical' ? (AU_CPI_YR[y] ?? 2.7) : compState.inflationRate;
+    cpiAccum *= Math.pow(1 + yearCPI / 100, 1 / 365.25);
 
-    // ── Inflation adjustment ──────────────────────────────────────
-    // Historical mode: use real ABS CPI year-by-year (AU_CPI_YR lookup)
-    // Projection mode: use user's flat CPI assumption
-    const yearCPI = mode === 'historical'
-      ? (AU_CPI_YR[mo.y] ?? 2.7)   // 2.7 = long-run Aus average for years not in table
-      : compState.inflationRate;
-    cpiAccum *= Math.pow(1 + yearCPI / 100, mo.frac / 12);
-    const inflAdj = Math.round(bal / cpiAccum);
-
-    const nextMo = months[i+1];
-    const isYearBoundary = !nextMo || nextMo.m === 0;
-    const isLast = i === months.length - 1;
-    const xAxisLabel = mo.isLast ? mo.label : (isLast ? mo.label : (isYearBoundary ? `${mo.y}` : null));
-    const isDivPayment = !drip && [1,4,7,10].includes(mo.m);
+    const isLast        = ts >= endTs;
+    const isJan1        = m === 0 && d === 1;
+    const xAxisLabel    = isLast ? fmtDate(d, m, y) : (isJan1 ? `${y}` : null);
+    const isDivPayment  = !drip && [1,4,7,10].includes(m) && d === daysInMonth(y, m);
 
     data.push({
-      date: mo.label, label: xAxisLabel,
+      date: `${d} ${MOS[m]} ${y}`,
+      label: xAxisLabel,
       value: Math.round(bal),
       contributions: Math.round(contrib),
       dividends: Math.round(divs),
-      inflAdj, frankingCum: Math.round(frankingCum),
-      isDivPayment, ts: mo.ts
+      inflAdj: Math.round(bal / cpiAccum),
+      frankingCum: Math.round(frankingCum),
+      isDivPayment,
+      ts
     });
+
+    ts += MS_DAY;
   }
 
   return data;
@@ -509,40 +461,21 @@ function attachChartListeners() {
       const frac  = Math.max(0, Math.min(1, rawX / cw));
 
       if (type === 'comp') {
-        // Fractional index → interpolate between adjacent monthly data points
-        const exactIdx = frac * (_lastCompData.length - 1);
-        const lo  = Math.floor(exactIdx);
-        const hi  = Math.min(lo + 1, _lastCompData.length - 1);
-        const t   = exactIdx - lo;            // 0–1 interpolation factor
-        const loP = _lastCompData[lo];
-        const hiP = _lastCompData[hi];
-        if (!loP) return;
-
-        // Linearly interpolate values
-        const value         = Math.round(loP.value         + t * (hiP.value         - loP.value));
-        const contributions = Math.round(loP.contributions + t * (hiP.contributions - loP.contributions));
-        const dividends     = Math.round(loP.dividends     + t * (hiP.dividends     - loP.dividends));
-        const inflAdj       = Math.round((loP.inflAdj||loP.value) + t * ((hiP.inflAdj||hiP.value) - (loP.inflAdj||loP.value)));
-        const frankingCum   = Math.round((loP.frankingCum||0) + t * ((hiP.frankingCum||0) - (loP.frankingCum||0)));
-
-        // Interpolate timestamp → daily date string
-        let dateStr = loP.date;
-        if (loP.ts && hiP.ts) {
-          const ts = loP.ts + t * (hiP.ts - loP.ts);
-          const d  = new Date(ts);
-          dateStr  = `${d.getDate()} ${MOS[d.getMonth()]} ${d.getFullYear()}`;
-        }
+        // Daily data — snap directly to nearest calculated point, no interpolation needed
+        const idx = Math.round(frac * (_lastCompData.length - 1));
+        const p   = _lastCompData[idx];
+        if (!p) return;
 
         if (xline) { xline.setAttribute('x1',(frac*cw).toFixed(1)); xline.setAttribute('x2',(frac*cw).toFixed(1)); xline.setAttribute('opacity','0.5'); }
-        let h = `<div style="color:#94a3b8;margin-bottom:.3rem;font-weight:600;">${dateStr}</div>`;
-        h += `<div style="color:#4ade80;">Value: <strong>${fmtAUD(value)}</strong></div>`;
-        if (compState.showInflation) h += `<div style="color:#fb923c;">Real (${compState.mode==='historical'?'ABS CPI':compState.inflationRate+'%'}): <strong>${fmtAUD(inflAdj)}</strong></div>`;
-        h += `<div style="color:#38bdf8;">Contributed: ${fmtAUD(contributions)}</div>`;
-        h += `<div style="color:#f59e0b;">Gains: ${fmtAUD(value - contributions)}</div>`;
-        if (compState.frankingMode && frankingCum > 0) h += `<div style="color:#fbbf24;">Franking received: ${fmtAUD(frankingCum)}</div>`;
-        if (!compState.drip && dividends) {
-          h += `<div style="color:#a78bfa;">Cumulative Dividends: ${fmtAUD(dividends)}</div>`;
-          if (loP.isDivPayment && t < 0.5) h += `<div style="color:#f59e0b;font-size:.68rem;">◆ Dividend payment month</div>`;
+        let h = `<div style="color:#94a3b8;margin-bottom:.3rem;font-weight:600;">${p.date}</div>`;
+        h += `<div style="color:#4ade80;">Value: <strong>${fmtAUD(p.value)}</strong></div>`;
+        if (compState.showInflation) h += `<div style="color:#fb923c;">Real (${compState.mode==='historical'?'ABS CPI':compState.inflationRate+'%'}): <strong>${fmtAUD(p.inflAdj||p.value)}</strong></div>`;
+        h += `<div style="color:#38bdf8;">Contributed: ${fmtAUD(p.contributions)}</div>`;
+        h += `<div style="color:#f59e0b;">Gains: ${fmtAUD(p.value - p.contributions)}</div>`;
+        if (compState.frankingMode && p.frankingCum > 0) h += `<div style="color:#fbbf24;">Franking received: ${fmtAUD(p.frankingCum)}</div>`;
+        if (!compState.drip && p.dividends) {
+          h += `<div style="color:#a78bfa;">Cumulative Dividends: ${fmtAUD(p.dividends)}</div>`;
+          if (p.isDivPayment) h += `<div style="color:#f59e0b;font-size:.68rem;">◆ Dividend payment month</div>`;
         }
         tip.innerHTML = h;
       } else if (type === 'ret' && _lastRetData) {
@@ -564,46 +497,27 @@ function attachChartListeners() {
         h += `<div style="color:${aliveN===sims.length?'#4ade80':'#f59e0b'};">Still surviving: ${aliveN}/${sims.length}</div>`;
         tip.innerHTML = h;
       } else if (type === 'comparison' && window._lastCmpSeries) {
-        // Comparison chart: show each series value at hovered position
+        // Daily data — snap directly to nearest point, no interpolation
         const seriesEntries = Object.values(window._lastCmpSeries);
-        const primaryData = seriesEntries[0]?.data || [];
-        const exactIdx = frac * (primaryData.length - 1);
-        const lo = Math.floor(exactIdx);
-        const hi = Math.min(lo + 1, primaryData.length - 1);
-        const t  = exactIdx - lo;
-        const loP = primaryData[lo];
-        const hiP = primaryData[hi];
-        if (!loP) return;
-
-        // Interpolate date from primary series timestamps
-        let dateStr = loP.date;
-        if (loP.ts && hiP?.ts) {
-          const ts = loP.ts + t * (hiP.ts - loP.ts);
-          const d  = new Date(ts);
-          dateStr  = `${d.getDate()} ${MOS[d.getMonth()]} ${d.getFullYear()}`;
-        }
+        const primaryData   = seriesEntries[0]?.data || [];
+        const idx  = Math.round(frac * (primaryData.length - 1));
+        const refP = primaryData[idx];
+        if (!refP) return;
 
         if (xline) { xline.setAttribute('x1',(frac*cw).toFixed(1)); xline.setAttribute('x2',(frac*cw).toFixed(1)); xline.setAttribute('opacity','0.5'); }
 
-        let h = `<div style="color:#94a3b8;margin-bottom:.4rem;font-weight:600;">${dateStr}</div>`;
+        let h = `<div style="color:#94a3b8;margin-bottom:.4rem;font-weight:600;">${refP.date}</div>`;
         for (const s of seriesEntries) {
-          const sLo = s.data[lo];
-          const sHi = s.data[Math.min(hi, s.data.length - 1)];
-          if (!sLo) continue;
-          const val    = Math.round(sLo.value        + t * ((sHi?.value        ?? sLo.value)        - sLo.value));
-          const contrib= Math.round(sLo.contributions + t * ((sHi?.contributions ?? sLo.contributions) - sLo.contributions));
-          const gain   = val - contrib;
-          h += `<div style="color:${s.color};margin-bottom:.15rem;"><strong>${s.label}:</strong> ${fmtAUD(val)}`;
-          h += ` <span style="color:#64748b;font-size:.68rem;">(+${fmtAUD(gain)} gains)</span></div>`;
+          const p = s.data[Math.min(idx, s.data.length - 1)];
+          if (!p) continue;
+          h += `<div style="color:${s.color};margin-bottom:.15rem;"><strong>${s.label}:</strong> ${fmtAUD(p.value)}`;
+          h += ` <span style="color:#64748b;font-size:.68rem;">(+${fmtAUD(p.value - p.contributions)} gains)</span></div>`;
         }
-        // Delta line when exactly 2 series selected
         if (seriesEntries.length === 2) {
-          const s0Lo = seriesEntries[0].data[lo], s0Hi = seriesEntries[0].data[Math.min(hi, seriesEntries[0].data.length-1)];
-          const s1Lo = seriesEntries[1].data[lo], s1Hi = seriesEntries[1].data[Math.min(hi, seriesEntries[1].data.length-1)];
-          if (s0Lo && s1Lo) {
-            const v0 = Math.round(s0Lo.value + t * ((s0Hi?.value ?? s0Lo.value) - s0Lo.value));
-            const v1 = Math.round(s1Lo.value + t * ((s1Hi?.value ?? s1Lo.value) - s1Lo.value));
-            const diff = v0 - v1;
+          const p0 = seriesEntries[0].data[Math.min(idx, seriesEntries[0].data.length-1)];
+          const p1 = seriesEntries[1].data[Math.min(idx, seriesEntries[1].data.length-1)];
+          if (p0 && p1) {
+            const diff = p0.value - p1.value;
             h += `<div style="border-top:1px solid #1e293b;margin-top:.3rem;padding-top:.3rem;color:${diff>=0?'#4ade80':'#ef4444'};font-size:.7rem;">`;
             h += `Δ ${diff>=0?'+':''}${fmtAUD(diff)} (${seriesEntries[0].label} vs ${seriesEntries[1].label})</div>`;
           }
@@ -824,13 +738,16 @@ function renderCompounding() {
   const livePrices = ticker === 'LIVE' ? (_liveCache[liveKey]?._weeklyPrices || []) : [];
   const allPrices = wp.length ? wp : livePrices;
 
-  // Format: "~$12.34 (nearest: 3 Jan 2020)"
+  // Format: "~$12.34 (nearest weekly: 3 Jan 2020)"
+  // Note: Yahoo weekly data uses the first trading day of each week as the row date,
+  // so the price may differ by 1–2 days from the exact calendar date chosen, and will
+  // also reflect the adjusted close (dividends+splits folded in) rather than raw price.
   function priceSubtitle(y, m, d) {
     const p = priceNearDate(allPrices, y, m, d);
     if (!p) return '';
     const dt = new Date(p.date + 'T00:00:00');
     const dStr = dt.toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'});
-    return `~$${p.close.toFixed(2)}/unit<br>(nearest: ${dStr})`;
+    return `~$${p.close.toFixed(2)}/unit (${dStr})*`;
   }
 
   const yUrl = (ticker !== 'CUSTOM')
@@ -889,11 +806,11 @@ function renderCompounding() {
   ${showInflation?`<div style="font-size:.7rem;color:#94a3b8;background:rgba(251,146,60,.05);border:1px solid rgba(251,146,60,.15);border-radius:6px;padding:.45rem .8rem;margin-bottom:.75rem;">
     <strong style="color:#fb923c;">Real Value</strong> deflates by CPI so you see purchasing power in today's dollars.
     ${mode==='historical'
-      ?`Uses <strong>real ABS CPI year-by-year</strong> (e.g. 7.8% in 2022, 0.9% in 2020, 3.8% in 2024). No user assumption needed.`
+      ?`Uses <strong>real ABS CPI year-by-year</strong> (e.g. 7.8% in 2022, 0.9% in 2020, 3.8% in 2024). No user assumption needed.
+        Source: <a href="https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia" target="_blank" rel="noopener" style="color:#fb923c;text-decoration:none;">ABS Consumer Price Index ↗</a>`
       :`<strong>2.5%</strong> = RBA's mid-band target (2–3%). Long-run Aus avg since 2000 ≈ 2.7% p.a.
         Other scenarios: 2.0% (low inflation era), 3.5% (late 1990s), 6–8% (1970s–80s).`}
-  </div>`:''}
-  ${frankingMode && hasFranking ? `<div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;">
+  </div>`:''}  ${frankingMode && hasFranking ? `<div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;">
     <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;">
       <div style="font-size:.78rem;color:var(--text-secondary);">Tax profile:</div>
       <select id="tax-profile" class="etf-select" style="flex:1;min-width:180px;">
@@ -1114,6 +1031,8 @@ function renderCompounding() {
     ℹ Returns are based on <strong style="color:#475569;">annual total returns</strong> (last trading day of each calendar year).
     Prices shown are the nearest available weekly data point — Yahoo may not have data for weekends/holidays.
     ${ticker!=='CUSTOM' ? `Source: <a href="${yahooUrl(ticker==='LIVE'?liveTicker:ticker)}" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;">${ticker==='LIVE'?liveTicker:ticker}.AX on Yahoo Finance ↗</a>` : ''}
+    ${allPrices.length ? `<br>* Prices are <strong style="color:#475569;">adjusted close</strong> (dividends &amp; splits folded in) from weekly data.
+    The date shown is the first trading day of that week, which may be 1–3 days from your chosen date — this is normal and expected.` : ''}
   </div>` : ''}
 
   ${hasComparison ? buildComparisonChart(comparisonSeries) : ''}
@@ -2028,6 +1947,23 @@ function attachListeners() {
       compState.ticker=e.target.value||'VAS';
       // Clear live ticker when selecting from the dropdown
       if(e.target.value !== 'LIVE') compState.liveTickerInput='';
+      // In historical mode: clamp start date to the ETF's inception year so we
+      // don't show data before the fund existed (e.g. VDHG only started 2017)
+      if(compState.mode === 'historical'){
+        const newEtf = getETF(compState.ticker);
+        const inception = newEtf?.inceptionYear ?? 2009;
+        if(compState.histStartYear < inception){
+          compState.histStartYear = inception;
+          compState.histStartMonth = 0;
+          compState.histStartDay = 1;
+          // Also push end date forward if it's now before start
+          if(compState.histEndYear <= inception){
+            compState.histEndYear = Math.min(inception + 3, new Date().getFullYear() - 1);
+            compState.histEndMonth = 11;
+            compState.histEndDay = 31;
+          }
+        }
+      }
       rerender();
     });
     document.querySelectorAll('.mode-btn[data-mode]').forEach(b=>b.addEventListener('click',()=>{ compState.mode=b.dataset.mode; rerender(); }));
