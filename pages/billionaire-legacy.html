@@ -273,53 +273,10 @@ footer_scripts: assets/js/hero.js
 ══════════════════════════════════════════════════════ -->
 <div class="bl-panel" id="panel-scale">
 
-  <!-- Billion visualiser -->
-  <div class="bl-sec-title">Just How Large Is A Billion?</div>
   <div class="bl-callout">
-    We throw around "billion" casually, but human brains can't intuitively grasp the difference between a million and a billion.
-    Use the slider to <strong>zoom through the true linear scale</strong> from $1 all the way up to Gina Rinehart's $38B wealth.
-    Each dot below represents a fixed unit — zoom in and out to see how that unit compares.
+    The <strong>🔢 A Billion</strong> tab has the full scale visualiser — pixel ruler, time-in-seconds, and distance comparisons.
+    This tab focuses on Australia's wealthiest individuals and how their wealth compares to working life.
   </div>
-
-  <!-- Interactive zoom visualisation -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1.5rem;">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
-      <div>
-        <div class="bl-clabel">Zoom level — each dot = </div>
-        <div id="bl-zoom-unit" style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;color:var(--gold-lt);"></div>
-      </div>
-      <div style="text-align:right;">
-        <div class="bl-clabel">Viewing</div>
-        <div id="bl-zoom-viewing" style="font-size:.82rem;color:#e2e8f0;"></div>
-      </div>
-    </div>
-    <input type="range" class="bl-slider" id="bl-zoom-slider" min="0" max="100" value="0" style="width:100%;margin-bottom:1rem;">
-    <div style="display:flex;justify-content:space-between;font-size:.64rem;color:#475569;margin-bottom:1rem;">
-      <span>← Zoomed in ($1 per dot)</span><span>Zoomed out (billions per dot) →</span>
-    </div>
-
-    <!-- Context card that updates with zoom -->
-    <div id="bl-zoom-context" style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;margin-bottom:1rem;">
-      <div id="bl-zoom-label" style="font-size:.75rem;font-weight:700;color:var(--gold);margin-bottom:.35rem;"></div>
-      <div id="bl-zoom-desc" style="font-size:.82rem;color:var(--text-secondary);line-height:1.65;"></div>
-    </div>
-
-    <!-- Dot grid -->
-    <div class="bl-clabel" style="margin-bottom:.5rem;">Dot grid — each dot = <span id="bl-dot-unit-label" style="color:var(--gold-lt);"></span>  ·  Total shown: <span id="bl-dot-total" style="color:#e2e8f0;"></span></div>
-    <div id="bl-dot-grid" style="display:flex;flex-wrap:wrap;gap:3px;min-height:80px;max-height:220px;overflow:hidden;border-radius:8px;padding:8px;background:rgba(0,0,0,.2);border:1px solid var(--border);"></div>
-    <div id="bl-dot-overflow" style="font-size:.72rem;color:#ef4444;margin-top:.5rem;display:none;"></div>
-  </div>
-
-  <!-- Comparison table - linear true scale bar -->
-  <div class="bl-sec-title">True Linear Scale Comparison</div>
-  <div class="bl-callout-blue">
-    These bars are drawn on a <strong>true linear scale</strong> — not logarithmic. If $1 were 1 pixel, this bar chart would be kilometres wide.
-    Instead, the reference bar is set to the <em>median annual salary</em> ($100k) and all others are shown relative to it.
-    The bars represent "how many median salaries would fit inside each amount."
-  </div>
-  <div id="bl-linear-bars" style="margin-bottom:1.5rem;overflow:hidden;"></div>
-
-  <div id="bl-scale-steps"></div>
 
   <!-- Billionaire cards -->
   <div class="bl-sec-title" style="margin-top:1.5rem;">Australia's Wealthiest — AFR Rich List 2025</div>
@@ -991,6 +948,9 @@ const FOSSIL_FUEL_SUB_B  = _STATS.fossil_fuel_subsidies_bn || 14.9;
 const NHMRC_M            = _STATS.nhmrc_budget_m           || 940;
 const MRFF_M             = _STATS.mrff_budget_m            || 650;
 const ARC_M              = _STATS.arc_budget_m             || 1000;
+const AU_POP             = _STATS.au_population            || 26500000;
+const AU_STUDENTS        = _STATS.au_students_total        || 4050000;
+const AU_DWELLINGS       = _STATS.au_dwellings             || 11300000;
 
 const REGIMES={
   au:{desc:'No estate or inheritance tax since 1979. No CGT trigger at death. Cost base wipes to date-of-death value, eliminating all lifetime gains permanently. Super to adult children: 17% on taxable component.',threshold:0,rate:0,thresholdLabel:'No threshold',rateLabel:'0%'},
@@ -1029,11 +989,67 @@ const COUNTRIES=[
   {name:'🇧🇪 Belgium',rate:80,note:'Up to 80% distant inheritance',color:'#22d3ee'},
 ];
 
+// annual output rate, Australian population reference, and a context function
 const PROFESSIONS=[
-  {role:'👩‍⚕️ Nurse',unit:'patients/yr',rate:500},
-  {role:'👩‍🏫 Teacher',unit:'students/yr',rate:28},
-  {role:'🏗️ Builder',unit:'homes/yr',rate:5},
-  {role:'🩺 GP',unit:'consultations/yr',rate:2000},
+  {role:'👩‍⚕️ Nurse',
+   unit:'patients/yr',
+   rate:500,
+   // context(absurd, mult) → string benchmarked to AU_POP
+   context:(absurd,mult)=>{
+     const auPct=(absurd/AU_POP*100);
+     if(absurd>=AU_POP)
+       return `That's ${(absurd/AU_POP).toFixed(1)}× every Australian treated, every year.`;
+     return `That's ${auPct.toFixed(1)}% of all Australians treated per year — or every Australian ${(absurd/AU_POP*100).toFixed(0) < 1 ? 'once every '+Math.round(AU_POP/absurd)+' years' : 'every '+Math.round(365/(absurd/AU_POP*365))+ ' days'}.`;
+   }
+  },
+  {role:'👩‍🏫 Teacher',
+   unit:'students/yr',
+   rate:28,
+   context:(absurd,mult)=>{
+     if(absurd>=AU_STUDENTS)
+       return `That's ${(absurd/AU_STUDENTS).toFixed(1)}× every enrolled Australian student taught, every year.`;
+     return `That's ${(absurd/AU_STUDENTS*100).toFixed(1)}% of all ~${(AU_STUDENTS/1e6).toFixed(1)}M Australian school students.`;
+   }
+  },
+  {role:'🏗️ Builder',
+   unit:'homes/yr',
+   rate:5,
+   context:(absurd,mult)=>{
+     const shortfall=_STATS.housing_shortfall||163400;
+     const waitlist=_STATS.housing_waitlist||650000;
+     if(absurd>=shortfall)
+       return `That's ${(absurd/shortfall).toFixed(1)}× the entire current housing shortfall (${(shortfall/1000).toFixed(0)}k homes) built in one year.`;
+     return `That's ${(absurd/shortfall*100).toFixed(0)}% of the ${(shortfall/1000).toFixed(0)}k-home national shortfall — ${(shortfall/absurd).toFixed(1)} years to close the gap.`;
+   }
+  },
+  {role:'🩺 GP',
+   unit:'consultations/yr',
+   rate:2000,
+   context:(absurd,mult)=>{
+     // Avg Australian visits GP ~5x/yr — so capacity = absurd/5 patients fully covered
+     const patientsFullyCovered=absurd/5;
+     if(patientsFullyCovered>=AU_POP)
+       return `That's ${(patientsFullyCovered/AU_POP).toFixed(1)}× the entire Australian population fully covered for GP visits each year.`;
+     return `That's full GP coverage for ${(patientsFullyCovered/1e6).toFixed(2)}M Australians/yr (${(patientsFullyCovered/AU_POP*100).toFixed(1)}% of population).`;
+   }
+  },
+  {role:'🚑 Paramedic',
+   unit:'callouts/yr',
+   rate:1200,
+   context:(absurd,mult)=>{
+     // Australia averages ~1.4M emergency callouts/yr across all states (AIHW 2023)
+     const auCallouts=1400000;
+     return `That's ${(absurd/auCallouts).toFixed(1)}× all emergency callouts across Australia in a year.`;
+   }
+  },
+  {role:'🔬 Researcher',
+   unit:'studies/career',
+   rate:3,
+   context:(absurd,mult)=>{
+     // NHMRC funds ~1000 grants/yr
+     return `That's ${(absurd/1000).toFixed(0)}k research careers' worth of output — compare to NHMRC funding ~${NHMRC_M/1}M total this year.`;
+   }
+  },
 ];
 
 const SCALE_CONTEXTS=[
@@ -1507,16 +1523,16 @@ function updateProductivity(){
   const sal=Math.max(1,parseFloat(document.getElementById('bl-salary').value)||MEDIAN_SALARY);
   const mult=Math.round(b.wealth*1e9/sal);
   document.getElementById('bl-prod-multi-box').innerHTML=
-    `<strong>If wealth = proportional productivity:</strong> ${b.name} would need to produce <strong style="color:#fca5a5;font-size:1.2em;">${fmtN(mult)}×</strong> more output than you — every single year of their career. Here's what that looks like:`;
+    `<strong>If wealth = proportional productivity:</strong> ${b.name} would need to produce <strong style="color:#fca5a5;font-size:1.2em;">${fmtN(mult)}×</strong> more output than you — every single year of their career. Here's what that looks like in Australian terms:`;
   document.getElementById('bl-prod-grid').innerHTML=PROFESSIONS.map(p=>{
     const absurd=p.rate*mult;
-    const earth=8e9;
-    let ctx='';
-    if(p.role.includes('Nurse'))ctx=`That's ${fmtN(absurd)} patients/yr — ${(absurd/earth).toFixed(1)}× every person on Earth.`;
-    else if(p.role.includes('Teacher'))ctx=`That's ${fmtN(absurd)} students/yr — ${(absurd/earth*100).toFixed(0)}% of all people alive.`;
-    else if(p.role.includes('Builder'))ctx=`That's ${fmtN(absurd)} homes/yr — Australia has ~11M dwellings total.`;
-    else ctx=`That's ${fmtN(absurd)} consultations/yr — ${(absurd/earth).toFixed(1)}× every person on Earth.`;
-    return`<div class="bl-prod-card"><div class="bl-prod-role">${p.role}</div><div class="bl-prod-out">Typical: ~${fmtN(p.rate)} ${p.unit}</div><div class="bl-prod-abs">At ${fmtN(mult)}×: ${ctx}</div></div>`;
+    const ctx=p.context(absurd,mult);
+    return`<div class="bl-prod-card">
+      <div class="bl-prod-role">${p.role}</div>
+      <div class="bl-prod-out">Typical: ~${fmtN(p.rate)} ${p.unit}</div>
+      <div class="bl-prod-abs">At ${fmtN(mult)}×: ${fmtN(absurd)} ${p.unit}</div>
+      <div style="font-size:.7rem;color:#94a3b8;margin-top:.25rem;line-height:1.4;">${ctx}</div>
+    </div>`;
   }).join('');
 }
 

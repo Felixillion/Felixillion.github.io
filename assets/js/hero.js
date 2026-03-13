@@ -1783,15 +1783,66 @@
   }
 
   /* ─── Table ─── */
-  function lgTableDraw(x,pigY,tw){
-    const th=13,legH=28,tl=tw*0.42;
-    ctx.fillStyle='#1e1b4b'; ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.lineWidth=1;
+  function lgGoldPileDraw(x,pigY,fat){
+    // Gold coin pile under pig — grows with fat
+    const baseW=Math.max(fat*2.2,70);
+    const pileH=Math.max(fat*0.55,18);
+    const cy=pigY+6; // top of pile (pig sits on it)
+
+    // Pile shadow
+    ctx.save();
+    ctx.globalAlpha=0.35;
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.ellipse(x,cy+pileH*0.6,baseW*0.52,pileH*0.22,0,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1;
+
+    // Main pile gradient — gold mound
+    const g=ctx.createRadialGradient(x,cy,0,x,cy+pileH*0.4,baseW*0.65);
+    g.addColorStop(0,'#fef08a'); g.addColorStop(0.35,'#fbbf24'); g.addColorStop(0.75,'#d97706'); g.addColorStop(1,'#92400e');
+    ctx.fillStyle=g;
     ctx.beginPath();
-    if(ctx.roundRect) ctx.roundRect(x-tw/2,pigY+4,tw,th,[3,3,0,0]);
-    else ctx.rect(x-tw/2,pigY+4,tw,th);
-    ctx.fill(); ctx.stroke();
-    ctx.strokeStyle='#312e81'; ctx.lineWidth=5; ctx.lineCap='butt';
-    [x-tl,x+tl].forEach(lx=>{ctx.beginPath();ctx.moveTo(lx,pigY+th+4);ctx.lineTo(lx,pigY+th+4+legH);ctx.stroke();});
+    ctx.moveTo(x-baseW*0.5,cy+pileH);
+    ctx.bezierCurveTo(x-baseW*0.55,cy+pileH*0.3, x-baseW*0.25,cy-pileH*0.25, x,cy-pileH*0.1);
+    ctx.bezierCurveTo(x+baseW*0.25,cy-pileH*0.25, x+baseW*0.55,cy+pileH*0.3, x+baseW*0.5,cy+pileH);
+    ctx.closePath(); ctx.fill();
+
+    // Coin highlights — small ellipses scattered on pile
+    const nCoins=Math.floor(fat/9)+3;
+    const coinSeed=Math.floor(fat*7); // stable within fat level
+    for(let i=0;i<nCoins;i++){
+      const t=(i/nCoins);
+      const cx2=x+(t*2-1)*baseW*0.38;
+      const cy2=cy+pileH*(0.15+t*0.55);
+      const cr=fat*0.11+2;
+      ctx.save();
+      ctx.globalAlpha=0.55+0.2*(i%2);
+      const cg=ctx.createRadialGradient(cx2-cr*0.3,cy2-cr*0.3,0,cx2,cy2,cr);
+      cg.addColorStop(0,'#fef9c3'); cg.addColorStop(0.5,'#fbbf24'); cg.addColorStop(1,'#b45309');
+      ctx.fillStyle=cg;
+      ctx.beginPath(); ctx.ellipse(cx2,cy2,cr,cr*0.45,0,0,Math.PI*2); ctx.fill();
+      // Coin edge glint
+      ctx.strokeStyle='rgba(254,240,138,0.5)'; ctx.lineWidth=0.7;
+      ctx.beginPath(); ctx.ellipse(cx2,cy2,cr,cr*0.45,0,Math.PI*1.1,Math.PI*1.9); ctx.stroke();
+      ctx.restore();
+    }
+
+    // Scattered gold bars behind pile
+    const barW=fat*0.38, barH=fat*0.14;
+    [[x-baseW*0.32,cy+pileH*0.25],[x+baseW*0.28,cy+pileH*0.3]].forEach(([bx,by],bi)=>{
+      ctx.save(); ctx.rotate(bi===0?-0.18:0.22);
+      const bg2=ctx.createLinearGradient(bx-barW/2,by,bx+barW/2,by);
+      bg2.addColorStop(0,'#b45309'); bg2.addColorStop(0.3,'#fef08a'); bg2.addColorStop(0.7,'#fbbf24'); bg2.addColorStop(1,'#92400e');
+      ctx.fillStyle=bg2;
+      ctx.translate(bx,by);
+      ctx.beginPath();
+      if(ctx.roundRect) ctx.roundRect(-barW/2,-barH/2,barW,barH,2);
+      else ctx.rect(-barW/2,-barH/2,barW,barH);
+      ctx.fill();
+      ctx.strokeStyle='rgba(254,240,138,0.4)'; ctx.lineWidth=0.6; ctx.stroke();
+      ctx.restore();
+    });
+
+    ctx.restore();
   }
 
   /* ─── Pig ─── */
@@ -2024,18 +2075,26 @@
     });
 
     // Check if any note is in pig suction zone and assign targets
-    const pigWidth=pig=>Math.max(pig.fat*3,90);
+    // Zone is wide (W/nPigs * 0.72) and tall (full screen above pig)
+    const nLgPigs=lgPigs.length||1;
+    const suckHalfW=pig=>Math.max(W/(nLgPigs*2)*0.72, pig.fat*2.8, 120);
     lgNotes.forEach(note=>{
       if(note.dead||note.suckTarget) return;
+      // Find nearest pig in whose zone this note falls
+      let best=null, bestDist=Infinity;
       lgPigs.forEach(pig=>{
-        const tw=pigWidth(pig)/2+15;
-        if(note.x>pig.x-tw&&note.x<pig.x+tw&&note.y>pigY-pig.fat*3&&note.y<pigY+10){
-          note.suckTarget=pig;
-          note.suckSpeed=0.08;
-          pig.inhaling=40;
-          pig.inhalePow=Math.min(1,pig.inhalePow+0.3);
+        const hw=suckHalfW(pig);
+        if(note.x>pig.x-hw&&note.x<pig.x+hw&&note.y<pigY+12){
+          const d=Math.abs(note.x-pig.x);
+          if(d<bestDist){ bestDist=d; best=pig; }
         }
       });
+      if(best){
+        note.suckTarget=best;
+        note.suckSpeed=0.06;
+        best.inhaling=45;
+        best.inhalePow=Math.min(1,best.inhalePow+0.25);
+      }
     });
 
     // Update pig inhale state
@@ -2045,7 +2104,7 @@
     });
 
     // Tables
-    lgPigs.forEach(p=>{ lgTableDraw(p.x,pigY,Math.max(p.fat*3,90)); });
+    lgPigs.forEach(p=>{ lgGoldPileDraw(p.x,pigY,p.fat); });
 
     // Notes
     lgNotes=lgNotes.filter(n=>!n.dead);
