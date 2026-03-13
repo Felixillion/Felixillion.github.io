@@ -1,0 +1,1877 @@
+---
+layout: default
+title: Billionaire Legacy | Felixillion
+permalink: /billionaire-legacy.html
+description: "Australian billionaires, estate tax, housing, research funding, government subsidies and a visualisation of just how large a billion really is."
+footer_scripts: assets/js/hero.js
+---
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@400;500;700;900&display=swap');
+:root{
+  --gold:#d4a017;--gold-lt:#f0c040;--gold-dk:#8b6400;
+  --red:#ef4444;--green:#4ade80;--blue:#38bdf8;--amber:#f59e0b;--pink:#f472b6;--purple:#a78bfa;
+  --surface:rgba(255,255,255,0.035);--border:rgba(255,255,255,0.09);
+}
+/* ─── Layout ───────────────────────────────────────────── */
+.bl-page{max-width:1020px;margin:0 auto;padding:7rem 1.25rem 5rem;}
+/* ─── Hero ─────────────────────────────────────────────── */
+.bl-hero{text-align:center;margin-bottom:2.5rem;}
+.bl-kicker{display:inline-block;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.28);border-radius:999px;padding:.28rem .9rem;margin-bottom:1.1rem;}
+.bl-h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5.5vw,3.5rem);font-weight:700;line-height:1.12;color:#f5f0e8;letter-spacing:-.02em;margin-bottom:.9rem;}
+.bl-h1 em{font-style:italic;color:var(--gold-lt);}
+.bl-hero-sub{max-width:620px;margin:0 auto 1.5rem;color:var(--text-secondary);font-size:1rem;line-height:1.7;}
+.bl-verdict{display:inline-flex;align-items:center;gap:.65rem;background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.28);border-radius:12px;padding:.7rem 1.2rem;font-size:1rem;font-weight:600;color:#fca5a5;}
+/* ─── Tabs ──────────────────────────────────────────────── */
+.bl-tabs{display:flex;gap:.35rem;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:.6rem;margin-bottom:2rem;position:sticky;top:56px;z-index:90;background:rgba(2,8,24,.92);backdrop-filter:blur(12px);padding-top:.6rem;}
+.bl-tab{padding:.42rem .85rem;border-radius:8px;cursor:pointer;background:transparent;border:1px solid transparent;color:var(--text-secondary);font-size:.78rem;font-weight:500;transition:all .18s;font-family:'Outfit',sans-serif;white-space:nowrap;}
+.bl-tab:hover{border-color:rgba(212,160,23,.3);color:#d4c07a;}
+.bl-tab.active{border-color:var(--gold);background:rgba(212,160,23,.1);color:var(--gold-lt);font-weight:700;}
+.bl-panel{display:none;animation:fadeIn .25s ease;}
+.bl-panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* ─── Common section elements ───────────────────────────── */
+.bl-sec-title{font-family:'Outfit',sans-serif;font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600;border-left:2px solid var(--gold);padding-left:.65rem;margin-bottom:1rem;}
+.bl-callout{background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.2);border-left:3px solid var(--gold);border-radius:10px;padding:1rem 1.3rem;font-size:.88rem;color:#d4c07a;line-height:1.7;margin-bottom:1.4rem;}
+.bl-callout strong{color:var(--gold-lt);}
+.bl-callout a{color:var(--gold-lt);text-underline-offset:3px;}
+.bl-callout-blue{background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.18);border-left:3px solid var(--blue);border-radius:10px;padding:1rem 1.3rem;font-size:.88rem;color:#93c5fd;line-height:1.7;margin-bottom:1.4rem;}
+.bl-callout-blue strong{color:#bfdbfe;}.bl-callout-blue a{color:#7dd3fc;text-underline-offset:3px;}
+.bl-callout-green{background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);border-left:3px solid var(--green);border-radius:10px;padding:1rem 1.3rem;font-size:.88rem;color:#86efac;line-height:1.7;margin-bottom:1.4rem;}
+.bl-callout-green strong{color:#bbf7d0;}.bl-callout-green a{color:#4ade80;text-underline-offset:3px;}
+.bl-callout-red{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-left:3px solid var(--red);border-radius:10px;padding:1rem 1.3rem;font-size:.88rem;color:#fca5a5;line-height:1.7;margin-bottom:1.4rem;}
+.bl-callout-red strong{color:#fecaca;}.bl-callout-red a{color:#f87171;text-underline-offset:3px;}
+.bl-sources{margin-top:1rem;}.bl-stitle{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-secondary);font-weight:600;margin-bottom:.4rem;}
+.bl-slinks{display:flex;flex-wrap:wrap;gap:.35rem;}
+.bl-sl{display:inline-flex;align-items:center;gap:.28rem;font-size:.7rem;color:#7dd3fc;text-decoration:none;background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);border-radius:5px;padding:.2rem .55rem;transition:background .15s;}
+.bl-sl:hover{background:rgba(56,189,248,.14);}
+/* ─── Grid helpers ──────────────────────────────────────── */
+.bl-g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.4rem;}
+.bl-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.4rem;}
+.bl-g-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.85rem;margin-bottom:1.4rem;}
+/* ─── Stat cards ───────────────────────────────────────── */
+.bl-stat{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;text-align:center;}
+.bl-stat-num{font-size:1.5rem;font-weight:900;font-family:'Outfit',sans-serif;letter-spacing:-.03em;margin-bottom:.25rem;}
+.bl-stat-label{font-size:.7rem;color:var(--text-secondary);line-height:1.4;}
+/* ─── Timeline ──────────────────────────────────────────── */
+.bl-timeline{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:2rem;}
+.bl-tl-item{flex:1;padding:.85rem .75rem;text-align:center;background:var(--surface);border-right:1px solid var(--border);}
+.bl-tl-item:last-child{border-right:none;}
+.bl-tl-year{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.25rem;color:var(--gold);display:block;margin-bottom:.2rem;}
+.bl-tl-desc{font-size:.68rem;color:var(--text-secondary);line-height:1.4;}
+.bl-tl-item.now .bl-tl-year{color:#fca5a5;}
+/* ─── Billionaire cards ─────────────────────────────────── */
+.bl-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.9rem;margin-bottom:1.8rem;}
+.bl-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem;cursor:pointer;transition:border-color .2s,background .2s,transform .15s;position:relative;overflow:hidden;}
+.bl-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,160,23,.08) 0%,transparent 60%);opacity:0;transition:opacity .2s;}
+.bl-card:hover::before,.bl-card.selected::before{opacity:1;}
+.bl-card:hover{border-color:rgba(212,160,23,.4);transform:translateY(-2px);}
+.bl-card.selected{border-color:var(--gold);background:rgba(212,160,23,.07);}
+.bl-card-rank{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dk);font-weight:700;margin-bottom:.25rem;}
+.bl-card-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:#f0ead8;margin-bottom:.18rem;}
+.bl-card-wealth{font-size:1.55rem;font-weight:900;color:var(--gold-lt);font-family:'Outfit',sans-serif;letter-spacing:-.03em;margin-bottom:.3rem;}
+.bl-card-source{font-size:.75rem;color:var(--text-secondary);}
+.bl-card-tag{display:inline-block;font-size:.6rem;padding:.15rem .45rem;border-radius:4px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-top:.4rem;}
+.tag-mining{background:rgba(239,68,68,.15);color:#fca5a5;}
+.tag-realty{background:rgba(251,191,36,.15);color:#fde68a;}
+.tag-tech{background:rgba(56,189,248,.15);color:#7dd3fc;}
+.tag-industry{background:rgba(74,222,128,.15);color:#86efac;}
+.tag-media{background:rgba(167,139,250,.15);color:#c4b5fd;}
+.bl-card-donate{font-size:.68rem;color:#64748b;margin-top:.35rem;}
+.bl-card-donate span{color:#f472b6;font-weight:600;}
+/* ─── Calculator ────────────────────────────────────────── */
+.bl-calc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2rem;}
+.bl-calc-top{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.3rem;}
+.bl-clabel{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary);font-weight:600;margin-bottom:.45rem;}
+.bl-rbtn{padding:.38rem .8rem;border-radius:7px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-secondary);font-size:.79rem;font-weight:500;transition:all .18s;font-family:'Outfit',sans-serif;}
+.bl-rbtn:hover{border-color:rgba(212,160,23,.4);color:#d4c07a;}
+.bl-rbtn.active{border-color:var(--gold);background:rgba(212,160,23,.1);color:var(--gold-lt);font-weight:700;}
+.bl-rbtns{display:flex;gap:.4rem;flex-wrap:wrap;}
+.bl-res-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.2rem;}
+.bl-res-card{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;}
+.bl-res-label{font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary);margin-bottom:.28rem;}
+.bl-res-val{font-size:1.45rem;font-weight:900;font-family:'Outfit',sans-serif;letter-spacing:-.03em;}
+.val-zero{color:var(--red);}.val-tax{color:var(--green);}.val-heir{color:var(--amber);}.val-rate{color:var(--blue);}
+/* ─── Asset bar ─────────────────────────────────────────── */
+.bl-asset-bar{height:20px;border-radius:7px;overflow:hidden;display:flex;margin-bottom:.55rem;}
+.bl-asset-seg{height:100%;transition:width .5s cubic-bezier(.22,1,.36,1);}
+.bl-asset-legend{display:flex;flex-wrap:wrap;gap:.45rem .85rem;margin-bottom:.9rem;}
+.bl-asset-dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:.28rem;vertical-align:middle;}
+.bl-asset-lbl{font-size:.7rem;color:var(--text-secondary);}
+.bl-asset-lbl strong{color:#e2e8f0;}
+/* ─── Funding slider ─────────────────────────────────────── */
+.bl-slider-wrap{margin-top:.9rem;}
+.bl-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:rgba(255,255,255,.1);outline:none;cursor:pointer;}
+.bl-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--gold-lt);box-shadow:0 0 8px rgba(212,160,23,.4);}
+.bl-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;border:2px solid var(--gold-lt);}
+.bl-alloc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.65rem;margin-top:1rem;}
+.bl-alloc-item{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;padding:.75rem .85rem;text-align:center;}
+.bl-alloc-icon{font-size:1.4rem;display:block;margin-bottom:.28rem;}
+.bl-alloc-count{font-size:1.15rem;font-weight:900;color:var(--green);font-family:'Outfit',sans-serif;}
+.bl-alloc-thing{font-size:.68rem;color:var(--text-secondary);margin-top:.18rem;line-height:1.3;}
+.bl-alloc-pct{font-size:.6rem;color:#475569;margin-top:.15rem;}
+/* ─── Time compare ──────────────────────────────────────── */
+.bl-salary-row{display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.bl-salary-input{background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;color:#f0ead8;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:600;padding:.45rem .8rem;width:150px;outline:none;transition:border-color .2s;}
+.bl-salary-input:focus{border-color:var(--gold);}
+.bl-time-disp{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem;margin-bottom:1.2rem;}
+.bl-time-big{font-family:'Outfit',sans-serif;font-size:2.2rem;font-weight:900;color:var(--gold-lt);letter-spacing:-.03em;line-height:1;}
+.bl-time-sub{font-size:.78rem;color:var(--text-secondary);margin-top:.28rem;}
+.bl-bar-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.5rem;}
+.bl-bar-lbl{font-size:.74rem;font-weight:600;width:130px;flex-shrink:0;color:#e2e8f0;}
+.bl-bar-wrap{flex:1;height:20px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;}
+.bl-bar{height:100%;border-radius:5px;transition:width .6s cubic-bezier(.22,1,.36,1);}
+.bl-bar-val{font-size:.7rem;width:85px;text-align:right;flex-shrink:0;color:var(--text-secondary);}
+/* ─── Compare bars ──────────────────────────────────────── */
+.bl-cmp-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.5rem;}
+.bl-cmp-lbl{font-size:.78rem;font-weight:600;width:95px;flex-shrink:0;color:#e2e8f0;}
+.bl-cmp-wrap{flex:1;height:22px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;}
+.bl-cmp-bar{height:100%;border-radius:5px;transition:width .6s cubic-bezier(.22,1,.36,1);}
+.bl-cmp-pct{font-size:.72rem;width:42px;text-align:right;flex-shrink:0;}
+/* ─── Capital flight cards ──────────────────────────────── */
+.bl-cf-card{border-radius:12px;padding:.95rem 1.05rem;border:1px solid var(--border);background:var(--surface);}
+.bl-cf-flag{font-size:1.3rem;margin-bottom:.35rem;}
+.bl-cf-title{font-size:.76rem;font-weight:700;color:#e2e8f0;margin-bottom:.32rem;}
+.bl-cf-body{font-size:.76rem;color:var(--text-secondary);line-height:1.65;}
+.bl-cf-body a{color:#7dd3fc;text-underline-offset:3px;}
+.bl-cf-verdict{font-size:.7rem;font-weight:700;margin-top:.45rem;}
+.verdict-bad{color:#fca5a5;}.verdict-mixed{color:#fde68a;}.verdict-good{color:#86efac;}
+/* ─── Prod cards ─────────────────────────────────────────── */
+.bl-prod-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:.85rem .95rem;}
+.bl-prod-role{font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);font-weight:700;margin-bottom:.28rem;}
+.bl-prod-out{font-size:.78rem;color:#94a3b8;margin-bottom:.35rem;line-height:1.4;}
+.bl-prod-abs{font-size:.75rem;color:#fca5a5;font-weight:600;line-height:1.4;}
+/* ─── Research ──────────────────────────────────────────── */
+.bl-research-bar{height:30px;border-radius:8px;overflow:hidden;display:flex;margin-bottom:.5rem;border:1px solid var(--border);}
+.bl-research-seg{height:100%;display:flex;align-items:center;padding:0 .6rem;font-size:.65rem;font-weight:700;white-space:nowrap;overflow:hidden;}
+/* ─── Billion scale ─────────────────────────────────────── */
+.bl-scale-step{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:.8rem;transition:all .3s;}
+.bl-scale-step:hover{border-color:rgba(212,160,23,.3);background:rgba(212,160,23,.04);}
+.bl-scale-num{font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:900;letter-spacing:-.03em;margin-bottom:.3rem;}
+.bl-scale-desc{font-size:.82rem;color:var(--text-secondary);line-height:1.6;}
+.bl-scale-visual{height:8px;border-radius:4px;background:var(--gold);margin-top:.7rem;transition:width .5s ease;}
+/* ─── Disclaimer ─────────────────────────────────────────── */
+.bl-disclaimer{font-size:.68rem;color:#475569;line-height:1.65;border-top:1px solid var(--border);padding-top:1.3rem;margin-top:2rem;}
+.bl-disclaimer a{color:#64748b;}
+@media(max-width:640px){
+  .bl-timeline{flex-direction:column;}
+  .bl-tl-item{border-right:none;border-bottom:1px solid var(--border);}
+  .bl-g2{grid-template-columns:1fr;}
+  .bl-g3{grid-template-columns:1fr;}
+  .bl-res-grid{grid-template-columns:1fr;}
+  .bl-calc-top{flex-direction:column;}
+  .bl-bar-lbl{width:80px;font-size:.66rem;}
+  .bl-bar-val{width:60px;}
+  .bl-cmp-lbl{width:70px;font-size:.7rem;}
+}
+</style>
+
+<div class="bl-page">
+
+<!-- ─── Hero ──────────────────────────────────────────── -->
+<div class="bl-hero fade-in" data-hero="legacy">
+  <div class="bl-kicker">Australia · Wealth &amp; Taxation</div>
+  <h1 class="bl-h1">When <em>Billionaires</em> Die,<br>Who Gets the Money?</h1>
+  <p class="bl-hero-sub">
+    Australia has ~150 billionaires holding wealth greater than a third of annual GDP.
+    When they pass away, almost none of that flows back to the public — while ordinary Australians fund the very infrastructure that made those fortunes possible.
+  </p>
+  <div class="bl-verdict"><span>🏛️</span>Under current Australian law, the government receives <strong style="margin:0 .3rem;">$0</strong> in estate or inheritance tax.</div>
+</div>
+
+<!-- ─── Tab Navigation ─────────────────────────────────── -->
+<div class="bl-tabs" id="bl-tabs">
+  <button type="button" class="bl-tab active" data-panel="law">📜 The Law</button>
+  <button type="button" class="bl-tab" data-panel="scale">💰 Scale of Wealth</button>
+  <button type="button" class="bl-tab" data-panel="billion">🔢 A Billion</button>
+  <button type="button" class="bl-tab" data-panel="calc">🧮 Calculator</button>
+  <button type="button" class="bl-tab" data-panel="arguments">⚖️ The Debate</button>
+  <button type="button" class="bl-tab" data-panel="housing">🏠 Housing</button>
+  <button type="button" class="bl-tab" data-panel="research">🔬 Research &amp; Subsidies</button>
+  <button type="button" class="bl-tab" data-panel="flight">✈️ Capital Flight</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 1: THE LAW
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel active" id="panel-law">
+
+  <div class="bl-sec-title">The Law — What actually happens when an Australian billionaire dies</div>
+  <div class="bl-callout">
+    <strong>Australia abolished all death duties in 1979</strong> — one of only a handful of wealthy democracies to do so.
+    There is no estate tax, no inheritance tax, and no gift tax at death.
+    For a billionaire whose wealth sits in private companies, trusts and unlisted property, the effective death tax is essentially <strong>zero</strong>.
+  </div>
+
+  <div class="bl-g2">
+    <div>
+      <div class="bl-sec-title">What IS taxed</div>
+      <div class="bl-callout-green">
+        <strong>Super paid to adult children:</strong> The taxable component is taxed at a flat 17% (including Medicare levy). For most billionaires, super is a tiny fraction of total wealth.<br><br>
+        <strong>Inherited non-primary residential property (CGT partial exemption):</strong>
+        This is genuinely nuanced — and commonly misunderstood.
+        <a href="https://www.ato.gov.au/individuals-and-families/investments-and-assets/capital-gains-tax/inherited-assets-and-capital-gains-tax/calculating-a-partial-exemption-for-inherited-property" target="_blank" rel="noopener">See ATO formula ↗</a>
+        <br><br>
+        <strong>The key point first:</strong> When someone dies, their investment property's cost base resets to the <em>date-of-death market value</em>.
+        This means <strong>all capital gains accumulated during the deceased's lifetime permanently escape CGT</strong> — never taxed, ever.
+        <br><br>
+        <strong>The ATO Vicki/Lesley example unpacked:</strong>
+        Vicki bought a rental property in 1997 and died in 2000. Lesley inherited it, lived in it as her main residence, and sold it in 2024 for a $400,000 capital gain.
+        That $400,000 gain is calculated from the <em>date-of-death value</em> as the cost base — so it is entirely Lesley's post-inheritance gain.
+        Vicki's 3 years of rental appreciation from 1997 to 2000 is <strong>completely wiped</strong> and never taxed.
+        <br><br>
+        However, because Vicki used the property as a rental (not her main residence), the ATO formula <em>reduces the fraction of Lesley's own gain that qualifies for the main residence exemption</em>.
+        The formula: Capital gain × (non-main-residence days ÷ total days) = taxable portion.
+        Non-main-residence days includes Vicki's 1,375 rental days <em>plus</em> Lesley's 0 days (she lived in it).
+        Result: $400k × (1,375 ÷ 10,152) = <strong>$54,176 taxable</strong> — roughly 13.5% of Lesley's own gain.
+        <br><br>
+        <strong>What this means:</strong> Lesley is not paying tax on Vicki's gains (those are wiped). She is paying CGT on a small fraction of her own post-inheritance gains, because the property's rental history reduces how much of her exemption she can claim.
+        If Vicki had used it as her main residence before death, Lesley would owe <strong>$0 CGT</strong> on the full $400k.
+        <br><br>
+        Heirs also get the 50% CGT discount if they hold the property for over 12 months.
+        <br><br>
+        <strong>The bottom line:</strong> Billionaire investment properties — private apartment blocks, commercial buildings, rural stations — pass to heirs with decades of appreciation permanently untaxed. The partial CGT exemption formula only affects what heirs pay on <em>their own future gains</em>, not the fortunes accumulated by the deceased.
+      </div>
+    </div>
+    <div>
+      <div class="bl-sec-title">What is NOT taxed</div>
+      <div class="bl-callout-red">
+        <strong>Shares in private companies</strong> (e.g., Hancock Prospecting, Meriton) — inherited at date-of-death cost base. Entire lifetime gain: $0 tax at death.<br><br>
+        <strong>Listed shares</strong> — same rule. If Rinehart held BHP shares bought at $10 and they're worth $50 at her death, that $40 gain permanently escapes tax.<br><br>
+        <strong>Primary residence</strong> — fully exempt even if worth $50M.<br><br>
+        <strong>Trusts</strong> — wealth flowing through family discretionary trusts can pass to beneficiaries at the trustee's discretion with significant flexibility, often avoiding both estate and death duties.<br><br>
+        <strong>Gifts made before death</strong> — Australia has no gift tax, so wealth can be transferred to children or family trusts during one's lifetime tax-free (within certain limits on super).
+      </div>
+    </div>
+  </div>
+
+  <div class="bl-sec-title" style="margin-top:.5rem;">Australia vs the world</div>
+  <div class="bl-callout-blue">
+    The US has had a 40% federal estate tax for <strong>decades</strong> — it applies to estates over ~US$13.6M. The UK's 40% inheritance tax (above £325k) has been in place since 1986. France's succession duties reach 45%.
+    <strong>Australia goes further in exemption than any G7 peer:</strong> not only is there no estate tax, but there is also no CGT trigger at death at all for primary residences, and the cost base "wipe" on death means lifetime private company and trust gains escape permanently.
+    <a href="https://www.oecd.org/tax/tax-policy/inheritance-taxation-in-oecd-countries.pdf" target="_blank" rel="noopener">OECD: 24 of 38 member countries have inheritance or estate taxes.</a>
+  </div>
+
+  <div class="bl-sec-title">Timeline</div>
+  <div class="bl-timeline">
+    <div class="bl-tl-item"><span class="bl-tl-year">1914</span><div class="bl-tl-desc">Federal estate duties introduced at up to 27.5% on large estates.</div></div>
+    <div class="bl-tl-item"><span class="bl-tl-year">1977</span><div class="bl-tl-desc">Queensland abolishes state death duties, triggering a race to the bottom.</div></div>
+    <div class="bl-tl-item"><span class="bl-tl-year">1979</span><div class="bl-tl-desc">Federal government abolishes all death duties. Other states follow by 1984.</div></div>
+    <div class="bl-tl-item"><span class="bl-tl-year">2010</span><div class="bl-tl-desc">Henry Tax Review raises wealth inequality concerns. Government takes no action.</div></div>
+    <div class="bl-tl-item now"><span class="bl-tl-year">2025</span><div class="bl-tl-desc">~$3.5T intergenerational wealth transfer underway. Still no estate tax.</div></div>
+  </div>
+
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://www.ato.gov.au/individuals-and-families/investments-and-assets/capital-gains-tax/inherited-assets-and-capital-gains-tax/calculating-a-partial-exemption-for-inherited-property" target="_blank" rel="noopener" class="bl-sl">↗ ATO — Inherited property partial CGT exemption</a>
+    <a href="https://www.ato.gov.au/individuals-and-families/investments-and-assets/capital-gains-tax/inherited-assets-and-capital-gains-tax" target="_blank" rel="noopener" class="bl-sl">↗ ATO — Inherited assets overview</a>
+    <a href="https://treasury.gov.au/review/tax-system-review" target="_blank" rel="noopener" class="bl-sl">↗ Henry Tax Review</a>
+    <a href="https://www.oecd.org/tax/tax-policy/inheritance-taxation-in-oecd-countries.pdf" target="_blank" rel="noopener" class="bl-sl">↗ OECD — Inheritance taxation</a>
+  </div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 2: SCALE OF WEALTH
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel" id="panel-scale">
+
+  <!-- Billion visualiser -->
+  <div class="bl-sec-title">Just How Large Is A Billion?</div>
+  <div class="bl-callout">
+    We throw around "billion" casually, but human brains can't intuitively grasp the difference between a million and a billion.
+    Use the slider to <strong>zoom through the true linear scale</strong> from $1 all the way up to Gina Rinehart's $38B wealth.
+    Each dot below represents a fixed unit — zoom in and out to see how that unit compares.
+  </div>
+
+  <!-- Interactive zoom visualisation -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1.5rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
+      <div>
+        <div class="bl-clabel">Zoom level — each dot = </div>
+        <div id="bl-zoom-unit" style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;color:var(--gold-lt);"></div>
+      </div>
+      <div style="text-align:right;">
+        <div class="bl-clabel">Viewing</div>
+        <div id="bl-zoom-viewing" style="font-size:.82rem;color:#e2e8f0;"></div>
+      </div>
+    </div>
+    <input type="range" class="bl-slider" id="bl-zoom-slider" min="0" max="100" value="0" style="width:100%;margin-bottom:1rem;">
+    <div style="display:flex;justify-content:space-between;font-size:.64rem;color:#475569;margin-bottom:1rem;">
+      <span>← Zoomed in ($1 per dot)</span><span>Zoomed out (billions per dot) →</span>
+    </div>
+
+    <!-- Context card that updates with zoom -->
+    <div id="bl-zoom-context" style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;margin-bottom:1rem;">
+      <div id="bl-zoom-label" style="font-size:.75rem;font-weight:700;color:var(--gold);margin-bottom:.35rem;"></div>
+      <div id="bl-zoom-desc" style="font-size:.82rem;color:var(--text-secondary);line-height:1.65;"></div>
+    </div>
+
+    <!-- Dot grid -->
+    <div class="bl-clabel" style="margin-bottom:.5rem;">Dot grid — each dot = <span id="bl-dot-unit-label" style="color:var(--gold-lt);"></span>  ·  Total shown: <span id="bl-dot-total" style="color:#e2e8f0;"></span></div>
+    <div id="bl-dot-grid" style="display:flex;flex-wrap:wrap;gap:3px;min-height:80px;max-height:220px;overflow:hidden;border-radius:8px;padding:8px;background:rgba(0,0,0,.2);border:1px solid var(--border);"></div>
+    <div id="bl-dot-overflow" style="font-size:.72rem;color:#ef4444;margin-top:.5rem;display:none;"></div>
+  </div>
+
+  <!-- Comparison table - linear true scale bar -->
+  <div class="bl-sec-title">True Linear Scale Comparison</div>
+  <div class="bl-callout-blue">
+    These bars are drawn on a <strong>true linear scale</strong> — not logarithmic. If $1 were 1 pixel, this bar chart would be kilometres wide.
+    Instead, the reference bar is set to the <em>median annual salary</em> ($100k) and all others are shown relative to it.
+    The bars represent "how many median salaries would fit inside each amount."
+  </div>
+  <div id="bl-linear-bars" style="margin-bottom:1.5rem;overflow:hidden;"></div>
+
+  <div id="bl-scale-steps"></div>
+
+  <!-- Billionaire cards -->
+  <div class="bl-sec-title" style="margin-top:1.5rem;">Australia's Wealthiest — AFR Rich List 2025</div>
+  <div class="bl-callout-blue">
+    Select a billionaire to explore them across the Calculator, Time, and Productivity sections below.
+    Data: <a href="https://www.afr.com/rich-list" target="_blank" rel="noopener">AFR Rich List 2025 ↗</a>
+  </div>
+  <div class="bl-cards" id="bl-cards"></div>
+
+  <!-- Time to accumulate -->
+  <div class="bl-sec-title" style="margin-top:.5rem;">How Long Would It Take You?</div>
+  <div class="bl-callout-blue">
+    How long to match their wealth saving <em>100% of your salary</em> — no tax, no rent, no food. A purely theoretical maximum to show the scale of the gap.
+  </div>
+  <div class="bl-salary-row">
+    <div>
+      <div class="bl-clabel">Your annual salary ($)</div>
+      <div style="display:flex;align-items:center;gap:.45rem;">
+        <span style="color:var(--gold-lt);font-weight:700;">$</span>
+        <input class="bl-salary-input" type="number" id="bl-salary" value="{{ site.data.billionaires._stats.abs_median_salary | default: 100004 }}" min="1" step="1000">
+        <span style="color:var(--text-secondary);font-size:.76rem;">/yr</span>
+      </div>
+      <div style="font-size:.62rem;color:#475569;margin-top:.25rem;">ABS median full-time: $100,004/yr (Nov 2023)</div>
+    </div>
+  </div>
+  <div id="bl-time-none" style="text-align:center;padding:1.5rem;color:var(--text-secondary);font-size:.88rem;">← Select a billionaire above to see the comparison.</div>
+  <div id="bl-time-disp" style="display:none;">
+    <div class="bl-time-disp">
+      <div class="bl-time-big" id="bl-time-big">—</div>
+      <div class="bl-time-sub">years of saving 100% of your salary to match <span id="bl-time-name">—</span>'s <span id="bl-time-wealth-sub">—</span></div>
+    </div>
+    <div style="font-size:.78rem;color:var(--text-secondary);margin-bottom:1rem;line-height:1.65;"><span id="bl-time-context" style="color:#e2e8f0;"></span></div>
+    <div id="bl-time-bars"></div>
+  </div>
+
+  <!-- Productivity -->
+  <div class="bl-sec-title" style="margin-top:1.5rem;">But Surely They Work Harder?</div>
+  <div class="bl-callout">
+    <strong>The common defence:</strong> "They earned it through hard work and talent." But if wealth reflected proportional productivity, what would that actually mean?
+  </div>
+  <div id="bl-prod-none" style="text-align:center;padding:1rem;color:var(--text-secondary);font-size:.88rem;">← Select a billionaire above.</div>
+  <div id="bl-prod-disp" style="display:none;">
+    <div class="bl-callout-red" id="bl-prod-multi-box" style="margin-bottom:1rem;"></div>
+    <div class="bl-g-auto" id="bl-prod-grid"></div>
+    <div class="bl-callout-green">
+      <strong>The reality:</strong> The wealth gap is driven by <strong>capital ownership and compounding</strong> — not proportional effort.
+      Gina Rinehart's wealth grew from ~$16B to ~$38B from 2020–2025 largely because iron ore prices rose and her private company equity compounded — not because she worked harder.
+      Scott Farquhar's fortune reflects Atlassian's global product-market fit and equity valuation, not that he personally coded tens of thousands of times more lines than the average developer.
+      <a href="https://hbr.org/2019/08/are-ceos-paid-for-performance-mostly-not" target="_blank" rel="noopener">Research consistently shows</a> executive pay correlates weakly with company performance — and inherited wealth not at all.
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 2b: A BILLION — dedicated scale visualiser
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel" id="panel-billion">
+  <div class="bl-sec-title">How Big Is A Billion, Really?</div>
+  <div class="bl-callout">
+    The word "billion" gets thrown around in political debate as if it's just a large number.
+    It isn't. Our brains evolved to understand maybe a few thousand objects at once.
+    A billion is so far outside that range that even comparison fails.
+    This tab tries to make it visceral — in time, in space, and in pixels.
+  </div>
+
+  <!-- ① Time in seconds -->
+  <div class="bl-sec-title" style="margin-top:0;">① The Same Number — In Seconds</div>
+  <div class="bl-callout-blue">
+    Seconds are something we feel. Count to ten and you've used ten seconds.
+    Below, the same numbers that describe wealth are shown as durations of time.
+  </div>
+  <div id="bl-time-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-bottom:1.5rem;"></div>
+
+  <!-- ② Pixel ruler — virtual, canvas-rendered -->
+  <div class="bl-sec-title">② The Pixel Ruler — Zoom Through the Scale</div>
+  <div class="bl-callout-blue">
+    Imagine a ruler where <strong>1 pixel = $1</strong>.
+    $1,000 would be 1,000 pixels — about 25 cm on your screen.
+    $1,000,000 would stretch 1,000 metres — roughly the length of 10 football pitches.
+    $1,000,000,000 (one billion) would be <strong>1,000 kilometres</strong> — the distance from Sydney to Melbourne, and back.
+    Gina Rinehart's $38.11B wealth would span <strong>38,110 km</strong> — nearly the circumference of the Earth.
+    <br><br>
+    The canvas below represents this ruler. Drag or use the slider to fly through it.
+    The yellow marker shows where <strong>you</strong> are on the scale.
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.2rem;">
+    <!-- Position readout -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;">
+      <div>
+        <div class="bl-clabel">Current position on ruler</div>
+        <div id="bv-pos-label" style="font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;color:var(--gold-lt);">$0</div>
+        <div id="bv-pos-equiv" style="font-size:.75rem;color:var(--text-secondary);margin-top:.15rem;"></div>
+      </div>
+      <div style="text-align:right;">
+        <div class="bl-clabel">Zoom — 1 pixel =</div>
+        <div id="bv-zoom-label" style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:#38bdf8;">$1</div>
+      </div>
+    </div>
+
+    <!-- Canvas ruler -->
+    <canvas id="bv-canvas" style="width:100%;height:110px;border-radius:10px;border:1px solid var(--border);cursor:grab;display:block;touch-action:none;"></canvas>
+
+    <!-- Milestone markers -->
+    <div id="bv-milestone" style="font-size:.78rem;font-weight:700;padding:.45rem .75rem;border-radius:8px;margin-top:.6rem;min-height:1.8rem;transition:background .3s,color .3s;"></div>
+
+    <!-- Zoom slider -->
+    <div style="display:flex;align-items:center;gap:.75rem;margin-top:.8rem;">
+      <span style="font-size:.65rem;color:#475569;white-space:nowrap;">Zoomed in</span>
+      <input type="range" class="bl-slider" id="bv-zoom-slider" min="0" max="100" value="0" style="flex:1;">
+      <span style="font-size:.65rem;color:#475569;white-space:nowrap;">Zoomed out</span>
+    </div>
+
+    <!-- Jump buttons -->
+    <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem;">
+      <span style="font-size:.65rem;color:#475569;align-self:center;">Jump to:</span>
+      <button type="button" class="bv-jump" data-val="0" style="padding:.28rem .55rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:#4ade80;font-size:.7rem;cursor:pointer;">$0</button>
+      <button type="button" class="bv-jump" data-val="1000" style="padding:.28rem .55rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:#38bdf8;font-size:.7rem;cursor:pointer;">$1k</button>
+      <button type="button" class="bv-jump" data-val="100000" style="padding:.28rem .55rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:#f59e0b;font-size:.7rem;cursor:pointer;">$100k salary</button>
+      <button type="button" class="bv-jump" data-val="1000000" style="padding:.28rem .55rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:#f472b6;font-size:.7rem;cursor:pointer;">$1M</button>
+      <button type="button" class="bv-jump" data-val="1000000000" style="padding:.28rem .55rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:#ef4444;font-size:.7rem;cursor:pointer;">$1B</button>
+      <button type="button" class="bv-jump" data-val="38110000000" style="padding:.28rem .55rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:#d4a017;font-size:.7rem;cursor:pointer;">Gina $38.11B</button>
+    </div>
+  </div>
+
+  <!-- ③ Distance equivalents -->
+  <div class="bl-sec-title">③ If 1 pixel = $1 … How Far Would You Travel?</div>
+  <div id="bv-distance-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;margin-bottom:1.5rem;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 3: CALCULATOR
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel" id="panel-calc">
+  <div class="bl-sec-title">Estate Tax Calculator</div>
+
+  <!-- Quick billionaire selector (compact, inline) -->
+  <div style="margin-bottom:1.2rem;">
+    <div class="bl-clabel" style="margin-bottom:.5rem;">Select a billionaire</div>
+    <div id="bl-calc-btns" style="display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+  </div>
+
+  <div class="bl-calc">
+    <div class="bl-calc-top">
+      <div>
+        <div class="bl-clabel">Selected</div>
+        <div id="bl-sel-name" style="font-size:1.05rem;font-weight:700;color:#f0ead8;font-family:'Outfit',sans-serif;">← Select above</div>
+        <div id="bl-sel-wealth" style="font-size:.78rem;color:var(--text-secondary);margin-top:.18rem;"></div>
+      </div>
+      <div>
+        <div class="bl-clabel">Tax regime</div>
+        <div class="bl-rbtns" id="bl-rbtns">
+          <button type="button" class="bl-rbtn active" data-regime="au">🇦🇺 Australia (0%)</button>
+          <button type="button" class="bl-rbtn" data-regime="uk">🇬🇧 UK (40%)</button>
+          <button type="button" class="bl-rbtn" data-regime="us">🇺🇸 US (40%)</button>
+          <button type="button" class="bl-rbtn" data-regime="fr">🇫🇷 France (45%)</button>
+          <button type="button" class="bl-rbtn" data-regime="proposed">💡 Proposed AU (30%)</button>
+        </div>
+        <div id="bl-regime-desc" style="font-size:.7rem;color:#7c9ab5;margin-top:.45rem;max-width:500px;line-height:1.5;"></div>
+      </div>
+    </div>
+
+    <!-- Asset breakdown -->
+    <div id="bl-asset-sec" style="display:none;margin-bottom:1.3rem;">
+      <div class="bl-clabel" style="margin-bottom:.55rem;">Estimated wealth breakdown</div>
+      <div class="bl-asset-bar" id="bl-asset-bar"></div>
+      <div class="bl-asset-legend" id="bl-asset-legend"></div>
+      <div style="font-size:.63rem;color:#334155;line-height:1.5;" id="bl-asset-note"></div>
+    </div>
+
+    <!-- Results -->
+    <div class="bl-res-grid" id="bl-res-grid" style="opacity:.35;">
+      <div class="bl-res-card">
+        <div class="bl-res-label">Government receives</div>
+        <div class="bl-res-val val-zero" id="bl-res-govt">—</div>
+        <div id="bl-res-precise" style="font-size:.65rem;color:#475569;margin-top:.18rem;"></div>
+      </div>
+      <div class="bl-res-card">
+        <div class="bl-res-label">Heirs receive</div>
+        <div class="bl-res-val val-heir" id="bl-res-heir">—</div>
+      </div>
+      <div class="bl-res-card">
+        <div class="bl-res-label">Effective rate</div>
+        <div class="bl-res-val val-rate" id="bl-res-rate">—</div>
+      </div>
+      <div class="bl-res-card">
+        <div class="bl-res-label">Threshold</div>
+        <div class="bl-res-val val-rate" id="bl-res-thresh">—</div>
+      </div>
+    </div>
+    <div id="bl-thresh-note" style="display:none;font-size:.7rem;color:#64748b;margin-bottom:1rem;padding:.55rem .75rem;background:rgba(255,255,255,.02);border-radius:7px;border:1px solid var(--border);line-height:1.5;"></div>
+
+    <!-- Interactive funding allocation slider -->
+    <div id="bl-fund-sec" style="display:none;">
+      <div style="font-size:.72rem;color:var(--text-secondary);margin-bottom:.6rem;">Total estate tax revenue: <strong id="bl-fund-total" style="color:var(--green);">—</strong> · Drag sliders to adjust the spending mix.</div>
+      <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;flex-wrap:wrap;">
+        <button type="button" id="bl-normalise-btn"
+          style="padding:.32rem .75rem;border-radius:8px;border:1px solid var(--gold);background:rgba(212,160,23,.1);color:var(--gold-lt);font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">
+          ⚖ Normalise to 100%
+        </button>
+        <span id="bl-pct-total-display" style="font-size:.72rem;color:var(--text-secondary);"></span>
+      </div>
+      <div id="bl-sliders-wrap"></div>
+      <div class="bl-alloc-grid" id="bl-alloc-grid"></div>
+      <div style="font-size:.62rem;color:#334155;margin-top:.65rem;line-height:1.5;">
+        Cost benchmarks: primary school ~$30M; secondary school ~$100M; regional hospital ~$150M; bulk-billing clinic ~$3M; aged care facility ~$40M; social housing unit ~$550k. Indicative. Sources: Vic Dept Education 2024, AIHW 2023.
+      </div>
+    </div>
+    <div id="bl-no-sel" style="text-align:center;padding:1.8rem;color:var(--text-secondary);font-size:.88rem;">← Select a billionaire above to see the calculation.</div>
+  </div>
+
+  <!-- International comparison -->
+  <div class="bl-sec-title">International Estate &amp; Inheritance Tax Rates</div>
+  <div id="bl-intl-bars" style="margin-bottom:1.3rem;"></div>
+  <div style="font-size:.72rem;color:var(--text-secondary);line-height:1.6;">
+    <a href="https://www.oecd.org/tax/tax-policy/inheritance-taxation-in-oecd-countries.pdf" target="_blank" rel="noopener" style="color:#7dd3fc;">OECD: 24 of 38 member countries have inheritance or estate taxes ↗</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 4: THE DEBATE
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel" id="panel-arguments">
+
+  <!-- Wealth vs income -->
+  <div class="bl-sec-title">Why Taxing Wealth Is Very Different From Taxing Income</div>
+  <div class="bl-callout-green">
+    <strong>The core problem:</strong> Australia taxes what you <em>earn</em>, not what you <em>own</em>.
+    Billionaires accumulate wealth through rising asset values — not wages.
+    <a href="https://www.oxfam.org.au/what-we-do/advocacy-and-campaigns/make-tax-fair/bill-the-billionaires/" target="_blank" rel="noopener">Oxfam estimates</a>
+    Australian billionaires averaged $67,000 per hour in wealth gains in 2024–25 — mostly appreciation in shares and private company equity that doesn't trigger income tax unless sold. Many never sell.
+  </div>
+  <div class="bl-g2" style="margin-bottom:1.5rem;">
+    <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.4rem;">Salaried worker earning $500k/yr</div>
+      <div style="font-size:1.3rem;font-weight:900;color:#fca5a5;font-family:'Outfit',sans-serif;">~$220k tax</div>
+      <div style="font-size:.78rem;color:#c49a9a;margin-top:.3rem;line-height:1.6;">Pays ~44% effective rate. Every dollar visible to the ATO. No deferral possible.</div>
+    </div>
+    <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700;margin-bottom:.4rem;">Gina Rinehart wealth growth, 2020–2025</div>
+      <div style="font-size:1.3rem;font-weight:900;color:#86efac;font-family:'Outfit',sans-serif;">+$22B gained</div>
+      <div style="font-size:.78rem;color:#a3c99a;margin-top:.3rem;line-height:1.6;">Held as unlisted Hancock Prospecting equity. <strong style="color:#bbf7d0;">$0 income tax triggered. $0 CGT yet. If she passes without selling: $0 tax on $22B, ever.</strong> Cost base wipe at death eliminates all lifetime gains permanently.</div>
+    </div>
+  </div>
+
+  <!-- Donation comparison -->
+  <div class="bl-sec-title">What Do They Give Back?</div>
+  <div class="bl-callout">
+    <strong>The philanthropy defence:</strong> "They give it away anyway." Let's look at the data. The figures below are the most recent publicly reported or estimated charitable donations/foundations — compared with their estimated total wealth.
+  </div>
+  <div class="bl-g-auto" id="bl-donate-grid"></div>
+  <div class="bl-callout-blue">
+    Even including the most generous billionaire philanthropists in Australia, charitable contributions represent a fraction of 1% of total wealth per year.
+    Warren Buffett famously pledged 99% of his wealth to charity — this is extraordinary and exceedingly rare.
+    Most Australian billionaire philanthropy occurs through private foundations which confer <strong>ongoing tax deductibility</strong> and allow donors to maintain influence over assets.
+    <a href="https://www.philanthropy.org.au" target="_blank" rel="noopener">Philanthropy Australia</a> reports total charitable giving by Australians at ~$13.5B/yr — with the top 1% contributing disproportionately, but <em>not</em> in amounts that offset the billions in untaxed accumulated wealth.
+  </div>
+
+  <!-- Political donations -->
+  <div class="bl-sec-title">Political Donations — Why Estate Tax Remains Off the Agenda</div>
+  <div class="bl-callout-red">
+    <strong>Both major parties oppose an estate tax.</strong> This should not be surprising: the same billionaires whose estates would be taxed are among the largest donors to those parties.
+    The AEC's disclosure threshold was $16,900 — meaning donations under that figure aren't individually reported.
+    <a href="https://grattan.edu.au/news/new-political-donations-data-show-whos-funding-whom/" target="_blank" rel="noopener">Grattan Institute analysis</a>: in 2023–24, declared donations were only 7% of party income; ~45% of party income is hidden "dark money."
+  </div>
+  <div class="bl-g-auto" id="bl-donation-grid"></div>
+  <div class="bl-callout-blue">
+    <strong>2024–25 election year total:</strong>
+    Clive Palmer's Mineralogy: $52.9M to Trumpet of Patriots. Kerry Stokes: $500k to Labor + $500k to Liberal.
+    Pratt Holdings: $1M to Labor (the same week PM Albanese attended a Pratt dinner). Hancock Prospecting (Rinehart): $895k to Advance Australia + $204k to the Liberal Party.
+    Meriton (Triguboff): $590k to the Liberal Party.<br>
+    <strong>Total declared billionaire-linked political donations in 2024–25: $56M+</strong><br>
+    As a share of their combined wealth (~$140B): 0.04%. Cheap policy insurance.
+  </div>
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://www.sbs.com.au/news/article/political-donations-2025-federal-election-leadup/pi0lbzm5h" target="_blank" rel="noopener" class="bl-sl">↗ SBS — 2024-25 AEC data</a>
+    <a href="https://michaelwest.com.au/political-donations-money-doesnt-buy-you-happiness" target="_blank" rel="noopener" class="bl-sl">↗ Michael West — AEC 2025</a>
+    <a href="https://grattan.edu.au/news/new-political-donations-data-show-whos-funding-whom/" target="_blank" rel="noopener" class="bl-sl">↗ Grattan — political donations analysis</a>
+  </div></div>
+
+  <!-- Rebuttals to "Against" arguments -->
+  <div class="bl-sec-title" style="margin-top:1.8rem;">Examining the "Against" Arguments</div>
+  <div class="bl-g2" style="gap:.85rem;">
+
+    <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">❌ "Double taxation"</div>
+      <div style="font-size:.8rem;color:#c49a9a;line-height:1.65;">
+        This is largely a misnomer. The vast majority of large Australian estates consist of <strong>asset appreciation that has never been taxed</strong> — not money that was earned and already hit with income tax.
+        Gina's $38B estate was never "taxed money in" — it grew as iron ore valuations rose.
+        Where income tax <em>was</em> paid on earlier income (say, executive salaries), that money was then invested and grew — and that growth was never taxed either.
+        The estate tax largely applies to the untaxed portion, making "double taxation" a stretch.
+      </div>
+    </div>
+
+    <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">❌ "Small businesses will be destroyed"</div>
+      <div style="font-size:.8rem;color:#c49a9a;line-height:1.65;">
+        <strong>92% of Australian small businesses have turnover under $2M</strong> — nowhere near the proposed $5–10M estate tax threshold.
+        Of 2.59M small businesses, the ABS reports <a href="https://www.abs.gov.au/statistics/economy/business-indicators/counts-australian-businesses-including-entries-and-exits/latest-release" target="_blank" rel="noopener" style="color:#f87171;">fewer than 1%</a> have turnover over $10M.
+        A $5M estate exemption threshold would protect the overwhelming majority of family farms and small business owners.
+        Even the US's 40% rate (threshold ~US$13.6M) includes a "qualified family-owned business" carve-out with payment-in-instalments provisions.
+        The small business threat is real for a handful of edge cases — not the norm.
+      </div>
+    </div>
+
+    <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">❌ "Valuing illiquid assets is too hard"</div>
+      <div style="font-size:.8rem;color:#c49a9a;line-height:1.65;">
+        Private company and pastoral property valuations happen routinely for other purposes: stamp duty, family law settlements, ASIC reporting, bank lending. The US, UK and France all manage estate tax on unlisted assets.
+        Moreover, if an estate is <em>too illiquid</em> to pay a 30% levy, that is itself an argument for allowing payment in instalments (standard in most proposals) — not for exempting it entirely.
+        If estates were forced to hold less of a single illiquid asset, the valuation complexity would diminish naturally.
+      </div>
+    </div>
+
+    <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">❌ "They'll just use trusts to avoid it"</div>
+      <div style="font-size:.8rem;color:#c49a9a;line-height:1.65;">
+        Tax avoidance is a design problem — not a reason to not have a tax. Australia's CGT regime was introduced in 1985 despite avoidance concerns; ATO data shows it raises substantial revenue.
+        Well-designed estate taxes include look-through provisions for discretionary trusts and deem trust assets into the estate on death. The US and UK do this imperfectly but successfully.
+        That some people avoid tax via complexity is a reason to improve the law — not to write blank cheques to the ultra-wealthy.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Employment argument — separate section for depth -->
+  <div class="bl-sec-title" style="margin-top:1.8rem;">❌ "But They Create Jobs!" — Is This A Valid Argument?</div>
+  <div class="bl-callout-blue">
+    <strong>The claim:</strong> Billionaires employ thousands of people and drive economic activity — taxing their estates would destroy jobs and reduce investment.
+    This is probably the most emotionally resonant argument and deserves a careful answer.
+  </div>
+  <div class="bl-g2" style="margin-bottom:1rem;">
+    <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.45rem;">Problems with the "job creator" argument</div>
+      <div style="font-size:.79rem;color:#c49a9a;line-height:1.7;">
+        <strong style="color:#fecaca;">The causation is reversed.</strong>
+        Billionaires are wealthy <em>because</em> their employees created value — not the other way around.
+        Gina Rinehart does not personally mine iron ore. Harry Triguboff doesn't lay bricks.
+        The workers are the proximate cause of the business output; the billionaire is the capital owner who captures a disproportionate share of the returns.<br><br>
+        <strong style="color:#fecaca;">An estate tax doesn't destroy jobs.</strong>
+        The business continues after the estate tax is paid — it just transfers partial ownership.
+        The UK, US, Japan and France have all had estate taxes for decades alongside functioning, employing businesses.
+        No evidence exists that estate taxes reduce employment in the industries they affect.
+        The Rinehart iron ore mines don't stop operating because an estate tax is paid — mining continues, workers stay employed, royalties flow.<br><br>
+        <strong style="color:#fecaca;">Wages haven't kept pace with productivity.</strong>
+        <a href="https://www.pc.gov.au/research/completed/productivity-review" target="_blank" rel="noopener" style="color:#f87171;">Productivity Commission data</a> shows Australian labour productivity grew ~80% from 1990–2022 while real wages grew only ~30%.
+        If employees shared fairly in the value they create, there would be far fewer billionaires and far fewer workers in poverty.
+        The "job creator" framing obscures this distribution problem.
+      </div>
+    </div>
+    <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.14);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700;margin-bottom:.45rem;">What the evidence actually shows</div>
+      <div style="font-size:.79rem;color:#a3c99a;line-height:1.7;">
+        <strong style="color:#bbf7d0;">Estate taxes in practice: employment unchanged.</strong>
+        A <a href="https://www.nber.org/papers/w23268" target="_blank" rel="noopener" style="color:#4ade80;">2017 NBER study</a> of US estate tax changes found no statistically significant effect on employment at affected firms.
+        Businesses adapt: estate taxes are often paid through life insurance, asset sales, or instalment plans — not by firing workers.<br><br>
+        <strong style="color:#bbf7d0;">The "job creator" multiplier is wildly overstated.</strong>
+        Elon Musk employs ~100,000 people across Tesla and SpaceX. But those businesses have valuations in the hundreds of billions — his personal wealth is not the operative variable.
+        Remove Musk personally; the businesses (and their jobs) would continue under different ownership.
+        The same is true of Rinehart's mining operations, which are run by professional management teams.<br><br>
+        <strong style="color:#bbf7d0;">Government spending also creates jobs.</strong>
+        The $5B/yr in estate tax revenue would fund hospitals, schools, research facilities and social housing — all of which employ large numbers of Australians, many in regional areas where billionaire business activity is minimal.
+        "Job creation" is not a billionaire monopoly.
+      </div>
+    </div>
+  </div>
+  <div class="bl-callout-green">
+    <strong>The verdict:</strong> The job creator argument conflates "this person owns a business that employs people" with "this person's personal wealth is the cause of those jobs."
+    An estate tax is paid by the estate — the business assets, not the workers. The businesses continue.
+    The productivity/wage divergence data suggests workers have systematically received less than their fair share of the value they create — which is precisely the mechanism that produces billionaires in the first place.
+  </div>
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://www.nber.org/papers/w23268" target="_blank" rel="noopener" class="bl-sl">↗ NBER — Estate taxes and firm employment</a>
+    <a href="https://www.pc.gov.au/research/completed/productivity-review" target="_blank" rel="noopener" class="bl-sl">↗ Productivity Commission — wages vs productivity</a>
+    <a href="https://www.epi.org/productivity-pay-gap/" target="_blank" rel="noopener" class="bl-sl">↗ EPI — Productivity-pay gap</a>
+    <a href="https://hbr.org/2019/08/are-ceos-paid-for-performance-mostly-not" target="_blank" rel="noopener" class="bl-sl">↗ HBR — CEO pay vs performance</a>
+  </div></div>
+
+  <!-- Estate tax impact data -->
+  <div class="bl-sec-title" style="margin-top:1.8rem;">Who Would A 30% Estate Tax Above $5M Actually Affect?</div>
+  <div class="bl-callout-green">
+    <strong>The proposed reform is one of the most targeted taxes Australia could introduce — affecting less than 0.3% of all deaths.</strong>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem;margin-bottom:1.3rem;">
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--green);">~168,000</div><div class="bl-stat-label">Deaths in Australia per year (ABS 2023)</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">~500</div><div class="bl-stat-label">Estates/yr estimated to exceed $5M — Anglicare/Treasury modelling</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--gold);">0.30%</div><div class="bl-stat-label">Proportion of deaths affected — fewer than 1 in 300</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--blue);">~$5B/yr</div><div class="bl-stat-label">Estimated annual revenue from a 30% AU estate tax (Anglicare 2023)</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--green);">99.7%</div><div class="bl-stat-label">Of Australians who die: <strong>completely unaffected</strong></div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--green);">0</div><div class="bl-stat-label">Impact on: primary homes, family farms under $5M, ordinary small businesses, superannuation (already separately taxed)</div></div>
+  </div>
+  <div class="bl-callout-blue">
+    <strong>Small businesses — the actual numbers:</strong>
+    Of 2.59M actively trading businesses, 1.58M are sole traders with no employees.
+    <a href="https://www.abs.gov.au/statistics/economy/business-indicators/counts-australian-businesses-including-entries-and-exits/latest-release" target="_blank" rel="noopener">ABS data</a> shows median net assets for non-employing small businesses are well under $200k.
+    Profitable small businesses with $1–2M in assets are still well below the $5M threshold.
+    The "small business" argument primarily protects large family businesses — a legitimate edge case,
+    but easily handled with instalment payment provisions standard in the UK and US.
+    The IRS reports that since 2000, fewer than 2% of small US family farms have owed any estate tax at all.
+  </div>
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://www.anglicare.asn.au/publications/anglicare-australia-tax-reform/" target="_blank" rel="noopener" class="bl-sl">↗ Anglicare — estate tax modelling</a>
+    <a href="https://www.abs.gov.au/statistics/economy/business-indicators/counts-australian-businesses-including-entries-and-exits/latest-release" target="_blank" rel="noopener" class="bl-sl">↗ ABS — Business Counts 2023</a>
+    <a href="https://taxfoundation.org/research/all/federal/estate-tax/" target="_blank" rel="noopener" class="bl-sl">↗ Tax Foundation — US estate tax</a>
+    <a href="https://www.abs.gov.au/statistics/people/population/deaths-australia/2023" target="_blank" rel="noopener" class="bl-sl">↗ ABS Deaths 2023</a>
+  </div></div>
+
+  <!-- The case FOR - Scandinavian wellbeing -->
+  <div class="bl-sec-title" style="margin-top:1.8rem;">The Affirmative Case: Higher Tax → Better Outcomes for Everyone</div>
+  <div class="bl-callout-green">
+    <strong>Estate taxes don't just redistribute wealth — they fund the things that make life better for everyone.</strong>
+    The countries with the highest inheritance/estate taxes (Japan, Belgium, France, UK) also have lower income inequality, better public services and by most measures, happier populations.
+    Australia's proposed 30% estate tax above $5M would affect only the top ~0.3% of estates — those most able to absorb it.
+  </div>
+  <div class="bl-g3" style="margin-bottom:1.3rem;">
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--green);">#1–3</div><div class="bl-stat-label">Finland, Denmark, Iceland — World Happiness Report top 3, 2024. All have inheritance taxes and strong public services.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--blue);">8.0/10</div><div class="bl-stat-label">Average life satisfaction in Denmark vs 7.2 in Australia (OECD Better Life Index, 2024)</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">20%</div><div class="bl-stat-label">Gini coefficient in Denmark. Australia: 33%. Lower = more equal. <a href="https://www.oecd.org" target="_blank" rel="noopener" style="color:#7dd3fc;">OECD</a></div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--green);">Free</div><div class="bl-stat-label">University education in Denmark, Finland, Norway. Funded in part by wealth taxes and high income taxes on the wealthy.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--green);">€0</div><div class="bl-stat-label">Out-of-pocket costs for Swedish hospital stays (highly subsidised). Despite 57% marginal income tax at high incomes.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">3×</div><div class="bl-stat-label">Norway's sovereign wealth fund (oil revenues redistributed) is 3× GDP. Public wealth building — not billionaire wealth building.</div></div>
+  </div>
+  <div class="bl-callout-blue">
+    <strong>The beneficiaries of the status quo are vanishingly few.</strong>
+    An estate tax above $5M would affect approximately 300–500 estates per year in Australia — a fraction of 0.3% of all deaths.
+    The beneficiaries of its revenues — better hospitals, schools, housing, research — number 26 million Australians.
+    This is not a trade-off between rich and poor. It is a question of whether extreme dynastic wealth should be allowed to self-perpetuate across generations with zero public contribution.
+  </div>
+
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://worldhappiness.report" target="_blank" rel="noopener" class="bl-sl">↗ World Happiness Report 2024</a>
+    <a href="https://www.oecd.org/social/income-distribution-database.htm" target="_blank" rel="noopener" class="bl-sl">↗ OECD Income Distribution</a>
+    <a href="https://www.oxfam.org.au/what-we-do/advocacy-and-campaigns/make-tax-fair/" target="_blank" rel="noopener" class="bl-sl">↗ Oxfam — wealth inequality</a>
+    <a href="https://www.brookings.edu/articles/taxing-wealth-transfers-through-an-expanded-estate-tax/" target="_blank" rel="noopener" class="bl-sl">↗ Brookings — estate tax analysis</a>
+  </div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 5: HOUSING
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel" id="panel-housing">
+  <div class="bl-sec-title">The Housing Crisis Connection</div>
+  <div class="bl-callout">
+    Australia faces its worst housing shortage in modern history. Billionaire wealth intersects in two distinct ways: as a <strong>revenue source</strong> for housing investment, and as a <strong>market distortion</strong> through concentrated ownership of rental stock and land banking.
+  </div>
+  <div class="bl-g-auto">
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">~$800k</div><div class="bl-stat-label">National median dwelling price (CoreLogic 2024)</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">163,400</div><div class="bl-stat-label">Dwelling shortfall projected by 2027 (NHFIC 2024)</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">650k+</div><div class="bl-stat-label">Australians on social housing waitlists (AIHW 2023)</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">~$550k</div><div class="bl-stat-label">Average cost to build one social housing unit</div></div>
+    <div class="bl-stat" id="bl-housing-calc" style="display:none;"><div class="bl-stat-num" style="color:var(--green);" id="bl-housing-homes">—</div><div class="bl-stat-label">Social housing units from estate tax on <span id="bl-housing-name">selected billionaire</span> (selected regime)</div></div>
+  </div>
+
+  <div class="bl-g2" style="margin-bottom:1.5rem;">
+    <div style="background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700;margin-bottom:.45rem;">💰 Revenue → fund housing directly</div>
+      <div style="font-size:.8rem;color:#a3c99a;line-height:1.7;">
+        Estate tax revenue could be earmarked for social housing construction.
+        A 30% estate tax on the top 8 AFR billionaires' combined ~$176B estate would generate <strong style="color:#86efac;">~$51B</strong> — enough to build approximately <strong style="color:#86efac;">92,700 social housing units</strong> at $550k each. That's more than half the current shortfall from 8 estates.
+      </div>
+    </div>
+    <div style="background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.15);border-radius:12px;padding:1rem 1.1rem;">
+      <div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#7dd3fc;font-weight:700;margin-bottom:.45rem;">🏗️ Forced sales → add supply</div>
+      <div style="font-size:.8rem;color:#93c5fd;line-height:1.7;">
+        Property-heavy estates — like Triguboff's Meriton, which retains thousands of apartments for rental rather than sale — may need to partially liquidate to pay estate tax. This adds supply to an undersupplied market.
+        Separately, <strong style="color:#bfdbfe;">land banking</strong> (holding undeveloped land near cities) becomes less attractive when an estate tax applies regardless — potentially releasing developable urban land.
+      </div>
+    </div>
+  </div>
+
+  <div class="bl-callout-blue">
+    <strong>Fire sale risks — and why the GFC comparison matters:</strong>
+    If large property estates are forced to sell quickly to pay estate tax, falling prices could trigger a cascade: declining collateral values → mortgage defaults → bank stress.
+    In Australia's context this risk is modest but real, particularly for concentrated rental portfolios.
+    <br><br>
+    <strong>But here's the GFC parallel worth noting:</strong> During the 2007–08 Global Financial Crisis, the dominant policy response in the US, UK and Australia was to bail out <em>the banks</em> — not the homeowners facing foreclosure.
+    The US TARP programme injected $700B into financial institutions. Australian banks received blanket government guarantees on deposits and wholesale funding.
+    <strong>The pattern is: when banks are at risk from falling asset prices, governments bail out banks.</strong>
+    When ordinary people lose their homes to falling prices or mortgage stress, the safety net is far thinner.
+    <br><br>
+    So the fire sale concern — "falling prices will hurt banks" — while legitimate, implicitly assumes the government will act to protect financial institutions as it historically has.
+    If that protection is the default response, it somewhat undermines the argument that estate-tax-driven sales would be uniquely destabilising.
+    <br><br>
+    Most estate tax proposals address this directly with payment-in-instalments provisions (10–15 years for illiquid assets), which avoid forced sales entirely.
+    <a href="https://www.ahuri.edu.au/research/final-reports" target="_blank" rel="noopener">AHURI research</a> supports targeted housing investment as the most effective use of estate revenue.
+  </div>
+
+  <div class="bl-sec-title">What About Inherited Investment Properties? (ATO Clarified)</div>
+  <div class="bl-callout-green">
+    <strong>Short answer:</strong> All of the deceased's lifetime gains on investment properties are wiped at death and never taxed. Heirs inherit at date-of-death market value as their cost base.
+    The partial CGT exemption formula only applies to the heir's <em>own future gains</em> — and is further reduced if the deceased used the property as a rental (not a main residence).
+    <br><br>
+    <strong>The ATO's Vicki/Lesley example:</strong>
+    Vicki bought a rental in 1997, died 2000. Cost base resets to 2000 market value — Vicki's gains: <strong>$0 tax, permanently wiped</strong>.
+    Lesley inherited and lived in it as her home, then sold in 2024 for a $400k gain (measured from the 2000 death value).
+    Lesley pays CGT on $400k × (1,375 rental days ÷ 10,152 total days) = <strong>$54,176</strong> — about 13.5% of her own gain — because Vicki's rental history reduces the main residence exemption fraction.
+    The other 86.5% of Lesley's gain is fully exempt. Lesley can also apply the 50% CGT discount.
+    <br><br>
+    <strong>For billionaire-scale property (e.g. Meriton apartments):</strong>
+    Triguboff's portfolio of apartment buildings — bought over decades — passes to heirs at today's market value.
+    Decades of price appreciation: <strong>$0 tax, wiped forever</strong>.
+    Heirs only ever pay CGT on gains <em>from the date of Triguboff's death onwards</em>, and only on the rental-use proportion.
+    <a href="https://www.ato.gov.au/individuals-and-families/investments-and-assets/capital-gains-tax/inherited-assets-and-capital-gains-tax/calculating-a-partial-exemption-for-inherited-property" target="_blank" rel="noopener">ATO formula ↗</a>
+  </div>
+
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://www.nhfic.gov.au/research-and-publications/housing-data-portal" target="_blank" rel="noopener" class="bl-sl">↗ NHFIC Housing Data 2024</a>
+    <a href="https://www.aihw.gov.au/reports/housing-assistance/housing-assistance-in-australia-2023" target="_blank" rel="noopener" class="bl-sl">↗ AIHW — social housing 2023</a>
+    <a href="https://www.corelogic.com.au/news-research" target="_blank" rel="noopener" class="bl-sl">↗ CoreLogic — dwelling prices</a>
+    <a href="https://www.ato.gov.au/individuals-and-families/investments-and-assets/capital-gains-tax/inherited-assets-and-capital-gains-tax/calculating-a-partial-exemption-for-inherited-property" target="_blank" rel="noopener" class="bl-sl">↗ ATO — partial CGT exemption formula</a>
+  </div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 6: RESEARCH & SUBSIDIES
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel" id="panel-research">
+  <div class="bl-sec-title">Research Funding vs Fossil Fuel Subsidies vs Billionaire Wealth</div>
+  <div class="bl-callout">
+    Australia's publicly-funded research bodies are <strong>chronically underfunded</strong> relative to GDP and other OECD peers.
+    Meanwhile, the same industries whose billionaires benefit from a zero estate tax receive tens of billions in government subsidies.
+    Here's what the numbers actually look like side by side.
+  </div>
+
+  <!-- Research bodies -->
+  <div class="bl-g-auto">
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--blue);">$940M</div><div class="bl-stat-label">NHMRC Medical Research Endowment Account 2024–25 — Australia's primary health research fund. ~0.03% of GDP.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--blue);">$650M</div><div class="bl-stat-label">Medical Research Future Fund (MRFF) grants 2024–25. Despite the fund having $973M available, only $650M was released.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--purple);">~$1B</div><div class="bl-stat-label">Australian Research Council (ARC) annual funding — all disciplines except medical. Barely grew in real terms for 15 years.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--pink);">~$250M</div><div class="bl-stat-label">Cancer Council Australia annual fundraising (est.). Relies heavily on public donations — not government funding.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--pink);">~$30M</div><div class="bl-stat-label">Tour de Cure total funds raised since 2007 — exemplary community fundraising for cancer research.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--green);">$2.59B</div><div class="bl-stat-label">Total NHMRC + MRFF + ARC combined — Australia's peak government research investment annually.</div></div>
+  </div>
+
+  <!-- Research vs wealth comparison bar -->
+  <div class="bl-sec-title" style="margin-top:.5rem;">Scale comparison — annual public research funding vs billionaire wealth</div>
+  <div id="bl-research-bars" style="margin-bottom:1.3rem;"></div>
+
+  <!-- Subsidies section -->
+  <div class="bl-sec-title">Government Handouts to the Fossil Fuel Industry</div>
+  <div class="bl-callout-red">
+    <strong>While research goes underfunded, fossil fuel producers — whose billionaire owners benefit from zero estate tax — receive extraordinary government support.</strong>
+    The largest single mechanism is the Fuel Tax Credits Scheme, which refunds fuel excise to mining operations and heavy industry.
+    <a href="https://australiainstitute.org.au/report/fossil-fuel-subsidies-in-australia-2025/" target="_blank" rel="noopener">Australia Institute 2025 report ↗</a>
+  </div>
+  <div class="bl-g3" style="margin-bottom:1.3rem;">
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">$14.9B</div><div class="bl-stat-label">Total Australian government fossil fuel subsidies in 2024–25 (Australia Institute, March 2025)</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">$10.2B</div><div class="bl-stat-label">Fuel Tax Credits Scheme alone in 2024–25 — the single largest fossil fuel subsidy. Major beneficiary: coal &amp; iron ore mining.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">$548</div><div class="bl-stat-label">Fossil fuel subsidies per Australian person per year in 2024–25 — or $28,381 per minute of every day.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">$67B</div><div class="bl-stat-label">Forward estimates of total fossil fuel subsidies — 14× the Disaster Ready Fund; 6.5× the Housing Australia Future Fund.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">+3%</div><div class="bl-stat-label">Year-on-year increase in fossil fuel subsidies 2023–24 to 2024–25. Rising, not falling.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--gold);">5.75×</div><div class="bl-stat-label">Fossil fuel subsidies ($14.9B) are 5.75× total government research funding ($2.59B). We subsidise carbon; we starve research.</div></div>
+  </div>
+
+  <div id="bl-subsidy-bars" style="margin-bottom:1.3rem;"></div>
+
+  <!-- Connection to billionaires -->
+  <div class="bl-sec-title">Who Benefits?</div>
+  <div class="bl-callout">
+    The Fuel Tax Credits Scheme — the largest single fossil fuel subsidy at $10.2B — primarily benefits coal and iron ore miners. These are the same industries underlying the fortunes of Rinehart, Palmer, and Pratt.
+    <strong>In 2024–25: these billionaires' estates will pass to their children with $0 estate tax, while their mining companies receive billions in annual fuel tax rebates from the very government that charges them nothing at death.</strong>
+    <a href="https://australiainstitute.org.au/report/fossil-fuel-subsidies-in-australia-2025/" target="_blank" rel="noopener">Australia Institute ↗</a> and
+    <a href="https://michaelwest.com.au/ranking-australias-billionaires-as-taxpayers/" target="_blank" rel="noopener">Michael West Media ↗</a> have both documented the gap between public subsidies and private tax minimisation.
+  </div>
+
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://www.nhmrc.gov.au/about-us/news-centre/budget-2024-25" target="_blank" rel="noopener" class="bl-sl">↗ NHMRC — Budget 2024–25</a>
+    <a href="https://aamri.org.au/resources/federal-budgets/2025-26-federal-budget-recap/" target="_blank" rel="noopener" class="bl-sl">↗ AAMRI — Budget 2025–26 recap</a>
+    <a href="https://australiainstitute.org.au/report/fossil-fuel-subsidies-in-australia-2025/" target="_blank" rel="noopener" class="bl-sl">↗ Australia Institute — Fossil fuel subsidies 2025</a>
+    <a href="https://researchaustralia.org/2024-25-budget-update/" target="_blank" rel="noopener" class="bl-sl">↗ Research Australia — Budget analysis</a>
+  </div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 7: CAPITAL FLIGHT
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel" id="panel-flight">
+  <div class="bl-sec-title">Capital Flight — Does The "I'll Just Leave" Threat Actually Work?</div>
+  <div class="bl-callout">
+    <strong>The standard counter-argument:</strong> "Tax billionaires too heavily and they'll emigrate."
+    The evidence is real but context-dependent — it mostly applies to <em>annual</em> wealth taxes in small open economies.
+    An estate tax is a structurally different mechanism.
+  </div>
+  <div class="bl-g2" style="margin-bottom:1.2rem;">
+    <div class="bl-cf-card" style="border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.03);">
+      <div class="bl-cf-flag">🇫🇷</div>
+      <div class="bl-cf-title">France's ISF Annual Wealth Tax (1988–2017)</div>
+      <div class="bl-cf-body"><a href="https://fortune.com/2026/01/27/california-france-wealth-tax-inequality/" target="_blank" rel="noopener">~60,000 millionaires left 2000–2017</a>. ~€200B capital flight. Gérard Depardieu moved to Belgium — 5km away. Raised €3–4B/yr but one analysis found it caused €7B in lost revenue from departures. Macron repealed it in 2018. This was an <em>annual</em> tax on living wealth.</div>
+      <div class="bl-cf-verdict verdict-bad">⚠ Real, documented flight — for an annual tax on existing wealth</div>
+    </div>
+    <div class="bl-cf-card" style="border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.03);">
+      <div class="bl-cf-flag">🇳🇴</div>
+      <div class="bl-cf-title">Norway's 2022 Annual Wealth Tax Hike</div>
+      <div class="bl-cf-body">Raised annual wealth tax by 1%, expecting $146M/yr extra. Instead, <a href="https://imglobalwealth.com/articles/norways-tax-experiment-a-costly-exodus/" target="_blank" rel="noopener">~50 billionaires moved to Switzerland</a>, costing ~$594M — 4× the projected gain. A small, open economy next to a tax haven. Cautionary tale for annual taxes.</div>
+      <div class="bl-cf-verdict verdict-bad">⚠ Real emigration — in a small open economy with a low-tax neighbour</div>
+    </div>
+    <div class="bl-cf-card" style="border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.03);">
+      <div class="bl-cf-flag">🏛️</div>
+      <div class="bl-cf-title">Estate taxes are structurally different — and much harder to escape</div>
+      <div class="bl-cf-body">An estate tax is paid <em>once, at death</em>. To avoid it: you'd need to fully renounce Australian residency, transfer all assets abroad, and do it <em>decades</em> before death — all to avoid a one-time payment. The US has had a 40% estate tax for decades and hasn't experienced billionaire emigration events. Gina's Pilbara iron ore cannot be moved to Switzerland. Triguboff's Meriton apartments are in Sydney.</div>
+      <div class="bl-cf-verdict verdict-good">✓ Estate tax flight risk is largely theoretical for fixed-asset billionaires</div>
+    </div>
+    <div class="bl-cf-card" style="border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.03);">
+      <div class="bl-cf-flag">🗣️</div>
+      <div class="bl-cf-title">The rhetoric vs. follow-through gap</div>
+      <div class="bl-cf-body">Every Australian resources tax proposal triggers capital flight threats. The <a href="https://michaelwest.com.au/ranking-australias-billionaires-as-taxpayers/" target="_blank" rel="noopener">mines and billionaires stay</a>. A 2024 <a href="https://www.nber.org/system/files/working_papers/w32153/w32153.pdf" target="_blank" rel="noopener">NBER study on Sweden</a> found wealth tax repeal reduced wealthy out-migration by 30% — confirming some mobility, but also that many stay regardless. Overstated as a universal lever.</div>
+      <div class="bl-cf-verdict verdict-mixed">⚡ Some mobility — heavily overstated for estate taxes specifically</div>
+    </div>
+  </div>
+  <div class="bl-callout-blue">
+    <strong>Annual wealth tax ≠ estate tax.</strong>
+    Capital flight evidence applies to taxes on living, moveable wealth — paid year after year.
+    An estate tax is a one-time event on death. The blanket claim that "all wealth taxes cause capital flight" conflates two entirely different mechanisms.
+    The countries that have maintained estate taxes for decades (US, UK, Japan) have not experienced billionaire emigration specifically to avoid them.
+  </div>
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://fortune.com/2026/01/27/california-france-wealth-tax-inequality/" target="_blank" rel="noopener" class="bl-sl">↗ Fortune — France ISF</a>
+    <a href="https://imglobalwealth.com/articles/norways-tax-experiment-a-costly-exodus/" target="_blank" rel="noopener" class="bl-sl">↗ Norway 2022 exodus</a>
+    <a href="https://www.nber.org/system/files/working_papers/w32153/w32153.pdf" target="_blank" rel="noopener" class="bl-sl">↗ NBER — Sweden migration study</a>
+    <a href="https://michaelwest.com.au/ranking-australias-billionaires-as-taxpayers/" target="_blank" rel="noopener" class="bl-sl">↗ Michael West — AU billionaires</a>
+  </div></div>
+</div>
+
+<!-- ─── Disclaimer ──────────────────────────────────────── -->
+<div class="bl-disclaimer">
+  <strong>Disclaimer:</strong> Net worth figures are estimates from the
+  <a href="{{ site.data.billionaires._meta.afr_url | default: 'https://www.afr.com/rich-list' }}" target="_blank" rel="noopener">
+    AFR Rich List {{ site.data.billionaires._meta.edition | default: '2025' }}</a>
+  (published {{ site.data.billionaires._meta.published | default: 'May 2025' }}).
+  Listed-equity components (Kerry Stokes / Scott Farquhar) updated automatically from ASX/NASDAQ prices.
+  Other billionaire wealth figures require manual update when AFR publishes the next edition (~May each year).
+  ABS median salary last updated: {{ site.data.billionaires._stats.abs_median_salary_updated | default: '2024-03' }}.
+  Fossil fuel subsidies: Australia Institute {{ site.data.billionaires._stats.fossil_fuel_subsidies_updated | default: '2025-03' }}.
+  NHMRC budget: {{ site.data.billionaires._stats.nhmrc_budget_updated | default: '2024-05' }}.
+  Asset breakdowns are rough estimates — actual allocations through trusts and holding companies are not publicly disclosed.
+  Tax calculations are simplified illustrations; actual estate tax calculations involve complex valuations, trust structures, and legal provisions.
+  "Years to accumulate" assumes 100% salary savings — a theoretical standard.
+  Political donation data: AEC {{ site.data.billionaires._stats.aec_disclosure_year | default: '2024-25' }} disclosures.
+  This page is for educational purposes and does not constitute legal, financial, or investment advice.
+  <br><br>
+  <strong>Key sources:</strong>
+  <a href="https://www.ato.gov.au" target="_blank" rel="noopener">ATO</a> ·
+  <a href="https://www.afr.com/rich-list" target="_blank" rel="noopener">AFR Rich List 2025</a> ·
+  <a href="https://grattan.edu.au" target="_blank" rel="noopener">Grattan Institute</a> ·
+  <a href="https://www.oxfam.org.au" target="_blank" rel="noopener">Oxfam Australia</a> ·
+  <a href="https://www.oecd.org" target="_blank" rel="noopener">OECD</a> ·
+  <a href="https://australiainstitute.org.au" target="_blank" rel="noopener">Australia Institute</a> ·
+  <a href="https://www.brookings.edu" target="_blank" rel="noopener">Brookings</a> ·
+  <a href="https://www.nhfic.gov.au" target="_blank" rel="noopener">NHFIC</a> ·
+  <a href="https://www.aihw.gov.au" target="_blank" rel="noopener">AIHW</a>
+</div>
+
+</div><!-- end .bl-page -->
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+(function(){
+'use strict';
+
+// ── Data ──────────────────────────────────────────────────
+// ── Data injected by Jekyll at build time ────────────────────────────────
+const BILLIONAIRES = {{ site.data.billionaires.billionaires | jsonify }};
+const _STATS = {{ site.data.billionaires._stats | jsonify }};
+const _META  = {{ site.data.billionaires._meta  | jsonify }};
+
+// Derived convenience values (update with _STATS so auto-updates flow through)
+const MEDIAN_SALARY      = _STATS.abs_median_salary        || 100004;
+const FOSSIL_FUEL_SUB_B  = _STATS.fossil_fuel_subsidies_bn || 14.9;
+const NHMRC_M            = _STATS.nhmrc_budget_m           || 940;
+const MRFF_M             = _STATS.mrff_budget_m            || 650;
+const ARC_M              = _STATS.arc_budget_m             || 1000;
+
+const REGIMES={
+  au:{desc:'No estate or inheritance tax since 1979. No CGT trigger at death. Cost base wipes to date-of-death value, eliminating all lifetime gains permanently. Super to adult children: 17% on taxable component.',threshold:0,rate:0,thresholdLabel:'No threshold',rateLabel:'0%'},
+  uk:{desc:"UK Inheritance Tax: 40% above £325k (~A$640k) nil-rate band. Spouse transfers exempt. For billion-dollar estates, the threshold is negligible — effective rate approaches 40%.",threshold:0.00064,rate:40,thresholdLabel:'~A$640k',rateLabel:'40%'},
+  us:{desc:"US Federal Estate Tax: 40% above ~US$13.6M (~A$22M). Higher threshold than UK but still negligible relative to billions — effective rate approaches 40%.",threshold:0.022,rate:40,thresholdLabel:'~A$22M',rateLabel:'40%'},
+  fr:{desc:"French succession duties: progressive up to 45% on direct-line inheritances above ~€1.8M (~A$3M). Note: France's annual ISF wealth tax (abolished 2018) is a separate mechanism entirely.",threshold:0.003,rate:45,thresholdLabel:'~A$3M',rateLabel:'Up to 45%'},
+  proposed:{desc:"Hypothetical AU reform (Anglicare/independent economist proposals): 30% on net estate above A$5M. Primary home exempt up to A$3M. Bona fide family farm/small business: instalment payment option. Would affect ~300–500 estates/yr.",threshold:0.005,rate:30,thresholdLabel:'A$5M',rateLabel:'30%'},
+};
+
+const FUND_CATS=[
+  {key:'schools',  label:'Primary schools',       icon:'🏫',unit:'schools',   cost:30e6,   color:'#38bdf8',
+   costLabel:'~$30M each',  desc:'Full build cost of a new government primary school incl. hall, library, oval. Source: Vic Dept Education 2024.'},
+  {key:'secondary',label:'Secondary schools',     icon:'🏫',unit:'schools',   cost:100e6,  color:'#818cf8',
+   costLabel:'~$100M each', desc:'Full build cost of a secondary school incl. science labs, gym, performing arts. Source: Vic/NSW Education Depts 2024.'},
+  {key:'hospitals',label:'Regional hospitals',    icon:'🏥',unit:'hospitals', cost:150e6,  color:'#f472b6',
+   costLabel:'~$150M each', desc:'Mid-size 80–120 bed regional hospital. Larger metro hospitals run $1–2B+. Source: AIHW 2023.'},
+  {key:'clinics',  label:'Bulk-billing clinics',  icon:'🩺',unit:'clinics',   cost:3e6,    color:'#4ade80',
+   costLabel:'~$3M each',   desc:'Full fit-out of a bulk-billing GP clinic including imaging and pharmacy suite. Source: Primary Health Networks 2024.'},
+  {key:'aged',     label:'Aged care facilities',  icon:'🛌',unit:'facilities',cost:40e6,   color:'#f59e0b',
+   costLabel:'~$40M each',  desc:'80–100 bed residential aged care facility, full build and fitout. Source: AIHW 2023.'},
+  {key:'housing',  label:'Social housing units',  icon:'🏠',unit:'units',     cost:0.55e6, color:'#a78bfa',
+   costLabel:'~$550k each', desc:'Average build cost per social housing unit (excl. land). AHURI estimate 2023. Land acquisition can add $200–400k in cities.'},
+  {key:'research', label:'NHMRC research grants', icon:'🔬',unit:'grants',    cost:1e6,    color:'#22d3ee',
+   costLabel:'~$1M avg',    desc:`NHMRC average investigator grant value. Total NHMRC budget 2024–25: $${NHMRC_M}M — funds ~${Math.round(NHMRC_M)} grants/yr at this average. Covers salaries, equipment, consumables.`},
+];
+
+
+const COUNTRIES=[
+  {name:'🇦🇺 Australia',rate:0,note:'No estate tax since 1979',color:'#ef4444'},
+  {name:'🇨🇦 Canada',rate:0,note:'No estate tax; CGT deemed disposition on death',color:'#ef4444'},
+  {name:'🇩🇪 Germany',rate:30,note:'Up to 30% on large estates',color:'#fbbf24'},
+  {name:'🇬🇧 UK',rate:40,note:'40% above £325k',color:'#f59e0b'},
+  {name:'🇺🇸 USA',rate:40,note:'40% above ~US$13.6M',color:'#f59e0b'},
+  {name:'🇫🇷 France',rate:45,note:'Up to 45% direct heirs',color:'#4ade80'},
+  {name:'🇯🇵 Japan',rate:55,note:'Highest in G7: 55%',color:'#818cf8'},
+  {name:'🇧🇪 Belgium',rate:80,note:'Up to 80% distant inheritance',color:'#22d3ee'},
+];
+
+const PROFESSIONS=[
+  {role:'👩‍⚕️ Nurse',unit:'patients/yr',rate:500},
+  {role:'👩‍🏫 Teacher',unit:'students/yr',rate:28},
+  {role:'🏗️ Builder',unit:'homes/yr',rate:5},
+  {role:'🩺 GP',unit:'consultations/yr',rate:2000},
+];
+
+const SCALE_CONTEXTS=[
+  {thresh:1,      label:'$1 — one dollar',         color:'#64748b',
+   desc:'One dollar. A coin. You\'d find this down the back of a couch. At median salary you earn this every 3 seconds at work.'},
+  {thresh:10,     label:'$10',                      color:'#64748b',
+   desc:'A coffee. Ten minutes of work at median wage.'},
+  {thresh:100,    label:'$100',                     color:'#94a3b8',
+   desc:'A tank of petrol. A night out. About an hour of median-salary work.'},
+  {thresh:1000,   label:'$1,000 — a grand',         color:'#4ade80',
+   desc:'A week\'s groceries for a family. About 5 working days of median salary. This is a tangible goal for most Australians.'},
+  {thresh:10000,  label:'$10,000',                  color:'#38bdf8',
+   desc:'A used car. A cheap holiday. 50 working days of median salary. Still very reachable.'},
+  {thresh:1e5,    label:'$100,000 — one hundred thousand', color:'#f59e0b',
+   desc:'The ABS median full-time salary for a year. An entire year of work. In 1985 this was a Sydney house deposit. Today it barely scratches a deposit in most capital cities.'},
+  {thresh:1e6,    label:'$1,000,000 — one million', color:'#f472b6',
+   desc:'A median Sydney home. 10 years of saving 100% of your salary. Most Australians never see this as a lump sum in their lifetime. 1,000 × $1,000.'},
+  {thresh:1e7,    label:'$10 million',              color:'#c084fc',
+   desc:'100 years of median salary saved entirely. The top ~0.1% of Australians have wealth near this level. A very successful small business might be worth this after a lifetime of work.'},
+  {thresh:1e8,    label:'$100 million',             color:'#ef4444',
+   desc:'1,000 years of median salary. We\'re now in the territory of major company founders and successful investors. Still 10× below a billion.'},
+  {thresh:1e9,    label:'$1,000,000,000 — ONE BILLION', color:'#ef4444',
+   desc:'10,000 years of median salary saved entirely. Spend $10,000 every single day for 274 years before running out. 1,000 × $1,000,000. This is where comprehension breaks down entirely. Your brain cannot feel the difference between 1 million and 1 billion — but the difference is 999 more millions.'},
+  {thresh:1e10,   label:'$10 billion',              color:'#d4a017',
+   desc:'100,000 years of median salary. The GDP of a small country. At this wealth level, passive returns from investment (~4%/yr) generate $400M/year — $4,000 per minute — without lifting a finger.'},
+  {thresh:38.11e9,label:'$38.11 billion — Gina Rinehart', color:'#d4a017',
+   desc:'381,000+ years of median salary. $10,000/day for 10,440 years. Grew by ~$22B from 2020–2025 — a gain of ~$12M per day — without triggering a dollar of income or capital gains tax. More than the annual combined budget of NHMRC + ARC + MRFF (all Australian government research) × 14.'},
+];
+
+const LINEAR_COMPARISONS=[
+  {label:'$1 (one dollar)',              val:1,       color:'#64748b'},
+  {label:'$10',                          val:10,      color:'#64748b'},
+  {label:'$100',                         val:100,     color:'#94a3b8'},
+  {label:'$1,000',                       val:1000,    color:'#4ade80'},
+  {label:'$10,000',                      val:1e4,     color:'#38bdf8'},
+  {label:'$100,000 (median salary)',     val:1e5,     color:'#f59e0b'},
+  {label:'$1,000,000',                   val:1e6,     color:'#f472b6'},
+  {label:'$10,000,000',                  val:1e7,     color:'#c084fc'},
+  {label:'$100,000,000',                 val:1e8,     color:'#fb923c'},
+  {label:'$1,000,000,000 (one billion)', val:1e9,     color:'#ef4444'},
+  {label:'$38,110,000,000 (Rinehart)',   val:38.11e9, color:'#d4a017'},
+];
+
+let selB=null, selR='au';
+let fundPcts={};
+FUND_CATS.forEach(c=>fundPcts[c.key]=Math.round(100/FUND_CATS.length));
+
+// ── Helpers ───────────────────────────────────────────────
+function fmtB(n){if(n===0)return'$0';if(n>=1)return'$'+n.toFixed(3)+'B';if(n>=0.001)return'$'+(n*1000).toFixed(1)+'M';return'$'+(n*1e6).toFixed(0)+'k';}
+function fmtN(n){if(n>=1e9)return(n/1e9).toFixed(1)+'B';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(0)+'k';return String(Math.round(n));}
+function fmtY(y){if(y>=1e6)return(y/1e6).toFixed(1)+' million years';if(y>=1000)return Math.round(y/1000).toLocaleString()+'k years';return y.toLocaleString()+' years';}
+function pctOf(a,b){return b===0?'—':(a/b*100).toFixed(3)+'%';}
+function fmtDollars(n){
+  if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return'$'+(n/1e6).toFixed(1)+'M';
+  if(n>=1000)return'$'+(n/1000).toFixed(0)+'k';
+  if(n>=1)return'$'+n.toFixed(0);
+  return'$'+n.toFixed(2);
+}
+
+// ── Tabs ──────────────────────────────────────────────────
+document.querySelectorAll('.bl-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.bl-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.bl-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+    if(btn.dataset.panel==='calc'&&!document.getElementById('bl-intl-bars').children.length) renderIntlBars();
+    if(btn.dataset.panel==='research'&&!document.getElementById('bl-research-bars').children.length) renderResearchBars();
+    if(btn.dataset.panel==='scale') renderScaleViz();
+    if(btn.dataset.panel==='billion') initBillionViz();
+  });
+});
+
+// ── Interactive billion zoom ──────────────────────────────
+// Slider: 0 = zoomed IN ($1 per dot), 100 = zoomed OUT (billions per dot)
+// We map slider 0–100 to unit size $1 → $1B (log scale for the unit, linear display)
+const MAX_DOTS=500;
+function initZoomSlider(){
+  const sl=document.getElementById('bl-zoom-slider');
+  if(!sl) return;
+  sl.addEventListener('input',()=>updateZoomViz(parseInt(sl.value)));
+  updateZoomViz(0);
+}
+
+function updateZoomViz(sliderVal){
+  // Unit = 10^(sliderVal/100 * 9) gives $1 at 0, $1B at 100
+  const unitRaw=Math.pow(10, sliderVal/100 * 9);
+  // Snap unit to a nice round number
+  const exp=Math.floor(Math.log10(unitRaw));
+  const mantissa=unitRaw/Math.pow(10,exp);
+  const snap=mantissa<2?1:mantissa<5?2:5;
+  const unit=snap*Math.pow(10,exp);
+
+  // What we're showing: the slider context at this zoom level
+  // Find which SCALE_CONTEXTS this falls into
+  let ctx=SCALE_CONTEXTS[0];
+  for(const c of SCALE_CONTEXTS){ if(unit>=c.thresh) ctx=c; }
+
+  document.getElementById('bl-zoom-unit').textContent=fmtDollars(unit);
+  document.getElementById('bl-zoom-label').textContent=ctx.label;
+  document.getElementById('bl-zoom-desc').textContent=ctx.desc;
+  document.getElementById('bl-dot-unit-label').textContent=fmtDollars(unit);
+
+  // Gina's wealth in these units
+  const ginaUnits=38.11e9/unit;
+  document.getElementById('bl-zoom-viewing').textContent=`Gina's $38.11B = ${ginaUnits>=1e6?(ginaUnits/1e6).toFixed(1)+'M':ginaUnits>=1000?(ginaUnits/1000).toFixed(0)+'k':Math.round(ginaUnits).toLocaleString()} of these units`;
+
+  // Dot grid — show min(500, ginaUnits) dots, color-coded by milestone
+  const dotGrid=document.getElementById('bl-dot-grid');
+  const overflow=document.getElementById('bl-dot-overflow');
+  const numDotsToShow=Math.min(MAX_DOTS,Math.round(ginaUnits));
+  const dotSize=ginaUnits<=100?16:ginaUnits<=1000?10:ginaUnits<=10000?7:5;
+  const gap=ginaUnits<=100?4:3;
+
+  // Color thresholds for dots
+  // milestone: salary=1e5, million=1e6, ten-million=1e7, hundred-million=1e8, billion=1e9
+  function dotColor(dotIndex){
+    const val=(dotIndex+1)*unit;
+    if(val<=1e5)return'#4ade80';
+    if(val<=1e6)return'#f59e0b';
+    if(val<=1e8)return'#f472b6';
+    if(val<=1e9)return'#ef4444';
+    return'#d4a017';
+  }
+
+  let dotsHtml='';
+  for(let i=0;i<numDotsToShow;i++){
+    const col=dotColor(i);
+    dotsHtml+=`<div style="width:${dotSize}px;height:${dotSize}px;border-radius:2px;background:${col};opacity:.82;flex-shrink:0;" title="${fmtDollars((i+1)*unit)}"></div>`;
+  }
+  dotGrid.innerHTML=dotsHtml;
+  dotGrid.style.gap=gap+'px';
+
+  if(ginaUnits>MAX_DOTS){
+    overflow.style.display='block';
+    const shown=(numDotsToShow/ginaUnits*100).toFixed(4);
+    overflow.textContent=`⚠ Only showing ${numDotsToShow.toLocaleString()} of ${Math.round(ginaUnits).toLocaleString()} dots — that's ${shown}% of the actual total. The rest didn't fit on screen.`;
+  } else {
+    overflow.style.display='none';
+  }
+  document.getElementById('bl-dot-total').textContent=fmtDollars(numDotsToShow*unit);
+}
+
+function renderLinearBars(){
+  const el=document.getElementById('bl-linear-bars');
+  if(!el||el.children.length) return;
+  const ref=1e5; // median salary = reference
+  // For visual: cap bar at 100% of container, but show actual multiples
+  const maxMultiple=38.11e9/ref; // ~381,100
+  el.innerHTML=LINEAR_COMPARISONS.map(item=>{
+    const multiple=item.val/ref;
+    // Log-based visual width so we can see all bars, but label with TRUE multiples
+    const logPct=Math.max(0.3,(Math.log10(Math.max(1,item.val))/Math.log10(38.11e9))*100);
+    const multipleLabel=item.val>=ref?(item.val/ref).toFixed(item.val/ref>=100?0:2)+'× median salary':
+      (item.val/ref*100).toFixed(1)+'% of median salary';
+    return`<div class="bl-cmp-row" style="margin-bottom:.6rem;align-items:center;">
+      <div class="bl-cmp-lbl" style="width:220px;font-size:.72rem;">${item.label}</div>
+      <div class="bl-cmp-wrap"><div class="bl-cmp-bar" style="width:${logPct.toFixed(1)}%;background:${item.color};opacity:.8;min-width:2px;"></div></div>
+      <div style="font-size:.65rem;color:${item.color};width:160px;padding-left:.5rem;flex-shrink:0;">${multipleLabel}</div>
+    </div>`;}).join('');
+  // Add legend note
+  el.insertAdjacentHTML('beforeend','<div style="font-size:.62rem;color:#334155;margin-top:.5rem;">Bar width is logarithmic (so all values are visible). The <strong style="color:#f59e0b;">labels show true multiples of median salary</strong>. On a true linear scale, the Gina Rinehart bar would be 381,100× longer than the median salary bar — impossible to show on screen.</div>');
+}
+
+function renderScaleViz(){
+  renderLinearBars();
+  initZoomSlider();
+  // Also render the contextual milestone cards at bottom
+  const el=document.getElementById('bl-scale-steps');
+  if(el&&!el.children.length){
+    el.innerHTML=`<div class="bl-sec-title" style="margin-top:1.5rem;">Key Milestones — The Journey From $1 to $38B</div>`+
+    SCALE_CONTEXTS.filter(c=>c.thresh>=1000).map(s=>`
+      <div class="bl-scale-step">
+        <div class="bl-scale-num" style="color:${s.color};">${s.thresh>=1e9?fmtDollars(s.thresh):Number(s.thresh).toLocaleString('en-AU',{style:'currency',currency:'AUD',maximumFractionDigits:0})}</div>
+        <div style="font-size:.78rem;font-weight:700;color:#e2e8f0;margin-bottom:.2rem;">${s.label}</div>
+        <div class="bl-scale-desc">${s.desc}</div>
+      </div>`).join('');
+  }
+}
+
+// ── Cards ─────────────────────────────────────────────────
+function renderCards(){
+  const c=document.getElementById('bl-cards');
+  c.innerHTML=BILLIONAIRES.map((b,i)=>`
+    <div class="bl-card${selB===i?' selected':''}" data-idx="${i}">
+      <div class="bl-card-rank">#${b.rank} AFR Rich List {{ site.data.billionaires._meta.edition | default: '2025' }}</div>
+      <div class="bl-card-name">${b.name}</div>
+      <div class="bl-card-wealth">$${b.wealth.toFixed(2)}B</div>
+      <div class="bl-card-source">${b.source}</div>
+      <div class="bl-card-tag tag-${b.tag}">${b.tagLabel}</div>
+      <div class="bl-card-donate">🎁 Charity (est.): <span>$${b.donateAmt}M</span> = ${pctOf(b.donateAmt*1e6,b.wealth*1e9)} of wealth</div>
+      <div class="bl-card-donate" style="color:#64748b;">🗳️ Political: ${b.polDonate}</div>
+      <div style="font-size:.65rem;color:#475569;margin-top:.3rem;">Origin: ${b.inherited}</div>
+    </div>`).join('');
+  c.querySelectorAll('.bl-card').forEach(el=>
+    el.addEventListener('click',()=>{selB=parseInt(el.dataset.idx);renderCards();renderCalcBtns();updateAll();})
+  );
+}
+
+// ── Donation grids ────────────────────────────────────────
+function renderDonateGrid(){
+  document.getElementById('bl-donate-grid').innerHTML=BILLIONAIRES.map(b=>{
+    const pct=(b.donateAmt*1e6/(b.wealth*1e9)*100).toFixed(3);
+    return`<div class="bl-stat">
+      <div style="font-size:.75rem;font-weight:700;color:#e2e8f0;margin-bottom:.4rem;">${b.name}</div>
+      <div class="bl-stat-num" style="font-size:1.1rem;color:#f472b6;">$${b.donateAmt}M</div>
+      <div class="bl-stat-label">charitable (est.) · <strong style="color:#fca5a5;">${pct}%</strong> of $${b.wealth.toFixed(1)}B wealth</div>
+    </div>`;}).join('');
+}
+
+function renderPoliticsGrid(){
+  document.getElementById('bl-donation-grid').innerHTML=BILLIONAIRES.map(b=>{
+    const pct=b.polAmt===0?'—':(b.polAmt*1e6/(b.wealth*1e9)*100).toFixed(4)+'%';
+    return`<div class="bl-stat">
+      <div style="font-size:.75rem;font-weight:700;color:#e2e8f0;margin-bottom:.4rem;">${b.name}</div>
+      <div class="bl-stat-num" style="font-size:1rem;color:#f472b6;">$${b.polAmt.toFixed(1)}M</div>
+      <div class="bl-stat-label">${b.polDonate}<br><strong style="color:#fca5a5;">${pct} of total wealth</strong></div>
+    </div>`;}).join('');
+}
+
+// ── Compact calc selector (within Calc tab) ───────────────
+function renderCalcBtns(){
+  const wrap=document.getElementById('bl-calc-btns');
+  if(!wrap) return;
+  wrap.innerHTML=BILLIONAIRES.map((b,i)=>`
+    <button type="button" data-cidx="${i}"
+      style="padding:.32rem .65rem;border-radius:7px;cursor:pointer;
+        background:${selB===i?'rgba(212,160,23,.15)':'transparent'};
+        border:1px solid ${selB===i?'var(--gold)':'var(--border)'};
+        color:${selB===i?'var(--gold-lt)':'var(--text-secondary)'};
+        font-size:.72rem;font-weight:${selB===i?700:500};
+        font-family:'Outfit',sans-serif;transition:all .15s;white-space:nowrap;">
+      $${b.wealth.toFixed(1)}B ${b.name.split(' ').slice(0,2).join(' ')}</button>`).join('');
+  wrap.querySelectorAll('[data-cidx]').forEach(btn=>
+    btn.addEventListener('click',()=>{
+      selB=parseInt(btn.dataset.cidx);
+      renderCards(); renderCalcBtns(); updateAll();
+    })
+  );
+}
+
+// ── Regime buttons ────────────────────────────────────────
+function renderRbtns(){
+  document.querySelectorAll('.bl-rbtn').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.regime===selR);
+    btn.onclick=()=>{selR=btn.dataset.regime;renderRbtns();updateAll();};
+  });
+  document.getElementById('bl-regime-desc').textContent=REGIMES[selR].desc;
+}
+
+// ── International bars ────────────────────────────────────
+function renderIntlBars(){
+  const max=80;
+  const el=document.getElementById('bl-intl-bars');
+  el.innerHTML=COUNTRIES.map(c=>`
+    <div class="bl-cmp-row">
+      <div class="bl-cmp-lbl">${c.name}</div>
+      <div class="bl-cmp-wrap"><div class="bl-cmp-bar" style="width:0%;background:${c.color};opacity:.8;" data-target="${c.rate/max*100}"></div></div>
+      <div class="bl-cmp-pct" style="color:${c.color};">${c.rate===0?'None':c.rate+'%'}</div>
+      <div style="font-size:.68rem;color:var(--text-secondary);margin-left:.5rem;flex:1;">${c.note}</div>
+    </div>`).join('');
+  setTimeout(()=>el.querySelectorAll('.bl-cmp-bar').forEach((b,i)=>
+    setTimeout(()=>{b.style.width=b.dataset.target+'%';},i*60)),100);
+}
+
+// ── Research bars ─────────────────────────────────────────
+function renderResearchBars(){
+  const fossilM=FOSSIL_FUEL_SUB_B*1000;
+  const totalResearchM=NHMRC_M+MRFF_M+ARC_M;
+  const items=[
+    {label:`NHMRC ${_META.edition||'2025'}`,val:NHMRC_M,color:'#38bdf8'},
+    {label:`MRFF ${_META.edition||'2025'}`,val:MRFF_M,color:'#818cf8'},
+    {label:`ARC ${_META.edition||'2025'}`,val:ARC_M,color:'#a78bfa'},
+    {label:'Cancer Council (est.)',val:250,color:'#f472b6'},
+    {label:'Tour de Cure (total since 2007)',val:30,color:'#fb923c'},
+    {label:`Fossil fuel subsidies ${_META.edition||'2025'}`,val:fossilM,color:'#ef4444'},
+  ];
+  const max=fossilM,el=document.getElementById('bl-research-bars');
+  el.innerHTML=items.map(item=>`
+    <div class="bl-cmp-row" style="margin-bottom:.7rem;">
+      <div class="bl-cmp-lbl" style="width:200px;font-size:.74rem;">${item.label}</div>
+      <div class="bl-cmp-wrap"><div class="bl-cmp-bar" style="width:${(item.val/max*100).toFixed(1)}%;background:${item.color};opacity:.8;"></div></div>
+      <div class="bl-cmp-pct" style="color:${item.color};width:75px;font-size:.72rem;">$${item.val>=1000?(item.val/1000).toFixed(1)+'B':item.val+'M'}</div>
+    </div>`).join('');
+
+  const topWealth=BILLIONAIRES.reduce((s,b)=>s+b.wealth,0)*1000;
+  const subItems=[
+    {label:'Fossil fuel subsidies',val:fossilM,color:'#ef4444'},
+    {label:'Total Aus. research funding',val:totalResearchM,color:'#38bdf8'},
+    {label:'NHMRC alone',val:NHMRC_M,color:'#818cf8'},
+    {label:'Gina Rinehart wealth (total)',val:BILLIONAIRES[0].wealth*1000,color:'#d4a017'},
+    {label:'Top 8 billionaires combined',val:topWealth,color:'#f59e0b'},
+  ];
+  const max2=topWealth,el2=document.getElementById('bl-subsidy-bars');
+  el2.innerHTML=subItems.map(item=>`
+    <div class="bl-cmp-row" style="margin-bottom:.7rem;">
+      <div class="bl-cmp-lbl" style="width:230px;font-size:.72rem;">${item.label}</div>
+      <div class="bl-cmp-wrap"><div class="bl-cmp-bar" style="width:${Math.max(0.5,item.val/max2*100).toFixed(1)}%;background:${item.color};opacity:.8;"></div></div>
+      <div class="bl-cmp-pct" style="color:${item.color};width:80px;font-size:.72rem;">$${item.val>=1000?(item.val/1000).toFixed(1)+'B':item.val+'M'}</div>
+    </div>`).join('');
+}
+
+// ── Main updateAll ────────────────────────────────────────
+function updateAll(){
+  updateCalc();
+  updateTime();
+  updateProductivity();
+  updateHousing();
+  // Update selected name in calc tab
+  const b=selB!==null?BILLIONAIRES[selB]:null;
+  document.getElementById('bl-sel-name').textContent=b?b.name:'← Select in Scale tab';
+  document.getElementById('bl-sel-wealth').textContent=b?`Estimated estate: $${b.wealth.toFixed(2)}B  (${b.source})`:'';
+}
+
+// ── Estate Tax Calc ───────────────────────────────────────
+function updateCalc(){
+  const noSel=document.getElementById('bl-no-sel');
+  const fundSec=document.getElementById('bl-fund-sec');
+  const grid=document.getElementById('bl-res-grid');
+  const note=document.getElementById('bl-thresh-note');
+  const assetSec=document.getElementById('bl-asset-sec');
+  if(selB===null){
+    noSel.style.display='block';fundSec.style.display='none';assetSec.style.display='none';
+    grid.style.opacity='.35';note.style.display='none';
+    ['bl-res-govt','bl-res-heir','bl-res-rate','bl-res-thresh'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('bl-res-precise').textContent='';
+    return;
+  }
+  noSel.style.display='none';grid.style.opacity='1';
+  const b=BILLIONAIRES[selB],r=REGIMES[selR],w=b.wealth;
+  const taxable=Math.max(0,w-r.threshold);
+  const tax=taxable*r.rate/100;
+  const heirs=w-tax;
+  document.getElementById('bl-res-govt').textContent=fmtB(tax);
+  document.getElementById('bl-res-govt').className='bl-res-val '+(tax>0?'val-tax':'val-zero');
+  document.getElementById('bl-res-precise').textContent=tax>0?`$${(tax*1000).toFixed(1)}M  |  Effective: ${(tax/w*100).toFixed(2)}%`:'';
+  document.getElementById('bl-res-heir').textContent=fmtB(heirs);
+  document.getElementById('bl-res-rate').textContent=r.rateLabel;
+  document.getElementById('bl-res-thresh').textContent=r.thresholdLabel;
+  if((selR==='uk'||selR==='us')&&w>1){
+    const d=Math.abs(Math.max(0,w-0.00064)*0.40-Math.max(0,w-0.022)*0.40)*1000;
+    note.style.display='block';
+    note.textContent=`💡 UK vs US: For a $${w.toFixed(2)}B estate, both thresholds are negligible fractions. The difference between regimes is only ~$${d.toFixed(0)}M — less than 0.1% of total estate. At this scale both regimes effectively apply the full headline rate.`;
+  } else note.style.display='none';
+  // Asset breakdown
+  assetSec.style.display='block';
+  document.getElementById('bl-asset-bar').innerHTML=b.assets.map(a=>`<div class="bl-asset-seg" style="width:${a.pct}%;background:${a.color};opacity:.8;"></div>`).join('');
+  document.getElementById('bl-asset-legend').innerHTML=b.assets.map(a=>`<div class="bl-asset-lbl"><span class="bl-asset-dot" style="background:${a.color};"></span><strong>${a.pct}%</strong> ${a.label}</div>`).join('');
+  document.getElementById('bl-asset-note').textContent=b.assetNote+' | Origin: '+b.inherited;
+  // Funding slider
+  if(tax>0){
+    fundSec.style.display='block';
+    const taxAUD=tax*1e9;
+    document.getElementById('bl-fund-total').textContent=`$${(tax).toFixed(2)}B`;
+    renderFundSliders(taxAUD);
+  } else fundSec.style.display='none';
+}
+
+function updatePctTotalDisplay(){
+  const total=Object.values(fundPcts).reduce((a,b)=>a+b,0);
+  const el=document.getElementById('bl-pct-total-display');
+  if(!el) return;
+  if(total===100){ el.textContent='✓ 100%'; el.style.color='#4ade80'; }
+  else { el.textContent=`Total: ${total}% — not 100%`; el.style.color=total>100?'#f87171':'#fbbf24'; }
+}
+
+function normaliseSliders(){
+  const total=Object.values(fundPcts).reduce((a,b)=>a+b,0)||1;
+  let remaining=100;
+  const keys=Object.keys(fundPcts);
+  keys.forEach((k,i)=>{
+    if(i===keys.length-1){ fundPcts[k]=remaining; }
+    else { fundPcts[k]=Math.round(fundPcts[k]/total*100); remaining-=fundPcts[k]; }
+  });
+  // Re-render sliders and labels
+  document.querySelectorAll('.fund-slider').forEach(sl=>{
+    sl.value=fundPcts[sl.dataset.key];
+    const lbl=document.getElementById('pct-'+sl.dataset.key);
+    if(lbl) lbl.textContent=fundPcts[sl.dataset.key]+'%';
+  });
+  updatePctTotalDisplay();
+}
+
+function renderFundSliders(taxAUD){
+  const sw=document.getElementById('bl-sliders-wrap');
+  sw.innerHTML=FUND_CATS.map(cat=>`
+    <div style="margin-bottom:.65rem;">
+      <div style="display:flex;align-items:center;gap:.65rem;">
+        <div style="width:165px;flex-shrink:0;">
+          <div style="font-size:.72rem;font-weight:600;color:#e2e8f0;">${cat.icon} ${cat.label}</div>
+          <div style="font-size:.62rem;color:${cat.color};margin-top:.08rem;">${cat.costLabel} per ${cat.unit.replace(/s$/,'')}</div>
+        </div>
+        <input type="range" class="bl-slider fund-slider" data-key="${cat.key}" min="0" max="100" value="${fundPcts[cat.key]}" style="flex:1;">
+        <div style="font-size:.7rem;width:32px;text-align:right;color:var(--gold-lt);" id="pct-${cat.key}">${fundPcts[cat.key]}%</div>
+      </div>
+    </div>`).join('');
+  sw.querySelectorAll('.fund-slider').forEach(sl=>{
+    sl.addEventListener('input',()=>{
+      fundPcts[sl.dataset.key]=parseInt(sl.value);
+      document.getElementById('pct-'+sl.dataset.key).textContent=sl.value+'%';
+      updatePctTotalDisplay();
+      renderAllocGrid(taxAUD);
+    });
+  });
+  // Wire normalise button (only once, guard with flag)
+  const nb=document.getElementById('bl-normalise-btn');
+  if(nb && !nb._wired){ nb._wired=true; nb.addEventListener('click',()=>{ normaliseSliders(); renderAllocGrid(taxAUD); }); }
+  updatePctTotalDisplay();
+  renderAllocGrid(taxAUD);
+}
+
+function renderAllocGrid(taxAUD){
+  const total=Object.values(fundPcts).reduce((a,b)=>a+b,0)||1;
+  document.getElementById('bl-alloc-grid').innerHTML=FUND_CATS.map(cat=>{
+    const pct=fundPcts[cat.key]/total;
+    const allocated=taxAUD*pct;
+    const count=Math.floor(allocated/cat.cost);
+    const countFmt=count>=1000?(count/1000).toFixed(1)+'k':count.toLocaleString();
+    return`<div class="bl-alloc-item" title="${cat.desc}">
+      <span class="bl-alloc-icon">${cat.icon}</span>
+      <div class="bl-alloc-count">${countFmt}</div>
+      <div class="bl-alloc-thing">${cat.label}</div>
+      <div style="font-size:.6rem;color:${cat.color};margin-top:.12rem;">${cat.costLabel} each</div>
+      <div class="bl-alloc-pct">${(pct*100).toFixed(0)}% · $${allocated>=1e9?(allocated/1e9).toFixed(2)+'B':(allocated/1e6).toFixed(0)+'M'}</div>
+      <div style="font-size:.58rem;color:#334155;margin-top:.2rem;line-height:1.3;">${cat.desc}</div>
+    </div>`;}).join('');
+}
+
+
+// ── Time to accumulate ────────────────────────────────────
+function updateTime(){
+  const none=document.getElementById('bl-time-none');
+  const disp=document.getElementById('bl-time-disp');
+  if(selB===null){none.style.display='block';disp.style.display='none';return;}
+  none.style.display='none';disp.style.display='block';
+  const b=BILLIONAIRES[selB];
+  const sal=Math.max(1,parseFloat(document.getElementById('bl-salary').value)||MEDIAN_SALARY);
+  const wAUD=b.wealth*1e9;
+  const yrs=Math.ceil(wAUD/sal);
+  document.getElementById('bl-time-big').textContent=fmtY(yrs);
+  document.getElementById('bl-time-name').textContent=b.name;
+  document.getElementById('bl-time-wealth-sub').textContent=`$${b.wealth.toFixed(2)}B`;
+  const ctx=yrs>1e6?`That's ${Math.round(yrs/1e6)} million years — life on Earth is only ~3.8 billion years old.`
+    :yrs>100000?`That's ${Math.round(yrs/12000)}× all of recorded human history.`
+    :yrs>10000?`That's ${Math.round(yrs/1000)}× since ancient Rome — longer than all of Western civilisation.`
+    :`${Math.round(yrs/100)} centuries — that's before the printing press.`;
+  document.getElementById('bl-time-context').textContent=ctx;
+  const comps=[
+    {label:`Your salary ($${sal>=1e6?(sal/1e6).toFixed(1)+'M':sal>=1000?(sal/1000).toFixed(0)+'k':String(sal)}/yr)`,years:yrs,color:'#38bdf8'},
+    {label:'Min wage (~$42k/yr)',years:Math.ceil(wAUD/42000),color:'#94a3b8'},
+    {label:'Surgeon (~$500k/yr)',years:Math.ceil(wAUD/500000),color:'#f59e0b'},
+    {label:'ASX20 CEO (~$10M/yr)',years:Math.ceil(wAUD/10e6),color:'#f472b6'},
+  ];
+  const mxY=Math.max(...comps.map(c=>c.years));
+  document.getElementById('bl-time-bars').innerHTML=comps.map(c=>`
+    <div class="bl-bar-row">
+      <div class="bl-bar-lbl">${c.label}</div>
+      <div class="bl-bar-wrap"><div class="bl-bar" style="width:${Math.max(0.5,c.years/mxY*100).toFixed(1)}%;background:${c.color};opacity:.8;"></div></div>
+      <div class="bl-bar-val" style="color:${c.color};">${fmtY(c.years)}</div>
+    </div>`).join('');
+}
+
+// ── Productivity ──────────────────────────────────────────
+function updateProductivity(){
+  const none=document.getElementById('bl-prod-none');
+  const disp=document.getElementById('bl-prod-disp');
+  if(selB===null){none.style.display='block';disp.style.display='none';return;}
+  none.style.display='none';disp.style.display='block';
+  const b=BILLIONAIRES[selB];
+  const sal=Math.max(1,parseFloat(document.getElementById('bl-salary').value)||MEDIAN_SALARY);
+  const mult=Math.round(b.wealth*1e9/sal);
+  document.getElementById('bl-prod-multi-box').innerHTML=
+    `<strong>If wealth = proportional productivity:</strong> ${b.name} would need to produce <strong style="color:#fca5a5;font-size:1.2em;">${fmtN(mult)}×</strong> more output than you — every single year of their career. Here's what that looks like:`;
+  document.getElementById('bl-prod-grid').innerHTML=PROFESSIONS.map(p=>{
+    const absurd=p.rate*mult;
+    const earth=8e9;
+    let ctx='';
+    if(p.role.includes('Nurse'))ctx=`That's ${fmtN(absurd)} patients/yr — ${(absurd/earth).toFixed(1)}× every person on Earth.`;
+    else if(p.role.includes('Teacher'))ctx=`That's ${fmtN(absurd)} students/yr — ${(absurd/earth*100).toFixed(0)}% of all people alive.`;
+    else if(p.role.includes('Builder'))ctx=`That's ${fmtN(absurd)} homes/yr — Australia has ~11M dwellings total.`;
+    else ctx=`That's ${fmtN(absurd)} consultations/yr — ${(absurd/earth).toFixed(1)}× every person on Earth.`;
+    return`<div class="bl-prod-card"><div class="bl-prod-role">${p.role}</div><div class="bl-prod-out">Typical: ~${fmtN(p.rate)} ${p.unit}</div><div class="bl-prod-abs">At ${fmtN(mult)}×: ${ctx}</div></div>`;
+  }).join('');
+}
+
+// ── Housing ───────────────────────────────────────────────
+function updateHousing(){
+  const card=document.getElementById('bl-housing-calc');
+  if(selB===null){card.style.display='none';return;}
+  const b=BILLIONAIRES[selB],r=REGIMES[selR];
+  const taxAUD=Math.max(0,b.wealth-r.threshold)*(r.rate/100)*1e9;
+  if(taxAUD>0){
+    card.style.display='block';
+    document.getElementById('bl-housing-homes').textContent=fmtN(Math.floor(taxAUD/550000))+' homes';
+    document.getElementById('bl-housing-name').textContent=b.name;
+  } else card.style.display='none';
+}
+
+// ── Salary input listener ─────────────────────────────────
+document.getElementById('bl-salary').addEventListener('input',()=>{updateTime();updateProductivity();});
+
+// ══════════════════════════════════════════════════════════
+// ── Billion Visualiser (panel-billion) ────────────────────
+// ══════════════════════════════════════════════════════════
+
+function initBillionViz(){
+  if(document.getElementById('bv-canvas')._init) return;
+  document.getElementById('bv-canvas')._init=true;
+  renderTimeGrid();
+  renderDistanceGrid();
+  initPixelRuler();
+}
+
+// ① Time grid -------------------------------------------------
+function fmtSeconds(s){
+  if(s<60)         return `${s.toLocaleString()} seconds`;
+  if(s<3600)       return `${(s/60).toFixed(1)} minutes`;
+  if(s<86400)      return `${(s/3600).toFixed(1)} hours`;
+  if(s<86400*365)  return `${(s/86400).toFixed(1)} days`;
+  if(s<86400*365*1000) return `${(s/(86400*365)).toFixed(1)} years`;
+  return `${(s/(86400*365*1000)).toFixed(1)}k years`;
+}
+
+function renderTimeGrid(){
+  const GINA=BILLIONAIRES[0].wealth*1e9;
+  const rows=[
+    {amount:1,       label:'$1',              color:'#64748b'},
+    {amount:10,      label:'$10',             color:'#64748b'},
+    {amount:100,     label:'$100',            color:'#94a3b8'},
+    {amount:1000,    label:'$1,000',          color:'#4ade80'},
+    {amount:1e4,     label:'$10,000',         color:'#38bdf8'},
+    {amount:1e5,     label:'$100k (median salary)', color:'#f59e0b'},
+    {amount:1e6,     label:'$1,000,000',      color:'#f472b6'},
+    {amount:1e7,     label:'$10 million',     color:'#c084fc'},
+    {amount:1e8,     label:'$100 million',    color:'#fb923c'},
+    {amount:1e9,     label:'$1 billion',      color:'#ef4444'},
+    {amount:1e10,    label:'$10 billion',     color:'#d4a017'},
+    {amount:GINA,    label:`Gina's $${(GINA/1e9).toFixed(2)}B`, color:'#d4a017'},
+  ];
+  const el=document.getElementById('bl-time-grid');
+  if(!el) return;
+  el.innerHTML=rows.map(r=>{
+    const s=Math.round(r.amount);
+    const dur=fmtSeconds(s);
+    // Extra human context
+    let ctx='';
+    if(s<60)        ctx='(a heartbeat or two)';
+    else if(s<3600) ctx='(a short meeting)';
+    else if(s<86400*2) ctx='';
+    else if(s<86400*365*2) ctx='';
+    else if(s<86400*365*10) ctx='(a decade or less)';
+    else if(s<86400*365*100) ctx='(within living memory)';
+    else if(s<86400*365*1000) ctx='(ancient history)';
+    else ctx='(older than human civilisation)';
+    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem .9rem;">
+      <div style="font-size:.65rem;font-weight:700;color:${r.color};text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem;">${r.label}</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:900;color:#f0ead8;margin-bottom:.18rem;">${dur}</div>
+      <div style="font-size:.68rem;color:var(--text-secondary);">${ctx}</div>
+    </div>`;
+  }).join('');
+}
+
+// ③ Distance grid ---------------------------------------------
+const SCREEN_PPI=96; // standard CSS px per inch
+const M_PER_PX=0.0254/SCREEN_PPI; // metres per pixel at 1px=$1
+
+function renderDistanceGrid(){
+  const GINA=BILLIONAIRES[0].wealth*1e9;
+  const items=[
+    {amount:100,  label:'$100',           ref:'Width of a large TV (~1 metre at 96 dpi)'},
+    {amount:1000, label:'$1,000',         ref:'Length of a typical city block (~10m)'},
+    {amount:1e4,  label:'$10,000',        ref:'Length of a standard running track (100m)'},
+    {amount:1e5,  label:'$100k salary',   ref:'About 1 km — 12 minutes walk'},
+    {amount:1e6,  label:'$1 million',     ref:'10 km — Sydney CBD end to end'},
+    {amount:1e7,  label:'$10 million',    ref:'100 km — Sydney to Newcastle'},
+    {amount:1e8,  label:'$100 million',   ref:'1,000 km — Sydney to Melbourne (by road)'},
+    {amount:1e9,  label:'$1 billion',     ref:'10,000 km — Sydney to Dubai'},
+    {amount:GINA, label:`Gina $${(GINA/1e9).toFixed(0)}B`, ref:`${(GINA*M_PER_PX/1000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')} km — ${Math.round(GINA*M_PER_PX/40075000)} laps of the Earth`},
+  ];
+  const el=document.getElementById('bv-distance-grid');
+  if(!el) return;
+  el.innerHTML=items.map((it,i)=>{
+    const m=it.amount*M_PER_PX;
+    const kmStr=m<1?`${(m*100).toFixed(1)} cm`:m<1000?`${m.toFixed(0)} m`:`${(m/1000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')} km`;
+    const colors=['#64748b','#64748b','#94a3b8','#4ade80','#38bdf8','#f59e0b','#f472b6','#ef4444','#d4a017'];
+    const c=colors[Math.min(i,colors.length-1)];
+    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem .9rem;">
+      <div style="font-size:.63rem;font-weight:700;color:${c};text-transform:uppercase;letter-spacing:.08em;margin-bottom:.2rem;">${it.label}</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:900;color:#f0ead8;margin-bottom:.18rem;">${kmStr}</div>
+      <div style="font-size:.68rem;color:var(--text-secondary);line-height:1.4;">${it.ref}</div>
+    </div>`;
+  }).join('');
+}
+
+// ② Canvas pixel ruler ----------------------------------------
+// Virtual ruler: position in $ (dollars), zoom in px/$
+// We render only the visible viewport window — no 38B actual pixels!
+
+const BV_MILESTONES=[
+  {val:0,        label:'$0 — Start',              color:'#64748b'},
+  {val:1000,     label:'$1,000 — a week\'s groceries', color:'#4ade80'},
+  {val:1e5,      label:'$100,000 — median annual salary', color:'#f59e0b'},
+  {val:1e6,      label:'$1,000,000 — one million', color:'#f472b6'},
+  {val:1e7,      label:'$10 million',              color:'#c084fc'},
+  {val:1e8,      label:'$100 million',             color:'#fb923c'},
+  {val:1e9,      label:'$1,000,000,000 — ONE BILLION', color:'#ef4444'},
+  {val:1e10,     label:'$10 billion',              color:'#d4a017'},
+  {val:38.11e9,  label:'$38.11B — Gina Rinehart\'s wealth', color:'#d4a017'},
+];
+
+const RULER_MAX=38.11e9;
+
+let bvPos=0;        // current position in $ (left edge of view)
+let bvZoom=1;       // px per $ (at zoom=1, 1px=$1; at 1/1e9, 1px=$1B)
+let bvDragging=false;
+let bvDragStart=null;
+
+function bvPxPerDollar(sliderVal){
+  // slider 0 = 1px per $1 (extremely zoomed in)
+  // slider 100 = 1px per $1B (extremely zoomed out, see whole ruler)
+  // We want: at slider=100, canvasWidth px spans RULER_MAX dollars
+  // => pxPerDollar = canvasWidth/RULER_MAX at slider=100, = 1 at slider=0 (log interp)
+  const cv=document.getElementById('bv-canvas');
+  const cw=(cv?cv.offsetWidth:600)||600;
+  const minPPD=cw/RULER_MAX;   // fits entire ruler in viewport
+  const maxPPD=1;               // 1px per $1
+  // log interpolation
+  const t=sliderVal/100;
+  const logMin=Math.log10(minPPD), logMax=Math.log10(maxPPD);
+  return Math.pow(10, logMax + t*(logMin-logMax));
+}
+
+function bvDollarPerPx(sliderVal){ return 1/bvPxPerDollar(sliderVal); }
+
+function fmtDollarBrief(n){
+  if(n>=1e9)  return '$'+(n/1e9).toFixed(n>=1e10?0:2)+'B';
+  if(n>=1e6)  return '$'+(n/1e6).toFixed(n>=1e7?0:1)+'M';
+  if(n>=1000) return '$'+(n/1000).toFixed(0)+'k';
+  return '$'+Math.round(n).toLocaleString();
+}
+
+function drawRuler(){
+  const cv=document.getElementById('bv-canvas');
+  if(!cv) return;
+  const dpr=window.devicePixelRatio||1;
+  const cw=cv.offsetWidth, ch=cv.offsetHeight||110;
+  if(cv.width!==cw*dpr||cv.height!==ch*dpr){
+    cv.width=cw*dpr; cv.height=ch*dpr;
+  }
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,cw,ch);
+
+  const ppd=bvZoom;          // px per dollar
+  const viewEnd=bvPos+cw/ppd;
+
+  // Background
+  ctx.fillStyle='#0a0f1e'; ctx.fillRect(0,0,cw,ch);
+
+  // Gradient track
+  const grd=ctx.createLinearGradient(0,0,cw,0);
+  grd.addColorStop(0,'#1e293b'); grd.addColorStop(1,'#0f172a');
+  ctx.fillStyle=grd; ctx.fillRect(0,ch*0.35,cw,ch*0.3);
+
+  // Draw milestone lines that are in view
+  BV_MILESTONES.forEach(m=>{
+    if(m.val<bvPos-1||m.val>viewEnd+1) return;
+    const x=(m.val-bvPos)*ppd;
+    ctx.strokeStyle=m.color; ctx.lineWidth=1.5; ctx.globalAlpha=0.7;
+    ctx.beginPath(); ctx.moveTo(x,8); ctx.lineTo(x,ch-8); ctx.stroke();
+    ctx.globalAlpha=1;
+    // Label above line
+    ctx.fillStyle=m.color; ctx.font='bold 9px Outfit,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    const shortLabel=m.label.split('—')[0].trim();
+    ctx.fillText(shortLabel,Math.max(35,Math.min(cw-35,x)),10);
+  });
+
+  // Tick marks: compute appropriate step
+  const visibleRange=viewEnd-bvPos;
+  const rawStep=visibleRange/8;
+  const exp=Math.floor(Math.log10(rawStep));
+  const niceSteps=[1,2,5,10];
+  let step=Math.pow(10,exp);
+  for(const s of niceSteps){ if(s*Math.pow(10,exp)>=rawStep){ step=s*Math.pow(10,exp); break; } }
+
+  const firstTick=Math.ceil(bvPos/step)*step;
+  ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=1;
+  ctx.fillStyle='rgba(148,163,184,.5)'; ctx.font='8px Outfit,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+  for(let t=firstTick; t<=viewEnd; t+=step){
+    const x=(t-bvPos)*ppd;
+    ctx.beginPath(); ctx.moveTo(x,ch*0.62); ctx.lineTo(x,ch*0.72); ctx.stroke();
+    if(x>20&&x<cw-20) ctx.fillText(fmtDollarBrief(t),x,ch-4);
+  }
+
+  // Current position marker (gold triangle + line)
+  const markerX=Math.max(2,Math.min(cw-2,0)); // left edge of view is position
+  // Actually draw a "you are here" at the centre
+  const centreX=cw*0.08;
+  ctx.strokeStyle='#d4a017'; ctx.lineWidth=2; ctx.globalAlpha=0.9;
+  ctx.beginPath(); ctx.moveTo(centreX,8); ctx.lineTo(centreX,ch-8); ctx.stroke();
+  ctx.globalAlpha=1;
+  // Triangle cap
+  ctx.fillStyle='#d4a017';
+  ctx.beginPath(); ctx.moveTo(centreX-6,8); ctx.lineTo(centreX+6,8); ctx.lineTo(centreX,18); ctx.closePath(); ctx.fill();
+
+  // Ruler base line
+  ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,ch*0.65); ctx.lineTo(cw,ch*0.65); ctx.stroke();
+}
+
+function bvUpdateReadout(sliderVal){
+  const ppd=bvZoom;
+  const dpx=1/ppd;
+  const viewEnd=Math.min(RULER_MAX, bvPos+((document.getElementById('bv-canvas').offsetWidth||600)/ppd));
+
+  // Position label
+  document.getElementById('bv-pos-label').textContent=fmtDollarBrief(bvPos);
+
+  // Zoom label
+  const zl=document.getElementById('bv-zoom-label');
+  zl.textContent = dpx>=1e9 ? fmtDollarBrief(dpx)+' per pixel'
+    : dpx>=1e6 ? fmtDollarBrief(dpx)+' per pixel'
+    : dpx>=1000 ? fmtDollarBrief(dpx)+' per pixel'
+    : dpx>=1 ? `$${dpx.toFixed(dpx<10?2:0)} per pixel`
+    : `$1 per ${(1/dpx).toFixed(dpx>0.01?0:2)} pixels`;
+
+  // Equivalent speed/distance
+  const m=bvPos*M_PER_PX;
+  let eq='';
+  if(m<0.01)       eq=`${(m*1000).toFixed(1)} mm from start`;
+  else if(m<1)     eq=`${(m*100).toFixed(1)} cm from start`;
+  else if(m<1000)  eq=`${m.toFixed(0)} m from start`;
+  else if(m<1e6)   eq=`${(m/1000).toFixed(0)} km from start`;
+  else              eq=`${(m/1000).toFixed(0)} km — ${(m/40075000).toFixed(1)} laps of Earth`;
+  document.getElementById('bv-pos-equiv').textContent=`If 1px=$1, you're ${eq}`;
+
+  // Nearest milestone highlight
+  const ms=BV_MILESTONES.filter(m=>m.val>=bvPos && m.val<=viewEnd);
+  const mDiv=document.getElementById('bv-milestone');
+  if(ms.length){
+    const m=ms[0];
+    mDiv.style.background=m.color+'22'; mDiv.style.color=m.color;
+    mDiv.style.border=`1px solid ${m.color}44`; mDiv.style.padding='.4rem .75rem';
+    mDiv.textContent='📍 '+m.label;
+  } else {
+    mDiv.style.background='transparent'; mDiv.style.border='1px solid transparent';
+    mDiv.textContent='';
+  }
+}
+
+function initPixelRuler(){
+  const cv=document.getElementById('bv-canvas');
+  if(!cv||cv._rulerInit) return;
+  cv._rulerInit=true;
+
+  const sl=document.getElementById('bv-zoom-slider');
+
+  function applyZoom(slVal){
+    bvZoom=bvPxPerDollar(slVal);
+    document.getElementById('bv-zoom-label').textContent=''; // updated in readout
+    // Clamp pos so we don't scroll past the end
+    const maxPos=Math.max(0,RULER_MAX-(cv.offsetWidth/bvZoom));
+    bvPos=Math.max(0,Math.min(maxPos,bvPos));
+    drawRuler();
+    bvUpdateReadout(slVal);
+  }
+
+  sl.addEventListener('input',()=>applyZoom(parseInt(sl.value)));
+
+  // Drag to scroll
+  let dragStartX=0, dragStartPos=0;
+  function onDown(e){
+    bvDragging=true; cv.style.cursor='grabbing';
+    dragStartX=(e.touches?e.touches[0].clientX:e.clientX);
+    dragStartPos=bvPos;
+  }
+  function onMove(e){
+    if(!bvDragging) return;
+    e.preventDefault();
+    const x=(e.touches?e.touches[0].clientX:e.clientX);
+    const dx=dragStartX-x;
+    const maxPos=Math.max(0,RULER_MAX-(cv.offsetWidth/bvZoom));
+    bvPos=Math.max(0,Math.min(maxPos,dragStartPos+dx/bvZoom));
+    drawRuler(); bvUpdateReadout(parseInt(sl.value));
+  }
+  function onUp(){ bvDragging=false; cv.style.cursor='grab'; }
+
+  cv.addEventListener('mousedown',onDown);
+  window.addEventListener('mousemove',onMove);
+  window.addEventListener('mouseup',onUp);
+  cv.addEventListener('touchstart',onDown,{passive:true});
+  window.addEventListener('touchmove',onMove,{passive:false});
+  window.addEventListener('touchend',onUp);
+
+  // Jump buttons
+  document.querySelectorAll('.bv-jump').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const target=parseFloat(btn.dataset.val)||0;
+      bvPos=Math.max(0,target-cv.offsetWidth/(bvZoom*3));
+      // Adjust zoom to make jump destination visible
+      if(target>0){
+        const desiredPPD=cv.offsetWidth/(target*3+1);
+        const logMin=Math.log10(bvPxPerDollar(100));
+        const logMax=Math.log10(bvPxPerDollar(0));
+        const logD=Math.log10(Math.max(desiredPPD,bvPxPerDollar(100)));
+        const newSlVal=Math.round(Math.max(0,Math.min(100,(logMax-logD)/(logMax-logMin)*100)));
+        sl.value=newSlVal;
+        bvZoom=bvPxPerDollar(newSlVal);
+        bvPos=Math.max(0,target-(cv.offsetWidth/bvZoom)*0.15);
+      }
+      drawRuler(); bvUpdateReadout(parseInt(sl.value));
+    });
+  });
+
+  // Initial draw
+  applyZoom(0);
+  // Handle resize
+  window.addEventListener('resize',()=>{ drawRuler(); bvUpdateReadout(parseInt(sl.value)); });
+}
+
+// ── Init ──────────────────────────────────────────────────
+renderCards();
+renderCalcBtns();
+renderRbtns();
+renderDonateGrid();
+renderPoliticsGrid();
+document.getElementById('bl-regime-desc').textContent=REGIMES[selR].desc;
+
+// Observe intl bars for animation when calc tab activated
+const calcPanel=document.getElementById('panel-calc');
+const intlObs=new IntersectionObserver(e=>{if(e[0].isIntersecting&&!document.getElementById('bl-intl-bars').children.length){renderIntlBars();}},{threshold:.2});
+intlObs.observe(calcPanel);
+
+// Auto-trigger hero animation
+if(window._heroActivate) window._heroActivate('legacy');
+
+})();
+}); // DOMContentLoaded
+</script>

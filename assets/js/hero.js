@@ -25,8 +25,16 @@
   window.addEventListener('resize', resize);
   resize();
 
-  const show = () => { backdrop.style.opacity = '1'; };
-  const hide = () => { backdrop.style.opacity = '0'; };
+  const show = () => {
+    backdrop.style.opacity = '1';
+    const t = document.getElementById('hero-title');
+    if(t) t.style.opacity = '0.18';
+  };
+  const hide = () => {
+    backdrop.style.opacity = '0';
+    const t = document.getElementById('hero-title');
+    if(t) t.style.opacity = '1';
+  };
 
   // ══════════════════════════════════════════════════════════════════════════
   //  THEME 1 — Bioinformagician  (magic particles + top hats + appearing bunnies)
@@ -1680,10 +1688,472 @@
   }
 
   // ══════════════════════════════════════════════════════════════════════════
+  //  THEME 9 — Legacy  (cash falls → pigs inhale & fatten → spit coins → stick figures fight in dust clouds)
+  // ══════════════════════════════════════════════════════════════════════════
+  let lgPigs=[], lgNotes=[], lgCoins=[], lgPeople=[], lgDusts=[], lgT=0;
+  const LG_PINK='#fda4af', LG_DPINK='#e11d48', LG_GOLD='#f0c040', LG_BILL='#4ade80';
+
+  function initLegacy(){
+    lgPigs=[]; lgNotes=[]; lgCoins=[]; lgPeople=[]; lgDusts=[]; lgT=0;
+    const pigY=H*0.52, floorY=H*0.74;
+    const n=Math.min(4,Math.max(2,Math.floor(W/200)));
+    const sp=W/(n+1);
+    for(let i=0;i<n;i++){
+      lgPigs.push({
+        x:sp*(i+1), pigY, floorY,
+        baseFat:28, fat:28, maxFat:80,
+        // Inhale state
+        inhaling:0,      // 0=idle, >0=inhaling (countdown)
+        inhalePow:0,     // 0..1 suction strength
+        // Belch state
+        belchCD:240+Math.floor(Math.random()*400),
+        belchAnim:0,
+        // Visual
+        wiggle:0, angle:0,
+        // Absorbed sparkles
+        sparks:[],
+      });
+    }
+    // Stick people in lower tier
+    const m=Math.min(10,Math.max(4,Math.floor(W/120)));
+    const sp2=W/(m+1);
+    for(let i=0;i<m;i++){
+      lgPeople.push({
+        bx:sp2*(i+1), x:sp2*(i+1), y:floorY+38,
+        ph:Math.random()*Math.PI*2,
+        scramble:0, target:null,
+        dustCD:0,
+      });
+    }
+  }
+
+  /* ─── Cash note (rectangle with $ sign) ─── */
+  function newNote(){
+    const pw=(Math.random()>.5)?22:18;
+    const ph=pw*0.6;
+    return {
+      x:Math.random()*W*0.9+W*0.05,
+      y:-30-Math.random()*80,
+      vx:(Math.random()-.5)*.4,
+      vy:0.5+Math.random()*0.9,
+      rot:(Math.random()-.5)*.5,
+      spin:(Math.random()-.5)*.025,
+      w:pw, h:ph,
+      al:0.8+Math.random()*0.18,
+      dead:false,
+      // When being sucked by a pig:
+      suckTarget:null, suckSpeed:0,
+    };
+  }
+
+  function drawNote(n){
+    ctx.save();
+    ctx.translate(n.x,n.y);
+    ctx.rotate(n.rot);
+    ctx.globalAlpha=n.al;
+    // Bill body
+    ctx.fillStyle='#166534';
+    ctx.strokeStyle='#4ade80';
+    ctx.lineWidth=.8;
+    ctx.beginPath();
+    ctx.roundRect?ctx.roundRect(-n.w/2,-n.h/2,n.w,n.h,2):ctx.rect(-n.w/2,-n.h/2,n.w,n.h);
+    ctx.fill(); ctx.stroke();
+    // $ sign
+    ctx.fillStyle='#86efac';
+    ctx.font=`bold ${n.h*0.7}px monospace`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('$',0,0);
+    ctx.restore();
+  }
+
+  /* ─── Coin (small silver/gold disc) ─── */
+  function drawCoin(c){
+    ctx.save();
+    ctx.translate(c.x,c.y);
+    ctx.globalAlpha=c.al;
+    ctx.fillStyle='#d1d5db';
+    ctx.strokeStyle='#9ca3af';
+    ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(0,0,c.r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#6b7280';
+    ctx.font=`bold ${c.r*1.2}px monospace`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('¢',0,0);
+    ctx.restore();
+  }
+
+  /* ─── Table ─── */
+  function lgTableDraw(x,pigY,tw){
+    const th=13,legH=28,tl=tw*0.42;
+    ctx.fillStyle='#1e1b4b'; ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.lineWidth=1;
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(x-tw/2,pigY+4,tw,th,[3,3,0,0]);
+    else ctx.rect(x-tw/2,pigY+4,tw,th);
+    ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='#312e81'; ctx.lineWidth=5; ctx.lineCap='butt';
+    [x-tl,x+tl].forEach(lx=>{ctx.beginPath();ctx.moveTo(lx,pigY+th+4);ctx.lineTo(lx,pigY+th+4+legH);ctx.stroke();});
+  }
+
+  /* ─── Pig ─── */
+  function drawPig(pig,t){
+    const {x,pigY,fat,belchAnim,wiggle,angle,inhaling,inhalePow,sparks}=pig;
+    const bw=fat*1.4, bh=fat*0.88;
+    const py=pigY-bh*0.35;
+    const wA=wiggle>0?Math.sin(t*0.3)*0.07*(wiggle/12):0;
+
+    ctx.save(); ctx.translate(x,py); ctx.rotate(wA+angle*.04);
+
+    // Drop shadow
+    ctx.globalAlpha=0.18;
+    ctx.fillStyle='#000';
+    ctx.beginPath(); ctx.ellipse(0,bh*0.8,bw*0.7,bh*0.22,0,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1;
+
+    // Body (ellipse with slight pear shape via scale)
+    const bodyScale=1+inhalePow*0.18; // swell during inhale
+    ctx.save(); ctx.scale(bodyScale,1+inhalePow*0.12);
+    // Main body gradient
+    const bodyG=ctx.createRadialGradient(-bw*.25,-bh*.25,bh*.1,0,0,bw);
+    bodyG.addColorStop(0,'#fecdd3'); bodyG.addColorStop(0.6,LG_PINK); bodyG.addColorStop(1,'#e11d48');
+    ctx.fillStyle=bodyG;
+    ctx.strokeStyle=LG_DPINK; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.ellipse(0,0,bw,bh,0,0,Math.PI*2);
+    ctx.fill(); ctx.stroke();
+    // Belly highlight
+    ctx.fillStyle='rgba(255,255,255,0.18)';
+    ctx.beginPath(); ctx.ellipse(-bw*.1,bh*.15,bw*.45,bh*.28,-.15,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+
+    // Ears (rounded triangles)
+    const earCol=LG_DPINK;
+    ctx.fillStyle=earCol; ctx.strokeStyle='#9f1239'; ctx.lineWidth=1;
+    [[-bw*.58,-bh*.72,-.35],[bw*.58,-bh*.72,.35]].forEach(([ex,ey,ea])=>{
+      ctx.save(); ctx.translate(ex,ey); ctx.rotate(ea);
+      ctx.beginPath();
+      ctx.moveTo(0,-fat*.32); ctx.lineTo(-fat*.16,fat*.08); ctx.lineTo(fat*.16,fat*.08); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      // Inner ear
+      ctx.fillStyle='#fda4af'; ctx.lineWidth=.5;
+      ctx.beginPath();
+      ctx.moveTo(0,-fat*.2); ctx.lineTo(-fat*.09,fat*.03); ctx.lineTo(fat*.09,fat*.03); ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Snout (oval with nostrils)
+    ctx.save(); ctx.translate(bw*.48, bh*.08);
+    ctx.fillStyle=LG_DPINK; ctx.strokeStyle='#9f1239'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.ellipse(0,0,fat*.3,fat*.22,0.08,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    // Nostrils
+    ctx.fillStyle='#881337';
+    [[-fat*.12,0],[fat*.12,0]].forEach(([nx,ny])=>{
+      ctx.beginPath(); ctx.ellipse(nx,ny,fat*.065,fat*.075,0,0,Math.PI*2); ctx.fill();
+    });
+    ctx.restore();
+
+    // Eyes (with reflection)
+    ctx.fillStyle='#1e1b4b';
+    ctx.beginPath(); ctx.ellipse(-bw*.18,-bh*.28,fat*.1,fat*.11,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='white';
+    ctx.beginPath(); ctx.arc(-bw*.14,-bh*.32,fat*.04,0,Math.PI*2); ctx.fill();
+
+    // Mouth - if belching show open maw
+    if(belchAnim>0){
+      const mAl=Math.min(1,belchAnim/8);
+      ctx.globalAlpha=mAl;
+      ctx.fillStyle='#881337';
+      ctx.beginPath(); ctx.ellipse(bw*.44,bh*.25,fat*.13,fat*.1,0.15,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=1;
+      // Belch puff
+      if(belchAnim>6){
+        ctx.globalAlpha=(belchAnim-6)/20;
+        ctx.font=`${fat*.6}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText('💨',bw*.92,bh*.15);
+        ctx.globalAlpha=1;
+      }
+    } else {
+      // Inhale: open mouth toward sky to suck in notes
+      if(inhalePow>0.2){
+        ctx.fillStyle='#881337'; ctx.globalAlpha=inhalePow*.9;
+        ctx.beginPath(); ctx.ellipse(bw*.42,-bh*.48,fat*.12*inhalePow,fat*.1*inhalePow,-.3,0,Math.PI*2); ctx.fill();
+        ctx.globalAlpha=1;
+      }
+    }
+
+    // Curly tail
+    ctx.strokeStyle=LG_DPINK; ctx.lineWidth=2; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(-bw*.9,0);
+    ctx.bezierCurveTo(-bw*1.3,-fat*.5,-bw*1.38,fat*.45,-bw*1.1,fat*.3);
+    ctx.stroke();
+
+    // Spots
+    ctx.fillStyle='rgba(225,29,72,0.22)';
+    ctx.beginPath(); ctx.ellipse(bw*.15,bh*.45,fat*.18,fat*.1,0.3,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-bw*.35,bh*.25,fat*.12,fat*.08,-.2,0,Math.PI*2); ctx.fill();
+
+    ctx.restore();
+
+    // Inhale suction visual: arc of particles
+    if(inhalePow>0.1){
+      for(let a=0;a<3;a++){
+        const ang=-Math.PI*.5+((a/3)-.5)*0.8;
+        const rad=bw*.9+Math.sin(t*.15+a)*bw*.3;
+        const sx=x+Math.cos(ang)*rad, sy=py+Math.sin(ang)*rad;
+        ctx.globalAlpha=inhalePow*0.35*(0.5+0.5*Math.sin(t*.3+a));
+        ctx.fillStyle=LG_BILL;
+        ctx.beginPath(); ctx.arc(sx,sy,2,0,Math.PI*2); ctx.fill();
+        ctx.globalAlpha=1;
+      }
+    }
+
+    // Gold sparks
+    sparks.forEach(s=>{
+      ctx.globalAlpha=s.al; ctx.fillStyle=LG_GOLD;
+      ctx.font=`${s.sz}px sans-serif`; ctx.textAlign='center';
+      ctx.fillText('✦',x+s.x,py+s.y); ctx.globalAlpha=1;
+    });
+  }
+
+  /* ─── Stick person ─── */
+  function drawPerson(p,t){
+    const {x,y,ph,scramble}=p;
+    const hd=6.5;
+    ctx.save(); ctx.translate(x,y);
+    ctx.strokeStyle='rgba(148,163,184,.8)'; ctx.fillStyle='rgba(148,163,184,.8)';
+    ctx.lineWidth=2; ctx.lineCap='round';
+    // Head
+    ctx.beginPath(); ctx.arc(0,-hd*5.2,hd,0,Math.PI*2); ctx.fill();
+    // Body
+    ctx.beginPath(); ctx.moveTo(0,-hd*4.2); ctx.lineTo(0,0); ctx.stroke();
+    // Legs
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-hd*1.2,hd*2.4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo( hd*1.2,hd*2.4); ctx.stroke();
+    // Arms — raised toward coin when scrambling
+    const wave=Math.sin(t*0.04+ph)*0.3;
+    if(scramble>0){
+      // Reaching up
+      ctx.beginPath(); ctx.moveTo(0,-hd*3); ctx.lineTo(-hd*2.2,-hd*4.5+wave*hd); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,-hd*3); ctx.lineTo( hd*2.2,-hd*4.5-wave*hd); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.moveTo(0,-hd*3); ctx.lineTo(-hd*2.2,-hd*2.5+wave*hd); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,-hd*3); ctx.lineTo( hd*2.2,-hd*2.5-wave*hd); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /* ─── Dust cloud (for fighting) ─── */
+  function drawDust(d){
+    ctx.save(); ctx.translate(d.x,d.y);
+    ctx.globalAlpha=d.al*.55;
+    // Cloud of puffs
+    for(let i=0;i<d.puffs.length;i++){
+      const pf=d.puffs[i];
+      ctx.fillStyle='rgba(203,213,225,0.7)';
+      ctx.beginPath(); ctx.arc(pf.x,pf.y,pf.r,0,Math.PI*2); ctx.fill();
+    }
+    // Stars/exclamation inside
+    ctx.globalAlpha=d.al*0.9;
+    const icons=['★','💥','!','?'];
+    icons.forEach((ic,i)=>{
+      const angle=d.spin*lgT+i*Math.PI/2;
+      const r=d.radius*.55;
+      ctx.font=`bold ${d.radius*.28}px sans-serif`;
+      ctx.fillStyle=['#fbbf24','#f87171','#60a5fa','#4ade80'][i];
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(ic, Math.cos(angle)*r, Math.sin(angle)*r);
+    });
+    ctx.restore();
+  }
+
+  /* ─── Note batch spawner ─── */
+  let lgBatchCD=80, lgBatchSize=0, lgBatchLeft=0;
+
+  function spawnBatch(){
+    lgBatchSize=5+Math.floor(Math.random()*7);
+    lgBatchLeft=lgBatchSize;
+    lgBatchCD=Math.max(50,lgBatchSize*12);
+  }
+
+  /* ─── Main step ─── */
+  function stepLegacy(){
+    lgT++;
+    ctx.clearRect(0,0,W,H);
+    if(!lgPigs.length) return;
+    const {pigY,floorY}=lgPigs[0];
+
+    // Sky gradient
+    const sky=ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#020818'); sky.addColorStop(0.5,'#050f20'); sky.addColorStop(1,'#080510');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+    // Floor line
+    ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,floorY); ctx.lineTo(W,floorY); ctx.stroke();
+    ctx.fillStyle='rgba(0,0,0,.2)'; ctx.fillRect(0,floorY,W,H-floorY);
+
+    // Batch spawner
+    lgBatchCD--;
+    if(lgBatchCD<=0&&lgBatchLeft>0){ lgNotes.push(newNote()); lgBatchLeft--; if(lgBatchLeft===0) lgBatchCD=120+Math.floor(Math.random()*180); }
+    if(lgBatchCD<=0&&lgBatchLeft===0) spawnBatch();
+
+    // Update pig states
+    lgPigs.forEach(pig=>{
+      // Belch timer
+      pig.belchCD--;
+      if(pig.belchCD<=0){
+        pig.belchCD=200+Math.floor(Math.random()*350);
+        pig.belchAnim=30;
+        // Spit a few coins
+        const numCoins=2+Math.floor(Math.random()*3);
+        for(let i=0;i<numCoins;i++){
+          lgCoins.push({
+            x:pig.x+pig.fat*.5+(Math.random()-.5)*pig.fat*.4,
+            y:pigY-pig.fat*.6,
+            vx:(1.2+Math.random()*1.8)*(Math.random()>.5?1:-1),
+            vy:-1.5-Math.random()*.8,
+            r:4+Math.random()*2.5,
+            al:1, ang:0, dead:false, landed:false, landT:0,
+          });
+        }
+        // Shrink a little after spitting
+        pig.fat=Math.max(pig.baseFat, pig.fat*0.88);
+      }
+      if(pig.belchAnim>0) pig.belchAnim--;
+      if(pig.wiggle>0) pig.wiggle=Math.max(0,pig.wiggle-.15);
+      pig.sparks=pig.sparks.filter(s=>s.al>.04);
+      pig.sparks.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.vy+=0.05;s.al-=.02;});
+    });
+
+    // Check if any note is in pig suction zone and assign targets
+    const pigWidth=pig=>Math.max(pig.fat*3,90);
+    lgNotes.forEach(note=>{
+      if(note.dead||note.suckTarget) return;
+      lgPigs.forEach(pig=>{
+        const tw=pigWidth(pig)/2+15;
+        if(note.x>pig.x-tw&&note.x<pig.x+tw&&note.y>pigY-pig.fat*3&&note.y<pigY+10){
+          note.suckTarget=pig;
+          note.suckSpeed=0.08;
+          pig.inhaling=40;
+          pig.inhalePow=Math.min(1,pig.inhalePow+0.3);
+        }
+      });
+    });
+
+    // Update pig inhale state
+    lgPigs.forEach(pig=>{
+      if(pig.inhaling>0){ pig.inhaling--; }
+      else { pig.inhalePow=Math.max(0,pig.inhalePow-0.04); }
+    });
+
+    // Tables
+    lgPigs.forEach(p=>{ lgTableDraw(p.x,pigY,Math.max(p.fat*3,90)); });
+
+    // Notes
+    lgNotes=lgNotes.filter(n=>!n.dead);
+    for(const note of lgNotes){
+      if(note.suckTarget){
+        // Fly toward pig's mouth
+        const pig=note.suckTarget;
+        const tx=pig.x, ty=pigY-pig.fat*1.1;
+        const dx=tx-note.x, dy=ty-note.y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        note.suckSpeed=Math.min(0.25,note.suckSpeed+0.018);
+        note.x+=dx*note.suckSpeed; note.y+=dy*note.suckSpeed;
+        note.rot+=0.08;
+        if(dist<10){
+          // Absorbed!
+          pig.fat=Math.min(pig.maxFat, pig.fat+0.7+Math.random()*0.5);
+          pig.wiggle=Math.min(pig.wiggle+5,15);
+          pig.sparks.push({x:(Math.random()-.5)*pig.fat,y:-pig.fat*.6,al:.9,sz:7+Math.random()*5,vx:(Math.random()-.5)*2,vy:-1.2-Math.random()*.8});
+          note.dead=true;
+        }
+      } else {
+        // Regular gravity fall
+        note.y+=note.vy; note.x+=note.vx; note.rot+=note.spin;
+        // Stop notes from passing the pig tier — if they reach below midY without being grabbed, still catch
+        if(note.y>floorY){
+          // Note reached floor without being absorbed — teleport back to top (shouldn't normally happen)
+          note.y=-20; note.x=Math.random()*W*.9+W*.05;
+        }
+      }
+      drawNote(note);
+    }
+
+    // Pigs
+    lgPigs.forEach(pig=>drawPig(pig,lgT));
+
+    // Coins (spit out by pigs)
+    lgCoins=lgCoins.filter(c=>!c.dead);
+    for(const c of lgCoins){
+      if(!c.landed){
+        c.vy+=0.1; c.x+=c.vx; c.y+=c.vy;
+        if(c.y>=floorY){
+          c.y=floorY; c.landed=true; c.landT=lgT;
+          // Alert nearby people
+          lgPeople.forEach(p=>{
+            if(Math.abs(p.bx-c.x)<W*.45){
+              p.target=c.x+(Math.random()-.5)*30;
+              p.scramble=100;
+            }
+          });
+          // Spawn a dust cloud at the coin
+          lgDusts.push({
+            x:c.x, y:floorY-10, radius:30+Math.random()*20,
+            al:0.7, life:80, spin:(Math.random()-.5)*.06,
+            puffs:Array.from({length:8},()=>({x:(Math.random()-.5)*50,y:(Math.random()-.5)*30,r:8+Math.random()*12})),
+          });
+        }
+      } else {
+        const age=lgT-c.landT; c.al=Math.max(0,1-age/50);
+        if(age>50) c.dead=true;
+      }
+      if(!c.dead) drawCoin(c);
+    }
+
+    // Dust clouds
+    lgDusts=lgDusts.filter(d=>d.al>0.02);
+    lgDusts.forEach(d=>{
+      d.life--; d.al=Math.max(0,d.al-0.008);
+      // Expand slightly
+      d.radius=Math.min(d.radius+0.15,60);
+      // Shuffle puffs a tiny bit
+      d.puffs.forEach(pf=>{pf.x+=(Math.random()-.5)*.8;pf.y+=(Math.random()-.5)*.8;});
+      drawDust(d);
+    });
+
+    // People
+    for(const p of lgPeople){
+      if(p.scramble>0){
+        p.scramble--;
+        if(p.target!==null) p.x+=(p.target-p.x)*.12;
+      } else {
+        p.x+=(p.bx-p.x)*.04; p.target=null;
+      }
+      drawPerson(p,lgT);
+    }
+
+    // Zone labels — opaque with backdrop to stay readable
+    ctx.save();
+    ctx.textAlign='center';
+    const maxFat=Math.max(...lgPigs.map(p=>p.fat));
+    const lblY1=pigY-maxFat*2.8;
+    const lblY2=floorY+18;
+    // Label backdrop
+    ctx.font='bold 10px Outfit,sans-serif';
+    const lbl1='B I L L I O N A I R E S', lbl2='E V E R Y O N E   E L S E';
+    const w1=ctx.measureText(lbl1).width+16, w2=ctx.measureText(lbl2).width+16;
+    ctx.fillStyle='rgba(2,8,24,.72)';
+    ctx.fillRect(W/2-w1/2,lblY1-11,w1,14);
+    ctx.fillRect(W/2-w2/2,lblY2-11,w2,14);
+    ctx.fillStyle='rgba(212,160,23,.75)';
+    ctx.fillText(lbl1,W/2,lblY1);
+    ctx.fillStyle='rgba(148,163,184,.55)';
+    ctx.fillText(lbl2,W/2,lblY2);
+    ctx.restore();
+  }
   //  Loop + theme switching
   // ══════════════════════════════════════════════════════════════════════════
-  const STEPS={bio:stepBio,composer:stepComposer,cats:stepCats,cv:stepCV,gallery:stepGallery,ff:stepFF,etf:stepETF,cosmic:stepCosmic};
-  const INITS={bio:initBio,composer:initComposer,cats:initCats,cv:initCV,gallery:initGallery,ff:initFF,etf:initETF,cosmic:initCosmic};
+  const STEPS={bio:stepBio,composer:stepComposer,cats:stepCats,cv:stepCV,gallery:stepGallery,ff:stepFF,etf:stepETF,cosmic:stepCosmic,legacy:stepLegacy};
+  const INITS={bio:initBio,composer:initComposer,cats:initCats,cv:initCV,gallery:initGallery,ff:initFF,etf:initETF,cosmic:initCosmic,legacy:initLegacy};
 
   function loop() { if(currentTheme) STEPS[currentTheme]?.(); requestAnimationFrame(loop); }
 
@@ -1717,4 +2187,5 @@
   document.addEventListener('touchstart',()=>hide(),{passive:true});
 
   loop();
+  window._heroActivate = activateTheme;
 })();

@@ -1,0 +1,211 @@
+{
+  "_meta": {
+    "source": "AFR Rich List",
+    "edition": "2025",
+    "published": "2025-05-01",
+    "last_auto_update": "2025-05-01",
+    "note": "Wealth figures: AFR Rich List (manual update, annually ~May). Listed equity values auto-updated by GitHub Action. Political donations: AEC annual returns. NHMRC/ARC: budget papers.",
+    "afr_url": "https://www.afr.com/rich-list"
+  },
+  "_stats": {
+    "abs_median_salary": 100004,
+    "abs_median_salary_note": "ABS Employee Earnings Nov 2023 — full-time adult median weekly ordinary earnings × 52",
+    "abs_median_salary_updated": "2024-03",
+    "fossil_fuel_subsidies_bn": 14.9,
+    "fossil_fuel_subsidies_note": "Australia Institute 2024–25 estimate, incl. Fuel Tax Credits ($10.2B), PRRT concessions, exploration deductions",
+    "fossil_fuel_subsidies_updated": "2025-03",
+    "nhmrc_budget_m": 940,
+    "nhmrc_budget_note": "NHMRC Medical Research Endowment Account 2024–25 Budget",
+    "nhmrc_budget_updated": "2024-05",
+    "mrff_budget_m": 650,
+    "mrff_budget_note": "Medical Research Future Fund 2024–25",
+    "mrff_budget_updated": "2024-05",
+    "arc_budget_m": 1000,
+    "arc_budget_note": "Australian Research Council 2024–25 Budget",
+    "arc_budget_updated": "2024-05",
+    "housing_shortfall": 163400,
+    "housing_shortfall_note": "NHFIC 2024",
+    "housing_waitlist": 650000,
+    "housing_waitlist_note": "AIHW 2023",
+    "social_housing_unit_cost": 550000,
+    "social_housing_unit_cost_note": "AHURI average build cost 2023",
+    "aec_disclosure_year": "2024-25",
+    "aec_disclosure_url": "https://www.aec.gov.au/parties_and_representatives/financial_disclosure/"
+  },
+  "billionaires": [
+    {
+      "rank": 1,
+      "name": "Gina Rinehart",
+      "wealth": 38.11,
+      "wealth_auto_update": false,
+      "wealth_note": "Entirely private company — no listed price to track. Manual update required.",
+      "source": "Mining – Hancock Prospecting",
+      "tag": "mining",
+      "tagLabel": "Mining",
+      "donate": "~$50M Hancock Prospecting Foundation (est.)",
+      "donateAmt": 50,
+      "polDonate": "$895k Advance Australia + $204k Liberal (2024–25)",
+      "polAmt": 1.099,
+      "assets": [
+        {"label": "Hancock Prospecting (private equity)", "pct": 93, "color": "#ef4444"},
+        {"label": "Listed shares", "pct": 3, "color": "#f59e0b"},
+        {"label": "Property/other", "pct": 4, "color": "#8b5cf6"}
+      ],
+      "assetNote": "Wealth almost entirely in Hancock Prospecting Pty Ltd — a private unlisted company. Predominantly Pilbara iron ore royalties.",
+      "inherited": "Majority. Iron ore deposits and royalty structures inherited from father Lang Hancock."
+    },
+    {
+      "rank": 2,
+      "name": "Harry Triguboff",
+      "wealth": 29.70,
+      "wealth_auto_update": false,
+      "wealth_note": "Private company (Meriton). No listed price. Manual update required.",
+      "source": "Real estate – Meriton",
+      "tag": "realty",
+      "tagLabel": "Real Estate",
+      "donate": "~$50M Triguboff Foundation (est.)",
+      "donateAmt": 50,
+      "polDonate": "$590k Meriton → Liberal Party (2024–25)",
+      "polAmt": 0.59,
+      "assets": [
+        {"label": "Meriton residential assets", "pct": 87, "color": "#fbbf24"},
+        {"label": "Listed equities", "pct": 5, "color": "#38bdf8"},
+        {"label": "Cash/other", "pct": 8, "color": "#8b5cf6"}
+      ],
+      "assetNote": "Meriton holds a vast rental apartment portfolio in addition to development pipeline. Sydney-centric with QLD presence.",
+      "inherited": "Self-made. Emigrated from China in 1940s; founded Meriton in 1963."
+    },
+    {
+      "rank": 3,
+      "name": "Anthony Pratt & family",
+      "wealth": 25.90,
+      "wealth_auto_update": false,
+      "wealth_note": "Private company (Visy/Pratt Industries). No listed price. Manual update required.",
+      "source": "Packaging – Visy / Pratt Ind.",
+      "tag": "industry",
+      "tagLabel": "Industry",
+      "donate": "~$80M Pratt Foundation (est. annual)",
+      "donateAmt": 80,
+      "polDonate": "$1M Pratt Holdings → Labor Party (2024–25)",
+      "polAmt": 1.0,
+      "assets": [
+        {"label": "Visy / Pratt Industries (private)", "pct": 88, "color": "#4ade80"},
+        {"label": "Listed equities", "pct": 5, "color": "#38bdf8"},
+        {"label": "Property/other", "pct": 7, "color": "#8b5cf6"}
+      ],
+      "assetNote": "Visy (AU/NZ) and Pratt Industries (USA) are both private packaging and recycling empires.",
+      "inherited": "Significant. Richard Pratt founded Visy; Anthony inherited as executive chair in 2009."
+    },
+    {
+      "rank": 4,
+      "name": "Scott Farquhar",
+      "wealth": 21.40,
+      "wealth_auto_update": true,
+      "wealth_ticker": "TEAM",
+      "wealth_ticker_exchange": "NASDAQ",
+      "wealth_shares_held": 110000000,
+      "wealth_note": "Wealth ~90% Atlassian (TEAM, NASDAQ). Auto-updated daily from stock price.",
+      "source": "Technology – Atlassian",
+      "tag": "tech",
+      "tagLabel": "Tech",
+      "donate": "~$80M Skip Foundation + various (est.)",
+      "donateAmt": 80,
+      "polDonate": "Not publicly disclosed (2024–25)",
+      "polAmt": 0,
+      "assets": [
+        {"label": "Atlassian shares (TEAM, NASDAQ)", "pct": 90, "color": "#38bdf8"},
+        {"label": "Property", "pct": 6, "color": "#fbbf24"},
+        {"label": "Other investments", "pct": 4, "color": "#8b5cf6"}
+      ],
+      "assetNote": "Wealth is almost entirely in publicly listed Atlassian Corporation. High volatility with stock price.",
+      "inherited": "Self-made. Co-founded Atlassian in 2002 with Mike Cannon-Brookes."
+    },
+    {
+      "rank": 5,
+      "name": "Clive Palmer",
+      "wealth": 20.10,
+      "wealth_auto_update": false,
+      "wealth_note": "Private company (Mineralogy). No listed price. Manual update required.",
+      "source": "Mining – Mineralogy",
+      "tag": "mining",
+      "tagLabel": "Mining",
+      "donate": "~$5M (est., primarily political causes)",
+      "donateAmt": 5,
+      "polDonate": "$52.9M Mineralogy → Trumpet of Patriots party (2024–25)",
+      "polAmt": 52.9,
+      "assets": [
+        {"label": "Mineralogy / private mining", "pct": 78, "color": "#ef4444"},
+        {"label": "Property holdings", "pct": 14, "color": "#fbbf24"},
+        {"label": "Other", "pct": 8, "color": "#8b5cf6"}
+      ],
+      "assetNote": "Mineralogy controls iron ore royalties in the Pilbara. Palmer also holds significant hotel and property assets.",
+      "inherited": "Self-made, built through mining royalties and legal battles in Queensland."
+    },
+    {
+      "rank": 6,
+      "name": "Melanie Perkins & Obrecht",
+      "wealth": 14.10,
+      "wealth_auto_update": false,
+      "wealth_note": "Private company (Canva). No listed price. Manual update required when Canva IPOs.",
+      "source": "Technology – Canva",
+      "tag": "tech",
+      "tagLabel": "Tech",
+      "donate": "~$10M (est., incl. Pledge 1%)",
+      "donateAmt": 10,
+      "polDonate": "Not publicly disclosed (2024–25)",
+      "polAmt": 0,
+      "assets": [
+        {"label": "Canva equity (private)", "pct": 89, "color": "#38bdf8"},
+        {"label": "Listed equities", "pct": 5, "color": "#4ade80"},
+        {"label": "Property/other", "pct": 6, "color": "#8b5cf6"}
+      ],
+      "assetNote": "Canva remains private. Valuation based on 2021 fundraising rounds (~$26B USD). IPO would crystallise and potentially trigger CGT.",
+      "inherited": "Self-made. Co-founded Canva in Perth in 2012 with Cliff Obrecht and Cameron Adams."
+    },
+    {
+      "rank": 7,
+      "name": "Michael Dorrell",
+      "wealth": 13.90,
+      "wealth_auto_update": false,
+      "wealth_note": "Private firm (Stonepeak). No listed price. Manual update required.",
+      "source": "Infrastructure – Stonepeak",
+      "tag": "industry",
+      "tagLabel": "Infrastructure",
+      "donate": "Minimal public record",
+      "donateAmt": 2,
+      "polDonate": "Not publicly disclosed (2024–25)",
+      "polAmt": 0,
+      "assets": [
+        {"label": "Stonepeak infrastructure equity", "pct": 84, "color": "#4ade80"},
+        {"label": "Other private investments", "pct": 11, "color": "#38bdf8"},
+        {"label": "Property", "pct": 5, "color": "#fbbf24"}
+      ],
+      "assetNote": "Stonepeak is a global alternative investment firm focused on infrastructure assets. Dorrell is founding partner.",
+      "inherited": "Self-made. Founded Stonepeak in 2012 after career at Blackstone."
+    },
+    {
+      "rank": 8,
+      "name": "Kerry Stokes",
+      "wealth": 12.70,
+      "wealth_auto_update": true,
+      "wealth_ticker": "SVW.AX",
+      "wealth_ticker_exchange": "ASX",
+      "wealth_shares_held": 390000000,
+      "wealth_note": "~58% wealth in Seven Group Holdings (SVW.AX). Auto-updated daily from ASX price.",
+      "source": "Media – Seven Group Holdings",
+      "tag": "media",
+      "tagLabel": "Media",
+      "donate": "~$30M (est., incl. Kerry Stokes Collection)",
+      "donateAmt": 30,
+      "polDonate": "$500k → Labor + $500k → Liberal (2024–25)",
+      "polAmt": 1.0,
+      "assets": [
+        {"label": "Seven Group Holdings (listed)", "pct": 58, "color": "#c084fc"},
+        {"label": "Property (WA and eastern states)", "pct": 24, "color": "#fbbf24"},
+        {"label": "Media/other", "pct": 18, "color": "#38bdf8"}
+      ],
+      "assetNote": "Seven Group Holdings (SVW) is publicly listed. Stokes also holds direct property, art, and media assets.",
+      "inherited": "Self-made. Born in relative poverty in Perth; built a media and industrial empire."
+    }
+  ]
+}
