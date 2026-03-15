@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Aquarius",
-      "degree": 15.6,
+      "degree": 16,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
     "mercury": {
       "sign": "Libra",
-      "degree": 20.1,
+      "degree": 20.2,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Jupiter"
       ],
       "type": "square",
-      "orb": 0.3
+      "orb": 0.5
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Mercury"
       ],
       "type": "trine",
-      "orb": 4.5
+      "orb": 4.2
     },
     {
       "planets": [
@@ -88,14 +88,6 @@
       ],
       "type": "sextile",
       "orb": 4.6
-    },
-    {
-      "planets": [
-        "Moon",
-        "Saturn"
-      ],
-      "type": "sextile",
-      "orb": 5.4
     },
     {
       "planets": [
@@ -112,6 +104,14 @@
       ],
       "type": "square",
       "orb": 5.7
+    },
+    {
+      "planets": [
+        "Moon",
+        "Saturn"
+      ],
+      "type": "sextile",
+      "orb": 5.8
     }
   ],
   "readings": {
