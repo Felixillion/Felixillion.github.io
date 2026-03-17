@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Pisces",
-      "degree": 12.4,
+      "degree": 12.7,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Libra",
-      "degree": 27.6,
+      "degree": 27.7,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Mercury"
       ],
       "type": "quincunx",
-      "orb": 0.3
+      "orb": 0.4
     },
     {
       "planets": [
@@ -63,7 +63,7 @@
         "Mars"
       ],
       "type": "trine",
-      "orb": 4
+      "orb": 3.9
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Venus"
       ],
       "type": "sextile",
-      "orb": 4.8
+      "orb": 5.1
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 6.1
+      "orb": 6.5
     }
   ],
   "readings": {
