@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Gemini",
-      "degree": 7.8,
+      "degree": 8,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
@@ -59,19 +59,19 @@
     },
     {
       "planets": [
-        "Moon",
-        "Uranus"
-      ],
-      "type": "conjunction",
-      "orb": 1.5
-    },
-    {
-      "planets": [
         "Sun",
         "Neptune"
       ],
       "type": "conjunction",
       "orb": 1.6
+    },
+    {
+      "planets": [
+        "Moon",
+        "Uranus"
+      ],
+      "type": "conjunction",
+      "orb": 1.7
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Saturn"
       ],
       "type": "sextile",
-      "orb": 2.7
+      "orb": 2.5
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 3.1
+      "orb": 3
     },
     {
       "planets": [
