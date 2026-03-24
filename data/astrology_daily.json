@@ -3,18 +3,18 @@
   "planetary_positions": {
     "sun": {
       "sign": "Aries",
-      "degree": 4.2,
+      "degree": 4.3,
       "retrograde": false
     },
     "moon": {
       "sign": "Gemini",
-      "degree": 21.7,
+      "degree": 22.1,
       "retrograde": false,
       "phase": "First Quarter"
     },
     "mercury": {
       "sign": "Scorpio",
-      "degree": 22.6,
+      "degree": 22.7,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Mercury"
       ],
       "type": "quincunx",
-      "orb": 0.9
+      "orb": 0.6
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Jupiter"
       ],
       "type": "trine",
-      "orb": 2.1
+      "orb": 2.2
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Venus"
       ],
       "type": "opposition",
-      "orb": 3.7
+      "orb": 3.8
     },
     {
       "planets": [
