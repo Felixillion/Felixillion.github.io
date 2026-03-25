@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 5.8,
+      "degree": 6.2,
       "retrograde": false,
       "phase": "First Quarter"
     },
     "mercury": {
       "sign": "Scorpio",
-      "degree": 26.1,
+      "degree": 26.2,
       "retrograde": false
     },
     "venus": {
@@ -51,14 +51,6 @@
   "major_aspects": [
     {
       "planets": [
-        "Moon",
-        "Mars"
-      ],
-      "type": "trine",
-      "orb": 0.1
-    },
-    {
-      "planets": [
         "Venus",
         "Jupiter"
       ],
@@ -67,11 +59,11 @@
     },
     {
       "planets": [
-        "Sun",
-        "Moon"
+        "Moon",
+        "Mars"
       ],
-      "type": "square",
-      "orb": 0.6
+      "type": "trine",
+      "orb": 0.5
     },
     {
       "planets": [
@@ -80,6 +72,14 @@
       ],
       "type": "square",
       "orb": 0.7
+    },
+    {
+      "planets": [
+        "Sun",
+        "Moon"
+      ],
+      "type": "square",
+      "orb": 0.9
     },
     {
       "planets": [
@@ -99,19 +99,19 @@
     },
     {
       "planets": [
-        "Moon",
-        "Neptune"
-      ],
-      "type": "square",
-      "orb": 4.1
-    },
-    {
-      "planets": [
         "Saturn",
         "Uranus"
       ],
       "type": "sextile",
       "orb": 4.2
+    },
+    {
+      "planets": [
+        "Moon",
+        "Saturn"
+      ],
+      "type": "square",
+      "orb": 4.4
     }
   ],
   "readings": {
