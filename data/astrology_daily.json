@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Leo",
-      "degree": 3.5,
+      "degree": 3.9,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
     "mercury": {
       "sign": "Sagittarius",
-      "degree": 3,
+      "degree": 3.1,
       "retrograde": false
     },
     "venus": {
       "sign": "Taurus",
-      "degree": 23.7,
+      "degree": 23.8,
       "retrograde": false
     },
     "mars": {
@@ -55,7 +55,7 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 0.3
+      "orb": 0.4
     },
     {
       "planets": [
@@ -63,7 +63,7 @@
         "Mercury"
       ],
       "type": "trine",
-      "orb": 0.5
+      "orb": 0.7
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 0.8
+      "orb": 0.9
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Neptune"
       ],
       "type": "trine",
-      "orb": 1.8
+      "orb": 2.2
     },
     {
       "planets": [
@@ -95,6 +95,14 @@
         "Uranus"
       ],
       "type": "sextile",
+      "orb": 2.5
+    },
+    {
+      "planets": [
+        "Moon",
+        "Mars"
+      ],
+      "type": "quincunx",
       "orb": 2.9
     },
     {
@@ -104,14 +112,6 @@
       ],
       "type": "sextile",
       "orb": 3
-    },
-    {
-      "planets": [
-        "Mercury",
-        "Uranus"
-      ],
-      "type": "opposition",
-      "orb": 3.3
     }
   ],
   "readings": {
