@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Virgo",
-      "degree": 14.2,
+      "degree": 14.4,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
@@ -63,7 +63,7 @@
         "Mercury"
       ],
       "type": "square",
-      "orb": 0.8
+      "orb": 0.9
     },
     {
       "planets": [
