@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Virgo",
-      "degree": 13.9,
+      "degree": 14.2,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
     "mercury": {
       "sign": "Sagittarius",
-      "degree": 13.3,
+      "degree": 13.4,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Saturn"
       ],
       "type": "conjunction",
-      "orb": 0.6
+      "orb": 0.5
     },
     {
       "planets": [
@@ -63,7 +63,7 @@
         "Mercury"
       ],
       "type": "square",
-      "orb": 0.6
+      "orb": 0.8
     },
     {
       "planets": [
@@ -79,15 +79,7 @@
         "Saturn"
       ],
       "type": "trine",
-      "orb": 2.6
-    },
-    {
-      "planets": [
-        "Sun",
-        "Mercury"
-      ],
-      "type": "trine",
-      "orb": 3.1
+      "orb": 2.7
     },
     {
       "planets": [
@@ -96,6 +88,14 @@
       ],
       "type": "sextile",
       "orb": 3.1
+    },
+    {
+      "planets": [
+        "Sun",
+        "Mercury"
+      ],
+      "type": "trine",
+      "orb": 3.2
     },
     {
       "planets": [
