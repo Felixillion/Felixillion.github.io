@@ -3,18 +3,18 @@
   "planetary_positions": {
     "sun": {
       "sign": "Aries",
-      "degree": 12.1,
+      "degree": 12.2,
       "retrograde": false
     },
     "moon": {
       "sign": "Libra",
-      "degree": 9.8,
+      "degree": 10.1,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Sagittarius",
-      "degree": 20.1,
+      "degree": 20.2,
       "retrograde": false
     },
     "venus": {
@@ -60,18 +60,18 @@
     {
       "planets": [
         "Moon",
-        "Mars"
+        "Saturn"
       ],
-      "type": "quincunx",
-      "orb": 0.5
+      "type": "opposition",
+      "orb": 0.7
     },
     {
       "planets": [
         "Moon",
-        "Saturn"
+        "Mars"
       ],
-      "type": "opposition",
-      "orb": 1
+      "type": "quincunx",
+      "orb": 0.8
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Jupiter"
       ],
       "type": "quincunx",
-      "orb": 1.1
+      "orb": 1
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Moon"
       ],
       "type": "opposition",
-      "orb": 2.4
+      "orb": 2.1
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Uranus"
       ],
       "type": "trine",
-      "orb": 3.4
+      "orb": 3.7
     }
   ],
   "readings": {
