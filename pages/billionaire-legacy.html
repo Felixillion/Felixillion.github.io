@@ -317,6 +317,21 @@ footer_scripts: assets/js/hero.js
   <div class="bl-callout">
     <strong>The common defence:</strong> "They earned it through hard work and talent." But if wealth reflected proportional productivity, what would that actually mean?
   </div>
+
+  <!-- Fairness note: annual salary vs total wealth -->
+  <div class="bl-callout-blue" style="margin-bottom:1rem;">
+    <strong>⚠️ Comparison caveat:</strong>
+    The calculator compares your <em>annual salary</em> to a billionaire's <em>total accumulated wealth</em> — that's not quite apples-to-apples.
+    The estate tax is paid once at death on the total; the fairer annual comparison is their estimated <em>annual income from that wealth</em>.
+    At a conservative 4% annual return, that's roughly:
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-top:.65rem;" id="bl-income-est-grid"></div>
+    <div style="font-size:.68rem;color:#475569;margin-top:.5rem;">
+      Estimates only — includes notional return on all wealth at 4%/yr.
+      Real taxable income is far lower: Gina Rinehart's wealth is mostly private equity with unrealised gains.
+      Kerry Stokes receives ~$300M/yr in SVW dividends. Scott Farquhar draws minimal salary — his fortune is almost entirely unrealised Atlassian equity worth ~$21B that he couldn't liquidate without crashing the stock.
+    </div>
+  </div>
+
   <div id="bl-prod-none" style="text-align:center;padding:1rem;color:var(--text-secondary);font-size:.88rem;">← Select a billionaire above.</div>
   <div id="bl-prod-disp" style="display:none;">
     <div class="bl-callout-red" id="bl-prod-multi-box" style="margin-bottom:1rem;"></div>
@@ -713,6 +728,34 @@ footer_scripts: assets/js/hero.js
     <a href="https://www.oxfam.org.au/what-we-do/advocacy-and-campaigns/make-tax-fair/" target="_blank" rel="noopener" class="bl-sl">↗ Oxfam — wealth inequality</a>
     <a href="https://www.brookings.edu/articles/taxing-wealth-transfers-through-an-expanded-estate-tax/" target="_blank" rel="noopener" class="bl-sl">↗ Brookings — estate tax analysis</a>
   </div></div>
+
+  <!-- Dead vs Alive section -->
+  <div class="bl-sec-title" style="margin-top:2rem;">💀 Dead or Alive? When Is a Billionaire Worth More to the Country?</div>
+  <div class="bl-callout">
+    Estate tax is a one-off payment at death. But billionaires also pay tax while alive — company tax on profits, some CGT on realised gains, income tax on salaries.
+    The question is: at what point does the cumulative alive-tax exceed what a single estate tax payment would yield?
+    And could they simply <em>donate the equivalent</em> now instead — making death unnecessary?
+  </div>
+
+  <!-- Billionaire selector for this section -->
+  <div class="bl-callout-blue" style="margin-bottom:.8rem;">
+    <div class="bl-clabel" style="margin-bottom:.5rem;">Select a billionaire to analyse:</div>
+    <div id="bl-da-btns" style="display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+    <div style="margin-top:.65rem;">
+      <div class="bl-clabel" style="margin-bottom:.3rem;">Under which regime?</div>
+      <div id="bl-da-regime-btns" style="display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+    </div>
+  </div>
+  <div id="bl-dead-alive-result" style="display:none;"></div>
+
+  <div class="bl-callout-blue" style="margin-top:1rem;">
+    <strong>Bottom line on inflation:</strong>
+    A large estate payout doesn't "create" money — it transfers existing wealth from a private estate to the government.
+    The inflationary risk comes from how the <em>government then spends it</em>, not from the transfer itself.
+    Gradual asset liquidation (staggered deaths over decades) has negligible market impact.
+    Simultaneous forced sale of all Australian billionaire wealth (~$176B) would be disruptive — but the realistic scenario under any estate tax is court-supervised, staged liquidation over years, not a single-day auction.
+  </div>
+
 </div>
 
 <!-- ══════════════════════════════════════════════════════
@@ -1872,13 +1915,156 @@ function initPixelRuler(){
   window.addEventListener('resize',()=>{ drawRuler(); bvUpdateReadout(parseInt(sl.value)); });
 }
 
+// ── Annual income estimates grid ─────────────────────────
+function renderIncomeEstGrid(){
+  const el=document.getElementById('bl-income-est-grid');
+  if(!el) return;
+  // Estimated annual return rates per billionaire — reflect actual income mix
+  // Conservative: listed-equity dividend yield, royalty income, property yield
+  const annualEst=[
+    {name:'Gina Rinehart',    wealthB:38.11, yield:0.040, note:'~$1.5B/yr — mostly private royalties. Reported $1B+ FY2023 dividend.'},
+    {name:'Harry Triguboff',  wealthB:29.70, yield:0.025, note:'~$740M/yr — Meriton rental yields ~2–3% net on property assets.'},
+    {name:'Anthony Pratt',    wealthB:25.90, yield:0.030, note:'~$780M/yr — Visy/Pratt Industries private dividends. Not publicly disclosed.'},
+    {name:'Scott Farquhar',   wealthB:21.40, yield:0.000, note:'~$0 dividend — Atlassian (TEAM) pays no dividend. Wealth is unrealised equity. Salary ~$5M.'},
+    {name:'Clive Palmer',     wealthB:20.10, yield:0.020, note:'~$400M/yr — Mineralogy royalties, highly variable. Some years far less.'},
+    {name:'Melanie Perkins',  wealthB:14.10, yield:0.000, note:'~$0 dividend — Canva is private, no distribution history. Paper wealth only until IPO.'},
+    {name:'Michael Dorrell',  wealthB:13.90, yield:0.025, note:'~$350M/yr — fund management carried interest, irregular.'},
+    {name:'Kerry Stokes',     wealthB:12.70, yield:0.024, note:'~$305M/yr — SVW paid ~$0.80/share. Stokes holds ~390M shares.'},
+  ];
+  el.innerHTML=annualEst.map(b=>{
+    const annualM=b.wealthB*1e3*b.yield;
+    const display=annualM>=1000?`$${(annualM/1000).toFixed(1)}B/yr`:`$${Math.round(annualM)}M/yr`;
+    const color=annualM>500?'#fca5a5':annualM>0?'#fbbf24':'#94a3b8';
+    const multOfMedian=annualM*1e6/MEDIAN_SALARY;
+    return`<div title="${b.note}" style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:.5rem .65rem;cursor:help;">
+      <div style="font-size:.62rem;color:var(--text-secondary);font-weight:700;">${b.name.split(' ')[0]}</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:1rem;font-weight:900;color:${color};">${display}</div>
+      <div style="font-size:.6rem;color:#475569;margin-top:.1rem;">${multOfMedian>0?`${fmtN(Math.round(multOfMedian))}× median salary`:'Unrealised / no dividend'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Dead vs Alive analysis ────────────────────────────────
+// Pre-computed for selB, called on card select and regime change
+function updateDeadAlive(){
+  const el=document.getElementById('bl-dead-alive-result');
+  if(!el) return;
+  if(selB===null){ el.style.display='none'; return; }
+  el.style.display='block';
+  const b=BILLIONAIRES[selB];
+  const r=REGIMES[selR];
+  const wB=b.wealth; // wealth in $B
+
+  // Estate tax if died today
+  const wAUD=wB*(r.rate<0.01?1.0:r.fxRate||1.0); // wealth in AUD billions
+  const exemptAUD=(r.exempt||0)/1e9; // exempt threshold in $B
+  const taxableB=Math.max(0,wAUD-exemptAUD);
+  const estateRevB=taxableB*r.rate; // one-off govt revenue $B
+
+  // Annual tax while alive — rough estimate
+  // Billionaires pay: company tax (30%) on profits, some CGT on realisations, income tax on salary
+  // Conservative: ~5–8% effective rate on annual income
+  // Annual income ≈ wealth × 3% (conservative yield)
+  const annualIncomeB=wAUD*0.03;
+  const effectiveTaxRate=0.28; // company + some CGT + income; very rough
+  const annualTaxB=annualIncomeB*effectiveTaxRate;
+
+  // Crossover: years alive where cumulative tax > estate tax
+  const crossoverYrs=annualTaxB>0?estateRevB/annualTaxB:Infinity;
+
+  // Equivalent "donation equivalent" — NPV of 20yr future taxes at 5% discount
+  const discountR=0.05;
+  const npv20=annualTaxB*(1-Math.pow(1+discountR,-20))/discountR;
+
+  // Market impact — what fraction of ASX market cap would their wealth represent?
+  // ASX market cap ~$2.9T AUD
+  const asxCapB=2900;
+  const pctASX=(wAUD/asxCapB*100);
+
+  const fmt2=n=>n>=10?n.toFixed(1):n.toFixed(2);
+
+  el.innerHTML=`
+    <div class="bl-g2" style="gap:.75rem;margin-bottom:1rem;">
+      <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:.8rem 1rem;">
+        <div style="font-size:.65rem;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;">💀 If ${b.name.split(' ')[0]} died today</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:900;color:#fca5a5;">$${fmt2(estateRevB)}B one-off</div>
+        <div style="font-size:.72rem;color:#94a3b8;margin-top:.25rem;">Under ${r.label} (${(r.rate*100).toFixed(0)}% on estates over ${r.exempt?'$'+(r.exempt/1e6).toFixed(1)+'M':'threshold'}) — paid once only.</div>
+      </div>
+      <div style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:10px;padding:.8rem 1rem;">
+        <div style="font-size:.65rem;font-weight:700;color:#4ade80;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;">🏦 If ${b.name.split(' ')[0]} stays alive</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:900;color:#86efac;">~$${fmt2(annualTaxB*1000)}M/yr in tax</div>
+        <div style="font-size:.72rem;color:#94a3b8;margin-top:.25rem;">Estimated: ~3% annual yield on wealth × ~28% effective tax rate. Actual varies enormously by structuring. Crossover: ~<strong style="color:#fbbf24;">${isFinite(crossoverYrs)?crossoverYrs.toFixed(0)+' yrs':'∞'}</strong> before cumulative alive-tax exceeds one-off estate tax.</div>
+      </div>
+    </div>
+    <div style="background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);border-radius:10px;padding:.8rem 1rem;margin-bottom:.75rem;">
+      <div style="font-size:.65rem;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;">💸 The "Equivalent Donation" — what if they just gave it?</div>
+      <div style="font-size:.82rem;color:#e2e8f0;line-height:1.6;">
+        The <strong>NPV of 20 years</strong> of annual tax at 5% discount rate ≈ <strong style="color:#fbbf24;">$${fmt2(npv20*1000)}M</strong>.
+        A one-off donation of this amount would be <em>mathematically equivalent</em> to keeping them alive and taxing them for 20 years —
+        without waiting, without avoidance, without the death of a person.
+        Compare to the estate tax one-off: $${fmt2(estateRevB)}B.
+        ${estateRevB>npv20?`<strong style="color:#fca5a5;">The estate tax is worth more than 20 years of alive-tax</strong> — reflecting how poorly current law taxes ongoing wealth.`:`<strong style="color:#86efac;">20 years of alive-tax exceeds the estate tax</strong> — long-lived wealth compounds faster than a one-off levy captures.`}
+      </div>
+    </div>
+    <div style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.2);border-radius:10px;padding:.8rem 1rem;">
+      <div style="font-size:.65rem;font-weight:700;color:#38bdf8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;">📉 Market Impact: Could They Even Sell?</div>
+      <div style="font-size:.78rem;color:#e2e8f0;line-height:1.65;">
+        ${b.name.split(' ')[0]}'s $${fmt2(wAUD)}B AUD represents <strong>${fmt2(pctASX)}% of ASX market capitalisation</strong> (~$2.9T).
+        ${pctASX>1?
+          `That's large enough that <strong>forced liquidation would be market-moving</strong>. Selling in a single transaction would crater the price of their own assets — a phenomenon called "price impact." The realistic realised value could be 20–50% lower than the mark-to-market figure.`:
+          `At ${fmt2(pctASX)}% of the ASX, liquidation could be managed gradually over months without catastrophic market impact — though still significant for any concentrated positions.`}
+        <br><br>
+        <strong>Simultaneous deaths</strong> (all 8 at once, ~$176B): ${(176/2900*100).toFixed(1)}% of ASX cap forced to market simultaneously. This would represent one of the largest liquidity events in Australian market history — likely requiring staged government acquisition over years, not a spot sale.
+        <br><br>
+        <strong>Staggered deaths</strong> (spread over, say, 20 years): ~$8–9B/yr enters the market — manageable and comparable to normal institutional rebalancing. Markets would absorb this with minimal long-term price impact.
+        <br><br>
+        <em style="color:#475569;">Note: Most of this wealth is in <strong>private companies or foreign-listed equities</strong> (Atlassian on NASDAQ, Canva private). A significant portion isn't even on the ASX. Inflation impact would be modest — a $176B wealth transfer to government doesn't create new money; it reallocates existing wealth.</em>
+      </div>
+    </div>`;
+}
+
 // ── Init ──────────────────────────────────────────────────
 renderCards();
 renderCalcBtns();
 renderRbtns();
 renderDonateGrid();
 renderPoliticsGrid();
+renderIncomeEstGrid();
 document.getElementById('bl-regime-desc').textContent=REGIMES[selR].desc;
+
+// Dead vs Alive billionaire selector
+(function(){
+  const daBtn=document.getElementById('bl-da-btns');
+  const daReg=document.getElementById('bl-da-regime-btns');
+  if(!daBtn||!daReg) return;
+  // Billionaire buttons
+  BILLIONAIRES.forEach((b,i)=>{
+    const btn=document.createElement('button');
+    btn.type='button'; btn.textContent='$'+b.wealth+'B '+b.name.split(' ')[0];
+    btn.style.cssText='padding:.28rem .6rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:#94a3b8;font-size:.68rem;cursor:pointer;';
+    btn.addEventListener('click',()=>{
+      selB=i;
+      daBtn.querySelectorAll('button').forEach(b2=>{ b2.style.background='transparent'; b2.style.color='#94a3b8'; });
+      btn.style.background='rgba(253,164,175,.15)'; btn.style.color='#fda4af';
+      updateDeadAlive();
+    });
+    daBtn.appendChild(btn);
+  });
+  // Regime buttons for dead-alive section
+  Object.entries(REGIMES).forEach(([key,reg])=>{
+    const btn=document.createElement('button');
+    btn.type='button'; btn.textContent=reg.label;
+    btn.style.cssText='padding:.28rem .6rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:#94a3b8;font-size:.68rem;cursor:pointer;';
+    if(key===selR){ btn.style.background='rgba(56,189,248,.15)'; btn.style.color='#38bdf8'; }
+    btn.addEventListener('click',()=>{
+      selR=key;
+      daReg.querySelectorAll('button').forEach(b2=>{ b2.style.background='transparent'; b2.style.color='#94a3b8'; });
+      btn.style.background='rgba(56,189,248,.15)'; btn.style.color='#38bdf8';
+      updateDeadAlive();
+    });
+    daReg.appendChild(btn);
+  });
+})();
 
 // Observe intl bars for animation when calc tab activated
 const calcPanel=document.getElementById('panel-calc');

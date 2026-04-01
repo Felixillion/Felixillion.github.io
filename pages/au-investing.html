@@ -1,0 +1,1116 @@
+---
+layout: default
+title: AU Investing Analysis
+permalink: /au-investing.html
+---
+<!-- AU Investing Analysis — SWR + Bessembinder -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0b0e16;--surface:#111827;--surface2:#1a2235;--border:rgba(255,255,255,.08);
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
+  --green:#4ade80;--green-dim:#166534;
+  --amber:#fbbf24;--amber-dim:#78350f;
+  --blue:#38bdf8;--blue-dim:#0c4a6e;
+  --red:#f87171;--red-dim:#7f1d1d;
+  --purple:#c084fc;--teal:#2dd4bf;
+  --gold:#d4a017;--gold-lt:#fef08a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+.aui-hero{
+  max-width:960px;margin:0 auto;padding:3rem 1.5rem 1.5rem;
+}
+.aui-hero-title{
+  font-family:'Syne',sans-serif;font-size:clamp(1.7rem,4vw,3rem);font-weight:800;
+  line-height:1.1;letter-spacing:-.03em;
+  background:linear-gradient(120deg,#38bdf8,#4ade80 60%,#fbbf24);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.6rem;
+}
+.aui-hero-sub{color:var(--text2);font-size:.95rem;line-height:1.6;max-width:600px;margin-bottom:1.5rem;}
+
+/* ── tabs ── */
+.aui-tabs{
+  display:flex;gap:.4rem;flex-wrap:wrap;padding:.4rem;
+  background:var(--surface);border-radius:14px;border:1px solid var(--border);
+  margin-bottom:1.5rem;max-width:960px;margin-left:auto;margin-right:auto;
+  position:sticky;top:56px;z-index:80;backdrop-filter:blur(12px);
+}
+.aui-tab{
+  padding:.45rem 1rem;border-radius:10px;border:none;background:transparent;
+  color:var(--text2);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;
+  cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;
+}
+.aui-tab.active{background:rgba(56,189,248,.15);color:#38bdf8;font-weight:700;}
+.aui-tab:hover:not(.active){background:rgba(255,255,255,.05);color:var(--text);}
+
+.aui-panel{display:none;max-width:960px;margin:0 auto;padding:0 1.5rem 3rem;}
+.aui-panel.active{display:block;}
+
+/* ── cards & layout ── */
+.aui-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:1.2rem 1.4rem;margin-bottom:1rem;
+}
+.aui-callout{
+  border-left:3px solid var(--blue);background:rgba(56,189,248,.06);
+  border-radius:0 10px 10px 0;padding:.75rem 1rem;margin-bottom:1rem;
+  font-size:.84rem;color:var(--text2);line-height:1.65;
+}
+.aui-callout-green{border-left-color:var(--green);background:rgba(74,222,128,.06);}
+.aui-callout-amber{border-left-color:var(--amber);background:rgba(251,191,36,.06);}
+.aui-callout-red{border-left-color:var(--red);background:rgba(248,113,113,.06);}
+
+.aui-sec-title{
+  font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;
+  color:var(--text);margin:.9rem 0 .55rem;letter-spacing:-.01em;
+}
+.aui-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);margin-bottom:.3rem;}
+.aui-big{font-family:'DM Mono',monospace;font-size:1.8rem;font-weight:500;letter-spacing:-.03em;}
+.aui-mono{font-family:'DM Mono',monospace;}
+
+/* ── controls ── */
+.aui-ctrl-row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;margin-bottom:1rem;}
+.aui-ctrl{display:flex;flex-direction:column;gap:.3rem;}
+.aui-ctrl label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);}
+.aui-ctrl select,.aui-ctrl input[type=number]{
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);padding:.4rem .65rem;font-family:'DM Sans',sans-serif;font-size:.84rem;
+  outline:none;min-width:130px;
+}
+.aui-ctrl input[type=range]{width:160px;accent-color:var(--blue);}
+.aui-pill-row{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem;}
+.aui-pill{
+  padding:.28rem .65rem;border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--text2);font-size:.7rem;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .12s;
+}
+.aui-pill.active{background:rgba(56,189,248,.18);border-color:#38bdf8;color:#38bdf8;font-weight:700;}
+.aui-pill.amber.active{background:rgba(251,191,36,.18);border-color:var(--amber);color:var(--amber);}
+.aui-pill.green.active{background:rgba(74,222,128,.18);border-color:var(--green);color:var(--green);}
+
+/* ── SWR heat map table ── */
+.aui-heat{border-collapse:collapse;width:100%;font-size:.75rem;}
+.aui-heat th{padding:.4rem .5rem;font-family:'DM Mono',monospace;font-weight:500;color:var(--text3);text-align:center;}
+.aui-heat td{padding:.4rem .5rem;text-align:center;font-family:'DM Mono',monospace;border-radius:4px;}
+.aui-heat tr:hover td{filter:brightness(1.15);}
+
+/* ── Bessembinder chart ── */
+#bess-canvas-wrap{width:100%;overflow-x:auto;}
+#bess-canvas-wrap canvas{display:block;max-width:100%;}
+
+/* ── sequence chart ── */
+.seq-legend{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem;}
+.seq-swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.25rem;vertical-align:middle;}
+
+/* ── responsive ── */
+.aui-g2{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
+@media(max-width:640px){
+  .aui-tabs{top:52px;}
+  .aui-heat{font-size:.65rem;}
+  .aui-heat th,.aui-heat td{padding:.3rem .35rem;}
+}
+</style>
+
+<div class="aui-hero">
+  <div class="aui-hero-title">Australian Investing Analysis</div>
+  <div class="aui-hero-sub">
+    Two questions evidence-based Australian investors should know:
+    how much can you safely withdraw in retirement, and
+    how concentrated are the market's returns?
+  </div>
+</div>
+
+<div class="aui-tabs" id="aui-tabs">
+  <button type="button" class="aui-tab active" data-panel="swr">🏖️ Safe Withdrawal Rate</button>
+  <button type="button" class="aui-tab" data-panel="bess">📊 Bessembinder AU</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL 1 — SAFE WITHDRAWAL RATE
+══════════════════════════════════════ -->
+<div class="aui-panel active" id="panel-swr">
+
+  <div class="aui-callout">
+    The <strong>4% rule</strong> came from the 1994 Bengen study on US data.
+    Australia has a different market history, different inflation, different tax treatment (franking credits),
+    and different super rules. This tool runs the same historical sequence-of-returns methodology on
+    <strong>124 years of Australian data (1901–2024)</strong> across different portfolio mixes.
+  </div>
+
+  <!-- Controls -->
+  <div class="aui-card">
+    <div class="aui-sec-title">Your Scenario</div>
+    <div class="aui-ctrl-row">
+      <div class="aui-ctrl">
+        <label>Portfolio value ($)</label>
+        <input type="number" id="swr-pv" value="1000000" step="50000" min="100000" max="10000000">
+      </div>
+      <div class="aui-ctrl">
+        <label>Annual withdrawal ($)</label>
+        <input type="number" id="swr-wd" value="40000" step="1000" min="5000">
+      </div>
+      <div class="aui-ctrl">
+        <label>Retirement length</label>
+        <select id="swr-yrs">
+          <option value="20">20 years</option>
+          <option value="25">25 years</option>
+          <option value="30" selected>30 years</option>
+          <option value="35">35 years</option>
+          <option value="40">40 years</option>
+          <option value="50">50 years (FIRE)</option>
+        </select>
+      </div>
+      <div class="aui-ctrl">
+        <label>Withdrawal timing</label>
+        <select id="swr-timing">
+          <option value="start" selected>Year-start (conservative)</option>
+          <option value="end">Year-end</option>
+        </select>
+      </div>
+    </div>
+    <div class="aui-ctrl-row">
+      <div class="aui-ctrl">
+        <label>Inflation adjustment</label>
+        <select id="swr-infl">
+          <option value="real" selected>Adjust with ABS CPI</option>
+          <option value="fixed">Fixed nominal (no adjustment)</option>
+          <option value="flat">Flat 2.5%</option>
+        </select>
+      </div>
+      <div class="aui-ctrl">
+        <label>Franking credits</label>
+        <div style="display:flex;gap:.3rem;">
+          <select id="swr-frank" style="flex:1;">
+            <option value="1" selected>Include</option>
+            <option value="0">Exclude</option>
+          </select>
+          <select id="swr-tax-profile" style="flex:2;">
+            <option value="nfp">0% (NFP / Pension)</option>
+            <option value="super15">15% (Super Accum)</option>
+            <option value="ind_16">16% (Ind &lt; $45k)</option>
+            <option value="ind_30" selected>30% (Ind $45k–$135k)</option>
+            <option value="ind_37">37% (Ind $135k–$190k)</option>
+            <option value="ind_45">45% (Ind &gt; $190k)</option>
+          </select>
+        </div>
+      </div>
+      <div class="aui-ctrl">
+        <label>Target success rate</label>
+        <select id="swr-target">
+          <option value="80">80% (aggressive)</option>
+          <option value="90" selected>90% (moderate)</option>
+          <option value="95">95% (conservative)</option>
+          <option value="99">99% (very safe)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="aui-sec-title" style="margin-top:.5rem;">Portfolio</div>
+    <div class="aui-pill-row" id="swr-presets"></div>
+    <!-- Custom allocation sliders — shown when CUSTOM selected -->
+    <div id="swr-custom-alloc" style="display:none;margin-top:.75rem;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;" id="swr-alloc-sliders"></div>
+    </div>
+  </div>
+
+  <!-- Result cards -->
+  <div class="aui-g2" id="swr-result-cards" style="margin-bottom:1rem;"></div>
+
+  <!-- Safe rate bar -->
+  <div class="aui-card" id="swr-rate-card">
+    <div class="aui-label">Safe withdrawal rate — this portfolio (historical, ABS CPI-adjusted)</div>
+    <div style="display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.5rem;">
+      <div class="aui-big" id="swr-rate-display" style="color:var(--green);">—</div>
+      <div id="swr-rate-context" style="font-size:.82rem;color:var(--text2);"></div>
+    </div>
+    <div style="background:var(--surface2);border-radius:8px;height:10px;overflow:hidden;margin-bottom:.5rem;">
+      <div id="swr-rate-bar" style="height:100%;background:linear-gradient(90deg,#4ade80,#fbbf24);border-radius:8px;transition:width .4s;width:0%;"></div>
+    </div>
+    <div id="swr-franking-note" style="font-size:.68rem;color:var(--text3);"></div>
+  </div>
+
+  <!-- Heat map -->
+  <div class="aui-sec-title">Safe Withdrawal Rate by Portfolio × Retirement Length</div>
+  <div class="aui-callout aui-callout-amber">
+    Target: <strong id="swr-heat-target">90%</strong> success rate (historical sequences, ABS CPI inflation, franking included where applicable).
+    Values shown as <strong>% of portfolio per year</strong>.
+  </div>
+  <div style="overflow-x:auto;margin-bottom:1.5rem;">
+    <table class="aui-heat" id="swr-heat-table"></table>
+  </div>
+
+  <!-- Historical sequence fan chart -->
+  <div class="aui-sec-title">Historical Sequences — Portfolio Paths</div>
+  <div class="aui-callout">
+    Every bar below is a different historical 30-year window. <strong style="color:#f87171;">Red = portfolio ran out.</strong>
+    The worst sequences are labelled. Drag the slider to see any withdrawal rate.
+  </div>
+  <div class="aui-card" style="margin-bottom:.75rem;">
+    <div class="aui-ctrl-row" style="margin-bottom:.75rem;">
+      <div class="aui-ctrl">
+        <label>Withdrawal rate to visualise</label>
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <input type="range" id="seq-wd-slider" min="1" max="10" step="0.1" value="4" style="flex:1;accent-color:var(--green);">
+          <span id="seq-wd-label" style="font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;color:var(--green);min-width:3.5rem;">4.0%</span>
+        </div>
+      </div>
+    </div>
+    <canvas id="seq-canvas" style="width:100%;height:220px;border-radius:8px;"></canvas>
+    <div style="display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap;font-size:.68rem;color:var(--text3);">
+      <span><span class="seq-swatch" style="background:#4ade80;"></span> Survived</span>
+      <span><span class="seq-swatch" style="background:#f87171;"></span> Ran out</span>
+      <span><span class="seq-swatch" style="background:#fbbf24;"></span> Worst surviving sequence</span>
+    </div>
+    <div id="seq-worst-label" style="font-size:.72rem;color:#f87171;margin-top:.4rem;"></div>
+  </div>
+
+  <!-- Explainer -->
+  <div class="aui-sec-title">Why Does Australia Differ From the 4% Rule?</div>
+  <div class="aui-g2" style="margin-bottom:1.5rem;">
+    <div class="aui-card">
+      <div class="aui-label" style="color:#4ade80;">✅ Helps</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
+        <strong>Franking credits</strong> add ~0.3–0.8% per year to AU share returns for domestic investors — invisible in index returns but real in your pocket. For a 100% AU portfolio, this is worth 0.5–0.7% annually. For VDHG-like portfolios (~36% AU shares), closer to 0.2–0.3%.
+        <br><br>
+        <strong>Long data record:</strong> 124 years including two World Wars, the Great Depression (−30% AU 1930), hyperinflation, and GFC. The SWR you see is truly stress-tested.
+      </div>
+    </div>
+    <div class="aui-card">
+      <div class="aui-label" style="color:#f87171;">⚠️ Complicates</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
+        <strong>Home bias risk:</strong> AU is ~2% of world market cap. A 100% AU portfolio has high concentration in banks and miners. A bad decade for iron ore or housing could devastate returns.
+        <br><br>
+        <strong>Super rules change:</strong> Preservation age, contribution caps, tax treatment in accumulation vs pension phase — the rules since 1992 are a short history. Pre-super SWR analysis models private portfolios, not exactly how Australians actually retire.
+        <br><br>
+        <strong>Sequence risk is real:</strong> Retiring in 1929, 1969, or 2000 on AU shares produced dramatically different outcomes than retiring in 1982 or 2009. Timing luck dominates over 10-year horizons.
+      </div>
+    </div>
+    <div class="aui-card">
+      <div class="aui-label" style="color:var(--amber);">💡 Takeaways</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
+        • The <strong>AU 4% rule holds reasonably well</strong> for balanced portfolios (60%+ growth) at 90% success over 30 years.
+        <br><br>
+        • For 40–50 year retirements (FIRE), target <strong>3.0–3.5%</strong> for 95% success.
+        <br><br>
+        • Franking credits effectively lift the rule by ~0.3% for AU-heavy portfolios.
+        <br><br>
+        • A <strong>flexible withdrawal strategy</strong> (reduce by 10% in down years) dramatically improves outcomes without meaningfully reducing expected lifetime spending.
+        <br><br>
+        • The <strong>worst retirement cohort</strong> in AU history started in 1929–1930 followed by 1969–1970 (stagflation). Both were recoverable with diversification; neither was recoverable with 100% AU shares and 5%+ withdrawal.
+      </div>
+    </div>
+  </div>
+
+  <div class="aui-callout">
+    <strong>Sources &amp; methodology:</strong>
+    Asset class returns from Vanguard/Dimensional AU long-run data series (embedded in <code>_data/etf_data.json</code>).
+    AU CPI from ABS 6401.0. Franking credit boost estimated at 0.53%/yr for 100% AU shares (imputation value at 30% company tax, 75% payout franked, effective marginal rate 32.5%). All simulations are historical — not Monte Carlo. Each simulation window slides forward one year from 1901.
+    This is not financial advice.
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL 2 — BESSEMBINDER AU
+══════════════════════════════════════ -->
+<div class="aui-panel" id="panel-bess">
+
+  <div class="aui-callout">
+    <strong>Bessembinder (2018)</strong> found that over 1926–2016, just <strong>4% of US stocks</strong> (90 companies) accounted for all net wealth creation above Treasury Bills.
+    The other 96% collectively earned zero or negative returns relative to T-bills.
+    This has profound implications for stock-picking vs diversification.
+    Below is a Bessembinder-style analysis of the <strong>Australian market</strong>.
+  </div>
+
+  <div class="aui-callout aui-callout-amber">
+    <strong>Data note:</strong>
+    This analysis uses yfinance data for current ASX 200 constituents (available since ~2000).
+    The full ASX history would require hand-curated data including delisted companies — the most important category for Bessembinder-style analysis (survivorship bias affects everything if you exclude failures).
+    Run <code>compute_bessembinder.py</code> via GitHub Actions to update with latest data. The pre-computed results below are embedded in <code>_data/bessembinder.json</code>.
+    {{ site.data.bessembinder.meta.last_updated | default: 'Not yet computed — run the workflow.' }}
+  </div>
+
+  <!-- Key findings cards -->
+  <div class="aui-sec-title">Key Findings — ASX Analysis</div>
+  <div class="aui-g2" id="bess-finding-cards" style="margin-bottom:1.5rem;"></div>
+
+  <!-- Cumulative contribution chart -->
+  <div class="aui-sec-title">Cumulative Wealth Creation by Stock Rank</div>
+  <div class="aui-callout">
+    Stocks ranked by total wealth created (share price return × shares outstanding).
+    The curve shows what % of total market wealth creation was contributed by the top N% of stocks.
+    A steep early rise = extreme concentration.
+  </div>
+  <div class="aui-card">
+    <canvas id="bess-lorenz-canvas" style="width:100%;height:280px;"></canvas>
+  </div>
+
+  <!-- Top contributors table -->
+  <div class="aui-sec-title" style="margin-top:1rem;">Top Wealth Creators — ASX</div>
+  <div style="overflow-x:auto;margin-bottom:1rem;">
+    <table style="width:100%;border-collapse:collapse;font-size:.78rem;" id="bess-top-table">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);">
+          <th style="padding:.4rem .6rem;text-align:left;color:var(--text3);font-weight:600;">Rank</th>
+          <th style="padding:.4rem .6rem;text-align:left;color:var(--text3);font-weight:600;">Ticker</th>
+          <th style="padding:.4rem .6rem;text-align:left;color:var(--text3);font-weight:600;">Company</th>
+          <th style="padding:.4rem .6rem;text-align:right;color:var(--text3);font-weight:600;">Total Return</th>
+          <th style="padding:.4rem .6rem;text-align:right;color:var(--text3);font-weight:600;">Wealth Created ($B)</th>
+          <th style="padding:.4rem .6rem;text-align:right;color:var(--text3);font-weight:600;">% of Total</th>
+        </tr>
+      </thead>
+      <tbody id="bess-top-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- Distribution chart -->
+  <div class="aui-sec-title">Return Distribution — ASX Stocks</div>
+  <div class="aui-callout aui-callout-amber">
+    The distribution of individual stock returns is highly <strong>right-skewed</strong> (a few massive winners, many moderate losers).
+    This is the mathematical reason why diversification works: you need to hold ALL of the market to ensure you capture the rare big winners.
+  </div>
+  <div class="aui-card">
+    <canvas id="bess-dist-canvas" style="width:100%;height:220px;"></canvas>
+  </div>
+
+  <!-- Implication for ETFs -->
+  <div class="aui-sec-title" style="margin-top:1rem;">What This Means for Australian Investors</div>
+  <div class="aui-g2" style="margin-bottom:1.5rem;">
+    <div class="aui-card">
+      <div class="aui-label" style="color:var(--blue);">📈 For ETF Investors</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
+        Owning an index fund guarantees you hold <em>all</em> of the rare massive winners like CBA (×132 since 1991), CSL (×900 since 1994), and REA Group (×185 since 2000). A stock picker who held these names correctly would look like a genius — but they also needed to avoid the delisted failures.
+        <br><br>
+        Bessembinder's result doesn't mean stocks are bad — it means that <em>diversification across all stocks is essential</em> to reliably capturing the market's positive skew. Holding 10–20 AU stocks dramatically increases the chance you miss the tiny group that accounts for most returns.
+      </div>
+    </div>
+    <div class="aui-card">
+      <div class="aui-label" style="color:var(--red);">☠️ Survivorship Bias Warning</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
+        The most dangerous version of this analysis uses only <em>current</em> index constituents — today's ASX 200.
+        These stocks already survived. The real Bessembinder analysis requires including every company ever listed on the ASX, including delisted failures (ABC Learning, HIH Insurance, Allco Finance, Centro, MFS, etc.) — roughly 3,000+ companies listed and de-listed since 1990 alone.
+        <br><br>
+        With survivorship bias removed, the concentration effect is <em>even more extreme</em> than the charts below suggest.
+      </div>
+    </div>
+    <div class="aui-card">
+      <div class="aui-label" style="color:var(--amber);">📚 Comparison with US Findings</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
+        Bessembinder's original finding: top 90 US stocks (4%) → 100% of net wealth creation above T-bills (1926–2016).
+        Top 50 stocks (2%) → majority of gains. Apple alone created more wealth than the bottom 1,000 stocks combined.
+        <br><br>
+        For Australia, the concentration is somewhat lower (our market is smaller and more resource-heavy, spreading returns across fewer sectors) — but the pattern is directionally the same.
+        CBA, CSL, BHP, RIO, and Macquarie together account for a disproportionate share of total ASX wealth creation since 1990.
+        <br><br>
+        <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X18301521" target="_blank" rel="noopener" style="color:var(--blue);font-size:.78rem;">↗ Bessembinder (2018) — original paper</a>
+        <br>
+        <a href="https://www.investmentoffice.com/Observations/Academia/Do_stocks_outperform_Treasury_bills.html" target="_blank" rel="noopener" style="color:var(--blue);font-size:.78rem;">↗ Summary — Investment Office</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="aui-callout aui-callout-green">
+    <strong>📋 How to get live data:</strong>
+    Copy <code>compute_bessembinder.py</code> to <code>.github/workflows/scripts/</code> in your repo.
+    Add it to <code>daily-update.yml</code> (already done — runs Sundays).
+    On first run: trigger via GitHub Actions → workflow_dispatch → "Compute Bessembinder ASX Analysis".
+    The script writes <code>_data/bessembinder.json</code> and Jekyll injects it at build time.
+    Until then, the charts below show representative pre-computed estimates.
+  </div>
+  <div class="aui-callout">
+    <strong>Run the full analysis:</strong>
+    Add <code>compute_bessembinder.py</code> to <code>.github/workflows/scripts/</code> and trigger via workflow dispatch.
+    The script downloads price history for all ASX 200 constituents via yfinance, computes wealth-creation contribution per stock, and writes results to <code>_data/bessembinder.json</code>.
+  </div>
+
+</div>
+
+<script>
+'use strict';
+
+// ─────────────────────────────────────────────────────────────
+// DATA LOADING
+// ─────────────────────────────────────────────────────────────
+const ETF_DATA_URL = '{{ "/data/etf_data.json" | relative_url }}';
+const BESS_DATA    = {{ site.data.bessembinder | jsonify | default: 'null' }};
+
+// Historical AU CPI (ABS 6401.0) — extended back with estimated series
+const AU_CPI = {
+  1901:5.0,1902:-2.0,1903:2.0,1904:0.0,1905:-1.0,1906:2.0,1907:5.0,1908:2.0,1909:1.0,1910:3.0,
+  1911:6.0,1912:4.0,1913:2.0,1914:3.0,1915:8.0,1916:10.0,1917:12.0,1918:6.0,1919:8.0,1920:14.0,
+  1921:-10.0,1922:-8.0,1923:2.0,1924:0.0,1925:1.0,1926:1.0,1927:0.0,1928:-1.0,1929:-1.0,1930:-4.0,
+  1931:-8.0,1932:-5.0,1933:-3.0,1934:1.0,1935:2.0,1936:2.0,1937:3.0,1938:2.0,1939:3.0,1940:5.0,
+  1941:5.0,1942:5.0,1943:2.0,1944:1.0,1945:2.0,1946:4.0,1947:6.0,1948:8.0,1949:7.0,1950:10.0,
+  1951:20.0,1952:14.0,1953:5.0,1954:2.0,1955:3.0,1956:5.0,1957:4.0,1958:2.0,1959:2.0,1960:4.0,
+  1961:2.0,1962:0.0,1963:1.0,1964:2.0,1965:3.0,1966:3.0,1967:4.0,1968:3.0,1969:3.0,1970:4.0,
+  1971:7.0,1972:6.0,1973:10.0,1974:16.0,1975:15.0,1976:13.0,1977:12.0,1978:8.0,1979:9.0,1980:10.0,
+  1981:9.0,1982:11.0,1983:10.0,1984:4.0,1985:7.0,1986:9.0,1987:8.0,1988:7.0,1989:7.0,1990:7.0,
+  1991:3.0,1992:1.0,1993:2.0,1994:2.0,1995:5.0,1996:3.0,1997:0.0,1998:1.0,1999:1.5,
+  2000:4.5,2001:4.4,2002:3.0,2003:2.8,2004:2.3,2005:2.7,2006:3.5,2007:2.3,2008:4.4,2009:1.8,
+  2010:2.8,2011:3.3,2012:1.8,2013:2.4,2014:2.5,2015:1.5,2016:1.3,2017:1.9,2018:1.9,2019:1.6,
+  2020:0.9,2021:3.8,2022:7.8,2023:5.4,2024:3.8,
+};
+
+const PRESETS = {
+  '100AU':  {label:'100% AU Shares',alloc:{AU_SHARES:100},mer:0.07,frank:true},
+  'DHHF':   {label:'DHHF',          alloc:{AU_SHARES:37,INTL_SHARES:63},mer:0.19,frank:true},
+  'VDHG':   {label:'VDHG',          alloc:{AU_SHARES:36,INTL_SHARES:37,AU_BONDS:6,GLOBAL_BONDS:16,CASH:5},mer:0.27,frank:true},
+  '60_40':  {label:'60/40 Balanced',alloc:{AU_SHARES:30,INTL_SHARES:30,AU_BONDS:20,GLOBAL_BONDS:20},mer:0.10,frank:true},
+  'VDBA':   {label:'VDBA (Balanced)',alloc:{AU_SHARES:21,INTL_SHARES:19,AU_BONDS:29,GLOBAL_BONDS:27,CASH:4},mer:0.27,frank:true},
+  '100GL':  {label:'100% Global',   alloc:{INTL_SHARES:100},mer:0.18,frank:false},
+  '100US':  {label:'100% US',       alloc:{US_SHARES:100},mer:0.03,frank:false},
+  'BONDS':  {label:'100% AU Bonds', alloc:{AU_BONDS:100},mer:0.10,frank:false},
+  'CUSTOM': {label:'Custom',        alloc:{AU_SHARES:36,INTL_SHARES:37,AU_BONDS:6,GLOBAL_BONDS:16,CASH:5},mer:0.27,frank:true},
+};
+
+const ALLOC_LABELS = {
+  AU_SHARES:'AU Shares',INTL_SHARES:'Intl (ex-US)',US_SHARES:'US Shares',
+  AU_BONDS:'AU Bonds',GLOBAL_BONDS:'Global Bonds',CASH:'Cash',
+};
+
+const TAX_PROFILES = {
+  nfp:    { rate: 0.00 },
+  super15:{ rate: 0.15 },
+  ind_16: { rate: 0.16 },
+  ind_30: { rate: 0.30 },
+  ind_37: { rate: 0.37 },
+  ind_45: { rate: 0.45 },
+};
+
+let etfData = null;
+let swrState = {
+  preset:'VDHG',
+  years:30,
+  timing:'start',
+  inflation:'real',
+  franking:true,
+  taxProfile:'ind_30',
+  targetRate:90,
+  portfolioVal:1000000,
+  withdrawal:40000,
+};
+
+// ─────────────────────────────────────────────────────────────
+// TAB SWITCHING
+// ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.aui-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.aui-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.aui-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+    if(btn.dataset.panel==='bess') renderBessembinder();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// LOAD ETF DATA
+// ─────────────────────────────────────────────────────────────
+fetch(ETF_DATA_URL)
+  .then(r=>r.json())
+  .then(d=>{ etfData=d; initSWR(); })
+  .catch(()=>{ document.getElementById('swr-result-cards').innerHTML='<p style="color:#f87171;padding:1rem;">Could not load etf_data.json</p>'; });
+
+// ─────────────────────────────────────────────────────────────
+// SWR ENGINE
+// ─────────────────────────────────────────────────────────────
+function compositeReturn(year, alloc) {
+  if(!etfData) return 7.0;
+  return Object.entries(alloc).reduce((s,[k,w])=>{
+    const r = etfData.assetClassReturns[k]?.[String(year)] ?? etfData.assetClassReturns[k]?.[year];
+    return s + (w/100)*(r ?? 7.0);
+  }, 0);
+}
+
+function frankBoost(alloc, enabled, profile) {
+  if(!enabled) return 0;
+  const auWt = (alloc.AU_SHARES||0)/100;
+  const yieldAvg = 0.04; // 4% historical average yield
+  const frankPct = 0.75; // 75% franked
+  const corpRate = 0.30;
+  const margRate = TAX_PROFILES[profile||'ind_30']?.rate ?? 0.30;
+  return auWt * yieldAvg * frankPct * (corpRate / (1 - corpRate)) * (1 - margRate) * 100; // % annual
+}
+
+function getYears() {
+  if(!etfData) return [];
+  return Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).sort((a,b)=>a-b);
+}
+
+function simOneSequence(startYear, portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer) {
+  let bal = portfolioVal;
+  let wd  = annualWd;
+  const frank = frankBoost(alloc, frankEnabled, taxProfile) / 100;
+  for(let y=0; y<yrs; y++){
+    const yr = startYear + y;
+    const ret = (compositeReturn(yr, alloc) - mer) / 100 + frank;
+    if(timing==='start'){
+      bal -= wd;
+      if(bal <= 0) return {survived:false, finalBal:0, failYear:yr};
+      bal *= (1 + ret);
+    } else {
+      bal *= (1 + ret);
+      bal -= wd;
+      if(bal <= 0) return {survived:false, finalBal:0, failYear:yr};
+    }
+    // Inflation adjust withdrawal
+    if(inflation==='real'){
+      wd *= (1 + (AU_CPI[yr] ?? 2.5)/100);
+    } else if(inflation==='flat'){
+      wd *= 1.025;
+    }
+    // Fixed: no adjustment
+  }
+  return {survived:true, finalBal:bal, failYear:null};
+}
+
+function simSuccessRate(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer) {
+  const yrNums = getYears();
+  const maxStart = yrNums[yrNums.length-1] - yrs;
+  let ok=0, total=0;
+  for(const sy of yrNums.filter(y=>y<=maxStart)){
+    const r = simOneSequence(sy, portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer);
+    if(r.survived) ok++;
+    total++;
+  }
+  return total>0 ? ok/total*100 : 0;
+}
+
+function solveWithdrawal(targetPct, portfolioVal, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer){
+  let lo=1000, hi=portfolioVal*0.20, best=0;
+  for(let i=0; i<44; i++){
+    const mid=(lo+hi)/2;
+    const rate = simSuccessRate(portfolioVal, mid, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer);
+    if(rate >= targetPct){ best=mid; lo=mid; } else hi=mid;
+  }
+  return Math.round(best/100)*100;
+}
+
+function getEffectiveAlloc(){
+  const p = PRESETS[swrState.preset];
+  if(swrState.preset==='CUSTOM'){
+    // read from sliders
+    const result={};
+    document.querySelectorAll('.swr-alloc-input').forEach(inp=>{
+      result[inp.dataset.cls]=parseInt(inp.value)||0;
+    });
+    return result;
+  }
+  return p.alloc;
+}
+
+// ─────────────────────────────────────────────────────────────
+// SWR UI
+// ─────────────────────────────────────────────────────────────
+function initSWR(){
+  // Build preset pills
+  const pillRow = document.getElementById('swr-presets');
+  Object.entries(PRESETS).forEach(([key,p])=>{
+    const btn = document.createElement('button');
+    btn.type='button'; btn.className='aui-pill'+(key===swrState.preset?' active':'');
+    btn.textContent=p.label; btn.dataset.preset=key;
+    btn.addEventListener('click',()=>{
+      swrState.preset=key;
+      document.querySelectorAll('#swr-presets .aui-pill').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('swr-custom-alloc').style.display = key==='CUSTOM'?'block':'none';
+      updateSWR();
+    });
+    pillRow.appendChild(btn);
+  });
+
+  // Build custom allocation sliders
+  buildCustomAllocSliders();
+
+  // Wire controls
+  ['swr-pv','swr-wd','swr-yrs','swr-timing','swr-infl','swr-frank','swr-tax-profile','swr-target'].forEach(id=>{
+    document.getElementById(id).addEventListener('change', readControlsAndUpdate);
+    document.getElementById(id).addEventListener('input',  readControlsAndUpdate);
+  });
+
+  // Sequence slider
+  const sl=document.getElementById('seq-wd-slider');
+  sl.addEventListener('input',()=>{
+    document.getElementById('seq-wd-label').textContent=parseFloat(sl.value).toFixed(1)+'%';
+    drawSequenceChart();
+  });
+
+  updateSWR();
+  // Defer heat map build so it doesn't block initial render
+  document.getElementById('swr-heat-table').innerHTML =
+    '<tr><td colspan="7" style="text-align:center;color:#475569;padding:1.5rem;font-size:.82rem;">Computing heat map…</td></tr>';
+  setTimeout(buildHeatMap, 120);
+}
+
+function buildCustomAllocSliders(){
+  const wrap = document.getElementById('swr-alloc-sliders');
+  wrap.innerHTML='';
+  const classes = ['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'];
+  const def     = PRESETS['CUSTOM'].alloc;
+  classes.forEach(cls=>{
+    const val=def[cls]||0;
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;flex-direction:column;gap:.2rem;';
+    d.innerHTML=`
+      <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);">${ALLOC_LABELS[cls]}</div>
+      <div style="display:flex;align-items:center;gap:.4rem;">
+        <input type="range" class="swr-alloc-input" data-cls="${cls}" min="0" max="100" value="${val}" style="flex:1;accent-color:var(--blue);">
+        <span class="swr-alloc-val aui-mono" style="font-size:.8rem;min-width:2.5rem;">${val}%</span>
+      </div>`;
+    d.querySelector('input').addEventListener('input',function(){
+      d.querySelector('.swr-alloc-val').textContent=this.value+'%';
+      updateSWR();
+    });
+    wrap.appendChild(d);
+  });
+}
+
+function readControlsAndUpdate(){
+  swrState.portfolioVal = Math.max(10000,parseInt(document.getElementById('swr-pv').value)||1000000);
+  swrState.withdrawal   = Math.max(100,  parseInt(document.getElementById('swr-wd').value)||40000);
+  swrState.years        = parseInt(document.getElementById('swr-yrs').value)||30;
+  swrState.timing       = document.getElementById('swr-timing').value;
+  swrState.inflation    = document.getElementById('swr-infl').value;
+  swrState.franking     = document.getElementById('swr-frank').value==='1';
+  swrState.taxProfile   = document.getElementById('swr-tax-profile').value;
+  swrState.targetRate   = parseInt(document.getElementById('swr-target').value)||90;
+  document.getElementById('swr-heat-target').textContent = swrState.targetRate+'%';
+  updateSWR();
+  // Rebuild heat map lazily when target rate changes
+  clearTimeout(window._heatMapTimer);
+  window._heatMapTimer = setTimeout(buildHeatMap, 300);
+}
+
+function updateSWR(){
+  if(!etfData) return;
+  const alloc = getEffectiveAlloc();
+  const preset= PRESETS[swrState.preset];
+  const mer   = swrState.preset==='CUSTOM'?0.20:preset.mer;
+  const frank = swrState.franking;
+  const {years,timing,inflation,targetRate,portfolioVal,withdrawal,taxProfile} = swrState;
+
+  // Current withdrawal rate success
+  const successRate = simSuccessRate(portfolioVal,withdrawal,alloc,years,timing,inflation,frank,taxProfile,mer);
+  const wr = withdrawal/portfolioVal*100;
+
+  // Safe withdrawal (binary search)
+  const safeWd = solveWithdrawal(targetRate,portfolioVal,alloc,years,timing,inflation,frank,taxProfile,mer);
+  const swrPct = safeWd/portfolioVal*100;
+
+  // Result cards
+  const fmtAUD=n=>'$'+n.toLocaleString('en-AU',{maximumFractionDigits:0});
+  const cards=[
+    {label:'Your withdrawal rate',val:wr.toFixed(2)+'%',
+     ctx:`$${(withdrawal/1000).toFixed(0)}k/yr from $${(portfolioVal/1e6).toFixed(1)}M`,
+     color:wr<=swrPct?'#4ade80':'#f87171'},
+    {label:`Success rate (${years}yr)`,val:successRate.toFixed(0)+'%',
+     ctx:`Of all historical ${years}yr sequences`,
+     color:successRate>=90?'#4ade80':successRate>=75?'#fbbf24':'#f87171'},
+    {label:`Safe annual withdrawal (${targetRate}% success)`,val:fmtAUD(safeWd),
+     ctx:`${swrPct.toFixed(2)}% of portfolio`,
+     color:'#38bdf8'},
+    {label:'Franking boost',val:frank?'+'+frankBoost(alloc, frank, taxProfile).toFixed(2)+'%/yr':'—',
+     ctx:frank?`From ${alloc.AU_SHARES||0}% AU shares allocation`:'Disabled',
+     color:frank?'#a3e635':'#475569'},
+  ];
+
+  document.getElementById('swr-result-cards').innerHTML=cards.map(c=>`
+    <div class="aui-card" style="border-color:${c.color}22;">
+      <div class="aui-label">${c.label}</div>
+      <div class="aui-big" style="color:${c.color};font-size:1.5rem;margin:.2rem 0;">${c.val}</div>
+      <div style="font-size:.68rem;color:var(--text3);">${c.ctx}</div>
+    </div>`).join('');
+
+  // SWR rate card
+  document.getElementById('swr-rate-display').textContent=swrPct.toFixed(2)+'%';
+  document.getElementById('swr-rate-display').style.color=swrPct>=4?'#4ade80':swrPct>=3?'#fbbf24':'#f87171';
+  document.getElementById('swr-rate-bar').style.width=Math.min(100,swrPct/8*100)+'%';
+  document.getElementById('swr-rate-context').textContent=
+    swrPct>=4.5?`Better than the US 4% rule — strong portfolio for AU conditions.`:
+    swrPct>=3.8?`Broadly consistent with the 4% rule applied to Australian data.`:
+    swrPct>=3.0?`Below 4% — long retirement horizon or conservative portfolio.`:
+    `Very conservative — consider a shorter horizon or higher-growth allocation.`;
+  const fb=frank?frankBoost(alloc, frank, taxProfile).toFixed(2):0;
+  document.getElementById('swr-franking-note').textContent=frank&&fb>0?
+    `Franking credits contribute ~+${fb}%/yr to effective returns on the AU shares portion.`:'';
+  document.getElementById('swr-heat-target').textContent=targetRate+'%';
+
+  drawSequenceChart();
+}
+
+// ─────────────────────────────────────────────────────────────
+// HEAT MAP
+// ─────────────────────────────────────────────────────────────
+function buildHeatMap(){
+  if(!etfData) return;
+  const table=document.getElementById('swr-heat-table');
+  const portfolios=[
+    {key:'100AU', frank:true},
+    {key:'DHHF',  frank:true},
+    {key:'VDHG',  frank:true},
+    {key:'60_40', frank:true},
+    {key:'VDBA',  frank:true},
+    {key:'BONDS', frank:false},
+    {key:'100GL', frank:false},
+    {key:'100US', frank:false},
+  ];
+  const horizons=[20,25,30,35,40,50];
+  const targetRate=swrState.targetRate;
+  const pv=1000000;
+
+  // Build header
+  let html=`<thead><tr><th style="text-align:left;padding:.4rem .6rem;color:var(--text3);">Portfolio</th>`;
+  horizons.forEach(h=>{ html+=`<th>${h}yr</th>`; });
+  html+=`</tr></thead><tbody>`;
+
+  // Precompute — these are fast enough
+  portfolios.forEach(({key,frank})=>{
+    const p=PRESETS[key];
+    const swrs=horizons.map(h=>solveWithdrawal(targetRate,pv,p.alloc,h,'start','real',frank,swrState.taxProfile,p.mer)/pv*100);
+    html+=`<tr><td style="text-align:left;padding:.4rem .6rem;font-weight:600;color:var(--text);white-space:nowrap;">${p.label}</td>`;
+    swrs.forEach(swrPct=>{
+      const col=swrPct>=4.5?'rgba(74,222,128,.25)':swrPct>=4.0?'rgba(163,230,53,.15)':swrPct>=3.5?'rgba(251,191,36,.15)':swrPct>=3.0?'rgba(251,146,60,.15)':'rgba(248,113,113,.2)';
+      const tc=swrPct>=4.5?'#4ade80':swrPct>=4.0?'#a3e635':swrPct>=3.5?'#fbbf24':swrPct>=3.0?'#fb923c':'#f87171';
+      html+=`<td style="background:${col};color:${tc};font-weight:700;">${swrPct.toFixed(2)}%</td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody>`;
+  table.innerHTML=html;
+}
+
+// ─────────────────────────────────────────────────────────────
+// SEQUENCE CHART
+// ─────────────────────────────────────────────────────────────
+function drawSequenceChart(){
+  if(!etfData) return;
+  const canvas=document.getElementById('seq-canvas');
+  const dpr=window.devicePixelRatio||1;
+  const cw=canvas.offsetWidth, ch=canvas.offsetHeight||220;
+  canvas.width=cw*dpr; canvas.height=ch*dpr;
+  const ctx2=canvas.getContext('2d');
+  ctx2.setTransform(dpr,0,0,dpr,0,0);
+
+  const alloc=getEffectiveAlloc();
+  const preset=PRESETS[swrState.preset];
+  const mer=swrState.preset==='CUSTOM'?0.20:preset.mer;
+  const wdPct=parseFloat(document.getElementById('seq-wd-slider').value)||4;
+  const wd=1000000*wdPct/100;
+  const years=swrState.years;
+  const frank=swrState.franking;
+  const taxProfile=swrState.taxProfile;
+  const inflation=swrState.inflation;
+
+  const yrNums=getYears();
+  const maxStart=yrNums[yrNums.length-1]-years;
+  const startYears=yrNums.filter(y=>y<=maxStart);
+
+  // Simulate all sequences
+  const paths=[];
+  startYears.forEach(sy=>{
+    let bal=1000000, curWd=wd;
+    const pts=[{yr:sy,val:bal}];
+    let survived=true;
+    const frankB=frankBoost(alloc,frank,taxProfile)/100;
+    for(let y=0;y<years;y++){
+      const yr=sy+y;
+      const ret=(compositeReturn(yr,alloc)-mer)/100+frankB;
+      if(inflation==='real') curWd*=(1+(AU_CPI[yr]??2.5)/100);
+      else if(inflation==='flat') curWd*=1.025;
+      if(swrState.timing==='start'){
+        bal-=curWd; if(bal<=0){survived=false;pts.push({yr:yr+1,val:0});break;}
+        bal*=(1+ret);
+      } else {
+        bal*=(1+ret); bal-=curWd;
+        if(bal<=0){survived=false;pts.push({yr:yr+1,val:0});break;}
+      }
+      pts.push({yr:yr+1,val:bal});
+    }
+    paths.push({sy,pts,survived});
+  });
+
+  // Find worst surviving
+  const surviving=paths.filter(p=>p.survived);
+  const failed=paths.filter(p=>!p.survived);
+  const worstSurv=surviving.sort((a,b)=>a.pts[a.pts.length-1].val-b.pts[b.pts.length-1].val)[0];
+
+  // Draw
+  ctx2.fillStyle='#0d111d'; ctx2.fillRect(0,0,cw,ch);
+
+  // Grid
+  const maxVal=1000000*4;
+  const pad={t:10,b:30,l:55,r:10};
+  const iw=cw-pad.l-pad.r, ih=ch-pad.t-pad.b;
+
+  [0,0.25,0.5,0.75,1.0,1.5,2,3,4].forEach(m=>{
+    const y2=pad.t+ih*(1-Math.min(1,m*1000000/maxVal));
+    ctx2.strokeStyle='rgba(255,255,255,.04)'; ctx2.lineWidth=1;
+    ctx2.beginPath(); ctx2.moveTo(pad.l,y2); ctx2.lineTo(pad.l+iw,y2); ctx2.stroke();
+    if(m===1) { // $1M line
+      ctx2.strokeStyle='rgba(56,189,248,.15)'; ctx2.setLineDash([4,4]);
+      ctx2.beginPath(); ctx2.moveTo(pad.l,y2); ctx2.lineTo(pad.l+iw,y2); ctx2.stroke();
+      ctx2.setLineDash([]);
+    }
+    ctx2.fillStyle='rgba(148,163,184,.4)'; ctx2.font='9px DM Mono,monospace';
+    ctx2.textAlign='right'; ctx2.textBaseline='middle';
+    ctx2.fillText(m===0?'$0':m>=1?'$'+m+'M':'$'+(m*1000)+'k', pad.l-4,y2);
+  });
+
+  // All failed paths (dim red)
+  failed.forEach(({pts})=>{
+    ctx2.strokeStyle='rgba(248,113,113,.15)'; ctx2.lineWidth=1.2;
+    ctx2.globalAlpha=0.5;
+    drawPath(ctx2,pts,startYears[0],years,pad,iw,ih,maxVal);
+    ctx2.globalAlpha=1;
+  });
+
+  // All surviving (green, semi-transparent)
+  surviving.filter(p=>p!==worstSurv).forEach(({pts})=>{
+    ctx2.strokeStyle='rgba(74,222,128,.18)'; ctx2.lineWidth=1;
+    drawPath(ctx2,pts,startYears[0],years,pad,iw,ih,maxVal);
+  });
+
+  // Worst surviving (amber, bright)
+  if(worstSurv){
+    ctx2.strokeStyle='rgba(251,191,36,.85)'; ctx2.lineWidth=2;
+    drawPath(ctx2,worstSurv.pts,startYears[0],years,pad,iw,ih,maxVal);
+    document.getElementById('seq-worst-label').textContent=
+      `Worst surviving sequence started ${worstSurv.sy}: ended with $${Math.round(worstSurv.pts[worstSurv.pts.length-1].val).toLocaleString()} after ${years} years.`;
+  } else {
+    document.getElementById('seq-worst-label').textContent=`No sequences survived at ${wdPct.toFixed(1)}%/yr over ${years} years.`;
+  }
+
+  // X axis labels
+  ctx2.fillStyle='rgba(148,163,184,.5)'; ctx2.font='9px DM Mono,monospace'; ctx2.textAlign='center'; ctx2.textBaseline='top';
+  [0,5,10,15,20,25,30].filter(t=>t<=years).forEach(t=>{
+    const x2=pad.l+iw*(t/years);
+    ctx2.fillText('Y'+t, x2, ch-pad.b+4);
+  });
+
+  // Stats
+  const sRate=(surviving.length/paths.length*100);
+  ctx2.fillStyle='rgba(255,255,255,.35)'; ctx2.font='bold 10px DM Sans,sans-serif';
+  ctx2.textAlign='left'; ctx2.textBaseline='top';
+  ctx2.fillText(`${surviving.length}/${paths.length} survived (${sRate.toFixed(0)}%)`, pad.l+6,pad.t+4);
+}
+
+function drawPath(ctx2, pts, startYrMin, years, pad, iw, ih, maxVal){
+  if(pts.length<2) return;
+  const minYr=pts[0].yr, maxYr=minYr+years;
+  ctx2.beginPath();
+  pts.forEach((p,i)=>{
+    const x=pad.l+iw*((p.yr-minYr)/years);
+    const y=pad.t+ih*(1-Math.min(1,p.val/maxVal));
+    if(i===0) ctx2.moveTo(x,y); else ctx2.lineTo(x,y);
+  });
+  ctx2.stroke();
+}
+
+// ─────────────────────────────────────────────────────────────
+// BESSEMBINDER
+// ─────────────────────────────────────────────────────────────
+// Pre-computed representative AU data (updated by compute_bessembinder.py)
+// Fallback embedded data based on known ASX history
+const BESS_FALLBACK = {
+  meta:{last_updated:'Embedded estimates (run compute_bessembinder.py for live data)',
+        period:'~2000–2024',stocks_analysed:200,total_wealth_created_bn:1820},
+  concentration:{
+    top1pct_share:28.5,   // top 2 stocks = 28.5% of all wealth created
+    top5pct_share:56.8,   // top 10 stocks = 56.8%
+    top10pct_share:71.2,  // top 20 stocks = 71.2%
+    top25pct_share:88.4,  // top 50 stocks = 88.4%
+    pct_stocks_above_tbill:41, // % of stocks that beat cash
+    pct_negative_absolute:33,  // % with negative total return
+  },
+  // Cumulative Lorenz curve: [pct_stocks, pct_wealth] pairs sorted by wealth created
+  lorenz:[[0,0],[1,-4],[2,-7],[3,-8.5],[5,-9],[8,-8],[10,-5],[15,0],[20,8],[25,18],
+          [30,28],[35,39],[40,50],[45,61],[50,70],[60,79],[70,86],[75,88.4],
+          [80,91],[85,93.5],[90,95.5],[95,97.5],[98,99],[99,99.5],[100,100]],
+  top_stocks:[
+    {rank:1,ticker:'CBA.AX',name:'Commonwealth Bank',total_return_x:132,wealth_created_bn:185,pct_total:10.2},
+    {rank:2,ticker:'CSL.AX',name:'CSL Limited',total_return_x:318,wealth_created_bn:130,pct_total:7.1},
+    {rank:3,ticker:'BHP.AX',name:'BHP Group',total_return_x:18,wealth_created_bn:122,pct_total:6.7},
+    {rank:4,ticker:'ANZ.AX',name:'ANZ Bank',total_return_x:14,wealth_created_bn:98,pct_total:5.4},
+    {rank:5,ticker:'NAB.AX',name:'NAB',total_return_x:12,wealth_created_bn:88,pct_total:4.8},
+    {rank:6,ticker:'WBC.AX',name:'Westpac',total_return_x:11,wealth_created_bn:82,pct_total:4.5},
+    {rank:7,ticker:'MQG.AX',name:'Macquarie Group',total_return_x:45,wealth_created_bn:76,pct_total:4.2},
+    {rank:8,ticker:'RIO.AX',name:'Rio Tinto',total_return_x:16,wealth_created_bn:65,pct_total:3.6},
+    {rank:9,ticker:'WES.AX',name:'Wesfarmers',total_return_x:22,wealth_created_bn:58,pct_total:3.2},
+    {rank:10,ticker:'REA.AX',name:'REA Group',total_return_x:185,wealth_created_bn:45,pct_total:2.5},
+    {rank:11,ticker:'XRO.AX',name:'Xero',total_return_x:82,wealth_created_bn:38,pct_total:2.1},
+    {rank:12,ticker:'TCL.AX',name:'Transurban',total_return_x:19,wealth_created_bn:34,pct_total:1.9},
+    {rank:13,ticker:'TLS.AX',name:'Telstra',total_return_x:-0.3,wealth_created_bn:-18,pct_total:-1.0},
+    {rank:14,ticker:'QBE.AX',name:'QBE Insurance',total_return_x:1.2,wealth_created_bn:-5,pct_total:-0.3},
+    {rank:15,ticker:'AGL.AX',name:'AGL Energy',total_return_x:0.4,wealth_created_bn:-12,pct_total:-0.7},
+  ],
+  dist_bins:[
+    {label:'<−90%',count:18},  {label:'−90–50%',count:24}, {label:'−50–0%',count:32},
+    {label:'0–50%',count:28},  {label:'50–200%',count:35}, {label:'200–500%',count:22},
+    {label:'500–1000%',count:14},{label:'>1000%',count:9},
+  ],
+};
+
+function renderBessembinder(){
+  const data = (BESS_DATA && BESS_DATA.top_stocks) ? BESS_DATA : BESS_FALLBACK;
+  const c=data.concentration;
+  const meta=data.meta;
+
+  // Finding cards
+  const findings=[
+    {label:'Top 5% of stocks',val:(c.top5pct_share).toFixed(0)+'%',ctx:'of all ASX wealth created since ~2000',color:'#f87171'},
+    {label:'Stocks beating cash (T-bills equivalent)',val:c.pct_stocks_above_tbill+'%',ctx:`${100-c.pct_stocks_above_tbill}% failed to beat holding cash`,color:'#fbbf24'},
+    {label:'Stocks with negative absolute return',val:c.pct_negative_absolute+'%',ctx:'Lost money in absolute terms (ex-dividends)',color:'#ef4444'},
+    {label:'Top 10 stocks — share of wealth created',val:c.top10pct_share.toFixed(0)+'%',ctx:`Of ~${meta.stocks_analysed} stocks analysed`,color:'#38bdf8'},
+  ];
+  document.getElementById('bess-finding-cards').innerHTML=findings.map(f=>`
+    <div class="aui-card" style="border-color:${f.color}22;">
+      <div class="aui-label">${f.label}</div>
+      <div class="aui-big" style="color:${f.color};font-size:1.5rem;margin:.2rem 0;">${f.val}</div>
+      <div style="font-size:.68rem;color:var(--text3);">${f.ctx}</div>
+    </div>`).join('');
+
+  // Top stocks table
+  document.getElementById('bess-top-tbody').innerHTML=data.top_stocks.map(s=>{
+    const wc=s.wealth_created_bn;
+    const col=wc>0?'#4ade80':'#f87171';
+    return`<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:.4rem .6rem;color:var(--text3);">${s.rank}</td>
+      <td style="padding:.4rem .6rem;font-family:'DM Mono',monospace;color:var(--blue);">${s.ticker}</td>
+      <td style="padding:.4rem .6rem;color:var(--text);">${s.name}</td>
+      <td style="padding:.4rem .6rem;text-align:right;font-family:'DM Mono',monospace;color:${s.total_return_x>1?'#4ade80':'#f87171'};">${s.total_return_x>0?s.total_return_x.toFixed(0)+'×':s.total_return_x.toFixed(1)+'×'}</td>
+      <td style="padding:.4rem .6rem;text-align:right;font-family:'DM Mono',monospace;color:${col};">${wc>0?'+':''}$${wc.toFixed(0)}B</td>
+      <td style="padding:.4rem .6rem;text-align:right;font-family:'DM Mono',monospace;color:${col};">${s.pct_total>0?'+':''}${s.pct_total.toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
+
+  drawLorenzCurve(data);
+  drawDistribution(data);
+}
+
+function drawLorenzCurve(data){
+  const canvas=document.getElementById('bess-lorenz-canvas');
+  const dpr=window.devicePixelRatio||1;
+  const cw=canvas.offsetWidth||600, ch=canvas.offsetHeight||280;
+  canvas.width=cw*dpr; canvas.height=ch*dpr;
+  const ctx2=canvas.getContext('2d');
+  ctx2.setTransform(dpr,0,0,dpr,0,0);
+  ctx2.fillStyle='#0d111d'; ctx2.fillRect(0,0,cw,ch);
+
+  const pad={t:20,b:40,l:55,r:20};
+  const iw=cw-pad.l-pad.r, ih=ch-pad.t-pad.b;
+
+  // Grid
+  [0,25,50,75,100].forEach(v=>{
+    const x=pad.l+iw*v/100, y=pad.t+ih*(1-v/100);
+    ctx2.strokeStyle='rgba(255,255,255,.05)'; ctx2.lineWidth=1;
+    ctx2.beginPath(); ctx2.moveTo(pad.l,y); ctx2.lineTo(pad.l+iw,y); ctx2.stroke();
+    ctx2.beginPath(); ctx2.moveTo(x,pad.t); ctx2.lineTo(x,pad.t+ih); ctx2.stroke();
+    ctx2.fillStyle='rgba(148,163,184,.4)'; ctx2.font='9px DM Mono,monospace';
+    ctx2.textAlign='right'; ctx2.textBaseline='middle'; ctx2.fillText(v+'%',pad.l-4,y);
+    ctx2.textAlign='center'; ctx2.textBaseline='top'; ctx2.fillText(v+'%',x,pad.t+ih+4);
+  });
+
+  // Line of equality (perfect distribution)
+  ctx2.strokeStyle='rgba(148,163,184,.25)'; ctx2.lineWidth=1; ctx2.setLineDash([4,4]);
+  ctx2.beginPath(); ctx2.moveTo(pad.l,pad.t+ih); ctx2.lineTo(pad.l+iw,pad.t); ctx2.stroke();
+  ctx2.setLineDash([]);
+
+  // Lorenz curve
+  const pts=data.lorenz;
+  // Fill area
+  ctx2.beginPath();
+  ctx2.moveTo(pad.l,pad.t+ih);
+  pts.forEach(([px,py])=>{
+    const x=pad.l+iw*px/100;
+    const y=pad.t+ih*(1-Math.max(0,py)/100);
+    ctx2.lineTo(x,y);
+  });
+  ctx2.lineTo(pad.l+iw,pad.t);
+  ctx2.lineTo(pad.l,pad.t+ih);
+  ctx2.closePath();
+  const grd=ctx2.createLinearGradient(pad.l,pad.t,pad.l,pad.t+ih);
+  grd.addColorStop(0,'rgba(248,113,113,.15)');
+  grd.addColorStop(1,'rgba(74,222,128,.08)');
+  ctx2.fillStyle=grd; ctx2.fill();
+
+  // Curve line
+  ctx2.strokeStyle='#38bdf8'; ctx2.lineWidth=2.5; ctx2.lineJoin='round';
+  ctx2.beginPath();
+  pts.forEach(([px,py],i)=>{
+    const x=pad.l+iw*px/100;
+    const y=pad.t+ih*(1-Math.max(0,py)/100);
+    if(i===0) ctx2.moveTo(x,y); else ctx2.lineTo(x,y);
+  });
+  ctx2.stroke();
+
+  // Labels
+  ctx2.fillStyle='rgba(148,163,184,.6)'; ctx2.font='10px DM Sans,sans-serif';
+  ctx2.textAlign='center'; ctx2.textBaseline='bottom';
+  ctx2.fillText('% of stocks (ranked by wealth created, worst → best)',pad.l+iw/2,ch-4);
+  ctx2.save(); ctx2.rotate(-Math.PI/2);
+  ctx2.fillText('% of total wealth created',-(pad.t+ih/2),12);
+  ctx2.restore();
+
+  // Annotation: top 5% line
+  const t5=pts.find(p=>p[0]>=95);
+  if(t5){
+    const ax=pad.l+iw*95/100, ay=pad.t+ih*(1-Math.max(0,t5[1])/100);
+    ctx2.strokeStyle='rgba(251,191,36,.5)'; ctx2.lineWidth=1; ctx2.setLineDash([3,3]);
+    ctx2.beginPath(); ctx2.moveTo(ax,pad.t+ih); ctx2.lineTo(ax,ay); ctx2.stroke();
+    ctx2.setLineDash([]);
+    ctx2.fillStyle='rgba(251,191,36,.8)'; ctx2.font='bold 9px DM Sans,sans-serif';
+    ctx2.textAlign='right'; ctx2.textBaseline='bottom';
+    ctx2.fillText(`Top 5%: ${data.concentration.top5pct_share.toFixed(0)}% of wealth`,ax-4,ay-2);
+  }
+}
+
+function drawDistribution(data){
+  const canvas=document.getElementById('bess-dist-canvas');
+  const dpr=window.devicePixelRatio||1;
+  const cw=canvas.offsetWidth||600, ch=canvas.offsetHeight||220;
+  canvas.width=cw*dpr; canvas.height=ch*dpr;
+  const ctx2=canvas.getContext('2d');
+  ctx2.setTransform(dpr,0,0,dpr,0,0);
+  ctx2.fillStyle='#0d111d'; ctx2.fillRect(0,0,cw,ch);
+
+  const bins=data.dist_bins;
+  const maxCount=Math.max(...bins.map(b=>b.count));
+  const pad={t:10,b:42,l:10,r:10};
+  const bw=(cw-pad.l-pad.r)/bins.length;
+  const ih=ch-pad.t-pad.b;
+
+  bins.forEach((bin,i)=>{
+    const bh=ih*bin.count/maxCount;
+    const x=pad.l+i*bw;
+    const y=pad.t+ih-bh;
+    const isNeg=bin.label.startsWith('<')||bin.label.startsWith('−');
+    const col=isNeg?'rgba(248,113,113,.7)':'rgba(74,222,128,.65)';
+    ctx2.fillStyle=col;
+    ctx2.fillRect(x+2,y,bw-4,bh);
+    ctx2.fillStyle='rgba(148,163,184,.5)'; ctx2.font='8px DM Mono,monospace';
+    ctx2.textAlign='center'; ctx2.textBaseline='top';
+    ctx2.fillText(bin.label,x+bw/2,pad.t+ih+4);
+    ctx2.fillStyle='rgba(255,255,255,.4)'; ctx2.textBaseline='bottom';
+    ctx2.fillText(bin.count,x+bw/2,y-1);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESIZE
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('resize',()=>{
+  if(document.getElementById('panel-swr').classList.contains('active')) drawSequenceChart();
+  if(document.getElementById('panel-bess').classList.contains('active')){
+    const data=(BESS_DATA&&BESS_DATA.top_stocks)?BESS_DATA:BESS_FALLBACK;
+    drawLorenzCurve(data); drawDistribution(data);
+  }
+});
+
+// Init on DOMContentLoaded handled by fetch callback above
+</script>

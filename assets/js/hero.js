@@ -1733,15 +1733,14 @@
     const ph=pw*0.6;
     return {
       x:Math.random()*W*0.9+W*0.05,
-      y:-30-Math.random()*80,
-      vx:(Math.random()-.5)*.4,
-      vy:0.5+Math.random()*0.9,
-      rot:(Math.random()-.5)*.5,
-      spin:(Math.random()-.5)*.025,
+      y:-30-Math.random()*100,
+      vx:(Math.random()-.5)*.18,       // gentle horizontal drift
+      vy:0.08+Math.random()*0.14,      // very slow initial fall (was 0.5–1.4)
+      rot:(Math.random()-.5)*.6,
+      spin:(Math.random()-.5)*.012,    // slow, lazy spin
       w:pw, h:ph,
-      al:0.8+Math.random()*0.18,
+      al:0.85+Math.random()*0.14,
       dead:false,
-      // When being sucked by a pig:
       suckTarget:null, suckSpeed:0,
     };
   }
@@ -2075,7 +2074,7 @@
     });
 
     // Check if any note is in pig suction zone and assign targets
-    // Zone is wide (W/nPigs * 0.72) and tall (full screen above pig)
+    // Zone is wide (W/nPigs × 0.72) but only extends H*0.42 above pigY — notes above that fall freely
     const nLgPigs=lgPigs.length||1;
     const suckHalfW=pig=>Math.max(W/(nLgPigs*2)*0.72, pig.fat*2.8, 120);
     lgNotes.forEach(note=>{
@@ -2084,7 +2083,8 @@
       let best=null, bestDist=Infinity;
       lgPigs.forEach(pig=>{
         const hw=suckHalfW(pig);
-        if(note.x>pig.x-hw&&note.x<pig.x+hw&&note.y<pigY+12){
+        const suckTop=pigY-H*0.42;  // zone ceiling — notes above this fall freely
+        if(note.x>pig.x-hw&&note.x<pig.x+hw&&note.y>suckTop&&note.y<pigY+12){
           const d=Math.abs(note.x-pig.x);
           if(d<bestDist){ bestDist=d; best=pig; }
         }
@@ -2115,9 +2115,11 @@
         const tx=pig.x, ty=pigY-pig.fat*1.1;
         const dx=tx-note.x, dy=ty-note.y;
         const dist=Math.sqrt(dx*dx+dy*dy);
-        note.suckSpeed=Math.min(0.25,note.suckSpeed+0.018);
+        // Accelerate quickly once captured — slow approach then fast snap
+        const pullStrength = dist > 80 ? 0.022 : dist > 30 ? 0.035 : 0.06;
+        note.suckSpeed=Math.min(0.45, note.suckSpeed + pullStrength);
         note.x+=dx*note.suckSpeed; note.y+=dy*note.suckSpeed;
-        note.rot+=0.08;
+        note.rot+=0.12;   // bill spins faster as it's pulled in
         if(dist<10){
           // Absorbed!
           pig.fat=Math.min(pig.maxFat, pig.fat+0.7+Math.random()*0.5);
@@ -2126,12 +2128,13 @@
           note.dead=true;
         }
       } else {
-        // Regular gravity fall
+        // Gentle gravity — slowly accelerates but caps at a soft terminal velocity
+        note.vy = Math.min(note.vy + 0.012, 0.9);   // gravity accel, cap at 0.9px/frame
+        note.vx *= 0.998;                             // very slight air resistance on horizontal
         note.y+=note.vy; note.x+=note.vx; note.rot+=note.spin;
-        // Stop notes from passing the pig tier — if they reach below midY without being grabbed, still catch
         if(note.y>floorY){
-          // Note reached floor without being absorbed — teleport back to top (shouldn't normally happen)
           note.y=-20; note.x=Math.random()*W*.9+W*.05;
+          note.vy=0.08+Math.random()*0.14;            // reset to slow on respawn
         }
       }
       drawNote(note);

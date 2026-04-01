@@ -240,3 +240,105 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  compute-bessembinder:
+    name: Compute Bessembinder ASX Analysis
+    runs-on: ubuntu-latest
+    needs: update-etf-data
+    # Run weekly on Sundays (not daily — yfinance calls for ~200 tickers takes ~10 min)
+    if: |
+      always() && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'schedule' && github.event.schedule == '0 21 * * 0')
+      )
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install yfinance pandas numpy --break-system-packages
+
+      - name: Run Bessembinder analysis
+        run: |
+          SCRIPT=".github/workflows/scripts/compute_bessembinder.py"
+          if [ -f "$SCRIPT" ]; then
+            python3 "$SCRIPT"
+          else
+            echo "Script not found at $SCRIPT — skipping"
+          fi
+        continue-on-error: true
+
+      - name: Commit and push
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name  "github-actions[bot]"
+          git pull --rebase origin ${{ github.ref_name }} 2>/dev/null || true
+          git add _data/bessembinder.json data/bessembinder.json 2>/dev/null || true
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update Bessembinder ASX analysis $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  scrape-qantas-fares:
+    name: Scrape Qantas Fare Data
+    runs-on: ubuntu-latest
+    needs: update-frequent-flyer
+    # Run weekly on Mondays (same as FF data)
+    if: |
+      always() && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'schedule' && github.event.schedule == '0 21 * * 1')
+      )
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Playwright
+        run: |
+          pip install playwright --break-system-packages
+          playwright install chromium --with-deps
+
+      - name: Scrape Qantas fares
+        run: |
+          SCRIPT=".github/workflows/scripts/scrape_qantas_fares.py"
+          if [ -f "$SCRIPT" ]; then
+            python3 "$SCRIPT"
+          else
+            echo "Script not found at $SCRIPT — skipping"
+          fi
+        continue-on-error: true
+
+      - name: Commit and push
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name  "github-actions[bot]"
+          git pull --rebase origin ${{ github.ref_name }} 2>/dev/null || true
+          git add _data/qantas_fares.json data/qantas_fares.json 2>/dev/null || true
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update Qantas fare data $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

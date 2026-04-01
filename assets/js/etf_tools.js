@@ -1297,7 +1297,7 @@ function simSuccessRate(portfolioValue, annualWithdrawal) {
       const ret = (compositeReturn(startYear+y)/100) + frankBoost;
       if (timing==='start') { bal-=wd; if(bal<=0){ok=false;break;} bal*=(1+ret); }
       else { bal*=(1+ret); bal-=wd; if(bal<=0){ok=false;break;} }
-      if (inflationAdjust) wd*=(1+inflationRate/100);
+      if (inflationAdjust) wd*=(1+(AU_CPI_YR[startYear+y] ?? inflationRate)/100);
     }
     if(ok) succN++; total++;
   }
@@ -1365,7 +1365,7 @@ function runSims() {
         bal -= wd;
         if(bal<=0){ survived=false; depletedYear=calYr; bal=0; }
       }
-      if(inflationAdjust) wd *= (1+inflationRate/100);
+      if(inflationAdjust) wd *= (1+(AU_CPI_YR[calYr] ?? inflationRate)/100);
       path.push({yr:y+1, v:Math.max(0,Math.round(bal)), calYr:calYr+1});
       if(!survived){
         for(let r=y+2;r<=retirementYears;r++) path.push({yr:r,v:0,calYr:startYear+r});
@@ -1546,7 +1546,7 @@ function renderRetirement() {
           <span style="color:var(--text-secondary);">%</span>
         </div>
         <div style="font-size:.65rem;color:#475569;margin-top:.2rem;">
-          Long-run Aus avg ≈ 2.7% p.a. (ABS, 2000–2024). 2.5% = RBA mid-band.
+          Uses real historical ABS CPI per year. The rate above is used as a fallback.
         </div>
       </div>
     </div>
@@ -1687,7 +1687,7 @@ function renderRetirement() {
               Based on ${sims.length} historical windows (${sims[0]?.startYear}–${sims[sims.length-1]?.startYear}).
               Uses current preset: <strong style="color:#94a3b8;">${retAutoState.useCustomAlloc?'Custom':preset}</strong>,
               MER <strong style="color:#94a3b8;">${effectiveMER.toFixed(2)}%</strong>,
-              ${inflationAdjust?`inflation-adj ${inflationRate}%`:'fixed withdrawal'}.
+              ${inflationAdjust?`inflation-adj (historical CPI, fallback ${inflationRate}%)`:'fixed withdrawal'}.
               ${frankingMode?`Franking +${frankBoostPct.toFixed(2)}% p.a.`:''}
             </div>
           </div>`:''}
@@ -1909,7 +1909,7 @@ function dlPortCSV() {
 function dlRetCSV() {
   const sims=runSims();
   csvDL([
-    `Preset: ${retState.useCustomAlloc?'Custom':retState.preset} | MER: ${getEffectiveMER().toFixed(2)}% | Withdrawal: $${retState.annualWithdrawal} (${(retState.annualWithdrawal/retState.portfolioValue*100).toFixed(2)}%) | Duration: ${retState.retirementYears}yr | Inflation adj: ${retState.inflationAdjust?retState.inflationRate+'%':'No'}`,
+    `Preset: ${retState.useCustomAlloc?'Custom':retState.preset} | MER: ${getEffectiveMER().toFixed(2)}% | Withdrawal: $${retState.annualWithdrawal} (${(retState.annualWithdrawal/retState.portfolioValue*100).toFixed(2)}%) | Duration: ${retState.retirementYears}yr | Inflation adj: ${retState.inflationAdjust?'Historical CPI (fallback '+retState.inflationRate+'%)':'No'}`,
     '',
     ['Start Year','Survived','Depleted Year','Final Value (AUD)','Initial Withdrawal (AUD)','Pre-1970 estimate'],
     ...sims.map(s=>[s.startYear, s.survived?'Yes':'No', s.depletedYear||'N/A', s.finalValue, s.wd0, s.earlyEst?'Yes':'No'])

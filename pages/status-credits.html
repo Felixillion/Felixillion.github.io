@@ -1,0 +1,1423 @@
+---
+layout: default
+title: Qantas Status Credits Optimizer
+permalink: /status-credits.html
+description: "Find the best Qantas flights for status credits per dollar. Multi-leg optimizer, double SC calculator, and fare class earning table."
+---
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#080c14;--surface:#0f1623;--surface2:#182033;--border:rgba(255,255,255,.07);
+  --text:#e8ecf4;--text2:#8fa3c0;--text3:#3d5270;
+  --red:#f87171;--red-bg:rgba(248,113,113,.08);
+  --amber:#fbbf24;--amber-bg:rgba(251,191,36,.08);
+  --green:#4ade80;--green-bg:rgba(74,222,128,.08);
+  --blue:#38bdf8;--blue-bg:rgba(56,189,248,.08);
+  --qred:#e4002b;--qred-dim:rgba(228,0,43,.12);  /* Qantas red */
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* ── hero ── */
+.sc-hero{max-width:1020px;margin:0 auto;padding:3.5rem 1.5rem 1rem;}
+.sc-hero-title{
+  font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800;
+  line-height:1.05;letter-spacing:-.04em;color:#e8ecf4;margin-bottom:.5rem;
+}
+.sc-hero-title span{color:var(--qred);}
+.sc-hero-sub{color:var(--text2);font-size:.93rem;line-height:1.65;max-width:620px;margin-bottom:1.2rem;}
+.sc-status-bar{
+  display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;
+  font-size:.68rem;color:var(--text3);margin-bottom:.5rem;
+}
+.sc-status-pill{
+  padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);
+  background:var(--surface);font-family:'DM Mono',monospace;
+}
+
+/* ── tabs ── */
+.sc-tabs{
+  display:flex;gap:.35rem;flex-wrap:wrap;padding:.35rem;
+  background:var(--surface);border-radius:12px;border:1px solid var(--border);
+  margin-bottom:1.5rem;max-width:1020px;margin-left:auto;margin-right:auto;
+  position:sticky;top:56px;z-index:80;backdrop-filter:blur(14px);
+}
+.sc-tab{
+  padding:.42rem .9rem;border-radius:9px;border:none;background:transparent;
+  color:var(--text2);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;
+  cursor:pointer;transition:all .13s;white-space:nowrap;
+}
+.sc-tab.active{background:rgba(228,0,43,.2);color:#ff8a97;font-weight:700;}
+.sc-tab:hover:not(.active){background:rgba(255,255,255,.05);color:var(--text);}
+
+.sc-panel{display:none;max-width:1020px;margin:0 auto;padding:0 1.5rem 4rem;}
+.sc-panel.active{display:block;}
+
+/* ── cards ── */
+.sc-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:1.1rem 1.3rem;margin-bottom:.9rem;
+}
+.sc-callout{
+  border-left:3px solid var(--blue);background:var(--blue-bg);
+  border-radius:0 10px 10px 0;padding:.7rem 1rem;margin-bottom:.9rem;
+  font-size:.82rem;color:var(--text2);line-height:1.65;
+}
+.sc-callout.amber{border-left-color:var(--amber);background:var(--amber-bg);}
+.sc-callout.green{border-left-color:var(--green);background:var(--green-bg);}
+.sc-callout.red{border-left-color:var(--qred);background:var(--qred-dim);}
+
+.sc-sec-title{
+  font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
+  color:var(--text);margin:.85rem 0 .5rem;letter-spacing:-.01em;
+}
+.sc-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);margin-bottom:.25rem;}
+.sc-big{font-family:'DM Mono',monospace;font-size:1.7rem;font-weight:500;letter-spacing:-.04em;}
+.sc-mono{font-family:'DM Mono',monospace;}
+
+/* ── controls ── */
+.sc-ctrl-row{display:flex;flex-wrap:wrap;gap:.65rem;align-items:flex-end;margin-bottom:.75rem;}
+.sc-ctrl{display:flex;flex-direction:column;gap:.28rem;}
+.sc-ctrl label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);}
+.sc-ctrl select,.sc-ctrl input[type=number],.sc-ctrl input[type=text]{
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);padding:.38rem .6rem;font-family:'DM Sans',sans-serif;font-size:.83rem;
+  outline:none;min-width:120px;
+}
+.sc-ctrl select:focus,.sc-ctrl input:focus{border-color:rgba(228,0,43,.4);}
+
+.sc-btn{
+  padding:.42rem .9rem;border-radius:8px;border:1px solid var(--border);
+  background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;
+  font-size:.78rem;cursor:pointer;transition:all .12s;
+}
+.sc-btn.primary{background:rgba(228,0,43,.2);border-color:rgba(228,0,43,.4);color:#ff8a97;font-weight:700;}
+.sc-btn.primary:hover{background:rgba(228,0,43,.35);}
+.sc-btn:hover:not(.primary){background:rgba(255,255,255,.06);color:var(--text);}
+
+/* ── route table ── */
+.sc-route-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.sc-route-table th{
+  padding:.4rem .6rem;text-align:left;color:var(--text3);font-weight:600;
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+.sc-route-table th.right{text-align:right;}
+.sc-route-table td{padding:.45rem .6rem;border-bottom:1px solid rgba(255,255,255,.03);}
+.sc-route-table td.right{text-align:right;font-family:'DM Mono',monospace;}
+.sc-route-table tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── leg builder ── */
+.sc-leg{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  padding:.7rem .9rem;margin-bottom:.5rem;
+}
+.sc-leg-badge{
+  font-family:'DM Mono',monospace;font-size:.72rem;padding:.2rem .45rem;
+  border-radius:4px;background:rgba(228,0,43,.15);color:#ff8a97;font-weight:700;
+}
+
+/* ── fare class grid ── */
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:.5rem;margin-bottom:1rem;}
+.fc-pill{
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:.55rem .7rem;cursor:pointer;transition:all .12s;
+}
+.fc-pill:hover{border-color:rgba(228,0,43,.35);background:rgba(228,0,43,.06);}
+.fc-pill.selected{border-color:rgba(228,0,43,.5);background:rgba(228,0,43,.12);}
+.fc-pill .fc-class{font-family:'DM Mono',monospace;font-size:1rem;font-weight:700;color:var(--text);}
+.fc-pill .fc-name{font-size:.63rem;color:var(--text3);margin:.1rem 0 .18rem;}
+.fc-pill .fc-rate{font-size:.78rem;font-weight:700;}
+
+/* ── double SC banner ── */
+.double-sc-banner{
+  background:linear-gradient(135deg,rgba(228,0,43,.18),rgba(251,191,36,.12));
+  border:1px solid rgba(228,0,43,.3);border-radius:12px;
+  padding:.75rem 1.1rem;margin-bottom:1rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+}
+.double-sc-banner .dsb-label{font-size:.7rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;}
+.double-sc-toggle{
+  display:flex;align-items:center;gap:.4rem;cursor:pointer;
+}
+.dsb-switch{
+  width:38px;height:20px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);
+  position:relative;transition:background .2s;cursor:pointer;
+}
+.dsb-switch.on{background:rgba(228,0,43,.6);}
+.dsb-switch::after{
+  content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;
+  border-radius:50%;background:#e8ecf4;transition:transform .2s;
+}
+.dsb-switch.on::after{transform:translateX(18px);}
+
+/* ── SC meter bar ── */
+.sc-meter-wrap{background:var(--surface2);border-radius:6px;height:8px;overflow:hidden;margin:.3rem 0;}
+.sc-meter-fill{height:100%;border-radius:6px;transition:width .4s;background:linear-gradient(90deg,var(--qred),var(--amber));}
+
+.sc-mult-pill{
+  padding:.28rem .7rem;border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--text2);font-size:.72rem;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-weight:600;transition:all .12s;
+}
+.sc-mult-pill.active{background:rgba(228,0,43,.2);border-color:var(--qred);color:#ff8a97;}
+.sc-mult-pill[data-mult="2"].active{background:rgba(251,191,36,.2);border-color:var(--amber);color:var(--amber);}
+.sc-mult-pill[data-mult="3"].active{background:rgba(74,222,128,.2);border-color:var(--green);color:var(--green);}
+.sc-mult-pill[data-mult="4"].active{background:rgba(192,132,252,.2);border-color:#c084fc;color:#c084fc;}
+
+/* ── responsive ── */
+.sc-g2{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
+.sc-g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;}
+@media(max-width:640px){
+  .sc-tabs{top:52px;} .sc-route-table{font-size:.7rem;}
+  .sc-route-table th,.sc-route-table td{padding:.35rem .4rem;}
+}
+</style>
+
+<div class="sc-hero">
+  <div class="sc-hero-title">Qantas <span>Status Credits</span> Optimizer</div>
+  <div class="sc-hero-sub">
+    Find the best flights for status credits per dollar — including multi-leg routes that earn
+    more by splitting one journey into separate segments. Toggle double SC periods to see real-time adjusted rankings.
+  </div>
+  <div class="sc-status-bar">
+    <span>Data source:</span>
+    <span class="sc-status-pill">QF Earning Table (published)</span>
+    <span class="sc-status-pill">Route prices: <span id="sc-price-freshness">manually updated</span></span>
+    <span class="sc-status-pill" id="sc-last-update"></span>
+  </div>
+</div>
+
+<!-- Double SC banner -->
+<div style="max-width:1020px;margin:0 auto;padding:0 1.5rem;">
+  <div class="double-sc-banner" id="dsb-banner" style="flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div class="dsb-label">⚡ Status Credits Bonus Period</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-top:.2rem;">
+        Select your bonus multiplier — check <a href="https://www.qantas.com/au/en/frequent-flyer/earn-points/qantas-status-credits.html" target="_blank" rel="noopener" style="color:#ff8a97;">Qantas promos ↗</a> for current offer.
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+      <span style="font-size:.7rem;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Multiplier:</span>
+      <div id="sc-multiplier-pills" style="display:flex;gap:.35rem;">
+        <button type="button" class="sc-mult-pill active" data-mult="1">1× (Normal)</button>
+        <button type="button" class="sc-mult-pill" data-mult="2">2× Double</button>
+        <button type="button" class="sc-mult-pill" data-mult="3">3× Triple</button>
+        <button type="button" class="sc-mult-pill" data-mult="4">4×</button>
+      </div>
+      <span id="dsb-label" style="font-size:.8rem;font-weight:700;color:var(--amber);min-width:7rem;"></span>
+    </div>
+  </div>
+</div>
+
+<div class="sc-tabs" id="sc-tabs">
+  <button type="button" class="sc-tab active" data-panel="optimizer">🏆 Route Optimizer</button>
+  <button type="button" class="sc-tab" data-panel="builder">✈️ Trip Builder</button>
+  <button type="button" class="sc-tab" data-panel="table">📋 Earning Table</button>
+  <button type="button" class="sc-tab" data-panel="goals">🎯 Status Goals</button>
+  <button type="button" class="sc-tab" data-panel="finder">🤖 SC Finder</button>
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL 1 — ROUTE OPTIMIZER
+════════════════════════════════════ -->
+<div class="sc-panel active" id="panel-optimizer">
+
+  <div class="sc-callout">
+    Routes ranked by <strong>status credits per $100 spent</strong> at current typical cheapest fares (Economy Starter / Red e-Deal fares ~25% earn).
+    Update the fare class and your actual price to get exact SC/$ for any booking.
+    <strong>Key insight:</strong> a multi-leg routing (e.g. SYD→BNE + BNE→MEL) earns SC on each segment separately — often more total SC than a direct flight for a similar price.
+  </div>
+
+  <div class="sc-card">
+    <div class="sc-ctrl-row">
+      <div class="sc-ctrl">
+        <label>Fare class</label>
+        <select id="opt-fareclass">
+          <option value="S">S/N — Starter (25%)</option>
+          <option value="L">L/V — Saver (50%)</option>
+          <option value="M">M/K — Semi-flex (75%)</option>
+          <option value="Y" selected>Y/B/H — Flex (100%)</option>
+          <option value="D">D/I — Business Saver (125%)</option>
+          <option value="J">J/C — Business Flex (150%)</option>
+        </select>
+      </div>
+      <div class="sc-ctrl">
+        <label>Origin hub</label>
+        <select id="opt-origin">
+          <option value="ALL">All origins</option>
+          <option value="SYD" selected>Sydney (SYD)</option>
+          <option value="MEL">Melbourne (MEL)</option>
+          <option value="BNE">Brisbane (BNE)</option>
+          <option value="ADL">Adelaide (ADL)</option>
+          <option value="PER">Perth (PER)</option>
+        </select>
+      </div>
+      <div class="sc-ctrl">
+        <label>Return trip?</label>
+        <select id="opt-return">
+          <option value="1">One-way</option>
+          <option value="2" selected>Return (×2)</option>
+        </select>
+      </div>
+      <div class="sc-ctrl">
+        <label>Show top</label>
+        <select id="opt-top">
+          <option value="10">10 routes</option>
+          <option value="20" selected>20 routes</option>
+          <option value="50">All routes</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+      <button type="button" class="sc-btn primary" onclick="renderOptimizer()">Recalculate</button>
+      <div style="font-size:.72rem;color:var(--text3);">Click a row to add to Trip Builder →</div>
+    </div>
+  </div>
+
+  <div id="sc-optimizer-table-wrap" style="overflow-x:auto;"></div>
+
+  <!-- Multi-leg insight section -->
+  <div class="sc-sec-title">💡 Multi-Leg Advantage — Reroutes &amp; Status Runs</div>
+  <div class="sc-callout amber">
+    When you book via a connecting city, each segment earns status credits separately.
+    A SYD→MEL direct earns 20 SC. The same journey via BNE earns 40 SC — for the same price.
+    The "Status Run" category shows full day-return trips optimised purely for SC accumulation.
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem;" id="ml-cat-pills">
+    <button type="button" class="sc-mult-pill active" data-cat="domestic">Connecting flights</button>
+    <button type="button" class="sc-mult-pill" data-cat="status-run">Status runs (day trips)</button>
+    <button type="button" class="sc-mult-pill" data-cat="all">Show all</button>
+  </div>
+  <div id="sc-multileg-cards" class="sc-g2" style="margin-bottom:1.5rem;"></div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL 2 — TRIP BUILDER
+════════════════════════════════════ -->
+<div class="sc-panel" id="panel-builder">
+
+  <div class="sc-callout">
+    Build a multi-leg itinerary and see total status credits, total cost, and SC/$ ratio.
+    <strong>Tip:</strong> add the same legs in reverse for a return trip.
+  </div>
+
+  <!-- Add a leg -->
+  <div class="sc-card">
+    <div class="sc-sec-title">Add a Flight Leg</div>
+    <div class="sc-ctrl-row" style="align-items:flex-end;">
+      <div class="sc-ctrl">
+        <label>From</label>
+        <select id="leg-from">
+          <option value="SYD">SYD — Sydney</option>
+          <option value="MEL">MEL — Melbourne</option>
+          <option value="BNE">BNE — Brisbane</option>
+          <option value="ADL">ADL — Adelaide</option>
+          <option value="PER">PER — Perth</option>
+          <option value="CBR">CBR — Canberra</option>
+          <option value="CNS">CNS — Cairns</option>
+          <option value="DRW">DRW — Darwin</option>
+          <option value="OOL">OOL — Gold Coast</option>
+          <option value="HBA">HBA — Hobart</option>
+          <option value="LST">LST — Launceston</option>
+          <option value="MKY">MKY — Mackay</option>
+          <option value="TSV">TSV — Townsville</option>
+          <option value="ROK">ROK — Rockhampton</option>
+          <option value="NTL">NTL — Newcastle</option>
+          <option value="WLG">WLG — Wellington NZ</option>
+          <option value="AKL">AKL — Auckland NZ</option>
+          <option value="CHC">CHC — Christchurch NZ</option>
+        </select>
+      </div>
+      <div class="sc-ctrl">
+        <label>To</label>
+        <select id="leg-to">
+          <option value="MEL">MEL — Melbourne</option>
+          <option value="SYD">SYD — Sydney</option>
+          <option value="BNE">BNE — Brisbane</option>
+          <option value="ADL">ADL — Adelaide</option>
+          <option value="PER">PER — Perth</option>
+          <option value="CBR">CBR — Canberra</option>
+          <option value="CNS">CNS — Cairns</option>
+          <option value="DRW">DRW — Darwin</option>
+          <option value="OOL">OOL — Gold Coast</option>
+          <option value="HBA">HBA — Hobart</option>
+          <option value="WLG">WLG — Wellington NZ</option>
+          <option value="AKL">AKL — Auckland NZ</option>
+        </select>
+      </div>
+      <div class="sc-ctrl">
+        <label>Fare class</label>
+        <select id="leg-fareclass">
+          <option value="Q">Q — Red e-Deal (25%)</option>
+          <option value="S">S/N — Starter (25%)</option>
+          <option value="L">L/V — Saver (50%)</option>
+          <option value="M">M/K — Semi-flex (75%)</option>
+          <option value="Y" selected>Y/B/H — Flex (100%)</option>
+          <option value="D">D/I — Business Saver (125%)</option>
+          <option value="J">J/C — Business Flex (150%)</option>
+          <option value="R">R — Classic Award (0%)</option>
+        </select>
+      </div>
+      <div class="sc-ctrl">
+        <label>Price paid ($)</label>
+        <input type="number" id="leg-price" value="200" min="0" step="10">
+      </div>
+      <div class="sc-ctrl">
+        <label>Passengers</label>
+        <input type="number" id="leg-pax" value="1" min="1" max="9">
+      </div>
+      <button type="button" class="sc-btn primary" onclick="addLeg()">+ Add Leg</button>
+    </div>
+    <div style="font-size:.68rem;color:var(--text3);margin-top:.35rem;">
+      If route not listed, enter custom base SC:
+      <input type="number" id="leg-custom-sc" placeholder="custom SC (optional)" min="0" max="200" style="width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.25rem .4rem;color:var(--text);font-size:.72rem;">
+    </div>
+  </div>
+
+  <!-- Legs list -->
+  <div id="sc-legs-list"></div>
+
+  <!-- Totals -->
+  <div class="sc-card" id="sc-trip-totals" style="display:none;">
+    <div class="sc-sec-title">Trip Summary</div>
+    <div class="sc-g3" id="sc-totals-grid"></div>
+    <div style="margin-top:.75rem;" id="sc-totals-breakdown"></div>
+  </div>
+
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;">
+    <button type="button" class="sc-btn primary" onclick="addReturnLegs()">↩ Add Return Legs</button>
+    <button type="button" class="sc-btn" onclick="clearLegs()">✕ Clear All</button>
+  </div>
+
+  <!-- Comparison: direct vs multi-leg -->
+  <div class="sc-sec-title" style="margin-top:1rem;">Direct vs Multi-Leg Comparison</div>
+  <div id="sc-comparison-card" style="display:none;"></div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL 3 — EARNING TABLE
+════════════════════════════════════ -->
+<div class="sc-panel" id="panel-table">
+
+  <div class="sc-callout">
+    Qantas status credits earned per flight segment on <strong>QF-operated flights</strong>.
+    Base credits × booking class rate = actual SCs earned.
+    Partner airlines (Jetstar, American, British Airways, etc.) use different rates — see their own earning pages.
+  </div>
+
+  <div class="sc-sec-title">Booking Class Earning Rates</div>
+  <div class="fc-grid" id="fc-grid"></div>
+
+  <div class="sc-sec-title">Domestic Route Base Credits (at 100% / Y class)</div>
+  <div class="sc-callout amber">
+    Prices shown are <strong>typical cheapest fare ranges</strong> and require manual updates.
+    Run <code>scrape_qantas_fares.py</code> to fetch current best fares from the Qantas website.
+    Last updated: <span id="fare-update-date">manually set</span>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="sc-route-table" id="full-route-table">
+      <thead>
+        <tr>
+          <th>Route</th>
+          <th class="right">Base SC</th>
+          <th class="right">Typical cheapest</th>
+          <th class="right">SC at 25%</th>
+          <th class="right">SC at 50%</th>
+          <th class="right">SC at 100%</th>
+          <th class="right">SC at 150%</th>
+          <th class="right">SC/$ (100%, typical)</th>
+        </tr>
+      </thead>
+      <tbody id="route-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- International routes -->
+  <div class="sc-sec-title" style="margin-top:1.5rem;">International Routes</div>
+  <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.65rem;" id="intl-zone-pills">
+    <button type="button" class="sc-mult-pill active" data-zone="ALL">All regions</button>
+    <button type="button" class="sc-mult-pill" data-zone="NZ">Trans-Tasman</button>
+    <button type="button" class="sc-mult-pill" data-zone="Pacific">Pacific</button>
+    <button type="button" class="sc-mult-pill" data-zone="SE Asia">SE Asia</button>
+    <button type="button" class="sc-mult-pill" data-zone="N Asia">N Asia</button>
+    <button type="button" class="sc-mult-pill" data-zone="Americas">Americas</button>
+    <button type="button" class="sc-mult-pill" data-zone="Europe">Europe</button>
+    <button type="button" class="sc-mult-pill" data-zone="ME/India">ME/India</button>
+  </div>
+  <div style="overflow-x:auto;margin-bottom:1.5rem;">
+    <table class="sc-route-table" id="intl-route-table">
+      <thead><tr>
+        <th>Route</th>
+        <th class="right" style="font-size:.65rem;">By fare class</th>
+        <th class="right">Y Flex SC</th>
+        <th class="right">Cheapest</th>
+        <th class="right">SC/$100</th>
+      </tr></thead>
+      <tbody id="intl-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════
+     PANEL 4 — STATUS GOALS
+════════════════════════════════════ -->
+<div class="sc-panel" id="panel-goals">
+
+  <div class="sc-callout">
+    How many flights does it take to reach or maintain your Qantas status tier?
+    Enter your current SC balance and how many more you need — or let the tool calculate from scratch.
+  </div>
+
+  <div class="sc-card">
+    <div class="sc-sec-title">Your Status Goal</div>
+    <div class="sc-ctrl-row">
+      <div class="sc-ctrl">
+        <label>Current status</label>
+        <select id="goal-current">
+          <option value="0">No status</option>
+          <option value="1">Bronze (140 SC)</option>
+          <option value="2" selected>Silver (280 SC)</option>
+          <option value="3">Gold (700 SC)</option>
+          <option value="4">Platinum (1400 SC)</option>
+          <option value="5">Platinum One (3600 SC)</option>
+        </select>
+      </div>
+      <div class="sc-ctrl">
+        <label>Target status</label>
+        <select id="goal-target">
+          <option value="1">Bronze (140 SC)</option>
+          <option value="2">Silver (280 SC)</option>
+          <option value="3" selected>Gold (700 SC)</option>
+          <option value="4">Platinum (1400 SC)</option>
+          <option value="5">Platinum One (3600 SC)</option>
+        </select>
+      </div>
+      <div class="sc-ctrl">
+        <label>SC already earned (year-to-date)</label>
+        <input type="number" id="goal-sc-ytd" value="0" min="0" max="5000" step="10">
+      </div>
+      <div class="sc-ctrl">
+        <label>Budget ($)</label>
+        <input type="number" id="goal-budget" value="1500" min="100" step="100">
+      </div>
+      <div class="sc-ctrl">
+        <label>Fare class</label>
+        <select id="goal-fareclass">
+          <option value="S">Starter (25%)</option>
+          <option value="L">Saver (50%)</option>
+          <option value="Y" selected>Flex (100%)</option>
+          <option value="J">Business Flex (150%)</option>
+        </select>
+      </div>
+    </div>
+    <button type="button" class="sc-btn primary" onclick="renderGoals()">Calculate</button>
+  </div>
+
+  <!-- Results -->
+  <div id="sc-goals-result"></div>
+
+  <!-- Status tiers reference -->
+  <div class="sc-sec-title">Qantas Status Tiers</div>
+  <div class="sc-g3" style="margin-bottom:1rem;">
+    <div class="sc-card" style="border-color:rgba(205,127,50,.3);">
+      <div class="sc-label" style="color:#cd7f32;">🥉 Bronze</div>
+      <div class="sc-big" style="font-size:1.2rem;color:#cd7f32;">140 SC</div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:.3rem;">+ booking requirement (4 eligible flights/yr). Priority boarding, limited lounge access.</div>
+    </div>
+    <div class="sc-card" style="border-color:rgba(192,192,192,.3);">
+      <div class="sc-label" style="color:#c0c0c0;">🥈 Silver</div>
+      <div class="sc-big" style="font-size:1.2rem;color:#c0c0c0;">280 SC</div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:.3rem;">+ 4 eligible flights. Same-day standby, complimentary checked bag, 40% bonus points.</div>
+    </div>
+    <div class="sc-card" style="border-color:rgba(212,175,55,.3);">
+      <div class="sc-label" style="color:#d4af37;">🥇 Gold</div>
+      <div class="sc-big" style="font-size:1.2rem;color:#d4af37;">700 SC</div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:.3rem;">Qantas Club lounge, upgrades, 60% bonus points, companion lounge passes.</div>
+    </div>
+    <div class="sc-card" style="border-color:rgba(229,161,0,.4);">
+      <div class="sc-label" style="color:#e5a100;">🏅 Platinum</div>
+      <div class="sc-big" style="font-size:1.2rem;color:#e5a100;">1,400 SC</div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:.3rem;">Chairman's Lounge eligibility, business upgrades, 100% bonus points.</div>
+    </div>
+    <div class="sc-card" style="border-color:rgba(228,0,43,.3);">
+      <div class="sc-label" style="color:#e4002b;">💎 Platinum One</div>
+      <div class="sc-big" style="font-size:1.2rem;color:#e4002b;">3,600 SC</div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:.3rem;">Invitation-only effectively. Personal account manager, first-class upgrades.</div>
+    </div>
+  </div>
+
+  <div class="sc-callout">
+    <strong>Note on status retention:</strong> Status credits must be earned within a 12-month rolling window. You also need a minimum number of eligible flights (not just SC) for Bronze and Silver. Points Club and Points Club Plus are separate and based on Qantas Points earned, not SC.
+    <br><br>
+    <a href="https://www.qantas.com/au/en/frequent-flyer/earn-points/qantas-status-credits.html" target="_blank" rel="noopener" style="color:#ff8a97;">↗ Qantas official SC earning page</a>
+  </div>
+
+</div>
+<!-- ════════════════════════════════════
+     PANEL 5 — SC FINDER (AI)
+════════════════════════════════════ -->
+<div class="sc-panel" id="panel-finder">
+  <div class="sc-callout">
+    Describe your situation and the AI will recommend the best status credit strategy — including multi-leg routings, bonus period tactics, and cheapest path to your next tier.
+    <strong>Examples:</strong> "I'm in SYD with $600 budget and need 300 more SC for Gold" · "What's the best single day trip for maximum SC?" · "Should I go direct SYD-PER or connect via MEL during 3× SC?"
+  </div>
+
+  <div class="sc-card" style="margin-bottom:1rem;">
+    <div class="sc-sec-title" style="margin-top:0;">Ask the SC Finder</div>
+    <div style="display:flex;gap:.6rem;align-items:flex-start;flex-wrap:wrap;">
+      <textarea id="sc-finder-input" rows="3" placeholder="Describe your goal, budget, home airport, current SC balance…"
+        style="flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.84rem;padding:.6rem .8rem;resize:vertical;outline:none;"></textarea>
+      <button type="button" class="sc-btn primary" onclick="askSCFinder(document.getElementById('sc-finder-input').value)" style="align-self:flex-end;">Analyse →</button>
+    </div>
+    <!-- Quick prompts -->
+    <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem;">
+      <span style="font-size:.62rem;color:var(--text3);align-self:center;">Quick prompts:</span>
+      <button type="button" class="sc-mult-pill" onclick="document.getElementById('sc-finder-input').value=this.dataset.q;askSCFinder(this.dataset.q)"
+        data-q="Best single-day status run from SYD for maximum SC under $400?">Max SC day trip SYD</button>
+      <button type="button" class="sc-mult-pill" onclick="document.getElementById('sc-finder-input').value=this.dataset.q;askSCFinder(this.dataset.q)"
+        data-q="Cheapest way to reach Gold status (700 SC) starting from zero, based in Melbourne?">Cheapest path to Gold from MEL</button>
+      <button type="button" class="sc-mult-pill" onclick="document.getElementById('sc-finder-input').value=this.dataset.q;askSCFinder(this.dataset.q)"
+        data-q="During a 3× status credit bonus period, what's the single best route for SC per dollar?">Best route for 3× SC period</button>
+      <button type="button" class="sc-mult-pill" onclick="document.getElementById('sc-finder-input').value=this.dataset.q;askSCFinder(this.dataset.q)"
+        data-q="Compare SYD-PER direct vs SYD-MEL-PER for status credits and cost">Direct vs connecting SYD-PER</button>
+    </div>
+  </div>
+
+  <!-- Context panel showing current multiplier -->
+  <div id="sc-finder-context" style="background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:10px;padding:.65rem 1rem;margin-bottom:1rem;font-size:.75rem;color:var(--text3);"></div>
+
+  <!-- Result -->
+  <div id="sc-finder-result" style="min-height:80px;"></div>
+
+  <div class="sc-callout" style="margin-top:1rem;font-size:.72rem;">
+    The SC Finder uses Claude AI to reason about your specific situation using the route and earning data on this page.
+    It cannot access live Qantas prices — always verify fares on <a href="https://www.qantas.com" target="_blank" rel="noopener" style="color:#ff8a97;">qantas.com ↗</a> before booking.
+    Status credit values are based on published Qantas earning tables (correct as of 2025).
+  </div>
+</div>
+
+
+<script>
+'use strict';
+
+// ── Status Credits Data ────────────────────────────────────────
+// Booking class → earning rate as % of base
+const FARE_CLASSES = [
+  {classes:['A'],         label:'Business (First Sale)', cabin:'Business', rate:150, color:'#fbbf24'},
+  {classes:['J','C'],     label:'Business Flex',         cabin:'Business', rate:150, color:'#fbbf24'},
+  {classes:['D','I'],     label:'Business Saver',        cabin:'Business', rate:125, color:'#f59e0b'},
+  {classes:['R'],         label:'Business Award',        cabin:'Business', rate:0,   color:'#475569'},
+  {classes:['Y','B','H'], label:'Economy Flex',          cabin:'Economy',  rate:100, color:'#4ade80'},
+  {classes:['M','K'],     label:'Economy Semi-Flex',     cabin:'Economy',  rate:75,  color:'#86efac'},
+  {classes:['L','V'],     label:'Economy Saver',         cabin:'Economy',  rate:50,  color:'#fbbf24'},
+  {classes:['S','N','O','Q'], label:'Starter / Red e-Deal', cabin:'Economy', rate:25, color:'#fb923c'},
+  {classes:['E','G','U'], label:'Award / No Earn',      cabin:'Economy',  rate:0,   color:'#475569'},
+];
+
+// Route → base SC at 100% (Y class), typical price range (AUD one-way, cheapest fares)
+// Source: Qantas published earning table + typical fare observations
+// Prices manually updated — run scrape_qantas_fares.py to refresh
+const ROUTES = [
+  // From, To, baseSC, typMin, typMax  (prices = one-way economy cheapest)
+  // Short haul
+  ['SYD','CBR', 10,  79,180], ['CBR','SYD', 10,  79,180],
+  ['SYD','OOL', 10,  89,200], ['OOL','SYD', 10,  89,200],
+  ['SYD','NTL', 10,  89,170], ['NTL','SYD', 10,  89,170],
+  ['MEL','ADL', 15,  99,220], ['ADL','MEL', 15,  99,220],
+  ['MEL','OOL', 15, 109,250], ['OOL','MEL', 15, 109,250],
+  ['MEL','HBA', 10, 109,230], ['HBA','MEL', 10, 109,230],
+  ['MEL','LST', 10, 119,240], ['LST','MEL', 10, 119,240],
+  ['BNE','OOL',  5,  69,130], ['OOL','BNE',  5,  69,130],
+  // Medium haul
+  ['SYD','MEL', 20,  99,300], ['MEL','SYD', 20,  99,300],
+  ['SYD','BNE', 20, 109,290], ['BNE','SYD', 20, 109,290],
+  ['MEL','BNE', 20, 109,300], ['BNE','MEL', 20, 109,300],
+  ['SYD','ADL', 25, 119,280], ['ADL','SYD', 25, 119,280],
+  ['BNE','ADL', 25, 129,290], ['ADL','BNE', 25, 129,290],
+  ['MEL','MKY', 15, 189,380], ['MKY','MEL', 15, 189,380],
+  ['BNE','MKY', 10, 129,260], ['MKY','BNE', 10, 129,260],
+  ['BNE','ROK', 10, 119,250], ['ROK','BNE', 10, 119,250],
+  ['BNE','TSV', 15, 149,290], ['TSV','BNE', 15, 149,290],
+  // Long haul
+  ['SYD','CNS', 30, 179,420], ['CNS','SYD', 30, 179,420],
+  ['MEL','CNS', 30, 189,440], ['CNS','MEL', 30, 189,440],
+  ['BNE','CNS', 15, 119,280], ['CNS','BNE', 15, 119,280],
+  ['ADL','CNS', 25, 189,390], ['CNS','ADL', 25, 189,390],
+  ['SYD','DRW', 35, 229,480], ['DRW','SYD', 35, 229,480],
+  ['MEL','DRW', 35, 249,500], ['DRW','MEL', 35, 249,500],
+  ['BNE','DRW', 30, 209,460], ['DRW','BNE', 30, 209,460],
+  ['ADL','DRW', 30, 219,470], ['DRW','ADL', 30, 219,470],
+  // Ultra long haul — Status run favourites
+  ['SYD','PER', 40, 199,500], ['PER','SYD', 40, 199,500],
+  ['MEL','PER', 40, 199,490], ['PER','MEL', 40, 199,490],
+  ['BNE','PER', 40, 209,500], ['PER','BNE', 40, 209,500],
+  ['ADL','PER', 30, 169,400], ['PER','ADL', 30, 169,400],
+  ['CNS','PER', 40, 279,560], ['PER','CNS', 40, 279,560],
+];
+
+// International routes [from, to, baseSC@Y, prMin, prMax, name, zone]
+const INTL_ROUTES = [
+  // Trans-Tasman
+  ['SYD','WLG', 15, 189, 380, 'Wellington NZ',         'NZ'],
+  ['SYD','AKL', 20, 199, 420, 'Auckland NZ',           'NZ'],
+  ['SYD','CHC', 20, 219, 460, 'Christchurch NZ',       'NZ'],
+  ['MEL','WLG', 15, 199, 400, 'Wellington NZ',         'NZ'],
+  ['MEL','AKL', 20, 209, 450, 'Auckland NZ',           'NZ'],
+  ['BNE','AKL', 20, 199, 430, 'Auckland NZ',           'NZ'],
+  ['PER','AKL', 30, 299, 580, 'Auckland NZ',           'NZ'],
+  // Pacific
+  ['SYD','NAN', 30, 299, 580, 'Nadi (Fiji)',           'Pacific'],
+  ['MEL','NAN', 30, 319, 600, 'Nadi (Fiji)',           'Pacific'],
+  ['SYD','APW', 35, 449, 850, 'Samoa (Apia)',          'Pacific'],
+  ['SYD','TBU', 35, 499, 900, 'Tonga',                 'Pacific'],
+  ['SYD','PPT', 60, 599,1100, 'Tahiti',                'Pacific'],
+  // SE Asia
+  ['SYD','DPS', 30, 329, 680, 'Bali (Denpasar)',       'SE Asia'],
+  ['MEL','DPS', 30, 329, 680, 'Bali (Denpasar)',       'SE Asia'],
+  ['PER','DPS', 25, 279, 540, 'Bali (Denpasar)',       'SE Asia'],
+  ['SYD','SIN', 50, 489, 900, 'Singapore',             'SE Asia'],
+  ['MEL','SIN', 50, 489, 900, 'Singapore',             'SE Asia'],
+  ['SYD','KUL', 50, 449, 850, 'Kuala Lumpur',          'SE Asia'],
+  ['SYD','BKK', 55, 539, 980, 'Bangkok',               'SE Asia'],
+  ['SYD','HAN', 55, 549, 990, 'Hanoi',                 'SE Asia'],
+  ['SYD','SGN', 55, 549, 990, 'Ho Chi Minh City',      'SE Asia'],
+  ['SYD','MNL', 50, 499, 920, 'Manila',                'SE Asia'],
+  // North Asia
+  ['SYD','NRT', 70, 699,1300, 'Tokyo Narita',          'N Asia'],
+  ['MEL','NRT', 70, 699,1300, 'Tokyo Narita',          'N Asia'],
+  ['SYD','HND', 70, 699,1300, 'Tokyo Haneda',          'N Asia'],
+  ['SYD','ICN', 65, 649,1200, 'Seoul (Incheon)',        'N Asia'],
+  ['SYD','HKG', 55, 549,1050, 'Hong Kong',             'N Asia'],
+  ['SYD','PEK', 70, 699,1350, 'Beijing',               'N Asia'],
+  // Americas
+  ['SYD','LAX',100, 999,2100, 'Los Angeles',           'Americas'],
+  ['MEL','LAX',100, 999,2100, 'Los Angeles',           'Americas'],
+  ['SYD','JFK',120,1299,2600, 'New York (JFK)',         'Americas'],
+  ['SYD','SFO',100, 999,2100, 'San Francisco',         'Americas'],
+  // Europe
+  ['SYD','LHR',120,1499,2800, 'London Heathrow',       'Europe'],
+  ['MEL','LHR',120,1499,2800, 'London Heathrow',       'Europe'],
+  ['PER','LHR',120,1299,2600, 'London (via SIN/DXB)',  'Europe'],
+  ['SYD','CDG',120,1499,2800, 'Paris CDG',             'Europe'],
+  ['SYD','FRA',120,1499,2800, 'Frankfurt',             'Europe'],
+  // Middle East / India
+  ['SYD','DXB', 80, 799,1500, 'Dubai',                 'ME/India'],
+  ['SYD','DOH', 80, 799,1500, 'Doha',                  'ME/India'],
+  ['SYD','BOM', 80, 849,1600, 'Mumbai',                'ME/India'],
+  // Africa
+  ['SYD','JNB',110,1299,2500, 'Johannesburg',          'Africa'],
+];
+
+// Status tiers SC requirement
+const STATUS_TIERS = [
+  {level:0, name:'No status',  sc:0,    color:'#475569'},
+  {level:1, name:'Bronze',     sc:140,  color:'#cd7f32'},
+  {level:2, name:'Silver',     sc:280,  color:'#c0c0c0'},
+  {level:3, name:'Gold',       sc:700,  color:'#d4af37'},
+  {level:4, name:'Platinum',   sc:1400, color:'#e5a100'},
+  {level:5, name:'Platinum One',sc:3600,color:'#e4002b'},
+];
+
+// Multi-leg comparison scenarios
+const MULTILEG_SCENARIOS = [
+  // ── Classic domestic status runs ──
+  {
+    direct: {from:'SYD',to:'MEL',label:'SYD→MEL direct (20 SC)'},
+    multi:  [{from:'SYD',to:'BNE'},{from:'BNE',to:'MEL'}],
+    multiLabel:'SYD→BNE→MEL via Brisbane (40 SC)',
+    note:'Each sector earns separately. Same ticket price range, double the SC.',
+    category:'domestic',
+  },
+  {
+    direct: {from:'MEL',to:'SYD',label:'MEL→SYD direct (20 SC)'},
+    multi:  [{from:'MEL',to:'ADL'},{from:'ADL',to:'SYD'}],
+    multiLabel:'MEL→ADL→SYD via Adelaide (40 SC)',
+    note:'A classic MEL-based status run. ADL add-on is cheap from MEL.',
+    category:'domestic',
+  },
+  {
+    direct: {from:'SYD',to:'BNE',label:'SYD→BNE direct (20 SC)'},
+    multi:  [{from:'SYD',to:'MEL'},{from:'MEL',to:'BNE'}],
+    multiLabel:'SYD→MEL→BNE via Melbourne (40 SC)',
+    note:'Routing via MEL roughly doubles SCs for similar total fare.',
+    category:'domestic',
+  },
+  {
+    direct: {from:'SYD',to:'PER',label:'SYD→PER direct (40 SC)'},
+    multi:  [{from:'SYD',to:'MEL'},{from:'MEL',to:'PER'}],
+    multiLabel:'SYD→MEL→PER via Melbourne (80 SC)',
+    note:'The "MEL loop" — SYD-PER earns high SC anyway; connecting doubles it.',
+    category:'domestic',
+  },
+  {
+    direct: {from:'MEL',to:'PER',label:'MEL→PER direct (40 SC)'},
+    multi:  [{from:'MEL',to:'ADL'},{from:'ADL',to:'PER'}],
+    multiLabel:'MEL→ADL→PER via Adelaide (70 SC)',
+    note:'ADL is a natural connection. Adds ~90min but worth 30 extra SC.',
+    category:'domestic',
+  },
+  {
+    direct: {from:'BNE',to:'PER',label:'BNE→PER direct (40 SC)'},
+    multi:  [{from:'BNE',to:'SYD'},{from:'SYD',to:'PER'}],
+    multiLabel:'BNE→SYD→PER via Sydney (80 SC)',
+    note:'Competitive fare options. The SYD leg adds 40 SC extra.',
+    category:'domestic',
+  },
+  // ── Triple-leg status runs (3 sectors) ──
+  {
+    direct: {from:'SYD',to:'CNS',label:'SYD→CNS direct (30 SC)'},
+    multi:  [{from:'SYD',to:'BNE'},{from:'BNE',to:'TSV'},{from:'TSV',to:'CNS'}],
+    multiLabel:'SYD→BNE→TSV→CNS via 2 stops (55 SC)',
+    note:'Three sectors: SYD-BNE (20) + BNE-TSV (15) + TSV-CNS. Takes longer but maximises SC.',
+    category:'domestic',
+  },
+  {
+    direct: {from:'MEL',to:'DRW',label:'MEL→DRW direct (35 SC)'},
+    multi:  [{from:'MEL',to:'ADL'},{from:'ADL',to:'PER'},{from:'PER',to:'DRW'}],
+    multiLabel:'MEL→ADL→PER→DRW via 2 stops (95 SC)',
+    note:'The "west coast sweep" — three high-SC sectors. Darwin fares include this routing.',
+    category:'domestic',
+  },
+  // ── Single-day turnaround runs ──
+  {
+    direct: {from:'SYD',to:'MEL',label:'SYD→MEL return same day (40 SC)'},
+    multi:  [{from:'SYD',to:'BNE'},{from:'BNE',to:'MEL'},{from:'MEL',to:'BNE'},{from:'BNE',to:'SYD'}],
+    multiLabel:'SYD→BNE→MEL→BNE→SYD same day (80 SC)',
+    note:'Book the outbound via BNE and the return via BNE. Earns SC on all 4 legs. Requires full day.',
+    category:'status-run',
+  },
+  {
+    direct: {from:'SYD',to:'PER',label:'SYD→PER return (80 SC)'},
+    multi:  [{from:'SYD',to:'MEL'},{from:'MEL',to:'PER'},{from:'PER',to:'MEL'},{from:'MEL',to:'SYD'}],
+    multiLabel:'SYD→MEL→PER→MEL→SYD (160 SC return)',
+    note:'The ultimate domestic status run. 4 long sectors. Can often be done for $400-600 total fare.',
+    category:'status-run',
+  },
+];
+
+// ── State ─────────────────────────────────────────────────────
+let scMultiplier = 1;   // 1=normal, 2=double, 3=triple, 4=quadruple
+let tripLegs  = [];
+let legId     = 0;
+
+// ── Helpers ───────────────────────────────────────────────────
+function getRate(fareClass) {
+  const fc = FARE_CLASSES.find(f => f.classes.includes(fareClass.toUpperCase()));
+  return fc ? fc.rate : 100;
+}
+
+function getBaseSC(from, to) {
+  const r = ROUTES.find(r => r[0]===from && r[1]===to);
+  return r ? r[2] : null;
+}
+
+function getTypicalPrice(from, to) {
+  const r = ROUTES.find(r => r[0]===from && r[1]===to);
+  return r ? Math.round((r[3]+r[4])/2) : null;
+}
+
+function calcSC(baseSC, fareClass, mult) {
+  mult = mult ?? scMultiplier;
+  return Math.round(baseSC * getRate(fareClass) / 100 * mult);
+}
+
+function fmtSC(n) {
+  return n.toLocaleString() + ' SC';
+}
+
+function meterColor(scPerDollar) {
+  if (scPerDollar >= 0.12) return '#4ade80';
+  if (scPerDollar >= 0.09) return '#fbbf24';
+  if (scPerDollar >= 0.06) return '#fb923c';
+  return '#f87171';
+}
+
+// ── Double SC toggle ──────────────────────────────────────────
+document.getElementById('sc-multiplier-pills').addEventListener('click', e => {
+  const btn = e.target.closest('.sc-mult-pill');
+  if (!btn) return;
+  scMultiplier = parseInt(btn.dataset.mult) || 1;
+  document.querySelectorAll('.sc-mult-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const labels = {1:'Normal earn',2:'🔴 2× DOUBLE',3:'🟢 3× TRIPLE',4:'🟣 4× QUADRUPLE'};
+  document.getElementById('dsb-label').textContent = labels[scMultiplier] || '';
+  document.getElementById('dsb-banner').style.background =
+    scMultiplier === 1 ? 'linear-gradient(135deg,rgba(228,0,43,.18),rgba(251,191,36,.12))' :
+    scMultiplier === 2 ? 'linear-gradient(135deg,rgba(228,0,43,.3),rgba(251,191,36,.2))' :
+    scMultiplier === 3 ? 'linear-gradient(135deg,rgba(74,222,128,.25),rgba(56,189,248,.15))' :
+                         'linear-gradient(135deg,rgba(192,132,252,.25),rgba(251,191,36,.2))';
+  renderOptimizer();
+  renderTripTotals();
+  if (document.getElementById('panel-table').classList.contains('active')) renderTable();
+  if (document.getElementById('panel-goals').classList.contains('active')) renderGoals();
+  if (document.getElementById('panel-finder').classList.contains('active')) initSCFinder();
+});
+
+// ── Tab switching ─────────────────────────────────────────────
+document.querySelectorAll('.sc-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sc-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.sc-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+    if (btn.dataset.panel === 'table') renderTable();
+    if (btn.dataset.panel === 'goals') renderGoals();
+    if (btn.dataset.panel === 'optimizer') renderOptimizer();
+    if (btn.dataset.panel === 'finder') initSCFinder();
+  });
+});
+
+// ── PANEL 1 — Optimizer ──────────────────────────────────────
+function renderOptimizer() {
+  const fareClass = document.getElementById('opt-fareclass').value;
+  const origin    = document.getElementById('opt-origin').value;
+  const ret       = parseInt(document.getElementById('opt-return').value);
+  const topN      = parseInt(document.getElementById('opt-top').value);
+  const rate      = getRate(fareClass);
+
+  // Build route rows
+  let rows = ROUTES.map(r => {
+    const [from, to, baseSC, prMin, prMax] = r;
+    if (origin !== 'ALL' && from !== origin) return null;
+    const typPrice = Math.round((prMin + prMax) / 2);
+    const sc = Math.round(baseSC * rate / 100) * scMultiplier;
+    const totalSC = sc * ret;
+    const totalPrice = typPrice * ret;
+    const scPerDollar = totalSC / totalPrice;
+    return {from, to, baseSC, sc, totalSC, typPrice, totalPrice, scPerDollar};
+  }).filter(Boolean);
+
+  // Deduplicate directionality for display (only show each city-pair once, use outbound direction)
+  const seen = new Set();
+  rows = rows.filter(r => {
+    const key = [r.from,r.to].sort().join('-');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  rows.sort((a,b) => b.scPerDollar - a.scPerDollar);
+  const display = rows.slice(0, topN);
+  const bestSPD = display[0]?.scPerDollar || 0;
+
+  let html = `<table class="sc-route-table">
+    <thead><tr>
+      <th>Route</th>
+      <th class="right">SCs earned${ret===2?' (return)':''}</th>
+      <th class="right">Typical price${ret===2?' (return)':''}</th>
+      <th class="right">SC per $100</th>
+      <th class="right">Value</th>
+    </tr></thead><tbody>`;
+
+  display.forEach((r, i) => {
+    const spd100 = (r.scPerDollar * 100).toFixed(2);
+    const barW   = (r.scPerDollar / bestSPD * 100).toFixed(1);
+    const col    = meterColor(r.scPerDollar);
+    const rank   = i < 3 ? ['🥇','🥈','🥉'][i] : (i+1);
+    html += `<tr style="cursor:pointer;" onclick="addLegFromOptimizer('${r.from}','${r.to}')">
+      <td><strong>${r.from}→${r.to}</strong>${ret===2?` + ${r.to}→${r.from}`:''}</td>
+      <td class="right" style="color:${col};font-weight:700;">${fmtSC(r.totalSC)}${scMultiplier>1?` ${scMultiplier}×`:''}</td>
+      <td class="right" style="color:var(--text2);">~$${r.totalPrice}</td>
+      <td class="right">
+        <div style="font-weight:700;color:${col};">${spd100}</div>
+        <div class="sc-meter-wrap" style="width:80px;display:inline-block;">
+          <div class="sc-meter-fill" style="width:${barW}%;background:${col};"></div>
+        </div>
+      </td>
+      <td class="right" style="font-size:1rem;">${rank}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('sc-optimizer-table-wrap').innerHTML = html;
+
+  // Multi-leg cards
+  // Wire multileg category pills
+  const mlPills = document.getElementById('ml-cat-pills');
+  if (mlPills && !mlPills._wired) {
+    mlPills._wired = true;
+    mlPills.addEventListener('click', e => {
+      const btn = e.target.closest('[data-cat]');
+      if (!btn) return;
+      mlPills.querySelectorAll('[data-cat]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const fc = document.getElementById('opt-fareclass').value;
+      renderMultiLegCards(fc, btn.dataset.cat);
+    });
+  }
+  renderMultiLegCards(fareClass, 'domestic');
+}
+
+function addLegFromOptimizer(from, to) {
+  document.getElementById('leg-from').value = from;
+  document.getElementById('leg-to').value   = to;
+  // Switch to builder
+  document.querySelectorAll('.sc-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sc-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('[data-panel="builder"]').classList.add('active');
+  document.getElementById('panel-builder').classList.add('active');
+  addLeg();
+}
+
+function renderMultiLegCards(fareClass, filterCat) {
+  const rate = getRate(fareClass);
+  filterCat = filterCat || 'domestic';
+  const scenarios = filterCat === 'all' ? MULTILEG_SCENARIOS
+    : MULTILEG_SCENARIOS.filter(s => s.category === filterCat);
+  const html = scenarios.map(s => {
+    const directSC = Math.round((getBaseSC(s.direct.from,s.direct.to)||0)*rate/100)*scMultiplier;
+    const multiSC  = s.multi.reduce((sum,leg)=>sum+Math.round((getBaseSC(leg.from,leg.to)||0)*rate/100)*scMultiplier,0);
+    const bonus    = multiSC - directSC;
+    const bonusPct = directSC > 0 ? Math.round(bonus/directSC*100) : 0;
+    const legCount = s.multi.length;
+    const catBadge = s.category==='status-run'
+      ? '<span style="font-size:.6rem;background:rgba(228,0,43,.2);color:#ff8a97;border-radius:4px;padding:.1rem .35rem;margin-left:.4rem;">STATUS RUN</span>'
+      : '<span style="font-size:.6rem;background:rgba(56,189,248,.1);color:#38bdf8;border-radius:4px;padding:.1rem .35rem;margin-left:.4rem;">CONNECTING</span>';
+    return `<div class="sc-card" style="border-color:${bonus>0?'rgba(74,222,128,.3)':'var(--border)'};">
+      <div style="display:flex;align-items:center;margin-bottom:.4rem;">
+        <div class="sc-label" style="margin:0;">Multi-leg (${legCount} sector${legCount>1?'s':''})</div>
+        ${catBadge}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.4rem;margin:.3rem 0;">
+        <div>
+          <div style="font-size:.68rem;color:var(--text3);">Direct</div>
+          <div style="font-size:.8rem;color:var(--text2);font-weight:600;">${s.direct.label.replace(/→/g,'→')}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:1.1rem;color:var(--text2);">${fmtSC(directSC)}</div>
+        </div>
+        <div style="font-size:1.2rem;color:var(--text3);align-self:center;">→</div>
+        <div>
+          <div style="font-size:.68rem;color:var(--text3);">Multi-leg</div>
+          <div style="font-size:.8rem;color:${bonus>0?'#4ade80':'var(--text2)'};font-weight:600;">${s.multiLabel}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:1.1rem;color:${bonus>0?'#4ade80':'var(--text2)'};">${fmtSC(multiSC)}${scMultiplier>1?' <span style="color:#e4002b;font-size:.65rem;">×'+scMultiplier+'</span>':''}</div>
+        </div>
+      </div>
+      ${bonus>0?`<div style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:6px;padding:.3rem .6rem;font-size:.72rem;color:#4ade80;margin-bottom:.3rem;">
+        +${fmtSC(bonus)} extra (${bonusPct}% more) for similar journey</div>`:''}
+      <div style="font-size:.65rem;color:var(--text3);">${s.note}</div>
+      <button type="button" class="sc-btn" style="margin-top:.5rem;font-size:.68rem;width:100%;text-align:center;"
+        onclick="addAllLegsFromScenario(${JSON.stringify(s.multi).replace(/"/g,'&quot;')})">+ Add all legs to Trip Builder</button>
+    </div>`;
+  }).join('');
+  document.getElementById('sc-multileg-cards').innerHTML = html || '<div style="color:var(--text3);padding:.75rem;font-size:.82rem;">No scenarios for this filter.</div>';
+}
+
+function addAllLegsFromScenario(legs) {
+  legs.forEach(leg => {
+    const baseSC = getBaseSC(leg.from, leg.to);
+    if (!baseSC) return;
+    const sc = calcSC(baseSC, 'S', scMultiplier); // default to Starter
+    tripLegs.push({id:++legId, from:leg.from, to:leg.to, fareClass:'S', price:0, pax:1, baseSC, sc});
+  });
+  // Switch to Trip Builder tab
+  document.querySelectorAll('.sc-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sc-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('[data-panel="builder"]').classList.add('active');
+  document.getElementById('panel-builder').classList.add('active');
+  renderLegs();
+}
+
+// ── PANEL 2 — Trip Builder ────────────────────────────────────
+function addLeg() {
+  const from       = document.getElementById('leg-from').value;
+  const to         = document.getElementById('leg-to').value;
+  const fareClass  = document.getElementById('leg-fareclass').value;
+  const price      = parseFloat(document.getElementById('leg-price').value) || 0;
+  const pax        = parseInt(document.getElementById('leg-pax').value) || 1;
+  const customSC   = parseInt(document.getElementById('leg-custom-sc').value) || null;
+  const baseSC     = customSC ?? getBaseSC(from, to);
+
+  if (!baseSC) {
+    alert(`No SC data for ${from}→${to}. Enter a custom base SC value.`);
+    return;
+  }
+
+  const sc = calcSC(baseSC, fareClass, scMultiplier);
+  tripLegs.push({id: ++legId, from, to, fareClass, price, pax, baseSC, sc});
+  renderLegs();
+}
+
+function addReturnLegs() {
+  const current = [...tripLegs];
+  current.reverse().forEach(leg => {
+    const baseSC = getBaseSC(leg.to, leg.from) || leg.baseSC;
+    const sc     = calcSC(baseSC, leg.fareClass, scMultiplier);
+    tripLegs.push({id:++legId, from:leg.to, to:leg.from, fareClass:leg.fareClass,
+                   price:leg.price, pax:leg.pax, baseSC, sc});
+  });
+  renderLegs();
+}
+
+function removeLeg(id) {
+  tripLegs = tripLegs.filter(l => l.id !== id);
+  renderLegs();
+}
+
+function clearLegs() {
+  tripLegs = [];
+  renderLegs();
+}
+
+function renderLegs() {
+  const list = document.getElementById('sc-legs-list');
+  if (!tripLegs.length) {
+    list.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--text3);font-size:.82rem;">No legs added yet. Select a route above or click a row in the Optimizer.</div>';
+    document.getElementById('sc-trip-totals').style.display = 'none';
+    return;
+  }
+  list.innerHTML = tripLegs.map((leg, i) => {
+    const fcData = FARE_CLASSES.find(f=>f.classes.includes(leg.fareClass.toUpperCase()));
+    const col    = fcData?.color || '#94a3b8';
+    const totalCost = leg.price * leg.pax;
+    // Recalculate SC live using current multiplier (handles multiplier changes after leg was added)
+    leg.sc = calcSC(leg.baseSC, leg.fareClass, scMultiplier);
+    const totalSC   = leg.sc * leg.pax;
+    const spd100    = totalCost > 0 ? (totalSC/totalCost*100).toFixed(2) : '—';
+    return `<div class="sc-leg">
+      <div class="sc-leg-badge">Leg ${i+1}</div>
+      <div style="font-weight:700;font-size:.9rem;">${leg.from} → ${leg.to}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:${col};">${leg.fareClass} (${getRate(leg.fareClass)}%)</div>
+      <div style="font-size:.78rem;color:var(--text2);">$${leg.price} × ${leg.pax} pax</div>
+      <div style="font-family:'DM Mono',monospace;font-size:.9rem;color:${meterColor(totalSC/Math.max(totalCost,1))};">
+        ${fmtSC(totalSC)}${scMultiplier>1?` ${scMultiplier}×`:''}
+      </div>
+      <div style="font-size:.7rem;color:var(--text3);">${spd100} SC/$100</div>
+      <button type="button" class="sc-btn" style="margin-left:auto;font-size:.68rem;padding:.2rem .5rem;" onclick="removeLeg(${leg.id})">✕</button>
+    </div>`;
+  }).join('');
+  renderTripTotals();
+}
+
+function renderTripTotals() {
+  if (!tripLegs.length) return;
+  const totals = document.getElementById('sc-trip-totals');
+  totals.style.display = 'block';
+  const totalSC    = tripLegs.reduce((s,l) => s + l.sc * l.pax, 0);
+  const totalCost  = tripLegs.reduce((s,l) => s + l.price * l.pax, 0);
+  const spd100     = totalCost > 0 ? (totalSC/totalCost*100).toFixed(2) : '—';
+  const col        = meterColor(totalSC/Math.max(totalCost,1));
+
+  const grid = [
+    {label:'Total Status Credits', val:fmtSC(totalSC)+(scMultiplier>1?` ${scMultiplier}×`:''), col},
+    {label:'Total Cost', val:'$'+totalCost.toLocaleString(), col:'#e8ecf4'},
+    {label:'SC per $100 spent', val:spd100, col},
+    {label:'Legs', val:tripLegs.length, col:'#94a3b8'},
+  ];
+  document.getElementById('sc-totals-grid').innerHTML = grid.map(g=>`
+    <div class="sc-card">
+      <div class="sc-label">${g.label}</div>
+      <div class="sc-big" style="color:${g.col};font-size:1.3rem;margin-top:.2rem;">${g.val}</div>
+    </div>`).join('');
+
+  // Breakdown table
+  document.getElementById('sc-totals-breakdown').innerHTML = `
+    <div style="font-size:.72rem;color:var(--text3);margin-bottom:.4rem;font-weight:700;">Per-leg breakdown</div>
+    <table class="sc-route-table">
+      <thead><tr><th>Leg</th><th>Route</th><th class="right">Fare</th><th class="right">Cost</th><th class="right">SC earned</th><th class="right">SC/$100</th></tr></thead>
+      <tbody>${tripLegs.map((l,i)=>`<tr>
+        <td>Leg ${i+1}</td><td>${l.from}→${l.to}</td>
+        <td class="right">${l.fareClass}</td>
+        <td class="right">$${(l.price*l.pax).toLocaleString()}</td>
+        <td class="right" style="color:${meterColor(l.sc*l.pax/Math.max(l.price*l.pax,1))};">${fmtSC(l.sc*l.pax)}</td>
+        <td class="right">${l.price>0?(l.sc/l.price*100).toFixed(2):'—'}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+// ── PANEL 3 — Earning Table ───────────────────────────────────
+function renderTable() {
+  // Fare class pills
+  document.getElementById('fc-grid').innerHTML = FARE_CLASSES.map(fc => `
+    <div class="fc-pill">
+      <div class="fc-class">${fc.classes.join(', ')}</div>
+      <div class="fc-name">${fc.label}</div>
+      <div class="fc-rate" style="color:${fc.color};">${fc.rate === 0 ? '0 SC' : fc.rate+'%'}</div>
+    </div>`).join('');
+
+  // Route table
+  const rows = ROUTES.filter((r,i) => {
+    // Show each city pair once (outbound direction - lower index alphabetically)
+    const seen = new Set();
+    const key = [r[0],r[1]].sort().join('-');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Actually deduplicate properly
+  const seenKeys = new Set();
+  const dedupedRoutes = ROUTES.filter(r => {
+    const key = [r[0],r[1]].sort().join('-');
+    if (seenKeys.has(key)) return false;
+    seenKeys.add(key);
+    return true;
+  }).sort((a,b) => b[2]-a[2]); // sort by base SC desc
+
+  document.getElementById('route-tbody').innerHTML = dedupedRoutes.map(r => {
+    const [from, to, base, prMin, prMax] = r;
+    const typPrice = Math.round((prMin+prMax)/2);
+    const sc25  = Math.round(base*0.25)*scMultiplier;
+    const sc50  = Math.round(base*0.5) *scMultiplier;
+    const sc100 = base*scMultiplier;
+    const sc150 = Math.round(base*1.5)*scMultiplier;
+    const spd   = (sc100/typPrice*100).toFixed(2);
+    return `<tr>
+      <td><strong>${from}↔${to}</strong></td>
+      <td class="right" style="color:#fbbf24;">${base}${scMultiplier>1?`<span style='color:#e4002b;font-size:.65rem;'> ×${scMultiplier}</span>`:''}</td>
+      <td class="right" style="color:var(--text3);">$${prMin}–$${prMax}</td>
+      <td class="right" style="color:#fb923c;">${sc25}</td>
+      <td class="right" style="color:#fbbf24;">${sc50}</td>
+      <td class="right" style="color:#4ade80;">${sc100}</td>
+      <td class="right" style="color:#fbbf24;">${sc150}</td>
+      <td class="right" style="color:${meterColor(sc100/typPrice)};font-weight:700;">${spd}</td>
+    </tr>`;
+  }).join('');
+
+  // International table
+  // Wire zone filter pills
+  const zpills = document.getElementById('intl-zone-pills');
+  if (zpills && !zpills._wired) {
+    zpills._wired = true;
+    zpills.addEventListener('click', e => {
+      const btn = e.target.closest('[data-zone]');
+      if (!btn) return;
+      zpills.querySelectorAll('[data-zone]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderIntlTable(btn.dataset.zone);
+    });
+  }
+  renderIntlTable('ALL');
+}
+
+function renderIntlTable(zone) {
+  const filtered = zone === 'ALL' ? INTL_ROUTES : INTL_ROUTES.filter(r => r[6] === zone);
+  document.getElementById('intl-tbody').innerHTML = filtered.map(r => {
+    const [from, to, base, prMin, prMax, name, z] = r;
+    const typPrice = Math.round((prMin+prMax)/2);
+    const sc100 = base * scMultiplier;
+    // Show all fare class earns
+    const fcSC = FARE_CLASSES.filter(f=>f.rate>0).map(fc=>{
+      const s = Math.round(base * fc.rate/100) * scMultiplier;
+      return `<span style="color:${fc.color};font-size:.65rem;">${fc.classes[0]}:${s}</span>`;
+    }).join(' ');
+    const spd = (sc100/typPrice*100).toFixed(2);
+    return `<tr>
+      <td><strong>${from}→${to}</strong><br><span style="color:var(--text3);font-size:.7rem;">${name}</span></td>
+      <td class="right">${fcSC}</td>
+      <td class="right" style="color:#4ade80;font-weight:700;">${sc100}${scMultiplier>1?` <span style="color:#e4002b;font-size:.65rem;">×${scMultiplier}</span>`:''}</td>
+      <td class="right" style="color:var(--text3);">$${prMin}+</td>
+      <td class="right" style="color:${meterColor(sc100/typPrice)};font-weight:700;">${spd}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── PANEL 4 — Status Goals ────────────────────────────────────
+function renderGoals() {
+  const currentLevel = parseInt(document.getElementById('goal-current').value);
+  const targetLevel  = parseInt(document.getElementById('goal-target').value);
+  const ytdSC        = parseInt(document.getElementById('goal-sc-ytd').value) || 0;
+  const budget       = parseFloat(document.getElementById('goal-budget').value) || 1500;
+  const fareClass    = document.getElementById('goal-fareclass').value;
+
+  const targetTier   = STATUS_TIERS[targetLevel];
+  const remaining    = Math.max(0, targetTier.sc - ytdSC);
+
+  // Find best routes for remaining SC within budget
+  const rate = getRate(fareClass);
+  const routeOptions = ROUTES.map(r => {
+    const [from, to, baseSC, prMin] = r;
+    const sc = Math.round(baseSC * rate / 100) * scMultiplier;
+    const cheapPrice = prMin; // cheapest fare
+    if (sc === 0 || cheapPrice === 0) return null;
+    const scPerDollar = sc / cheapPrice;
+    // How many return trips to hit remaining SC
+    const tripsNeeded = Math.ceil(remaining / (sc * 2)); // *2 for return
+    const costNeeded  = cheapPrice * 2 * tripsNeeded;
+    return {from, to, sc, cheapPrice, scPerDollar, tripsNeeded, costNeeded};
+  }).filter(Boolean).sort((a,b) => b.scPerDollar - a.scPerDollar);
+
+  const best = routeOptions.slice(0, 5);
+
+  let html = `
+    <div class="sc-card" style="border-color:${targetTier.color}44;margin-bottom:.75rem;">
+      <div class="sc-g2">
+        <div>
+          <div class="sc-label">Target</div>
+          <div class="sc-big" style="color:${targetTier.color};font-size:1.4rem;">${targetTier.name}</div>
+          <div style="font-size:.72rem;color:var(--text3);">Requires ${targetTier.sc} SC total</div>
+        </div>
+        <div>
+          <div class="sc-label">SC still needed</div>
+          <div class="sc-big" style="font-size:1.4rem;color:${remaining>500?'#f87171':'#fbbf24'};">${remaining.toLocaleString()} SC</div>
+          <div style="font-size:.72rem;color:var(--text3);">${ytdSC} earned so far this year</div>
+        </div>
+        <div>
+          <div class="sc-label">Your budget</div>
+          <div class="sc-big" style="font-size:1.4rem;">$${budget.toLocaleString()}</div>
+          <div style="font-size:.72rem;color:var(--text3);">Fare class: ${fareClass} (${rate}% earn)</div>
+        </div>
+      </div>
+    </div>`;
+
+  if (remaining === 0) {
+    html += `<div class="sc-callout green">🎉 You've already reached ${targetTier.name} status! Consider targeting the next tier.</div>`;
+  } else {
+    html += `<div class="sc-sec-title">Best routes to reach ${targetTier.name}</div>
+      <div class="sc-callout amber">Showing minimum return trips needed. All prices are cheapest observed fares — actual prices vary. Click a route to add it to your Trip Builder.</div>`;
+
+    html += `<table class="sc-route-table"><thead><tr>
+      <th>Route (return)</th>
+      <th class="right">SC/return trip</th>
+      <th class="right">Cheapest return</th>
+      <th class="right">Trips needed</th>
+      <th class="right">Total cost</th>
+      <th class="right">Within budget?</th>
+    </tr></thead><tbody>`;
+
+    best.forEach(r => {
+      const returnSC    = r.sc * 2;
+      const returnPrice = r.cheapPrice * 2;
+      const within      = r.costNeeded <= budget;
+      html += `<tr style="cursor:pointer;" onclick="addLegFromOptimizer('${r.from}','${r.to}')">
+        <td><strong>${r.from}↔${r.to}</strong></td>
+        <td class="right" style="color:#4ade80;">${fmtSC(returnSC)}${scMultiplier>1?` ${scMultiplier}×`:''}</td>
+        <td class="right" style="color:var(--text2);">~$${returnPrice}</td>
+        <td class="right" style="color:#fbbf24;">${r.tripsNeeded}×</td>
+        <td class="right" style="color:${within?'#4ade80':'#f87171'};">$${r.costNeeded.toLocaleString()}</td>
+        <td class="right" style="font-size:1rem;">${within ? '✅' : '❌'}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  document.getElementById('sc-goals-result').innerHTML = html;
+}
+
+// ── SC Finder (AI-powered via Claude API) ────────────────────────
+// Uses the Anthropic API to reason about the best status credit strategies
+// given the user's inputs — it knows all the route data and can suggest
+// multi-leg combinations the static optimizer might miss.
+
+const SC_FINDER_SYSTEM = `You are an expert Qantas frequent flyer analyst.
+You have deep knowledge of:
+- Qantas status credit earning rates by fare class (S/N=25%, L/V=50%, M/K=75%, Y/B/H=100%, D/I=125%, J/C/A=150%)
+- Australian domestic routes and their base SC values at Y class
+- The value of multi-leg connections (each sector earns separately)
+- Status tier requirements: Bronze 140SC, Silver 280SC, Gold 700SC, Platinum 1400SC, Platinum One 3600SC
+- Common "status run" routes and their value during bonus periods
+
+When a user asks for status credit advice, analyse their situation and recommend:
+1. The single best route for their budget/goal
+2. The best multi-leg routing variation (connecting flights earn SC on each leg)
+3. How many trips they need to hit their goal
+4. Whether a bonus multiplier period changes the optimal strategy
+
+Be specific with route codes, SC numbers, and dollar amounts. Keep responses concise — 3-5 key points.
+Format: use bullet points. Start with the best route recommendation immediately.`;
+
+function initSCFinder() {
+  const ctx = document.getElementById('sc-finder-context');
+  if (!ctx) return;
+  const multLabels = {1:'Normal earn period',2:'🔴 2× DOUBLE SC period',3:'🟢 3× TRIPLE SC period',4:'🟣 4× QUADRUPLE SC period'};
+  ctx.innerHTML = `<strong>Current context passed to AI:</strong> Multiplier = ${scMultiplier}× (${multLabels[scMultiplier]||'custom'}).
+    The AI knows all ${ROUTES.length} domestic routes and ${INTL_ROUTES.length} international routes on this page,
+    all fare class earning rates, and all status tier SC requirements.`;
+}
+
+async function askSCFinder(query) {
+  const el = document.getElementById('sc-finder-result');
+  el.innerHTML = '<div style="color:#94a3b8;padding:1rem;font-size:.82rem;">Analysing routes…</div>';
+
+  // Build context — no nested template literals
+  const multLabel = scMultiplier===1?'normal period':scMultiplier+'x bonus period';
+  const routeLines = ROUTES.slice(0,24).map(function(r){
+    return '  '+r[0]+'->'+r[1]+': '+r[2]+' SC, ~$'+Math.round((r[3]+r[4])/2);
+  }).join(', ');
+  const context = 'Settings: '+scMultiplier+'x multiplier ('+multLabel+')\n'
+    + 'Query: '+query+'\n\n'
+    + 'Key domestic routes (base SC at Y class): '+routeLines+'\n\n'
+    + 'Multi-leg tip: each leg earns separately.\n'
+    + 'SYD->MEL direct=20SC | SYD->BNE+BNE->MEL=40SC\n'
+    + 'SYD->BNE direct=20SC | SYD->MEL+MEL->BNE=40SC\n'
+    + 'SYD->PER direct=40SC | SYD->MEL+MEL->PER=80SC\n'
+    + 'MEL->PER direct=40SC | MEL->ADL+ADL->PER=70SC\n\n'
+    + 'Fare class rates: S/N=25%, L/V=50%, M/K=75%, Y/B/H=100%, D/I=125%, J/C/A=150%\n'
+    + 'Status tiers: Bronze=140SC, Silver=280SC, Gold=700SC, Platinum=1400SC, P1=3600SC';
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SC_FINDER_SYSTEM,
+        messages: [{ role: 'user', content: context }],
+      }),
+    });
+    const data = await resp.json();
+    const text = data.content?.find(b=>b.type==='text')?.text || 'No response.';
+    // Render markdown-ish bullet points
+    // Render markdown: bold, bullets, paragraphs
+    let html = text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')  // escape HTML
+      .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')               // **bold**
+      .replace(/`([^`]+)`/g,'<code style="background:rgba(0,0,0,.3);padding:.1em .3em;border-radius:3px;font-family:monospace;font-size:.85em;">$1</code>');
+    // Convert bullet lines to <li> blocks
+    const lines = html.split('\n');
+    let out = '', inList = false;
+    for (const line of lines) {
+      if (/^[-•*] /.test(line)) {
+        if (!inList) { out += '<ul style="padding-left:1.3rem;margin:.4rem 0;">'; inList=true; }
+        out += '<li style="margin:.18rem 0;">'+line.replace(/^[-•*] /,'')+'</li>';
+      } else {
+        if (inList) { out += '</ul>'; inList=false; }
+        if (line.trim()==='') { out += '<div style="height:.5rem;"></div>'; }
+        else if (/^#{1,3} /.test(line)) {
+          out += '<div style="font-weight:700;color:#e2e8f0;margin:.6rem 0 .2rem;">'+line.replace(/^#+ /,'')+'</div>';
+        } else { out += '<span>'+line+'</span><br>'; }
+      }
+    }
+    if (inList) out += '</ul>';
+    el.innerHTML = '<div style="font-size:.84rem;line-height:1.7;color:#c8d8e8;">'+out+'</div>';
+  } catch(e) {
+    el.innerHTML = `<div style="color:#f87171;font-size:.82rem;padding:.75rem;">Error: ${e.message}. Check your network connection.</div>`;
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────
+renderOptimizer();
+renderLegs();
+document.getElementById('sc-last-update').textContent = 'Fares: manually updated';
+
+// Load Jekyll-injected fare data if available
+const FARE_DATA = {{ site.data.qantas_fares | jsonify | default: 'null' }};
+if (FARE_DATA && FARE_DATA.last_updated) {
+  const updated  = FARE_DATA.last_updated;
+  const daysOld  = Math.floor((Date.now() - new Date(updated)) / 86400000);
+  const fresh    = daysOld <= 7;
+  const pf       = document.getElementById('sc-price-freshness');
+  pf.textContent = 'prices ' + (fresh ? 'scraped ' : 'last scraped ') + updated;
+  pf.style.color = fresh ? '#4ade80' : '#fbbf24';
+  document.getElementById('sc-last-update').textContent = daysOld === 0 ? 'Fares updated today' : `Fares updated ${daysOld}d ago`;
+  document.getElementById('fare-update-date').textContent = updated + (fresh ? '' : ' (may be stale)');
+
+  // Patch ROUTES array with live prices from scraped data
+  const fares = FARE_DATA.fares || {};
+  ROUTES.forEach(r => {
+    const key = r[0] + '-' + r[1];
+    const f   = fares[key];
+    if (f && f.min_price && f.min_price > 0) {
+      r[3] = f.min_price;           // update typMin with live scraped price
+      r[4] = Math.round(f.min_price * 2.2); // rough max = 2.2× cheapest
+    }
+  });
+
+  // Trigger re-render now that prices are updated
+  renderOptimizer();
+}
+</script>
