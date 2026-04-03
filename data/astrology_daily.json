@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Scorpio",
-      "degree": 4.7,
+      "degree": 5,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Sagittarius",
-      "degree": 26.9,
+      "degree": 27,
       "retrograde": false
     },
     "venus": {
@@ -24,7 +24,7 @@
     },
     "mars": {
       "sign": "Pisces",
-      "degree": 10.3,
+      "degree": 10.4,
       "retrograde": false
     },
     "jupiter": {
@@ -55,7 +55,15 @@
         "Venus"
       ],
       "type": "quincunx",
-      "orb": 0.3
+      "orb": 0
+    },
+    {
+      "planets": [
+        "Moon",
+        "Uranus"
+      ],
+      "type": "quincunx",
+      "orb": 1.4
     },
     {
       "planets": [
@@ -64,14 +72,6 @@
       ],
       "type": "conjunction",
       "orb": 1.4
-    },
-    {
-      "planets": [
-        "Moon",
-        "Uranus"
-      ],
-      "type": "quincunx",
-      "orb": 1.7
     },
     {
       "planets": [
