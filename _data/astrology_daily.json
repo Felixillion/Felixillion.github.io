@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Scorpio",
-      "degree": 16.9,
+      "degree": 17.2,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
     "mercury": {
       "sign": "Capricorn",
-      "degree": 0.2,
+      "degree": 0.3,
       "retrograde": false
     },
     "venus": {
       "sign": "Gemini",
-      "degree": 6.6,
+      "degree": 6.7,
       "retrograde": false
     },
     "mars": {
@@ -55,7 +55,7 @@
         "Uranus"
       ],
       "type": "conjunction",
-      "orb": 0.1
+      "orb": 0.2
     },
     {
       "planets": [
@@ -63,7 +63,7 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 1.5
+      "orb": 1.4
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Moon"
       ],
       "type": "quincunx",
-      "orb": 1.8
+      "orb": 2.1
     },
     {
       "planets": [
@@ -79,6 +79,14 @@
         "Saturn"
       ],
       "type": "conjunction",
+      "orb": 4.2
+    },
+    {
+      "planets": [
+        "Moon",
+        "Jupiter"
+      ],
+      "type": "trine",
       "orb": 4.2
     },
     {
@@ -95,7 +103,7 @@
         "Saturn"
       ],
       "type": "sextile",
-      "orb": 4.3
+      "orb": 4.2
     },
     {
       "planets": [
@@ -103,14 +111,6 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 4.4
-    },
-    {
-      "planets": [
-        "Saturn",
-        "Uranus"
-      ],
-      "type": "sextile",
       "orb": 4.4
     }
   ],
