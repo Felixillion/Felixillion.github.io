@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Capricorn",
-      "degree": 28.4,
+      "degree": 28.7,
       "retrograde": false,
       "phase": "Last Quarter"
     },
@@ -71,7 +71,7 @@
         "Jupiter"
       ],
       "type": "opposition",
-      "orb": 1.5
+      "orb": 1.4
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Mars"
       ],
       "type": "square",
-      "orb": 2.3
+      "orb": 2.4
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Neptune"
       ],
       "type": "sextile",
-      "orb": 3.4
+      "orb": 3
     },
     {
       "planets": [
