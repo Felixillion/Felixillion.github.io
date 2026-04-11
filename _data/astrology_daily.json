@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Aquarius",
-      "degree": 10.7,
+      "degree": 11.1,
       "retrograde": false,
       "phase": "Last Quarter"
     },
     "mercury": {
       "sign": "Capricorn",
-      "degree": 23.8,
+      "degree": 23.9,
       "retrograde": false
     },
     "venus": {
       "sign": "Gemini",
-      "degree": 17.9,
+      "degree": 18,
       "retrograde": false
     },
     "mars": {
@@ -63,7 +63,7 @@
         "Saturn"
       ],
       "type": "sextile",
-      "orb": 0.4
+      "orb": 0
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Mercury"
       ],
       "type": "square",
-      "orb": 1.8
+      "orb": 1.9
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Jupiter"
       ],
       "type": "opposition",
-      "orb": 1.8
+      "orb": 1.9
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Mars"
       ],
       "type": "square",
-      "orb": 3.4
+      "orb": 3.5
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Venus"
       ],
       "type": "sextile",
-      "orb": 4.1
+      "orb": 4
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Uranus"
       ],
       "type": "trine",
-      "orb": 4.2
+      "orb": 4.6
     },
     {
       "planets": [
