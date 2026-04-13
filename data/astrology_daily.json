@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Pisces",
-      "degree": 7.3,
+      "degree": 7.4,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
@@ -55,7 +55,7 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 0.7
+      "orb": 0.8
     },
     {
       "planets": [
