@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 18.9,
+      "degree": 19.3,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Aquarius",
-      "degree": 10.6,
+      "degree": 10.7,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Saturn"
       ],
       "type": "sextile",
-      "orb": 0.7
+      "orb": 0.6
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Jupiter"
       ],
       "type": "square",
-      "orb": 3.5
+      "orb": 3.2
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Uranus"
       ],
       "type": "trine",
-      "orb": 4
+      "orb": 4.1
     },
     {
       "planets": [
