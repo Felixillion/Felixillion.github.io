@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Gemini",
-      "degree": 18.1,
+      "degree": 18.2,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
@@ -63,7 +63,7 @@
         "Mars"
       ],
       "type": "square",
-      "orb": 1.1
+      "orb": 1
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Jupiter"
       ],
       "type": "quincunx",
-      "orb": 1.4
+      "orb": 1.5
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Mercury"
       ],
       "type": "trine",
-      "orb": 6.1
+      "orb": 6
     }
   ],
   "readings": {
