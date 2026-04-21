@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 2.2,
+      "degree": 2.6,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
     "mercury": {
       "sign": "Aquarius",
-      "degree": 27.4,
+      "degree": 27.5,
       "retrograde": false
     },
     "venus": {
@@ -51,19 +51,19 @@
   "major_aspects": [
     {
       "planets": [
-        "Sun",
-        "Moon"
-      ],
-      "type": "sextile",
-      "orb": 0.4
-    },
-    {
-      "planets": [
         "Moon",
         "Neptune"
       ],
       "type": "square",
-      "orb": 0.4
+      "orb": 0.7
+    },
+    {
+      "planets": [
+        "Sun",
+        "Moon"
+      ],
+      "type": "sextile",
+      "orb": 0.8
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Venus"
       ],
       "type": "conjunction",
-      "orb": 1.9
+      "orb": 1.6
     },
     {
       "planets": [
@@ -107,10 +107,10 @@
     },
     {
       "planets": [
-        "Moon",
-        "Mercury"
+        "Saturn",
+        "Uranus"
       ],
-      "type": "trine",
+      "type": "sextile",
       "orb": 4.8
     }
   ],
