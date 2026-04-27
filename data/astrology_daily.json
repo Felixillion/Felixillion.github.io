@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Virgo",
-      "degree": 23.7,
+      "degree": 24,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
     "mercury": {
       "sign": "Pisces",
-      "degree": 17.6,
+      "degree": 17.7,
       "retrograde": false
     },
     "venus": {
@@ -51,19 +51,19 @@
   "major_aspects": [
     {
       "planets": [
-        "Moon",
-        "Jupiter"
-      ],
-      "type": "sextile",
-      "orb": 0.4
-    },
-    {
-      "planets": [
         "Mars",
         "Jupiter"
       ],
       "type": "trine",
-      "orb": 0.6
+      "orb": 0.5
+    },
+    {
+      "planets": [
+        "Moon",
+        "Jupiter"
+      ],
+      "type": "sextile",
+      "orb": 0.7
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Mars"
       ],
       "type": "opposition",
-      "orb": 0.9
+      "orb": 1.2
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Saturn"
       ],
       "type": "square",
-      "orb": 2.1
+      "orb": 2.2
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Venus"
       ],
       "type": "trine",
-      "orb": 3.8
+      "orb": 3.9
     },
     {
       "planets": [
