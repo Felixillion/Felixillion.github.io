@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Libra",
-      "degree": 18.9,
+      "degree": 19.3,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Pisces",
-      "degree": 24.4,
+      "degree": 24.5,
       "retrograde": false
     },
     "venus": {
       "sign": "Cancer",
-      "degree": 17,
+      "degree": 17.1,
       "retrograde": false
     },
     "mars": {
@@ -63,7 +63,7 @@
         "Mars"
       ],
       "type": "conjunction",
-      "orb": 0.5
+      "orb": 0.6
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Jupiter"
       ],
       "type": "trine",
-      "orb": 0.9
+      "orb": 1
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Venus"
       ],
       "type": "square",
-      "orb": 1.9
+      "orb": 2.2
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Jupiter"
       ],
       "type": "square",
-      "orb": 4.6
+      "orb": 4.3
     },
     {
       "planets": [
