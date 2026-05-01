@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Scorpio",
-      "degree": 13.3,
+      "degree": 13.7,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Aries",
-      "degree": 1.1,
+      "degree": 1.2,
       "retrograde": false
     },
     "venus": {
       "sign": "Cancer",
-      "degree": 20.2,
+      "degree": 20.3,
       "retrograde": false
     },
     "mars": {
@@ -55,7 +55,7 @@
         "Neptune"
       ],
       "type": "conjunction",
-      "orb": 0.8
+      "orb": 0.7
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Saturn"
       ],
       "type": "quincunx",
-      "orb": 1.5
+      "orb": 1.9
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Moon"
       ],
       "type": "opposition",
-      "orb": 1.8
+      "orb": 2.1
     },
     {
       "planets": [
