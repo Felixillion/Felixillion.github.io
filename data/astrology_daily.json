@@ -3,12 +3,12 @@
   "planetary_positions": {
     "sun": {
       "sign": "Taurus",
-      "degree": 14.4,
+      "degree": 14.5,
       "retrograde": false
     },
     "moon": {
       "sign": "Sagittarius",
-      "degree": 19.6,
+      "degree": 19.7,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
@@ -19,7 +19,7 @@
     },
     "venus": {
       "sign": "Cancer",
-      "degree": 25.1,
+      "degree": 25.2,
       "retrograde": false
     },
     "mars": {
