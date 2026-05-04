@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Sagittarius",
-      "degree": 19.2,
+      "degree": 19.6,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
     "mercury": {
       "sign": "Aries",
-      "degree": 11.2,
+      "degree": 11.3,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Saturn"
       ],
       "type": "conjunction",
-      "orb": 0.7
+      "orb": 0.6
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 4.4
+      "orb": 4.5
     },
     {
       "planets": [
