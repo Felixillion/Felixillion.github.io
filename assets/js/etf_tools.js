@@ -114,6 +114,7 @@ let retState = {
   taxProfile: 'ind_30',
   auFrankingPct: 0.75,   // fraction of AU share dividends that carry franking credits
   auDividendYield: 4.0,  // assumed AU equity dividend yield (% p.a.) for franking calc
+  method: 'hist',        // 'hist' or 'mc'
 };
 
 // Auto-calc state: "what can I withdraw?" / "how much do I need?"
@@ -1304,12 +1305,33 @@ function simSuccessRate(portfolioValue, annualWithdrawal) {
   return total>0 ? (succN/total)*100 : 0;
 }
 
+function simSuccessRateMC(portfolioValue, annualWithdrawal) {
+  const {retirementYears, timing, inflationAdjust, inflationRate} = retState;
+  const frankBoost = frankingBoostRet() / 100;
+  const yrNums = Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).sort((a,b)=>a-b);
+  let succN=0;
+  const PATHS = 5000;
+  for (let i = 0; i < PATHS; i++) {
+    let bal=portfolioValue, wd=annualWithdrawal, ok=true;
+    for (let y=0; y<retirementYears; y++) {
+      const randYr = yrNums[Math.floor(Math.random() * yrNums.length)];
+      const ret = (compositeReturn(randYr)/100) + frankBoost;
+      if (timing==='start') { bal-=wd; if(bal<=0){ok=false;break;} bal*=(1+ret); }
+      else { bal*=(1+ret); bal-=wd; if(bal<=0){ok=false;break;} }
+      if (inflationAdjust) wd*=(1+(AU_CPI_YR[randYr] ?? inflationRate)/100);
+    }
+    if(ok) succN++;
+  }
+  return (succN/PATHS)*100;
+}
+
 // Binary search: max annual withdrawal achieving >= targetRate %
 function solveWithdrawal(targetRate, portfolioVal) {
   let lo=1000, hi=portfolioVal*0.25, best=0;
   for (let i=0; i<44; i++) {
     const mid=(lo+hi)/2;
-    if (simSuccessRate(portfolioVal, mid) >= targetRate) { best=mid; lo=mid; } else hi=mid;
+    const rate = retState.method === 'mc' ? simSuccessRateMC(portfolioVal, mid) : simSuccessRate(portfolioVal, mid);
+    if (rate >= targetRate) { best=mid; lo=mid; } else hi=mid;
   }
   return Math.round(best/100)*100;  // round to nearest $100
 }
@@ -1319,7 +1341,8 @@ function solvePortfolio(targetRate, annualWd) {
   let lo=10000, hi=20000000, best=hi;
   for (let i=0; i<44; i++) {
     const mid=(lo+hi)/2;
-    if (simSuccessRate(mid, annualWd) >= targetRate) { best=mid; hi=mid; } else lo=mid;
+    const rate = retState.method === 'mc' ? simSuccessRateMC(mid, annualWd) : simSuccessRate(mid, annualWd);
+    if (rate >= targetRate) { best=mid; hi=mid; } else lo=mid;
   }
   return Math.round(best/1000)*1000;  // round to nearest $1k
 }
@@ -1345,10 +1368,40 @@ function frankingBoostRet() {
 }
 
 function runSims() {
-  const {portfolioValue,annualWithdrawal,retirementYears,timing,inflationAdjust,inflationRate} = retState;
+  const {portfolioValue,annualWithdrawal,retirementYears,timing,inflationAdjust,inflationRate,method} = retState;
   const yrNums = Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).sort((a,b)=>a-b);
   const maxStart = yrNums[yrNums.length-1] - retirementYears;
   const frankBoost = frankingBoostRet() / 100;   // add to annual return
+
+  if (method === 'mc') {
+    const PATHS = 5000;
+    const results = [];
+    for (let i = 0; i < PATHS; i++) {
+      let bal=portfolioValue, wd=annualWithdrawal, survived=true, depletedYear=null;
+      const path=[{yr:0, v:bal}];
+      for(let y=0;y<retirementYears;y++){
+        const randYr = yrNums[Math.floor(Math.random() * yrNums.length)];
+        const ret   = (compositeReturn(randYr) / 100) + frankBoost;
+        if(timing==='start'){
+          bal -= wd;
+          if(bal<=0){ survived=false; depletedYear=y+1; bal=0; }
+          else bal *= (1+ret);
+        } else {
+          bal *= (1+ret);
+          bal -= wd;
+          if(bal<=0){ survived=false; depletedYear=y+1; bal=0; }
+        }
+        if(inflationAdjust) wd *= (1+(AU_CPI_YR[randYr] ?? inflationRate)/100);
+        path.push({yr:y+1, v:Math.max(0,Math.round(bal)), calYr:randYr});
+        if(!survived){
+          for(let r=y+2;r<=retirementYears;r++) path.push({yr:r,v:0,calYr:randYr});
+          break;
+        }
+      }
+      results.push({startYear:'MC', survived, depletedYear, finalValue:Math.round(bal), path, wd0:annualWithdrawal, earlyEst:false});
+    }
+    return results;
+  }
 
   return yrNums.filter(y=>y<=maxStart).map(startYear => {
     let bal=portfolioValue, wd=annualWithdrawal, survived=true, depletedYear=null;
@@ -1380,7 +1433,7 @@ function runSims() {
 function renderRetirement() {
   const {preset,portfolioValue,annualWithdrawal,retirementYears,timing,
     inflationAdjust,inflationRate,manualMER,useCustomAlloc,customAlloc,
-    frankingMode,taxProfile,auFrankingPct,auDividendYield} = retState;
+    frankingMode,taxProfile,auFrankingPct,auDividendYield,method} = retState;
   const sims    = runSims();
   const succN   = sims.filter(s=>s.survived).length;
   const rate    = sims.length>0 ? ((succN/sims.length)*100).toFixed(0) : 'N/A';
@@ -1520,6 +1573,13 @@ function renderRetirement() {
 
     <!-- Controls row 2 -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:.75rem;" class="resp-grid-2">
+      <div><label class="etf-label">Methodology</label>
+        <select id="ret-method" class="etf-select">
+          <option value="hist" ${method==='hist'?'selected':''}>Historical Sequences</option>
+          <option value="mc" ${method==='mc'?'selected':''}>Monte Carlo (5,000 paths)</option>
+        </select>
+        <div style="font-size:.65rem;color:#475569;margin-top:.2rem;">MC randomizes sequence of returns risk.</div>
+      </div>
       <div><label class="etf-label">Duration</label>
         <select id="ret-yrs" class="etf-select">${[10,15,20,25,30,35,40].map(y=>`<option value="${y}" ${y===retirementYears?'selected':''}>${y} years</option>`).join('')}</select></div>
       <div><label class="etf-label">Withdrawal Timing</label>
@@ -1684,7 +1744,7 @@ function renderRetirement() {
               <div>Actual achieved: <strong style="color:#4ade80;">${simSuccessRate(retAutoState.result.value, retAutoState.withdrawalInput).toFixed(1)}%</strong></div>
             </div>`}
             <div style="font-size:.7rem;color:#475569;border-left:1px solid rgba(255,255,255,.08);padding-left:1.2rem;flex:1;min-width:180px;">
-              Based on ${sims.length} historical windows (${sims[0]?.startYear}–${sims[sims.length-1]?.startYear}).
+              ${method==='mc' ? 'Based on 5,000 randomized Monte Carlo paths (bootstrapped from 1901–2024 returns).' : `Based on ${sims.length} historical windows (${sims[0]?.startYear}–${sims[sims.length-1]?.startYear}).`}
               Uses current preset: <strong style="color:#94a3b8;">${retAutoState.useCustomAlloc?'Custom':preset}</strong>,
               MER <strong style="color:#94a3b8;">${effectiveMER.toFixed(2)}%</strong>,
               ${inflationAdjust?`inflation-adj (historical CPI, fallback ${inflationRate}%)`:'fixed withdrawal'}.
@@ -1733,8 +1793,8 @@ function renderRetirement() {
       Some simulated <span style="color:#ef4444;">failures</span> would succeed with naturally declining spending. The tool is therefore conservative.
       See methodology above for full details.
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:3px;">
-      ${sims.map(s=>{
+    <div style="display:${method==='mc'?'none':'grid'};grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:3px;">
+      ${method==='mc'?'':sims.map(s=>{
         const surviveYrs = s.survived ? retirementYears : (s.depletedYear - s.startYear);
         const bg = s.survived
           ? (s.earlyEst ? 'rgba(22,101,52,.7)' : '#166534')
@@ -1744,14 +1804,14 @@ function renderRetirement() {
           style="background:${bg};border:${bord};border-radius:3px;height:28px;font-size:.6rem;color:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;cursor:default;">${s.startYear}</div>`;
       }).join('')}
     </div>
-    <div style="display:flex;gap:1.5rem;font-size:.72rem;color:#475569;margin-top:.4rem;flex-wrap:wrap;">
+    <div style="display:${method==='mc'?'none':'flex'};gap:1.5rem;font-size:.72rem;color:#475569;margin-top:.4rem;flex-wrap:wrap;">
       <span>🟢 Survived ${retirementYears} years</span>
       <span>🟡→🔴 Partially survived → early depletion</span>
       ${earlyN>0?'<span>Dashed border = pre-1970 (estimated)</span>':''}
     </div>
-    ${failedYrs.length>0?`<div style="margin-top:.75rem;padding:.6rem .9rem;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:6px;font-size:.78rem;color:#fca5a5;">
+    ${method==='mc'?'':(failedYrs.length>0?`<div style="margin-top:.75rem;padding:.6rem .9rem;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:6px;font-size:.78rem;color:#fca5a5;">
       <strong>Failed start years (${failedYrs.length}):</strong> ${failedYrs.join(', ')}
-    </div>`:''}
+    </div>`:'')}
 
     ${dlRow(['dl-csv-ret','⬇ Results (CSV)'],['dl-png-ret','⬇ Chart (PNG)'])}
     <p style="font-size:.7rem;color:#475569;margin-top:.75rem;text-align:center;">

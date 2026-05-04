@@ -178,7 +178,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <div class="aui-ctrl">
         <label>Inflation adjustment</label>
         <select id="swr-infl">
-          <option value="real" selected>Adjust with ABS CPI</option>
+          <option value="real" selected>Adjust with ABS CPI (AU)</option>
+          <option value="us_cpi">Adjust with US CPI</option>
           <option value="fixed">Fixed nominal (no adjustment)</option>
           <option value="flat">Flat 2.5%</option>
         </select>
@@ -207,6 +208,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <option value="90" selected>90% (moderate)</option>
           <option value="95">95% (conservative)</option>
           <option value="99">99% (very safe)</option>
+        </select>
+      </div>
+      <div class="aui-ctrl">
+        <label>Methodology</label>
+        <select id="swr-method">
+          <option value="hist" selected>Historical</option>
+          <option value="mc">Monte Carlo (5k paths)</option>
         </select>
       </div>
     </div>
@@ -457,6 +465,20 @@ const AU_CPI = {
   2020:0.9,2021:3.8,2022:7.8,2023:5.4,2024:3.8,
 };
 
+// Historical US CPI (approximated for Trinity Control)
+const US_CPI = {
+  1926:-1.5,1927:-1.5,1928:-1.2,1929:0.0,1930:-2.3,1931:-9.0,1932:-9.9,1933:-5.1,1934:3.1,1935:2.2,
+  1936:1.5,1937:3.6,1938:-2.1,1939:-1.4,1940:0.7,1941:5.0,1942:10.9,1943:6.1,1944:1.7,1945:2.3,
+  1946:8.3,1947:14.4,1948:8.1,1949:-1.2,1950:1.3,1951:7.9,1952:1.9,1953:0.8,1954:0.7,1955:-0.4,
+  1956:1.5,1957:3.3,1958:2.8,1959:0.7,1960:1.7,1961:1.0,1962:1.0,1963:1.3,1964:1.3,1965:1.6,
+  1966:2.9,1967:3.1,1968:4.2,1969:5.5,1970:5.7,1971:4.4,1972:3.2,1973:6.2,1974:11.0,1975:9.1,
+  1976:5.8,1977:6.5,1978:7.6,1979:11.3,1980:13.5,1981:10.3,1982:6.2,1983:3.2,1984:4.3,1985:3.6,
+  1986:1.9,1987:3.6,1988:4.1,1989:4.8,1990:5.4,1991:4.2,1992:3.0,1993:3.0,1994:2.6,1995:2.8,
+  1996:3.0,1997:2.3,1998:1.6,1999:2.2,2000:3.4,2001:2.8,2002:1.6,2003:2.3,2004:2.7,2005:3.4,
+  2006:3.2,2007:2.8,2008:3.8,2009:-0.4,2010:1.6,2011:3.2,2012:2.1,2013:1.5,2014:1.6,2015:0.1,
+  2016:1.3,2017:2.1,2018:2.4,2019:1.8,2020:1.2,2021:4.7,2022:8.0,2023:4.1,2024:2.5
+};
+
 const PRESETS = {
   '100AU':  {label:'100% AU Shares',alloc:{AU_SHARES:100},mer:0.07,frank:true},
   'DHHF':   {label:'DHHF',          alloc:{AU_SHARES:37,INTL_SHARES:63},mer:0.19,frank:true},
@@ -465,6 +487,7 @@ const PRESETS = {
   'VDBA':   {label:'VDBA (Balanced)',alloc:{AU_SHARES:21,INTL_SHARES:19,AU_BONDS:29,GLOBAL_BONDS:27,CASH:4},mer:0.27,frank:true},
   '100GL':  {label:'100% Global',   alloc:{INTL_SHARES:100},mer:0.18,frank:false},
   '100US':  {label:'100% US',       alloc:{US_SHARES:100},mer:0.03,frank:false},
+  'US6040': {label:'US 60/40 (Trinity Control)',alloc:{US_SHARES:60,GLOBAL_BONDS:40},mer:0.05,frank:false},
   'BONDS':  {label:'100% AU Bonds', alloc:{AU_BONDS:100},mer:0.10,frank:false},
   'CUSTOM': {label:'Custom',        alloc:{AU_SHARES:36,INTL_SHARES:37,AU_BONDS:6,GLOBAL_BONDS:16,CASH:5},mer:0.27,frank:true},
 };
@@ -492,6 +515,7 @@ let swrState = {
   franking:true,
   taxProfile:'ind_30',
   targetRate:90,
+  method:'hist',
   portfolioVal:1000000,
   withdrawal:40000,
 };
@@ -562,6 +586,8 @@ function simOneSequence(startYear, portfolioVal, annualWd, alloc, yrs, timing, i
     // Inflation adjust withdrawal
     if(inflation==='real'){
       wd *= (1 + (AU_CPI[yr] ?? 2.5)/100);
+    } else if(inflation==='us_cpi'){
+      wd *= (1 + (US_CPI[yr] ?? 2.5)/100);
     } else if(inflation==='flat'){
       wd *= 1.025;
     }
@@ -570,7 +596,45 @@ function simOneSequence(startYear, portfolioVal, annualWd, alloc, yrs, timing, i
   return {survived:true, finalBal:bal, failYear:null};
 }
 
-function simSuccessRate(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer) {
+function simOneMCSequence(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer) {
+  let bal = portfolioVal;
+  let wd  = annualWd;
+  const frank = frankBoost(alloc, frankEnabled, taxProfile) / 100;
+  const yrNums = getYears();
+  for(let y=0; y<yrs; y++){
+    const randYr = yrNums[Math.floor(Math.random() * yrNums.length)];
+    const ret = (compositeReturn(randYr, alloc) - mer) / 100 + frank;
+    if(timing==='start'){
+      bal -= wd;
+      if(bal <= 0) return {survived:false, finalBal:0};
+      bal *= (1 + ret);
+    } else {
+      bal *= (1 + ret);
+      bal -= wd;
+      if(bal <= 0) return {survived:false, finalBal:0};
+    }
+    if(inflation==='real'){
+      wd *= (1 + (AU_CPI[randYr] ?? 2.5)/100);
+    } else if(inflation==='us_cpi'){
+      wd *= (1 + (US_CPI[randYr] ?? 2.5)/100);
+    } else if(inflation==='flat'){
+      wd *= 1.025;
+    }
+  }
+  return {survived:true, finalBal:bal};
+}
+
+function simSuccessRate(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer, method) {
+  if (method === 'mc') {
+    let ok = 0;
+    const PATHS = 5000;
+    for (let i = 0; i < PATHS; i++) {
+      const r = simOneMCSequence(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer);
+      if (r.survived) ok++;
+    }
+    return ok / PATHS * 100;
+  }
+  
   const yrNums = getYears();
   const maxStart = yrNums[yrNums.length-1] - yrs;
   let ok=0, total=0;
@@ -582,11 +646,11 @@ function simSuccessRate(portfolioVal, annualWd, alloc, yrs, timing, inflation, f
   return total>0 ? ok/total*100 : 0;
 }
 
-function solveWithdrawal(targetPct, portfolioVal, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer){
+function solveWithdrawal(targetPct, portfolioVal, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer, method){
   let lo=1000, hi=portfolioVal*0.20, best=0;
   for(let i=0; i<44; i++){
     const mid=(lo+hi)/2;
-    const rate = simSuccessRate(portfolioVal, mid, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer);
+    const rate = simSuccessRate(portfolioVal, mid, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer, method);
     if(rate >= targetPct){ best=mid; lo=mid; } else hi=mid;
   }
   return Math.round(best/100)*100;
@@ -620,6 +684,7 @@ function initSWR(){
       document.querySelectorAll('#swr-presets .aui-pill').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('swr-custom-alloc').style.display = key==='CUSTOM'?'block':'none';
+      if(key==='US6040') document.getElementById('swr-infl').value = 'us_cpi';
       updateSWR();
     });
     pillRow.appendChild(btn);
@@ -629,7 +694,7 @@ function initSWR(){
   buildCustomAllocSliders();
 
   // Wire controls
-  ['swr-pv','swr-wd','swr-yrs','swr-timing','swr-infl','swr-frank','swr-tax-profile','swr-target'].forEach(id=>{
+  ['swr-pv','swr-wd','swr-yrs','swr-timing','swr-infl','swr-frank','swr-tax-profile','swr-target','swr-method'].forEach(id=>{
     document.getElementById(id).addEventListener('change', readControlsAndUpdate);
     document.getElementById(id).addEventListener('input',  readControlsAndUpdate);
   });
@@ -680,6 +745,7 @@ function readControlsAndUpdate(){
   swrState.franking     = document.getElementById('swr-frank').value==='1';
   swrState.taxProfile   = document.getElementById('swr-tax-profile').value;
   swrState.targetRate   = parseInt(document.getElementById('swr-target').value)||90;
+  swrState.method       = document.getElementById('swr-method').value;
   document.getElementById('swr-heat-target').textContent = swrState.targetRate+'%';
   updateSWR();
   // Rebuild heat map lazily when target rate changes
@@ -693,14 +759,14 @@ function updateSWR(){
   const preset= PRESETS[swrState.preset];
   const mer   = swrState.preset==='CUSTOM'?0.20:preset.mer;
   const frank = swrState.franking;
-  const {years,timing,inflation,targetRate,portfolioVal,withdrawal,taxProfile} = swrState;
+  const {years,timing,inflation,targetRate,portfolioVal,withdrawal,taxProfile,method} = swrState;
 
   // Current withdrawal rate success
-  const successRate = simSuccessRate(portfolioVal,withdrawal,alloc,years,timing,inflation,frank,taxProfile,mer);
+  const successRate = simSuccessRate(portfolioVal,withdrawal,alloc,years,timing,inflation,frank,taxProfile,mer,method);
   const wr = withdrawal/portfolioVal*100;
 
   // Safe withdrawal (binary search)
-  const safeWd = solveWithdrawal(targetRate,portfolioVal,alloc,years,timing,inflation,frank,taxProfile,mer);
+  const safeWd = solveWithdrawal(targetRate,portfolioVal,alloc,years,timing,inflation,frank,taxProfile,mer,method);
   const swrPct = safeWd/portfolioVal*100;
 
   // Result cards
@@ -772,7 +838,8 @@ function buildHeatMap(){
   // Precompute — these are fast enough
   portfolios.forEach(({key,frank})=>{
     const p=PRESETS[key];
-    const swrs=horizons.map(h=>solveWithdrawal(targetRate,pv,p.alloc,h,'start','real',frank,swrState.taxProfile,p.mer)/pv*100);
+    const inf = key === 'US6040' ? 'us_cpi' : 'real';
+    const swrs=horizons.map(h=>solveWithdrawal(targetRate,pv,p.alloc,h,'start',inf,frank,swrState.taxProfile,p.mer,swrState.method)/pv*100);
     html+=`<tr><td style="text-align:left;padding:.4rem .6rem;font-weight:600;color:var(--text);white-space:nowrap;">${p.label}</td>`;
     swrs.forEach(swrPct=>{
       const col=swrPct>=4.5?'rgba(74,222,128,.25)':swrPct>=4.0?'rgba(163,230,53,.15)':swrPct>=3.5?'rgba(251,191,36,.15)':swrPct>=3.0?'rgba(251,146,60,.15)':'rgba(248,113,113,.2)';
@@ -822,6 +889,7 @@ function drawSequenceChart(){
       const yr=sy+y;
       const ret=(compositeReturn(yr,alloc)-mer)/100+frankB;
       if(inflation==='real') curWd*=(1+(AU_CPI[yr]??2.5)/100);
+      else if(inflation==='us_cpi') curWd*=(1+(US_CPI[yr]??2.5)/100);
       else if(inflation==='flat') curWd*=1.025;
       if(swrState.timing==='start'){
         bal-=curWd; if(bal<=0){survived=false;pts.push({yr:yr+1,val:0});break;}
