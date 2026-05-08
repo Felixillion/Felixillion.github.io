@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Aquarius",
-      "degree": 6.9,
+      "degree": 7.2,
       "retrograde": false,
       "phase": "Last Quarter"
     },
     "mercury": {
       "sign": "Aries",
-      "degree": 24.7,
+      "degree": 24.8,
       "retrograde": false
     },
     "venus": {
@@ -51,16 +51,16 @@
   "major_aspects": [
     {
       "planets": [
-        "Moon",
-        "Uranus"
+        "Venus",
+        "Neptune"
       ],
       "type": "trine",
-      "orb": 0
+      "orb": 0.3
     },
     {
       "planets": [
-        "Venus",
-        "Neptune"
+        "Moon",
+        "Uranus"
       ],
       "type": "trine",
       "orb": 0.4
@@ -71,7 +71,7 @@
         "Jupiter"
       ],
       "type": "square",
-      "orb": 0.5
+      "orb": 0.6
     },
     {
       "planets": [
@@ -99,19 +99,19 @@
     },
     {
       "planets": [
+        "Moon",
+        "Saturn"
+      ],
+      "type": "sextile",
+      "orb": 4.8
+    },
+    {
+      "planets": [
         "Uranus",
         "Neptune"
       ],
       "type": "sextile",
       "orb": 4.9
-    },
-    {
-      "planets": [
-        "Moon",
-        "Neptune"
-      ],
-      "type": "sextile",
-      "orb": 5
     }
   ],
   "readings": {
