@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Pisces",
-      "degree": 1.9,
+      "degree": 2.3,
       "retrograde": false,
       "phase": "Last Quarter"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 1.5,
+      "degree": 1.6,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Mercury"
       ],
       "type": "sextile",
-      "orb": 0.4
+      "orb": 0.6
     },
     {
       "planets": [
@@ -75,18 +75,18 @@
     },
     {
       "planets": [
-        "Venus",
-        "Neptune"
-      ],
-      "type": "trine",
-      "orb": 2.8
-    },
-    {
-      "planets": [
         "Moon",
         "Venus"
       ],
       "type": "quincunx",
+      "orb": 2.6
+    },
+    {
+      "planets": [
+        "Venus",
+        "Neptune"
+      ],
+      "type": "trine",
       "orb": 2.9
     },
     {
@@ -111,7 +111,7 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 5
+      "orb": 4.6
     }
   ],
   "readings": {
