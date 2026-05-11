@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Pisces",
-      "degree": 15.6,
+      "degree": 15.7,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
@@ -63,7 +63,7 @@
         "Venus"
       ],
       "type": "square",
-      "orb": 1.4
+      "orb": 1.3
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Moon"
       ],
       "type": "sextile",
-      "orb": 5.6
+      "orb": 5.5
     }
   ],
   "readings": {
