@@ -8,23 +8,23 @@
     },
     "moon": {
       "sign": "Pisces",
-      "degree": 15.3,
+      "degree": 15.6,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 5,
+      "degree": 5.1,
       "retrograde": false
     },
     "venus": {
       "sign": "Leo",
-      "degree": 6.4,
+      "degree": 6.5,
       "retrograde": false
     },
     "mars": {
       "sign": "Aries",
-      "degree": 0,
+      "degree": 0.1,
       "retrograde": false
     },
     "jupiter": {
@@ -55,7 +55,7 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 0.5
+      "orb": 0.4
     },
     {
       "planets": [
@@ -107,11 +107,11 @@
     },
     {
       "planets": [
-        "Mars",
-        "Jupiter"
+        "Sun",
+        "Moon"
       ],
-      "type": "trine",
-      "orb": 5.5
+      "type": "sextile",
+      "orb": 5.6
     }
   ],
   "readings": {
