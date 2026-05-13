@@ -3,18 +3,18 @@
   "planetary_positions": {
     "sun": {
       "sign": "Taurus",
-      "degree": 23.1,
+      "degree": 23.2,
       "retrograde": false
     },
     "moon": {
       "sign": "Aries",
-      "degree": 13.1,
+      "degree": 13.3,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 11.9,
+      "degree": 12,
       "retrograde": false
     },
     "venus": {
@@ -51,19 +51,19 @@
   "major_aspects": [
     {
       "planets": [
-        "Moon",
-        "Saturn"
+        "Mars",
+        "Neptune"
       ],
       "type": "conjunction",
       "orb": 0.9
     },
     {
       "planets": [
-        "Mars",
-        "Neptune"
+        "Moon",
+        "Saturn"
       ],
       "type": "conjunction",
-      "orb": 0.9
+      "orb": 1.1
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 2.7
+      "orb": 2.8
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Venus"
       ],
       "type": "trine",
-      "orb": 3.4
+      "orb": 3.6
     },
     {
       "planets": [
