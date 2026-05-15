@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Taurus",
-      "degree": 12,
+      "degree": 12.4,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 18.8,
+      "degree": 18.9,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Neptune"
       ],
       "type": "conjunction",
-      "orb": 0.1
+      "orb": 0.2
     },
     {
       "planets": [
@@ -63,15 +63,7 @@
         "Jupiter"
       ],
       "type": "sextile",
-      "orb": 0.2
-    },
-    {
-      "planets": [
-        "Venus",
-        "Saturn"
-      ],
-      "type": "trine",
-      "orb": 0.6
+      "orb": 0.3
     },
     {
       "planets": [
@@ -79,7 +71,15 @@
         "Venus"
       ],
       "type": "square",
-      "orb": 0.9
+      "orb": 0.5
+    },
+    {
+      "planets": [
+        "Venus",
+        "Saturn"
+      ],
+      "type": "trine",
+      "orb": 0.7
     },
     {
       "planets": [
@@ -107,8 +107,8 @@
     },
     {
       "planets": [
-        "Venus",
-        "Uranus"
+        "Mercury",
+        "Jupiter"
       ],
       "type": "sextile",
       "orb": 5.9
