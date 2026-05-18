@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Gemini",
-      "degree": 27.5,
+      "degree": 27.6,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
@@ -55,7 +55,7 @@
         "Mercury"
       ],
       "type": "conjunction",
-      "orb": 1.5
+      "orb": 1.6
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Neptune"
       ],
       "type": "sextile",
-      "orb": 2.5
+      "orb": 2.4
     },
     {
       "planets": [
@@ -107,10 +107,10 @@
     },
     {
       "planets": [
-        "Mercury",
-        "Jupiter"
+        "Moon",
+        "Neptune"
       ],
-      "type": "sextile",
+      "type": "square",
       "orb": 4.4
     }
   ],
