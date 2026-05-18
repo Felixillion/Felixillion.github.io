@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Gemini",
-      "degree": 27.1,
+      "degree": 27.5,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 29.4,
+      "degree": 29.5,
       "retrograde": false
     },
     "venus": {
       "sign": "Leo",
-      "degree": 17.7,
+      "degree": 17.8,
       "retrograde": false
     },
     "mars": {
@@ -71,7 +71,7 @@
         "Neptune"
       ],
       "type": "sextile",
-      "orb": 2.6
+      "orb": 2.5
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Jupiter"
       ],
       "type": "sextile",
-      "orb": 4.3
+      "orb": 4.4
     }
   ],
   "readings": {
