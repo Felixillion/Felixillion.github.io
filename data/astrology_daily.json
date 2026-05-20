@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 26.9,
+      "degree": 27.1,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
@@ -63,7 +63,7 @@
         "Jupiter"
       ],
       "type": "conjunction",
-      "orb": 1.7
+      "orb": 1.8
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Moon"
       ],
       "type": "sextile",
-      "orb": 3
+      "orb": 2.8
     },
     {
       "planets": [
