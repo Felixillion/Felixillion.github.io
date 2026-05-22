@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Leo",
-      "degree": 24.5,
+      "degree": 24.8,
       "retrograde": false,
       "phase": "First Quarter"
     },
     "mercury": {
       "sign": "Gemini",
-      "degree": 13.9,
+      "degree": 14,
       "retrograde": false
     },
     "venus": {
@@ -24,7 +24,7 @@
     },
     "mars": {
       "sign": "Aries",
-      "degree": 5.7,
+      "degree": 5.8,
       "retrograde": false
     },
     "jupiter": {
@@ -63,7 +63,7 @@
         "Venus"
       ],
       "type": "conjunction",
-      "orb": 0.3
+      "orb": 0.6
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Saturn"
       ],
       "type": "sextile",
-      "orb": 1.4
+      "orb": 1.5
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Neptune"
       ],
       "type": "conjunction",
-      "orb": 3.7
+      "orb": 3.8
     },
     {
       "planets": [
