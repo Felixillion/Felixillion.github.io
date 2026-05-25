@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Libra",
-      "degree": 4,
+      "degree": 4.1,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
@@ -63,7 +63,7 @@
         "Moon"
       ],
       "type": "trine",
-      "orb": 0.7
+      "orb": 0.6
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Neptune"
       ],
       "type": "quincunx",
-      "orb": 3
+      "orb": 2.9
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Uranus"
       ],
       "type": "trine",
-      "orb": 3.1
+      "orb": 3
     }
   ],
   "readings": {
