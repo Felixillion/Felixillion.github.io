@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Libra",
-      "degree": 16.3,
+      "degree": 16.5,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
@@ -59,18 +59,18 @@
     },
     {
       "planets": [
-        "Sun",
-        "Uranus"
-      ],
-      "type": "conjunction",
-      "orb": 1.4
-    },
-    {
-      "planets": [
         "Venus",
         "Neptune"
       ],
       "type": "quincunx",
+      "orb": 1.3
+    },
+    {
+      "planets": [
+        "Sun",
+        "Uranus"
+      ],
+      "type": "conjunction",
       "orb": 1.4
     },
     {
@@ -95,7 +95,7 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 3.1
+      "orb": 3
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Neptune"
       ],
       "type": "sextile",
-      "orb": 3.6
+      "orb": 3.7
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Saturn"
       ],
       "type": "opposition",
-      "orb": 3.7
+      "orb": 3.9
     }
   ],
   "readings": {
