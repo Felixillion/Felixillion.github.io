@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Libra",
-      "degree": 28.6,
+      "degree": 28.8,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
     "mercury": {
       "sign": "Cancer",
-      "degree": 2.8,
+      "degree": 2.9,
       "retrograde": false
     },
     "venus": {
@@ -63,7 +63,7 @@
         "Uranus"
       ],
       "type": "conjunction",
-      "orb": 0.5
+      "orb": 0.4
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Venus"
       ],
       "type": "sextile",
-      "orb": 0.5
+      "orb": 0.6
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Jupiter"
       ],
       "type": "square",
-      "orb": 2.8
+      "orb": 3
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Venus"
       ],
       "type": "sextile",
-      "orb": 3.7
+      "orb": 3.5
     }
   ],
   "readings": {
