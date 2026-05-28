@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Scorpio",
-      "degree": 10.7,
+      "degree": 10.9,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
     "mercury": {
       "sign": "Cancer",
-      "degree": 6.7,
+      "degree": 6.8,
       "retrograde": false
     },
     "venus": {
@@ -68,7 +68,7 @@
     {
       "planets": [
         "Moon",
-        "Mars"
+        "Saturn"
       ],
       "type": "quincunx",
       "orb": 1.8
@@ -92,7 +92,7 @@
     {
       "planets": [
         "Moon",
-        "Saturn"
+        "Mars"
       ],
       "type": "quincunx",
       "orb": 2
@@ -103,7 +103,7 @@
         "Mars"
       ],
       "type": "square",
-      "orb": 2.2
+      "orb": 2.1
     },
     {
       "planets": [
