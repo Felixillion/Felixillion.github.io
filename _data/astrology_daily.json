@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Sagittarius",
-      "degree": 4.2,
+      "degree": 4.5,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Cancer",
-      "degree": 14.5,
+      "degree": 14.6,
       "retrograde": false
     },
     "venus": {
@@ -71,15 +71,7 @@
         "Saturn"
       ],
       "type": "square",
-      "orb": 1.7
-    },
-    {
-      "planets": [
-        "Moon",
-        "Neptune"
-      ],
-      "type": "trine",
-      "orb": 2.1
+      "orb": 1.8
     },
     {
       "planets": [
@@ -99,19 +91,27 @@
     },
     {
       "planets": [
-        "Venus",
-        "Mars"
+        "Moon",
+        "Neptune"
       ],
-      "type": "quincunx",
-      "orb": 2.8
+      "type": "trine",
+      "orb": 2.4
     },
     {
       "planets": [
-        "Mars",
+        "Moon",
+        "Venus"
+      ],
+      "type": "square",
+      "orb": 2.6
+    },
+    {
+      "planets": [
+        "Moon",
         "Uranus"
       ],
-      "type": "sextile",
-      "orb": 2.8
+      "type": "opposition",
+      "orb": 2.6
     }
   ],
   "readings": {
