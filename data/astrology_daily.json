@@ -103,7 +103,7 @@
         "Jupiter"
       ],
       "type": "quincunx",
-      "orb": 2.5
+      "orb": 2.6
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 3.3
+      "orb": 3.2
     }
   ],
   "readings": {
