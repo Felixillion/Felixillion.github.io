@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Capricorn",
-      "degree": 10.4,
+      "degree": 10.6,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
     "mercury": {
       "sign": "Cancer",
-      "degree": 26.9,
+      "degree": 27,
       "retrograde": false
     },
     "venus": {
@@ -63,7 +63,7 @@
         "Saturn"
       ],
       "type": "sextile",
-      "orb": 0.5
+      "orb": 0.4
     },
     {
       "planets": [
@@ -103,14 +103,14 @@
         "Mars"
       ],
       "type": "square",
-      "orb": 1.1
+      "orb": 0.9
     },
     {
       "planets": [
-        "Mars",
-        "Saturn"
+        "Moon",
+        "Venus"
       ],
-      "type": "conjunction",
+      "type": "trine",
       "orb": 1.4
     }
   ],
