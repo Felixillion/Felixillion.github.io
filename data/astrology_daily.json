@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 7.8,
+      "degree": 8.1,
       "retrograde": false,
       "phase": "Last Quarter"
     },
@@ -55,7 +55,7 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 0.6
+      "orb": 0.8
     },
     {
       "planets": [
@@ -91,6 +91,14 @@
     },
     {
       "planets": [
+        "Moon",
+        "Saturn"
+      ],
+      "type": "conjunction",
+      "orb": 5
+    },
+    {
+      "planets": [
         "Uranus",
         "Neptune"
       ],
@@ -104,14 +112,6 @@
       ],
       "type": "trine",
       "orb": 5.2
-    },
-    {
-      "planets": [
-        "Moon",
-        "Saturn"
-      ],
-      "type": "conjunction",
-      "orb": 5.3
     }
   ],
   "readings": {
