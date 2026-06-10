@@ -3,18 +3,18 @@
   "planetary_positions": {
     "sun": {
       "sign": "Gemini",
-      "degree": 20,
+      "degree": 20.1,
       "retrograde": false
     },
     "moon": {
       "sign": "Aries",
-      "degree": 21.9,
+      "degree": 22.3,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
     "mercury": {
       "sign": "Virgo",
-      "degree": 1.7,
+      "degree": 1.8,
       "retrograde": false
     },
     "venus": {
@@ -24,7 +24,7 @@
     },
     "mars": {
       "sign": "Aries",
-      "degree": 15.6,
+      "degree": 15.7,
       "retrograde": false
     },
     "jupiter": {
@@ -39,7 +39,7 @@
     },
     "uranus": {
       "sign": "Gemini",
-      "degree": 7.2,
+      "degree": 7.3,
       "retrograde": false
     },
     "neptune": {
@@ -55,15 +55,7 @@
         "Neptune"
       ],
       "type": "quincunx",
-      "orb": 0.5
-    },
-    {
-      "planets": [
-        "Sun",
-        "Moon"
-      ],
-      "type": "sextile",
-      "orb": 1.9
+      "orb": 0.3
     },
     {
       "planets": [
@@ -71,7 +63,15 @@
         "Jupiter"
       ],
       "type": "sextile",
-      "orb": 2.1
+      "orb": 2
+    },
+    {
+      "planets": [
+        "Sun",
+        "Moon"
+      ],
+      "type": "sextile",
+      "orb": 2.2
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Venus"
       ],
       "type": "quincunx",
-      "orb": 3
+      "orb": 2.7
     },
     {
       "planets": [
@@ -99,19 +99,19 @@
     },
     {
       "planets": [
+        "Moon",
+        "Jupiter"
+      ],
+      "type": "square",
+      "orb": 4.7
+    },
+    {
+      "planets": [
         "Sun",
         "Venus"
       ],
       "type": "square",
       "orb": 4.9
-    },
-    {
-      "planets": [
-        "Moon",
-        "Jupiter"
-      ],
-      "type": "square",
-      "orb": 5.1
     }
   ],
   "readings": {
