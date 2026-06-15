@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 6.6,
+      "degree": 6.7,
       "retrograde": false,
       "phase": "New Moon"
     },
@@ -55,7 +55,7 @@
         "Mercury"
       ],
       "type": "square",
-      "orb": 0.4
+      "orb": 0.5
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Venus"
       ],
       "type": "square",
-      "orb": 3.6
+      "orb": 3.7
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 4.5
+      "orb": 4.6
     },
     {
       "planets": [
