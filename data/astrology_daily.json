@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Leo",
-      "degree": 5.9,
+      "degree": 6.1,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
     "mercury": {
       "sign": "Libra",
-      "degree": 4.9,
+      "degree": 5,
       "retrograde": false
     },
     "venus": {
@@ -55,15 +55,7 @@
         "Venus"
       ],
       "type": "sextile",
-      "orb": 0.3
-    },
-    {
-      "planets": [
-        "Moon",
-        "Mercury"
-      ],
-      "type": "sextile",
-      "orb": 1
+      "orb": 0.1
     },
     {
       "planets": [
@@ -75,11 +67,11 @@
     },
     {
       "planets": [
-        "Mercury",
-        "Venus"
+        "Moon",
+        "Mercury"
       ],
-      "type": "conjunction",
-      "orb": 1.3
+      "type": "sextile",
+      "orb": 1.2
     },
     {
       "planets": [
@@ -87,7 +79,15 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 1.4
+      "orb": 1.2
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Venus"
+      ],
+      "type": "conjunction",
+      "orb": 1.2
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Neptune"
       ],
       "type": "opposition",
-      "orb": 2.7
+      "orb": 2.8
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Neptune"
       ],
       "type": "trine",
-      "orb": 3.7
+      "orb": 4
     }
   ],
   "readings": {
