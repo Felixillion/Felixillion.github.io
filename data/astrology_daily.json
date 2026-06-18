@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Leo",
-      "degree": 20.4,
+      "degree": 20.7,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
     "mercury": {
       "sign": "Libra",
-      "degree": 9.9,
+      "degree": 10,
       "retrograde": false
     },
     "venus": {
@@ -29,7 +29,7 @@
     },
     "jupiter": {
       "sign": "Cancer",
-      "degree": 27.6,
+      "degree": 27.7,
       "retrograde": false
     },
     "saturn": {
@@ -63,7 +63,7 @@
         "Mars"
       ],
       "type": "trine",
-      "orb": 0.6
+      "orb": 0.9
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Uranus"
       ],
       "type": "trine",
-      "orb": 2.5
+      "orb": 2.6
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Saturn"
       ],
       "type": "opposition",
-      "orb": 3.5
+      "orb": 3.4
     },
     {
       "planets": [
