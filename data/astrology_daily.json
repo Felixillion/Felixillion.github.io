@@ -14,7 +14,7 @@
     },
     "mercury": {
       "sign": "Scorpio",
-      "degree": 0.1,
+      "degree": 0.2,
       "retrograde": false
     },
     "venus": {
@@ -63,7 +63,7 @@
         "Venus"
       ],
       "type": "conjunction",
-      "orb": 0.5
+      "orb": 0.4
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Neptune"
       ],
       "type": "quincunx",
-      "orb": 2.1
+      "orb": 2
     },
     {
       "planets": [
