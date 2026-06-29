@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Capricorn",
-      "degree": 7.2,
+      "degree": 7.3,
       "retrograde": false,
       "phase": "Full Moon"
     },
@@ -24,7 +24,7 @@
     },
     "mars": {
       "sign": "Aries",
-      "degree": 25.5,
+      "degree": 25.6,
       "retrograde": false
     },
     "jupiter": {
@@ -63,7 +63,15 @@
         "Uranus"
       ],
       "type": "quincunx",
-      "orb": 0.3
+      "orb": 0.2
+    },
+    {
+      "planets": [
+        "Sun",
+        "Moon"
+      ],
+      "type": "opposition",
+      "orb": 0.9
     },
     {
       "planets": [
@@ -76,18 +84,18 @@
     {
       "planets": [
         "Sun",
-        "Moon"
-      ],
-      "type": "opposition",
-      "orb": 1
-    },
-    {
-      "planets": [
-        "Sun",
         "Mercury"
       ],
       "type": "quincunx",
       "orb": 1.6
+    },
+    {
+      "planets": [
+        "Venus",
+        "Jupiter"
+      ],
+      "type": "square",
+      "orb": 3
     },
     {
       "planets": [
@@ -96,14 +104,6 @@
       ],
       "type": "square",
       "orb": 3
-    },
-    {
-      "planets": [
-        "Venus",
-        "Jupiter"
-      ],
-      "type": "square",
-      "orb": 3.1
     },
     {
       "planets": [
