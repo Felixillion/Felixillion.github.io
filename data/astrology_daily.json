@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 4.1,
+      "degree": 4.2,
       "retrograde": false,
       "phase": "Last Quarter"
     },
@@ -87,7 +87,7 @@
         "Mercury"
       ],
       "type": "opposition",
-      "orb": 1.1
+      "orb": 1
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Neptune"
       ],
       "type": "conjunction",
-      "orb": 1.8
+      "orb": 1.9
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Venus"
       ],
       "type": "quincunx",
-      "orb": 2.7
+      "orb": 2.6
     },
     {
       "planets": [
