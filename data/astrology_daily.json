@@ -3,23 +3,23 @@
   "planetary_positions": {
     "sun": {
       "sign": "Cancer",
-      "degree": 18.6,
+      "degree": 18.7,
       "retrograde": false
     },
     "moon": {
       "sign": "Taurus",
-      "degree": 29.2,
+      "degree": 29.6,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
     "mercury": {
       "sign": "Aquarius",
-      "degree": 4.7,
+      "degree": 4.8,
       "retrograde": false
     },
     "venus": {
       "sign": "Scorpio",
-      "degree": 13.1,
+      "degree": 13.2,
       "retrograde": false
     },
     "mars": {
@@ -55,7 +55,7 @@
         "Jupiter"
       ],
       "type": "sextile",
-      "orb": 0.3
+      "orb": 0.1
     },
     {
       "planets": [
@@ -63,7 +63,7 @@
         "Saturn"
       ],
       "type": "quincunx",
-      "orb": 1
+      "orb": 0.9
     },
     {
       "planets": [
@@ -79,7 +79,23 @@
         "Neptune"
       ],
       "type": "sextile",
-      "orb": 2.4
+      "orb": 2.5
+    },
+    {
+      "planets": [
+        "Moon",
+        "Neptune"
+      ],
+      "type": "sextile",
+      "orb": 2.7
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Uranus"
+      ],
+      "type": "trine",
+      "orb": 2.8
     },
     {
       "planets": [
@@ -92,26 +108,10 @@
     {
       "planets": [
         "Mercury",
-        "Uranus"
-      ],
-      "type": "trine",
-      "orb": 2.9
-    },
-    {
-      "planets": [
-        "Moon",
-        "Neptune"
-      ],
-      "type": "sextile",
-      "orb": 3.1
-    },
-    {
-      "planets": [
-        "Mercury",
         "Mars"
       ],
       "type": "square",
-      "orb": 3.4
+      "orb": 3.5
     }
   ],
   "readings": {
