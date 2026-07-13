@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 14.2,
+      "degree": 14.4,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Aquarius",
-      "degree": 20.4,
+      "degree": 20.5,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Saturn"
       ],
       "type": "square",
-      "orb": 0
+      "orb": 0.2
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Venus"
       ],
       "type": "square",
-      "orb": 2.4
+      "orb": 2.5
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Venus"
       ],
       "type": "trine",
-      "orb": 3.8
+      "orb": 3.6
     },
     {
       "planets": [
