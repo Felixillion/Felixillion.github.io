@@ -3,18 +3,18 @@
   "planetary_positions": {
     "sun": {
       "sign": "Cancer",
-      "degree": 22.4,
+      "degree": 22.5,
       "retrograde": false
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 28.8,
+      "degree": 29.2,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Aquarius",
-      "degree": 25.4,
+      "degree": 25.6,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Jupiter"
       ],
       "type": "conjunction",
-      "orb": 1
+      "orb": 0.6
     },
     {
       "planets": [
@@ -75,19 +75,11 @@
     },
     {
       "planets": [
-        "Sun",
-        "Mercury"
-      ],
-      "type": "quincunx",
-      "orb": 3
-    },
-    {
-      "planets": [
         "Moon",
         "Neptune"
       ],
       "type": "trine",
-      "orb": 3.5
+      "orb": 3.1
     },
     {
       "planets": [
@@ -103,7 +95,7 @@
         "Mars"
       ],
       "type": "square",
-      "orb": 4.6
+      "orb": 4.2
     },
     {
       "planets": [
@@ -112,6 +104,14 @@
       ],
       "type": "sextile",
       "orb": 5.3
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Venus"
+      ],
+      "type": "square",
+      "orb": 6
     }
   ],
   "readings": {
