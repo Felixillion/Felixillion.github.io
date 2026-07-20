@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Libra",
-      "degree": 22.1,
+      "degree": 22.2,
       "retrograde": false,
       "phase": "First Quarter"
     },
@@ -24,7 +24,7 @@
     },
     "mars": {
       "sign": "Taurus",
-      "degree": 6.5,
+      "degree": 6.6,
       "retrograde": false
     },
     "jupiter": {
