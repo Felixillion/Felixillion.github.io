@@ -1,35 +1,35 @@
 {
-  "lastUpdated": "2026-07-24",
+  "lastUpdated": "2026-07-25",
   "planetary_positions": {
     "sun": {
       "sign": "Leo",
-      "degree": 2,
+      "degree": 2.9,
       "retrograde": false
     },
     "moon": {
       "sign": "Sagittarius",
-      "degree": 10.2,
+      "degree": 21.5,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
     "mercury": {
       "sign": "Aries",
-      "degree": 14.7,
+      "degree": 19.2,
       "retrograde": false
     },
     "venus": {
       "sign": "Sagittarius",
-      "degree": 5.7,
+      "degree": 7.2,
       "retrograde": false
     },
     "mars": {
       "sign": "Taurus",
-      "degree": 8.7,
+      "degree": 9.2,
       "retrograde": false
     },
     "jupiter": {
       "sign": "Leo",
-      "degree": 0.6,
+      "degree": 0.7,
       "retrograde": false
     },
     "saturn": {
@@ -51,35 +51,19 @@
   "major_aspects": [
     {
       "planets": [
-        "Mercury",
-        "Saturn"
-      ],
-      "type": "conjunction",
-      "orb": 0.1
-    },
-    {
-      "planets": [
         "Sun",
         "Neptune"
       ],
       "type": "trine",
-      "orb": 0.4
+      "orb": 0.6
     },
     {
       "planets": [
-        "Sun",
-        "Jupiter"
+        "Venus",
+        "Uranus"
       ],
-      "type": "conjunction",
-      "orb": 1.4
-    },
-    {
-      "planets": [
-        "Moon",
-        "Mars"
-      ],
-      "type": "quincunx",
-      "orb": 1.5
+      "type": "opposition",
+      "orb": 0.6
     },
     {
       "planets": [
@@ -87,23 +71,7 @@
         "Neptune"
       ],
       "type": "trine",
-      "orb": 1.8
-    },
-    {
-      "planets": [
-        "Venus",
-        "Uranus"
-      ],
-      "type": "opposition",
-      "orb": 2.1
-    },
-    {
-      "planets": [
-        "Moon",
-        "Uranus"
-      ],
-      "type": "opposition",
-      "orb": 2.4
+      "orb": 1.7
     },
     {
       "planets": [
@@ -111,166 +79,198 @@
         "Mars"
       ],
       "type": "quincunx",
-      "orb": 3
+      "orb": 1.9
+    },
+    {
+      "planets": [
+        "Sun",
+        "Jupiter"
+      ],
+      "type": "conjunction",
+      "orb": 2.2
+    },
+    {
+      "planets": [
+        "Moon",
+        "Mercury"
+      ],
+      "type": "trine",
+      "orb": 2.3
+    },
+    {
+      "planets": [
+        "Sun",
+        "Venus"
+      ],
+      "type": "trine",
+      "orb": 4.3
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Saturn"
+      ],
+      "type": "conjunction",
+      "orb": 4.6
     }
   ],
   "readings": {
-    "Aries": "Your capacity to begin is extraordinary. The question today is about depth, not speed. Saying less will move this further than saying more.",
-    "Taurus": "Your sense of value — what things are worth, what people cost — is usually accurate. Check it again today. Notice what hasn't changed, not just what has.",
-    "Gemini": "Something that feels like boredom is actually your mind signalling that you're underusing it. Something you've been measuring incorrectly just corrected itself.",
-    "Cancer": "The past you return to had things in it that were real and good and also things that were not. Hold both. The week ahead rewards preparation you can still do today.",
-    "Leo": "Your creativity needs an outlet or it will find one you didn't choose. Give it space. Let this one be easy.",
-    "Virgo": "You've been adjusting yourself to fit a space that doesn't fit you. That adjustment has a cost. Let this one be easy.",
-    "Libra": "Your need for balance is not weakness — it's an accurate reading of what makes systems work. One conversation today matters more than the rest combined.",
-    "Scorpio": "The investigation you're conducting on someone else — conduct it on yourself for a day. Notice what hasn't changed, not just what has.",
-    "Sagittarius": "You are better at starting than finishing. This particular thing deserves to be finished. The answer that feels too obvious is probably the actual answer.",
-    "Capricorn": "The thing you are in service of — your family, your work, your future self — check that it still deserves the service. Trust the slow version of this over the fast one.",
-    "Aquarius": "You are loyal to your ideas in the way others are loyal to people. Someone needs you to be loyal to them instead. You already have what you need to take the next step.",
-    "Pisces": "Your inner life is extraordinarily rich. The outer life sometimes doesn't know what to do with it. Something you've been measuring incorrectly just corrected itself."
+    "Aries": "The first idea is rarely the best one. The energy behind it is what matters — redirect it. The answer that feels too obvious is probably the actual answer.",
+    "Taurus": "The people who depend on you know you're reliable. Make sure you know it too. Sleep on it before committing.",
+    "Gemini": "Two people need something from you today and the needs are opposite. You can only choose one. Act from the calmest part of yourself.",
+    "Cancer": "You carry the emotional history of everyone you love. Set some of it down today. This situation responds well to direct engagement.",
+    "Leo": "Something you've been holding as a personal failure is a shared one. Stop carrying it alone. The week ahead rewards preparation you can still do today.",
+    "Virgo": "The gap between your ideal and the reality is where growth lives. Stop trying to close it and start working in it. The question matters more than the answer right now.",
+    "Libra": "The harmony you've created has required you to disappear into it. Reappear. Small, deliberate, and patient — that's the mode today.",
+    "Scorpio": "Something you suspected for months just became something you know. Now decide. Someone you haven't thought of lately is relevant to this.",
+    "Sagittarius": "The enthusiasm you've withdrawn from a project was the project's primary fuel source. Restore some. Say the thing you've been rehearsing.",
+    "Capricorn": "Your self-sufficiency is extraordinary and occasionally lonely. Let someone contribute. There's more support available than you've asked for.",
+    "Aquarius": "Your objectivity is useful and frequently used to distance yourself from feelings. Feel one today. The question matters more than the answer right now.",
+    "Pisces": "There is a memory that's been present at the edge of your consciousness for days. Look at it directly. The timing is better than it feels."
   },
   "compatibility_matrix": {
     "Aries-Aries": {
-      "score": 71,
+      "score": 73,
       "level": "Strong",
-      "synthesis": "The competition is never stated and never absent. You perform for each other even when you don't mean to.",
+      "synthesis": "You recognised each other immediately. Whether that's good news depends entirely on what you recognised.",
       "element_harmony": 88
     },
     "Aries-Taurus": {
-      "score": 50,
-      "level": "Moderate",
-      "synthesis": "The heat is useful when the earth channels it. The earth is useful when the fire can wait long enough.",
+      "score": 48,
+      "level": "Challenging",
+      "synthesis": "Something transformative is possible here — if neither of you insists on doing it alone.",
       "element_harmony": 55
     },
     "Aries-Gemini": {
-      "score": 69,
-      "level": "Compatible",
+      "score": 71,
+      "level": "Strong",
       "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
       "element_harmony": 82
     },
     "Aries-Cancer": {
-      "score": 30,
-      "level": "Volatile",
-      "synthesis": "You challenge each other's default mode — which is either exactly what you needed or what you weren't ready for.",
+      "score": 29,
+      "level": "Difficult",
+      "synthesis": "You are changed by proximity to each other. This is not neutral, and it was never going to be.",
       "element_harmony": 35
     },
     "Aries-Leo": {
-      "score": 72,
-      "level": "Strong",
-      "synthesis": "Neither of you knows how to be small around the other. Decide if that's exhilarating or just exhausting.",
+      "score": 69,
+      "level": "Compatible",
+      "synthesis": "Together you are louder, brighter, and harder to ignore. Whether that's what you need is a different question.",
       "element_harmony": 88
     },
     "Aries-Virgo": {
-      "score": 55,
+      "score": 57,
       "level": "Moderate",
-      "synthesis": "The heat is useful when the earth channels it. The earth is useful when the fire can wait long enough.",
+      "synthesis": "There's something genuinely generative in the friction. Whether either of you can tolerate friction is the question.",
       "element_harmony": 55
     },
     "Aries-Libra": {
-      "score": 60,
+      "score": 64,
       "level": "Compatible",
       "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
       "element_harmony": 82
     },
     "Aries-Scorpio": {
-      "score": 41,
+      "score": 42,
       "level": "Challenging",
-      "synthesis": "You are changed by proximity to each other. This is not neutral, and it was never going to be.",
+      "synthesis": "The intensity is real. Whether it's connection or pressure depends on which day you're asking.",
       "element_harmony": 35
     },
     "Aries-Sagittarius": {
-      "score": 81,
-      "level": "Excellent",
-      "synthesis": "Neither of you knows how to be small around the other. Decide if that's exhilarating or just exhausting.",
+      "score": 79,
+      "level": "Strong",
+      "synthesis": "You both arrived wanting to lead. The negotiation of who does is where most of the energy goes.",
       "element_harmony": 88
     },
     "Aries-Capricorn": {
-      "score": 50,
-      "level": "Moderate",
-      "synthesis": "One of you wants to move before it's ready. One of you wants to wait until it's certain. Neither will be satisfied.",
+      "score": 44,
+      "level": "Challenging",
+      "synthesis": "The heat is useful when the earth channels it. The earth is useful when the fire can wait long enough.",
       "element_harmony": 55
     },
     "Aries-Aquarius": {
-      "score": 74,
-      "level": "Strong",
+      "score": 69,
+      "level": "Compatible",
       "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
       "element_harmony": 82
     },
     "Aries-Pisces": {
-      "score": 46,
+      "score": 48,
       "level": "Challenging",
       "synthesis": "You want incompatible things from closeness. That tension is generative until it isn't.",
       "element_harmony": 35
     },
     "Taurus-Taurus": {
-      "score": 73,
-      "level": "Strong",
-      "synthesis": "You anchor each other well. Make sure neither of you has quietly agreed to stop moving entirely.",
+      "score": 69,
+      "level": "Compatible",
+      "synthesis": "The security you build together is real. Real security sometimes disguises the need for something more.",
       "element_harmony": 90
     },
     "Taurus-Gemini": {
-      "score": 62,
+      "score": 67,
       "level": "Compatible",
-      "synthesis": "Your different relationships with time are either the most useful thing about this or the most exhausting.",
+      "synthesis": "The ideas need grounding. The ground needs ideas. Neither of you finds this as obvious as it sounds.",
       "element_harmony": 60
     },
     "Taurus-Cancer": {
-      "score": 66,
-      "level": "Compatible",
-      "synthesis": "The foundation feels natural because it is. What gets built on top of it requires more deliberate attention.",
+      "score": 71,
+      "level": "Strong",
+      "synthesis": "You move at similar speeds, value similar things. That similarity is either comfort or camouflage.",
       "element_harmony": 78
     },
     "Taurus-Leo": {
-      "score": 46,
+      "score": 49,
       "level": "Challenging",
-      "synthesis": "Something transformative is possible here — if neither of you insists on doing it alone.",
+      "synthesis": "The slow materials and the fast energy can build something neither could alone. Patience is required from the fire.",
       "element_harmony": 55
     },
     "Taurus-Virgo": {
-      "score": 85,
-      "level": "Excellent",
-      "synthesis": "Shared values make for comfort. They also make it easier to avoid the conversation you keep not having.",
+      "score": 77,
+      "level": "Strong",
+      "synthesis": "The security you build together is real. Real security sometimes disguises the need for something more.",
       "element_harmony": 90
     },
     "Taurus-Libra": {
-      "score": 56,
+      "score": 57,
       "level": "Moderate",
-      "synthesis": "You need each other more than you'll admit, and you both demonstrate this through argument.",
+      "synthesis": "The friction between you is productive until the day one of you decides it isn't worth it. Don't let it go that long.",
       "element_harmony": 60
     },
     "Taurus-Scorpio": {
-      "score": 65,
+      "score": 62,
       "level": "Compatible",
-      "synthesis": "The foundation feels natural because it is. What gets built on top of it requires more deliberate attention.",
+      "synthesis": "You care for each other in ways that are practical and non-intrusive. Neither says much. Both notice everything.",
       "element_harmony": 78
     },
     "Taurus-Sagittarius": {
-      "score": 64,
+      "score": 60,
       "level": "Compatible",
       "synthesis": "There's something genuinely generative in the friction. Whether either of you can tolerate friction is the question.",
       "element_harmony": 55
     },
     "Taurus-Capricorn": {
-      "score": 78,
+      "score": 77,
       "level": "Strong",
-      "synthesis": "You build things that last. The slower the construction, the less you talk about what might be missing.",
+      "synthesis": "Shared values make for comfort. They also make it easier to avoid the conversation you keep not having.",
       "element_harmony": 90
     },
     "Taurus-Aquarius": {
-      "score": 54,
+      "score": 55,
       "level": "Moderate",
-      "synthesis": "One of you is always explaining why it should move. One of you is quietly proving why it works as it is.",
+      "synthesis": "What you bring each other is exactly what the other struggles to generate alone. This should be easy. It isn't.",
       "element_harmony": 60
     },
     "Taurus-Pisces": {
-      "score": 80,
-      "level": "Excellent",
+      "score": 79,
+      "level": "Strong",
       "synthesis": "This tends to become quietly necessary to both people before either admits it.",
       "element_harmony": 78
     },
     "Gemini-Gemini": {
-      "score": 87,
-      "level": "Excellent",
-      "synthesis": "You understand each other at a speed that feels like recognition. Familiarity this fast always hides something.",
+      "score": 92,
+      "level": "Exceptional",
+      "synthesis": "Intellectually, this is effortless. Emotionally, you're both still waiting for the other to go first.",
       "element_harmony": 87
     },
     "Gemini-Cancer": {
@@ -282,319 +282,319 @@
     "Gemini-Leo": {
       "score": 74,
       "level": "Strong",
-      "synthesis": "You bring out ambition in each other. Whose ambition you're actually serving is a fair question.",
+      "synthesis": "You make each other more — more energised, more expansive, occasionally more than either of you can contain.",
       "element_harmony": 82
     },
     "Gemini-Virgo": {
-      "score": 63,
+      "score": 67,
       "level": "Compatible",
-      "synthesis": "You each think the other is slightly impractical, and you're both right about each other, and wrong.",
+      "synthesis": "What you bring each other is exactly what the other struggles to generate alone. This should be easy. It isn't.",
       "element_harmony": 60
     },
     "Gemini-Libra": {
-      "score": 80,
-      "level": "Excellent",
-      "synthesis": "You understand each other at a speed that feels like recognition. Familiarity this fast always hides something.",
+      "score": 76,
+      "level": "Strong",
+      "synthesis": "Intellectually, this is effortless. Emotionally, you're both still waiting for the other to go first.",
       "element_harmony": 87
     },
     "Gemini-Scorpio": {
-      "score": 67,
+      "score": 66,
       "level": "Compatible",
       "synthesis": "You make each other think differently — one about the world, one about themselves. That's not nothing.",
       "element_harmony": 68
     },
     "Gemini-Sagittarius": {
-      "score": 83,
+      "score": 81,
       "level": "Excellent",
-      "synthesis": "There's real joy between you when you're moving. The stillness is harder for both of you, and necessary.",
+      "synthesis": "You bring out ambition in each other. Whose ambition you're actually serving is a fair question.",
       "element_harmony": 82
     },
     "Gemini-Capricorn": {
-      "score": 60,
-      "level": "Compatible",
-      "synthesis": "The ideas need grounding. The ground needs ideas. Neither of you finds this as obvious as it sounds.",
+      "score": 58,
+      "level": "Moderate",
+      "synthesis": "You need each other more than you'll admit, and you both demonstrate this through argument.",
       "element_harmony": 60
     },
     "Gemini-Aquarius": {
-      "score": 79,
-      "level": "Strong",
-      "synthesis": "You make each other sharper. You also make each other better at avoiding the things words can't fix.",
+      "score": 82,
+      "level": "Excellent",
+      "synthesis": "The ideas between you breed more ideas. At some point one of them needs to become something real.",
       "element_harmony": 87
     },
     "Gemini-Pisces": {
-      "score": 75,
-      "level": "Strong",
-      "synthesis": "The connection is real and confusing to both of you. You're not sure how it works. It works anyway.",
-      "element_harmony": 68
-    },
-    "Cancer-Cancer": {
-      "score": 67,
-      "level": "Compatible",
-      "synthesis": "The bond forms quietly and completely. What you've bonded over — desire, or need — is worth knowing.",
-      "element_harmony": 92
-    },
-    "Cancer-Leo": {
-      "score": 44,
-      "level": "Challenging",
-      "synthesis": "You are changed by proximity to each other. This is not neutral, and it was never going to be.",
-      "element_harmony": 35
-    },
-    "Cancer-Virgo": {
-      "score": 71,
-      "level": "Strong",
-      "synthesis": "You care for each other in ways that are practical and non-intrusive. Neither says much. Both notice everything.",
-      "element_harmony": 78
-    },
-    "Cancer-Libra": {
-      "score": 53,
-      "level": "Moderate",
-      "synthesis": "The mismatch in how you process things is a feature in good times and a fault line in bad ones.",
-      "element_harmony": 68
-    },
-    "Cancer-Scorpio": {
-      "score": 75,
-      "level": "Strong",
-      "synthesis": "Nobody outside this pairing fully understands what happens inside it. That's exactly how you want it.",
-      "element_harmony": 92
-    },
-    "Cancer-Sagittarius": {
-      "score": 47,
-      "level": "Challenging",
-      "synthesis": "You challenge each other's default mode — which is either exactly what you needed or what you weren't ready for.",
-      "element_harmony": 35
-    },
-    "Cancer-Capricorn": {
-      "score": 60,
-      "level": "Compatible",
-      "synthesis": "You care for each other in ways that are practical and non-intrusive. Neither says much. Both notice everything.",
-      "element_harmony": 78
-    },
-    "Cancer-Aquarius": {
-      "score": 62,
-      "level": "Compatible",
-      "synthesis": "You make each other think differently — one about the world, one about themselves. That's not nothing.",
-      "element_harmony": 68
-    },
-    "Cancer-Pisces": {
-      "score": 82,
-      "level": "Excellent",
-      "synthesis": "The depth here is real and a little unnerving to both of you.",
-      "element_harmony": 92
-    },
-    "Leo-Leo": {
-      "score": 68,
-      "level": "Compatible",
-      "synthesis": "You recognised each other immediately. Whether that's good news depends entirely on what you recognised.",
-      "element_harmony": 88
-    },
-    "Leo-Virgo": {
-      "score": 59,
-      "level": "Moderate",
-      "synthesis": "You work well when one agrees to be the foundation and the other agrees to be the spark. Agreement is the hard part.",
-      "element_harmony": 55
-    },
-    "Leo-Libra": {
-      "score": 67,
-      "level": "Compatible",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
-      "element_harmony": 82
-    },
-    "Leo-Scorpio": {
-      "score": 37,
-      "level": "Volatile",
-      "synthesis": "You affect each other immediately and completely. That's not always comfortable and not always harmful.",
-      "element_harmony": 35
-    },
-    "Leo-Sagittarius": {
-      "score": 85,
-      "level": "Excellent",
-      "synthesis": "You give each other permission to be more yourselves. Sometimes that permission is exactly the problem.",
-      "element_harmony": 88
-    },
-    "Leo-Capricorn": {
-      "score": 49,
-      "level": "Challenging",
-      "synthesis": "One of you wants to move before it's ready. One of you wants to wait until it's certain. Neither will be satisfied.",
-      "element_harmony": 55
-    },
-    "Leo-Aquarius": {
-      "score": 62,
-      "level": "Compatible",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
-      "element_harmony": 82
-    },
-    "Leo-Pisces": {
-      "score": 53,
-      "level": "Moderate",
-      "synthesis": "The intensity is real. Whether it's connection or pressure depends on which day you're asking.",
-      "element_harmony": 35
-    },
-    "Virgo-Virgo": {
-      "score": 85,
-      "level": "Excellent",
-      "synthesis": "You anchor each other well. Make sure neither of you has quietly agreed to stop moving entirely.",
-      "element_harmony": 90
-    },
-    "Virgo-Libra": {
-      "score": 62,
-      "level": "Compatible",
-      "synthesis": "Your different relationships with time are either the most useful thing about this or the most exhausting.",
-      "element_harmony": 60
-    },
-    "Virgo-Scorpio": {
-      "score": 73,
-      "level": "Strong",
-      "synthesis": "The support here is genuine and sometimes suffocating. The line between them is worth watching.",
-      "element_harmony": 78
-    },
-    "Virgo-Sagittarius": {
-      "score": 61,
-      "level": "Compatible",
-      "synthesis": "There's something genuinely generative in the friction. Whether either of you can tolerate friction is the question.",
-      "element_harmony": 55
-    },
-    "Virgo-Capricorn": {
-      "score": 78,
-      "level": "Strong",
-      "synthesis": "You build things that last. The slower the construction, the less you talk about what might be missing.",
-      "element_harmony": 90
-    },
-    "Virgo-Aquarius": {
-      "score": 65,
-      "level": "Compatible",
-      "synthesis": "You each think the other is slightly impractical, and you're both right about each other, and wrong.",
-      "element_harmony": 60
-    },
-    "Virgo-Pisces": {
-      "score": 74,
-      "level": "Strong",
-      "synthesis": "One of you protects, one of you nourishes. At some point both of you need to be taken care of.",
-      "element_harmony": 78
-    },
-    "Libra-Libra": {
-      "score": 65,
-      "level": "Compatible",
-      "synthesis": "The conversation never stops. Decide if what you're talking around is more interesting than what you'd find if you arrived.",
-      "element_harmony": 87
-    },
-    "Libra-Scorpio": {
-      "score": 61,
-      "level": "Compatible",
-      "synthesis": "You each feel slightly alien to the other. That's either the draw or the obstacle. Often both.",
-      "element_harmony": 68
-    },
-    "Libra-Sagittarius": {
-      "score": 75,
-      "level": "Strong",
-      "synthesis": "You make each other more — more energised, more expansive, occasionally more than either of you can contain.",
-      "element_harmony": 82
-    },
-    "Libra-Capricorn": {
-      "score": 51,
-      "level": "Moderate",
-      "synthesis": "You complement each other in ways neither fully acknowledges. The acknowledgment is the missing piece.",
-      "element_harmony": 60
-    },
-    "Libra-Aquarius": {
-      "score": 76,
-      "level": "Strong",
-      "synthesis": "Together you can analyse anything. The one thing neither of you wants to analyse is this.",
-      "element_harmony": 87
-    },
-    "Libra-Pisces": {
-      "score": 68,
-      "level": "Compatible",
-      "synthesis": "The connection is real and confusing to both of you. You're not sure how it works. It works anyway.",
-      "element_harmony": 68
-    },
-    "Scorpio-Scorpio": {
-      "score": 72,
-      "level": "Strong",
-      "synthesis": "The bond forms quietly and completely. What you've bonded over — desire, or need — is worth knowing.",
-      "element_harmony": 92
-    },
-    "Scorpio-Sagittarius": {
-      "score": 51,
-      "level": "Moderate",
-      "synthesis": "You want incompatible things from closeness. That tension is generative until it isn't.",
-      "element_harmony": 35
-    },
-    "Scorpio-Capricorn": {
-      "score": 70,
-      "level": "Strong",
-      "synthesis": "This tends to become quietly necessary to both people before either admits it.",
-      "element_harmony": 78
-    },
-    "Scorpio-Aquarius": {
-      "score": 53,
-      "level": "Moderate",
-      "synthesis": "You make each other think differently — one about the world, one about themselves. That's not nothing.",
-      "element_harmony": 68
-    },
-    "Scorpio-Pisces": {
-      "score": 87,
-      "level": "Excellent",
-      "synthesis": "You see each other clearly enough to hurt each other precisely. That's not a warning. It's just the truth.",
-      "element_harmony": 92
-    },
-    "Sagittarius-Sagittarius": {
-      "score": 83,
-      "level": "Excellent",
-      "synthesis": "The competition is never stated and never absent. You perform for each other even when you don't mean to.",
-      "element_harmony": 88
-    },
-    "Sagittarius-Capricorn": {
-      "score": 56,
-      "level": "Moderate",
-      "synthesis": "Something transformative is possible here — if neither of you insists on doing it alone.",
-      "element_harmony": 55
-    },
-    "Sagittarius-Aquarius": {
-      "score": 81,
-      "level": "Excellent",
-      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
-      "element_harmony": 82
-    },
-    "Sagittarius-Pisces": {
-      "score": 55,
-      "level": "Moderate",
-      "synthesis": "You challenge each other's default mode — which is either exactly what you needed or what you weren't ready for.",
-      "element_harmony": 35
-    },
-    "Capricorn-Capricorn": {
-      "score": 73,
-      "level": "Strong",
-      "synthesis": "Neither of you wastes anything. The question is whether you're saving the relationship or just managing it.",
-      "element_harmony": 90
-    },
-    "Capricorn-Aquarius": {
-      "score": 56,
-      "level": "Moderate",
-      "synthesis": "One of you is always explaining why it should move. One of you is quietly proving why it works as it is.",
-      "element_harmony": 60
-    },
-    "Capricorn-Pisces": {
-      "score": 71,
-      "level": "Strong",
-      "synthesis": "The foundation feels natural because it is. What gets built on top of it requires more deliberate attention.",
-      "element_harmony": 78
-    },
-    "Aquarius-Aquarius": {
-      "score": 70,
-      "level": "Strong",
-      "synthesis": "You both live a little inside your heads. When you're together, the heads get very crowded.",
-      "element_harmony": 87
-    },
-    "Aquarius-Pisces": {
       "score": 71,
       "level": "Strong",
       "synthesis": "One of you explains. One of you feels. At some point the explaining stops helping.",
       "element_harmony": 68
     },
-    "Pisces-Pisces": {
-      "score": 86,
+    "Cancer-Cancer": {
+      "score": 76,
+      "level": "Strong",
+      "synthesis": "Nobody outside this pairing fully understands what happens inside it. That's exactly how you want it.",
+      "element_harmony": 92
+    },
+    "Cancer-Leo": {
+      "score": 39,
+      "level": "Volatile",
+      "synthesis": "The intensity is real. Whether it's connection or pressure depends on which day you're asking.",
+      "element_harmony": 35
+    },
+    "Cancer-Virgo": {
+      "score": 74,
+      "level": "Strong",
+      "synthesis": "This tends to become quietly necessary to both people before either admits it.",
+      "element_harmony": 78
+    },
+    "Cancer-Libra": {
+      "score": 55,
+      "level": "Moderate",
+      "synthesis": "You make each other think differently — one about the world, one about themselves. That's not nothing.",
+      "element_harmony": 68
+    },
+    "Cancer-Scorpio": {
+      "score": 75,
+      "level": "Strong",
+      "synthesis": "You both know how to hold pain without speaking. Decide if that's strength or evasion.",
+      "element_harmony": 92
+    },
+    "Cancer-Sagittarius": {
+      "score": 44,
+      "level": "Challenging",
+      "synthesis": "You affect each other immediately and completely. That's not always comfortable and not always harmful.",
+      "element_harmony": 35
+    },
+    "Cancer-Capricorn": {
+      "score": 61,
+      "level": "Compatible",
+      "synthesis": "The foundation feels natural because it is. What gets built on top of it requires more deliberate attention.",
+      "element_harmony": 78
+    },
+    "Cancer-Aquarius": {
+      "score": 63,
+      "level": "Compatible",
+      "synthesis": "The mismatch in how you process things is a feature in good times and a fault line in bad ones.",
+      "element_harmony": 68
+    },
+    "Cancer-Pisces": {
+      "score": 85,
       "level": "Excellent",
       "synthesis": "You feel each other before you know each other. Whether that's intimacy or projection is worth examining.",
+      "element_harmony": 92
+    },
+    "Leo-Leo": {
+      "score": 76,
+      "level": "Strong",
+      "synthesis": "There is enough heat between you to forge something remarkable or burn it all down. Usually both.",
+      "element_harmony": 88
+    },
+    "Leo-Virgo": {
+      "score": 63,
+      "level": "Compatible",
+      "synthesis": "One of you wants to move before it's ready. One of you wants to wait until it's certain. Neither will be satisfied.",
+      "element_harmony": 55
+    },
+    "Leo-Libra": {
+      "score": 71,
+      "level": "Strong",
+      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "element_harmony": 82
+    },
+    "Leo-Scorpio": {
+      "score": 41,
+      "level": "Challenging",
+      "synthesis": "The attraction was always obvious. The sustainability is the question neither of you has fully answered.",
+      "element_harmony": 35
+    },
+    "Leo-Sagittarius": {
+      "score": 79,
+      "level": "Strong",
+      "synthesis": "You give each other permission to be more yourselves. Sometimes that permission is exactly the problem.",
+      "element_harmony": 88
+    },
+    "Leo-Capricorn": {
+      "score": 57,
+      "level": "Moderate",
+      "synthesis": "In theory you stabilise each other. In practice, one of you always feels slightly extinguished.",
+      "element_harmony": 55
+    },
+    "Leo-Aquarius": {
+      "score": 67,
+      "level": "Compatible",
+      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "element_harmony": 82
+    },
+    "Leo-Pisces": {
+      "score": 52,
+      "level": "Moderate",
+      "synthesis": "The intensity is real. Whether it's connection or pressure depends on which day you're asking.",
+      "element_harmony": 35
+    },
+    "Virgo-Virgo": {
+      "score": 84,
+      "level": "Excellent",
+      "synthesis": "Neither of you wastes anything. The question is whether you're saving the relationship or just managing it.",
+      "element_harmony": 90
+    },
+    "Virgo-Libra": {
+      "score": 61,
+      "level": "Compatible",
+      "synthesis": "One of you is always explaining why it should move. One of you is quietly proving why it works as it is.",
+      "element_harmony": 60
+    },
+    "Virgo-Scorpio": {
+      "score": 70,
+      "level": "Strong",
+      "synthesis": "The support here is genuine and sometimes suffocating. The line between them is worth watching.",
+      "element_harmony": 78
+    },
+    "Virgo-Sagittarius": {
+      "score": 58,
+      "level": "Moderate",
+      "synthesis": "There's something genuinely generative in the friction. Whether either of you can tolerate friction is the question.",
+      "element_harmony": 55
+    },
+    "Virgo-Capricorn": {
+      "score": 82,
+      "level": "Excellent",
+      "synthesis": "You anchor each other well. Make sure neither of you has quietly agreed to stop moving entirely.",
+      "element_harmony": 90
+    },
+    "Virgo-Aquarius": {
+      "score": 68,
+      "level": "Compatible",
+      "synthesis": "The ideas need grounding. The ground needs ideas. Neither of you finds this as obvious as it sounds.",
+      "element_harmony": 60
+    },
+    "Virgo-Pisces": {
+      "score": 76,
+      "level": "Strong",
+      "synthesis": "The support here is genuine and sometimes suffocating. The line between them is worth watching.",
+      "element_harmony": 78
+    },
+    "Libra-Libra": {
+      "score": 67,
+      "level": "Compatible",
+      "synthesis": "Intellectually, this is effortless. Emotionally, you're both still waiting for the other to go first.",
+      "element_harmony": 87
+    },
+    "Libra-Scorpio": {
+      "score": 56,
+      "level": "Moderate",
+      "synthesis": "You each feel slightly alien to the other. That's either the draw or the obstacle. Often both.",
+      "element_harmony": 68
+    },
+    "Libra-Sagittarius": {
+      "score": 69,
+      "level": "Compatible",
+      "synthesis": "You bring out ambition in each other. Whose ambition you're actually serving is a fair question.",
+      "element_harmony": 82
+    },
+    "Libra-Capricorn": {
+      "score": 51,
+      "level": "Moderate",
+      "synthesis": "What you bring each other is exactly what the other struggles to generate alone. This should be easy. It isn't.",
+      "element_harmony": 60
+    },
+    "Libra-Aquarius": {
+      "score": 77,
+      "level": "Strong",
+      "synthesis": "You understand each other at a speed that feels like recognition. Familiarity this fast always hides something.",
+      "element_harmony": 87
+    },
+    "Libra-Pisces": {
+      "score": 63,
+      "level": "Compatible",
+      "synthesis": "You each feel slightly alien to the other. That's either the draw or the obstacle. Often both.",
+      "element_harmony": 68
+    },
+    "Scorpio-Scorpio": {
+      "score": 73,
+      "level": "Strong",
+      "synthesis": "Nobody outside this pairing fully understands what happens inside it. That's exactly how you want it.",
+      "element_harmony": 92
+    },
+    "Scorpio-Sagittarius": {
+      "score": 47,
+      "level": "Challenging",
+      "synthesis": "The attraction was always obvious. The sustainability is the question neither of you has fully answered.",
+      "element_harmony": 35
+    },
+    "Scorpio-Capricorn": {
+      "score": 63,
+      "level": "Compatible",
+      "synthesis": "One of you protects, one of you nourishes. At some point both of you need to be taken care of.",
+      "element_harmony": 78
+    },
+    "Scorpio-Aquarius": {
+      "score": 57,
+      "level": "Moderate",
+      "synthesis": "You make each other think differently — one about the world, one about themselves. That's not nothing.",
+      "element_harmony": 68
+    },
+    "Scorpio-Pisces": {
+      "score": 86,
+      "level": "Excellent",
+      "synthesis": "You both know how to hold pain without speaking. Decide if that's strength or evasion.",
+      "element_harmony": 92
+    },
+    "Sagittarius-Sagittarius": {
+      "score": 93,
+      "level": "Exceptional",
+      "synthesis": "You recognised each other immediately. Whether that's good news depends entirely on what you recognised.",
+      "element_harmony": 88
+    },
+    "Sagittarius-Capricorn": {
+      "score": 62,
+      "level": "Compatible",
+      "synthesis": "The slow materials and the fast energy can build something neither could alone. Patience is required from the fire.",
+      "element_harmony": 55
+    },
+    "Sagittarius-Aquarius": {
+      "score": 77,
+      "level": "Strong",
+      "synthesis": "Unique compound formed. Properties unpredictable — explore with caution.",
+      "element_harmony": 82
+    },
+    "Sagittarius-Pisces": {
+      "score": 54,
+      "level": "Moderate",
+      "synthesis": "You affect each other immediately and completely. That's not always comfortable and not always harmful.",
+      "element_harmony": 35
+    },
+    "Capricorn-Capricorn": {
+      "score": 67,
+      "level": "Compatible",
+      "synthesis": "You anchor each other well. Make sure neither of you has quietly agreed to stop moving entirely.",
+      "element_harmony": 90
+    },
+    "Capricorn-Aquarius": {
+      "score": 54,
+      "level": "Moderate",
+      "synthesis": "You each think the other is slightly impractical, and you're both right about each other, and wrong.",
+      "element_harmony": 60
+    },
+    "Capricorn-Pisces": {
+      "score": 69,
+      "level": "Compatible",
+      "synthesis": "You care for each other in ways that are practical and non-intrusive. Neither says much. Both notice everything.",
+      "element_harmony": 78
+    },
+    "Aquarius-Aquarius": {
+      "score": 76,
+      "level": "Strong",
+      "synthesis": "You make each other sharper. You also make each other better at avoiding the things words can't fix.",
+      "element_harmony": 87
+    },
+    "Aquarius-Pisces": {
+      "score": 73,
+      "level": "Strong",
+      "synthesis": "The mismatch in how you process things is a feature in good times and a fault line in bad ones.",
+      "element_harmony": 68
+    },
+    "Pisces-Pisces": {
+      "score": 85,
+      "level": "Excellent",
+      "synthesis": "You see each other clearly enough to hurt each other precisely. That's not a warning. It's just the truth.",
       "element_harmony": 92
     }
   },
