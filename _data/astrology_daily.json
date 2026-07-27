@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Capricorn",
-      "degree": 15.8,
+      "degree": 15.9,
       "retrograde": false,
       "phase": "Full Moon"
     },
@@ -63,7 +63,7 @@
         "Saturn"
       ],
       "type": "square",
-      "orb": 1.1
+      "orb": 1.2
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Jupiter"
       ],
       "type": "square",
-      "orb": 2.4
+      "orb": 2.3
     },
     {
       "planets": [
