@@ -3,18 +3,18 @@
   "planetary_positions": {
     "sun": {
       "sign": "Leo",
-      "degree": 7.7,
+      "degree": 7.8,
       "retrograde": false
     },
     "moon": {
       "sign": "Aquarius",
-      "degree": 22.4,
+      "degree": 22.7,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 11.7,
+      "degree": 11.8,
       "retrograde": false
     },
     "venus": {
@@ -51,18 +51,18 @@
   "major_aspects": [
     {
       "planets": [
-        "Sun",
-        "Uranus"
-      ],
-      "type": "sextile",
-      "orb": 0.1
-    },
-    {
-      "planets": [
         "Mercury",
         "Mars"
       ],
       "type": "conjunction",
+      "orb": 0
+    },
+    {
+      "planets": [
+        "Sun",
+        "Uranus"
+      ],
+      "type": "sextile",
       "orb": 0.1
     },
     {
@@ -87,7 +87,7 @@
         "Mercury"
       ],
       "type": "square",
-      "orb": 3.9
+      "orb": 4
     },
     {
       "planets": [
