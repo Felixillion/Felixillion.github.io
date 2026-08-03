@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 13.8,
+      "degree": 14.3,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 28.6,
+      "degree": 28.8,
       "retrograde": false
     },
     "venus": {
@@ -51,27 +51,19 @@
   "major_aspects": [
     {
       "planets": [
+        "Moon",
+        "Saturn"
+      ],
+      "type": "conjunction",
+      "orb": 0.6
+    },
+    {
+      "planets": [
         "Jupiter",
         "Neptune"
       ],
       "type": "trine",
       "orb": 1
-    },
-    {
-      "planets": [
-        "Moon",
-        "Saturn"
-      ],
-      "type": "conjunction",
-      "orb": 1.1
-    },
-    {
-      "planets": [
-        "Sun",
-        "Moon"
-      ],
-      "type": "trine",
-      "orb": 2.3
     },
     {
       "planets": [
@@ -83,11 +75,19 @@
     },
     {
       "planets": [
+        "Sun",
+        "Moon"
+      ],
+      "type": "trine",
+      "orb": 2.7
+    },
+    {
+      "planets": [
         "Mercury",
         "Jupiter"
       ],
       "type": "sextile",
-      "orb": 2.8
+      "orb": 2.7
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Saturn"
       ],
       "type": "trine",
-      "orb": 3.4
+      "orb": 3.3
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Neptune"
       ],
       "type": "sextile",
-      "orb": 3.8
+      "orb": 3.7
     }
   ],
   "readings": {
