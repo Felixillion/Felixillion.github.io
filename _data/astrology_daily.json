@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 14.3,
+      "degree": 14.4,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
@@ -55,7 +55,7 @@
         "Saturn"
       ],
       "type": "conjunction",
-      "orb": 0.6
+      "orb": 0.5
     },
     {
       "planets": [
@@ -75,19 +75,19 @@
     },
     {
       "planets": [
-        "Sun",
-        "Moon"
-      ],
-      "type": "trine",
-      "orb": 2.7
-    },
-    {
-      "planets": [
         "Mercury",
         "Jupiter"
       ],
       "type": "sextile",
       "orb": 2.7
+    },
+    {
+      "planets": [
+        "Sun",
+        "Moon"
+      ],
+      "type": "trine",
+      "orb": 2.8
     },
     {
       "planets": [
@@ -99,16 +99,16 @@
     },
     {
       "planets": [
-        "Sun",
-        "Uranus"
+        "Mercury",
+        "Neptune"
       ],
       "type": "sextile",
-      "orb": 3.7
+      "orb": 3.6
     },
     {
       "planets": [
-        "Mercury",
-        "Neptune"
+        "Sun",
+        "Uranus"
       ],
       "type": "sextile",
       "orb": 3.7
