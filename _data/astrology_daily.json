@@ -63,7 +63,7 @@
         "Saturn"
       ],
       "type": "trine",
-      "orb": 0.5
+      "orb": 0.4
     },
     {
       "planets": [
@@ -92,17 +92,17 @@
     {
       "planets": [
         "Mercury",
-        "Uranus"
+        "Saturn"
       ],
-      "type": "conjunction",
+      "type": "sextile",
       "orb": 3.5
     },
     {
       "planets": [
         "Mercury",
-        "Saturn"
+        "Uranus"
       ],
-      "type": "sextile",
+      "type": "conjunction",
       "orb": 3.6
     },
     {
