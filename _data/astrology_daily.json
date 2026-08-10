@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 22.9,
+      "degree": 23,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
     "mercury": {
       "sign": "Gemini",
-      "degree": 26.5,
+      "degree": 26.6,
       "retrograde": false
     },
     "venus": {
@@ -79,7 +79,7 @@
         "Jupiter"
       ],
       "type": "quincunx",
-      "orb": 0.8
+      "orb": 0.9
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Mars"
       ],
       "type": "sextile",
-      "orb": 5.3
+      "orb": 5.4
     },
     {
       "planets": [
