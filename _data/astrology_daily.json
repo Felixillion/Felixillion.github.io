@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Leo",
-      "degree": 7.2,
+      "degree": 7.6,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Cancer",
-      "degree": 0.2,
+      "degree": 0.4,
       "retrograde": false
     },
     "venus": {
       "sign": "Capricorn",
-      "degree": 4.4,
+      "degree": 4.5,
       "retrograde": false
     },
     "mars": {
@@ -51,19 +51,19 @@
   "major_aspects": [
     {
       "planets": [
+        "Moon",
+        "Uranus"
+      ],
+      "type": "sextile",
+      "orb": 0.4
+    },
+    {
+      "planets": [
         "Jupiter",
         "Neptune"
       ],
       "type": "trine",
       "orb": 0.4
-    },
-    {
-      "planets": [
-        "Moon",
-        "Uranus"
-      ],
-      "type": "sextile",
-      "orb": 0.8
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 2.2
+      "orb": 2.1
     },
     {
       "planets": [
@@ -95,15 +95,7 @@
         "Jupiter"
       ],
       "type": "quincunx",
-      "orb": 2.3
-    },
-    {
-      "planets": [
-        "Moon",
-        "Venus"
-      ],
-      "type": "quincunx",
-      "orb": 2.8
+      "orb": 2.4
     },
     {
       "planets": [
@@ -112,6 +104,14 @@
       ],
       "type": "trine",
       "orb": 4
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Venus"
+      ],
+      "type": "opposition",
+      "orb": 4.1
     }
   ],
   "readings": {
