@@ -8,23 +8,23 @@
     },
     "moon": {
       "sign": "Leo",
-      "degree": 21.8,
+      "degree": 22.2,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Cancer",
-      "degree": 4,
+      "degree": 4.1,
       "retrograde": false
     },
     "venus": {
       "sign": "Capricorn",
-      "degree": 6,
+      "degree": 6.1,
       "retrograde": false
     },
     "mars": {
       "sign": "Taurus",
-      "degree": 18.6,
+      "degree": 18.7,
       "retrograde": false
     },
     "jupiter": {
@@ -71,14 +71,6 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 1.5
-    },
-    {
-      "planets": [
-        "Sun",
-        "Moon"
-      ],
-      "type": "conjunction",
       "orb": 1.6
     },
     {
@@ -88,6 +80,14 @@
       ],
       "type": "quincunx",
       "orb": 1.9
+    },
+    {
+      "planets": [
+        "Sun",
+        "Moon"
+      ],
+      "type": "conjunction",
+      "orb": 2
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Mars"
       ],
       "type": "square",
-      "orb": 3.1
+      "orb": 3.5
     },
     {
       "planets": [
