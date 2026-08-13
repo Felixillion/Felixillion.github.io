@@ -3,23 +3,23 @@
   "planetary_positions": {
     "sun": {
       "sign": "Leo",
-      "degree": 21.1,
+      "degree": 21.2,
       "retrograde": false
     },
     "moon": {
       "sign": "Virgo",
-      "degree": 6.1,
+      "degree": 6.5,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Cancer",
-      "degree": 7.7,
+      "degree": 7.8,
       "retrograde": false
     },
     "venus": {
       "sign": "Capricorn",
-      "degree": 7.6,
+      "degree": 7.7,
       "retrograde": false
     },
     "mars": {
@@ -71,7 +71,7 @@
         "Uranus"
       ],
       "type": "quincunx",
-      "orb": 0.4
+      "orb": 0.3
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Venus"
       ],
       "type": "trine",
-      "orb": 1.6
+      "orb": 1.2
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Mercury"
       ],
       "type": "sextile",
-      "orb": 1.7
+      "orb": 1.4
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 1.9
+      "orb": 1.5
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 5.1
+      "orb": 5.2
     }
   ],
   "readings": {
