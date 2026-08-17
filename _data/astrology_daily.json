@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Libra",
-      "degree": 29.9,
+      "degree": 30,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
@@ -79,7 +79,7 @@
         "Neptune"
       ],
       "type": "quincunx",
-      "orb": 2.7
+      "orb": 2.6
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Jupiter"
       ],
       "type": "square",
-      "orb": 2.8
+      "orb": 2.7
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Moon"
       ],
       "type": "sextile",
-      "orb": 4.9
+      "orb": 5
     },
     {
       "planets": [
