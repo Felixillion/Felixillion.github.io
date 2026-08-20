@@ -3,23 +3,23 @@
   "planetary_positions": {
     "sun": {
       "sign": "Leo",
-      "degree": 27.8,
+      "degree": 27.9,
       "retrograde": false
     },
     "moon": {
       "sign": "Sagittarius",
-      "degree": 5.9,
+      "degree": 6.2,
       "retrograde": false,
       "phase": "First Quarter"
     },
     "mercury": {
       "sign": "Leo",
-      "degree": 2.9,
+      "degree": 3,
       "retrograde": false
     },
     "venus": {
       "sign": "Capricorn",
-      "degree": 18.8,
+      "degree": 18.9,
       "retrograde": false
     },
     "mars": {
@@ -55,7 +55,7 @@
         "Jupiter"
       ],
       "type": "conjunction",
-      "orb": 0.1
+      "orb": 0.2
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Neptune"
       ],
       "type": "trine",
-      "orb": 0.4
+      "orb": 0.5
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Uranus"
       ],
       "type": "opposition",
-      "orb": 2.2
+      "orb": 1.9
     },
     {
       "planets": [
@@ -87,20 +87,12 @@
         "Mercury"
       ],
       "type": "trine",
-      "orb": 2.9
+      "orb": 3.2
     },
     {
       "planets": [
         "Moon",
         "Jupiter"
-      ],
-      "type": "trine",
-      "orb": 3
-    },
-    {
-      "planets": [
-        "Moon",
-        "Neptune"
       ],
       "type": "trine",
       "orb": 3.3
@@ -111,7 +103,15 @@
         "Saturn"
       ],
       "type": "square",
-      "orb": 3.3
+      "orb": 3.4
+    },
+    {
+      "planets": [
+        "Moon",
+        "Neptune"
+      ],
+      "type": "trine",
+      "orb": 3.7
     }
   ],
   "readings": {
