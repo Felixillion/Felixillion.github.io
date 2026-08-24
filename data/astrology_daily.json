@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Capricorn",
-      "degree": 23.7,
+      "degree": 23.9,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
@@ -79,15 +79,7 @@
         "Mars"
       ],
       "type": "trine",
-      "orb": 1.3
-    },
-    {
-      "planets": [
-        "Mercury",
-        "Saturn"
-      ],
-      "type": "trine",
-      "orb": 1.3
+      "orb": 1.2
     },
     {
       "planets": [
@@ -95,7 +87,15 @@
         "Venus"
       ],
       "type": "conjunction",
-      "orb": 1.5
+      "orb": 1.4
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Saturn"
+      ],
+      "type": "trine",
+      "orb": 1.4
     },
     {
       "planets": [
