@@ -3,28 +3,28 @@
   "planetary_positions": {
     "sun": {
       "sign": "Virgo",
-      "degree": 5.8,
+      "degree": 6.6,
       "retrograde": false
     },
     "moon": {
       "sign": "Pisces",
-      "degree": 17.2,
+      "degree": 28,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Virgo",
-      "degree": 1.4,
+      "degree": 4.2,
       "retrograde": false
     },
     "venus": {
       "sign": "Aquarius",
-      "degree": 2,
+      "degree": 3.3,
       "retrograde": false
     },
     "mars": {
       "sign": "Taurus",
-      "degree": 27.2,
+      "degree": 27.7,
       "retrograde": false
     },
     "jupiter": {
@@ -51,11 +51,19 @@
   "major_aspects": [
     {
       "planets": [
-        "Mercury",
-        "Venus"
+        "Moon",
+        "Mars"
       ],
-      "type": "quincunx",
-      "orb": 0.6
+      "type": "sextile",
+      "orb": 0.3
+    },
+    {
+      "planets": [
+        "Venus",
+        "Jupiter"
+      ],
+      "type": "opposition",
+      "orb": 0.3
     },
     {
       "planets": [
@@ -63,7 +71,15 @@
         "Neptune"
       ],
       "type": "sextile",
-      "orb": 0.6
+      "orb": 0.7
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Venus"
+      ],
+      "type": "quincunx",
+      "orb": 0.9
     },
     {
       "planets": [
@@ -75,35 +91,19 @@
     },
     {
       "planets": [
-        "Mercury",
-        "Neptune"
-      ],
-      "type": "quincunx",
-      "orb": 1.2
-    },
-    {
-      "planets": [
-        "Venus",
-        "Jupiter"
-      ],
-      "type": "opposition",
-      "orb": 1.5
-    },
-    {
-      "planets": [
         "Sun",
         "Uranus"
       ],
       "type": "square",
-      "orb": 2.4
+      "orb": 1.6
     },
     {
       "planets": [
         "Mercury",
-        "Mars"
+        "Neptune"
       ],
-      "type": "square",
-      "orb": 4.2
+      "type": "quincunx",
+      "orb": 1.6
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Mercury"
       ],
       "type": "conjunction",
-      "orb": 4.4
+      "orb": 2.4
     }
   ],
   "readings": {
