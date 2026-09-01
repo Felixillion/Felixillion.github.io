@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Taurus",
-      "degree": 8.5,
+      "degree": 8.7,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
@@ -63,7 +63,7 @@
         "Venus"
       ],
       "type": "square",
-      "orb": 0.4
+      "orb": 0.6
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Moon"
       ],
       "type": "trine",
-      "orb": 1
+      "orb": 0.8
     },
     {
       "planets": [
