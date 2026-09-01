@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 25.8,
+      "degree": 25.9,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
@@ -95,7 +95,7 @@
         "Jupiter"
       ],
       "type": "opposition",
-      "orb": 2.8
+      "orb": 2.9
     },
     {
       "planets": [
