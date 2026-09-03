@@ -3,12 +3,12 @@
   "planetary_positions": {
     "sun": {
       "sign": "Virgo",
-      "degree": 11.4,
+      "degree": 11.5,
       "retrograde": false
     },
     "moon": {
       "sign": "Gemini",
-      "degree": 6.3,
+      "degree": 6.5,
       "retrograde": false,
       "phase": "Last Quarter"
     },
@@ -71,15 +71,7 @@
         "Uranus"
       ],
       "type": "conjunction",
-      "orb": 2
-    },
-    {
-      "planets": [
-        "Moon",
-        "Jupiter"
-      ],
-      "type": "sextile",
-      "orb": 2.2
+      "orb": 1.7
     },
     {
       "planets": [
@@ -88,6 +80,14 @@
       ],
       "type": "sextile",
       "orb": 2.3
+    },
+    {
+      "planets": [
+        "Moon",
+        "Jupiter"
+      ],
+      "type": "sextile",
+      "orb": 2.5
     },
     {
       "planets": [
@@ -107,11 +107,11 @@
     },
     {
       "planets": [
-        "Moon",
-        "Neptune"
+        "Mars",
+        "Jupiter"
       ],
       "type": "sextile",
-      "orb": 3.6
+      "orb": 3.7
     }
   ],
   "readings": {
