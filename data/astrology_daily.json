@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Gemini",
-      "degree": 20.2,
+      "degree": 20.4,
       "retrograde": false,
       "phase": "Last Quarter"
     },
     "mercury": {
       "sign": "Virgo",
-      "degree": 24.4,
+      "degree": 24.5,
       "retrograde": false
     },
     "venus": {
@@ -91,11 +91,11 @@
     },
     {
       "planets": [
-        "Sun",
-        "Uranus"
+        "Moon",
+        "Mercury"
       ],
       "type": "square",
-      "orb": 4.1
+      "orb": 4
     },
     {
       "planets": [
@@ -107,8 +107,8 @@
     },
     {
       "planets": [
-        "Moon",
-        "Mercury"
+        "Sun",
+        "Uranus"
       ],
       "type": "square",
       "orb": 4.2
