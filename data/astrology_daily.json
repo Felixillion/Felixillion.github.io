@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Virgo",
-      "degree": 1.5,
+      "degree": 1.7,
       "retrograde": false,
       "phase": "New Moon"
     },
@@ -51,6 +51,14 @@
   "major_aspects": [
     {
       "planets": [
+        "Moon",
+        "Neptune"
+      ],
+      "type": "quincunx",
+      "orb": 0.9
+    },
+    {
+      "planets": [
         "Mars",
         "Neptune"
       ],
@@ -76,10 +84,10 @@
     {
       "planets": [
         "Moon",
-        "Neptune"
+        "Mars"
       ],
-      "type": "quincunx",
-      "orb": 1.2
+      "type": "square",
+      "orb": 1.8
     },
     {
       "planets": [
@@ -91,19 +99,11 @@
     },
     {
       "planets": [
-        "Moon",
-        "Mars"
-      ],
-      "type": "square",
-      "orb": 2
-    },
-    {
-      "planets": [
         "Mercury",
         "Uranus"
       ],
       "type": "trine",
-      "orb": 2.9
+      "orb": 3
     },
     {
       "planets": [
