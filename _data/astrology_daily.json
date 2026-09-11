@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Virgo",
-      "degree": 29.1,
+      "degree": 29.4,
       "retrograde": false,
       "phase": "New Moon"
     },
@@ -95,7 +95,7 @@
         "Neptune"
       ],
       "type": "opposition",
-      "orb": 3.6
+      "orb": 3.3
     },
     {
       "planets": [
