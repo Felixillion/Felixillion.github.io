@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Libra",
-      "degree": 12.3,
+      "degree": 12.7,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Libra",
-      "degree": 21.3,
+      "degree": 21.4,
       "retrograde": false
     },
     "venus": {
       "sign": "Aquarius",
-      "degree": 25.6,
+      "degree": 25.7,
       "retrograde": false
     },
     "mars": {
@@ -83,6 +83,14 @@
     },
     {
       "planets": [
+        "Moon",
+        "Saturn"
+      ],
+      "type": "opposition",
+      "orb": 3.6
+    },
+    {
+      "planets": [
         "Jupiter",
         "Uranus"
       ],
@@ -92,18 +100,10 @@
     {
       "planets": [
         "Moon",
-        "Saturn"
-      ],
-      "type": "opposition",
-      "orb": 3.9
-    },
-    {
-      "planets": [
-        "Moon",
         "Uranus"
       ],
       "type": "trine",
-      "orb": 4
+      "orb": 4.3
     },
     {
       "planets": [
