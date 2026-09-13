@@ -3,12 +3,12 @@
   "planetary_positions": {
     "sun": {
       "sign": "Virgo",
-      "degree": 21.1,
+      "degree": 21.2,
       "retrograde": false
     },
     "moon": {
       "sign": "Libra",
-      "degree": 25.5,
+      "degree": 25.7,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
@@ -19,7 +19,7 @@
     },
     "venus": {
       "sign": "Aquarius",
-      "degree": 27.2,
+      "degree": 27.3,
       "retrograde": false
     },
     "mars": {
@@ -51,14 +51,6 @@
   "major_aspects": [
     {
       "planets": [
-        "Moon",
-        "Mercury"
-      ],
-      "type": "conjunction",
-      "orb": 0.8
-    },
-    {
-      "planets": [
         "Mars",
         "Jupiter"
       ],
@@ -68,10 +60,18 @@
     {
       "planets": [
         "Moon",
+        "Mercury"
+      ],
+      "type": "conjunction",
+      "orb": 1
+    },
+    {
+      "planets": [
+        "Moon",
         "Venus"
       ],
       "type": "trine",
-      "orb": 1.8
+      "orb": 1.6
     },
     {
       "planets": [
