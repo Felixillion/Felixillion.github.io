@@ -3,18 +3,18 @@
   "planetary_positions": {
     "sun": {
       "sign": "Virgo",
-      "degree": 22.1,
+      "degree": 22.2,
       "retrograde": false
     },
     "moon": {
       "sign": "Scorpio",
-      "degree": 8.5,
+      "degree": 8.8,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
     "mercury": {
       "sign": "Libra",
-      "degree": 28.1,
+      "degree": 28.2,
       "retrograde": false
     },
     "venus": {
@@ -29,7 +29,7 @@
     },
     "jupiter": {
       "sign": "Leo",
-      "degree": 4.9,
+      "degree": 5,
       "retrograde": false
     },
     "saturn": {
@@ -55,7 +55,7 @@
         "Uranus"
       ],
       "type": "quincunx",
-      "orb": 0.2
+      "orb": 0.5
     },
     {
       "planets": [
@@ -95,7 +95,7 @@
         "Mars"
       ],
       "type": "quincunx",
-      "orb": 2.4
+      "orb": 2.6
     },
     {
       "planets": [
