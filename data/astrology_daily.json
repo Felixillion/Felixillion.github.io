@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Scorpio",
-      "degree": 20.8,
+      "degree": 21,
       "retrograde": false,
       "phase": "Waxing Crescent"
     },
@@ -55,7 +55,7 @@
         "Venus"
       ],
       "type": "trine",
-      "orb": 1
+      "orb": 1.1
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Moon"
       ],
       "type": "sextile",
-      "orb": 2.3
+      "orb": 2.1
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Jupiter"
       ],
       "type": "square",
-      "orb": 3.6
+      "orb": 3.5
     }
   ],
   "readings": {
