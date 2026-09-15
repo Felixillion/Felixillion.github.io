@@ -66,3 +66,29 @@ h1 {
     inset: 0;
     pointer-events: none;
 }
+
+/* Search list for genes/proteins */
+.search-list {
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    border: 1px solid #444;
+    padding: 4px;
+    background: white;
+}
+
+.search-list label {
+    display: block;
+    white-space: nowrap;
+}
+
+.search-row {
+    display: block;
+    width: 100%;
+}
+
+.search-row label {
+    display: block;
+    width: 100%;
+}

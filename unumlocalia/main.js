@@ -112,9 +112,9 @@ const infoBox =
     );
 
 // Populate gene dropdown
-const geneSelect =
+const geneList =
     document.getElementById(
-        "geneSelect"
+        "geneList"
     );
 
 // Gene search
@@ -124,9 +124,9 @@ const geneSearch =
     );    
 
 // Proteins
-const proteinSelect =
+const proteinList =
     document.getElementById(
-        "proteinSelect"
+        "proteinList"
     );
 
 const proteinSearch =
@@ -186,104 +186,68 @@ async function loadUlviewer(file) {
 
 
 async function initialiseDataset() {
-    geneSelect.innerHTML = "";
-        proteinSelect.innerHTML = "";
+    geneList.innerHTML = "";
+    proteinList.innerHTML = "";
 
-        allGenes =
-            Object.keys(
-                metadata.genes
-            ).sort();
+    allGenes =
+        Object.keys(
+            metadata.genes
+        ).sort();
 
-        allProteins =
-            Object.keys(
-                metadata.proteins
-            ).sort();
+    allProteins =
+        Object.keys(
+            metadata.proteins
+        ).sort();
 
-        allGenes.forEach(
-            gene => {
+    renderGeneList();
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+    renderProteinList();
 
-                option.value =
-                    gene;
+    infoBox.textContent =
+        `Core: ${metadata.core}
+        Version: ${metadata.export_version}
+        Genes: ${Object.keys(metadata.genes).length}
+        Proteins: ${Object.keys(metadata.proteins).length}
+        Segmentations: ${Object.keys(metadata.segmentations).length}`;
 
-                option.textContent =
-                    gene;
+    const heBlob =
+        await getBlob(
+            metadata.image.file
+        );
 
-                geneSelect.appendChild(
-                    option
-                );
+    const imageURL =
+        URL.createObjectURL(
+            heBlob
+        );
+
+    heImage =
+        new Image();
+
+    heImage.src =
+        imageURL;
+
+    if (viewer) {
+        viewer.destroy();
+    }
+
+    viewer =
+        OpenSeadragon({
+
+            id: "viewer",
+
+            prefixUrl:
+                "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/5.0.1/images/",
+
+            tileSources: {
+                type: "image",
+                url: imageURL
             }
-        );
+        });
 
-        allProteins.forEach(
-            protein => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    protein;
-
-                option.textContent =
-                    protein;
-
-                proteinSelect.appendChild(
-                    option
-                );
-            }
-        );
-
-        infoBox.textContent =
-            `Core: ${metadata.core}
-            Version: ${metadata.export_version}
-            Genes: ${Object.keys(metadata.genes).length}
-            Proteins: ${Object.keys(metadata.proteins).length}
-            Segmentations: ${Object.keys(metadata.segmentations).length}`;
-
-        const heBlob =
-            await getBlob(
-                metadata.image.file
-            );
-
-        const imageURL =
-            URL.createObjectURL(
-                heBlob
-            );
-
-        heImage =
-            new Image();
-
-        heImage.src =
-            imageURL;
-
-        if (viewer) {
-            viewer.destroy();
-        }
-
-        viewer =
-            OpenSeadragon({
-
-                id: "viewer",
-
-                prefixUrl:
-                    "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/5.0.1/images/",
-
-                tileSources: {
-                    type: "image",
-                    url: imageURL
-                }
-            });
-
-        viewer.addHandler(
-            "open",
-            setupOverlay
-        );
+    viewer.addHandler(
+        "open",
+        setupOverlay
+    );
 }
 
 
@@ -925,36 +889,6 @@ function drawScaleBar(ctx) {
     }
 
 
-
-    // DEBUG
-    console.log(
-        metadata.image.width,
-        metadata.web_pixel_size_um
-    );
-
-
-    console.log(
-        "Image width um:",
-        metadata.image.width *
-        metadata.web_pixel_size_um
-    );
-
-
-
-    console.log({
-        visibleWidthPixels,
-        visibleWidthUm,
-        imageWidthPixels:
-            metadata.image.width,
-        imageWidthUm:
-            metadata.image.width *
-            metadata.web_pixel_size_um
-    });
-    // END DEBUG
-
-
-
-
     // Black outline
 
     ctx.strokeStyle =
@@ -1463,6 +1397,171 @@ function refreshProteinUI() {
 }
 
 
+// Protein list renderer
+function renderProteinList(
+    filter = ""
+) {
+
+    proteinList.innerHTML = "";
+
+    allProteins
+        .filter(
+            protein =>
+                protein
+                .toLowerCase()
+                .includes(
+                    filter.toLowerCase()
+                )
+        )
+        .forEach(
+            protein => {
+
+                const row =
+                    document.createElement("div");
+
+                row.className =
+                    "search-row";
+
+                row.innerHTML = `
+                    <label>
+                        <input
+                            type="checkbox"
+                            data-protein="${protein}"
+                            ${
+                                proteinLayers[protein]
+                                ? "checked"
+                                : ""
+                            }
+                        >
+                        ${protein}
+                    </label>
+                `;
+
+                proteinList.appendChild(row);
+            }
+        );
+
+    attachProteinCheckboxEvents();
+}
+
+
+// Protein colours
+function getUnusedProteinColor() {
+
+    const used =
+        Object.values(
+            proteinLayers
+        )
+        .map(
+            layer => layer.color
+        );
+
+    const free =
+        DEFAULT_PROTEIN_COLORS.find(
+            color =>
+                !used.includes(
+                    color
+                )
+        );
+
+    return free ??
+        DEFAULT_PROTEIN_COLORS[0];
+}
+
+
+// Attach proteins
+function attachProteinCheckboxEvents() {
+
+    document
+        .querySelectorAll(
+            "#proteinList input[type='checkbox']"
+        )
+        .forEach(
+            checkbox => {
+
+                checkbox.addEventListener(
+                    "change",
+                    async () => {
+
+                        const marker =
+                            checkbox.dataset.protein;
+
+                        if (
+                            checkbox.checked
+                        ) {
+
+                            if (
+                                proteinLayers[marker]
+                            ) {
+                                return;
+                            }
+
+                            const proteinPath =
+                                metadata.proteins[
+                                    marker
+                                ].file;
+
+                            const img =
+                                new Image();
+
+                            img.onload = () => {
+
+                                proteinLayers[
+                                    marker
+                                ] = {
+
+                                    image: img,
+
+                                    color:
+                                        getUnusedProteinColor(),
+
+                                    opacity:
+                                        proteinOpacity,
+
+                                    threshold: 0
+                                };
+
+                                proteinCanvas =
+                                    document.createElement(
+                                        "canvas"
+                                    );
+
+                                proteinCanvas.width =
+                                    img.width;
+
+                                proteinCanvas.height =
+                                    img.height;
+
+                                refreshProteinUI();
+                                updateOverlay();
+                            };
+
+                            const blob =
+                                await getBlob(
+                                    proteinPath
+                                );
+
+                            img.src =
+                                URL.createObjectURL(
+                                    blob
+                                );
+
+                        } else {
+
+                            delete proteinLayers[
+                                marker
+                            ];
+
+                            refreshProteinUI();
+                            updateOverlay();
+                        }
+                    }
+                );
+            }
+        );
+}
+
+
 // Handle colour/opacity changes
 function attachProteinControlEvents() {
 
@@ -1560,12 +1659,10 @@ function attachProteinControlEvents() {
                         const marker =
                             button.dataset.marker;
 
-                        delete proteinLayers[
-                            marker
-                        ];
+                        delete proteinLayers[marker];
 
                         refreshProteinUI();
-
+                        renderProteinList(proteinSearch.value);
                         updateOverlay();
                     }
                 );
@@ -1998,6 +2095,148 @@ function refreshGeneUI() {
 }
 
 
+// Gene list renderer
+function renderGeneList(filter = "") {
+
+    geneList.innerHTML = "";
+
+    allGenes
+        .filter(
+            gene =>
+                gene
+                .toLowerCase()
+                .includes(
+                    filter.toLowerCase()
+                )
+        )
+        .forEach(
+            gene => {
+
+                const row =
+                    document.createElement("div");
+
+                row.className =
+                    "search-row";
+
+                row.innerHTML = `
+                    <label>
+                        <input
+                            type="checkbox"
+                            data-gene="${gene}"
+                            ${
+                                geneLayers[gene]
+                                ? "checked"
+                                : ""
+                            }
+                        >
+                        ${gene}
+                    </label>
+                `;
+
+                geneList.appendChild(row);
+            }
+        );
+
+    attachGeneCheckboxEvents();
+}
+
+
+// Attach genes
+function attachGeneCheckboxEvents() {
+
+    document
+        .querySelectorAll(
+            "#geneList input[type='checkbox']"
+        )
+        .forEach(
+            checkbox => {
+
+                checkbox.addEventListener(
+                    "change",
+                    async () => {
+
+                        const geneName =
+                            checkbox.dataset.gene;
+
+                        if (
+                            checkbox.checked
+                        ) {
+
+                            if (
+                                geneLayers[geneName]
+                            ) {
+                                return;
+                            }
+
+                            const filename =
+                                metadata.genes[
+                                    geneName
+                                ];
+
+                            const compressed =
+                                await getCompressedFile(
+                                    `genes/${filename}`
+                                );
+
+                            const jsonText =
+                                pako.inflate(
+                                    compressed,
+                                    {
+                                        to: "string"
+                                    }
+                                );
+
+                            geneLayers[geneName] = {
+
+                                points:
+                                    JSON.parse(jsonText),
+
+                                color:
+                                    getUnusedGeneColor(),
+
+                                size: 3
+                            };
+
+                        } else {
+
+                            delete geneLayers[
+                                geneName
+                            ];
+                        }
+
+                        refreshGeneUI();
+                        updateOverlay();
+                    }
+                );
+            }
+        );
+}
+
+
+// Gene colours
+function getUnusedGeneColor() {
+
+    const used =
+        Object.values(
+            geneLayers
+        )
+        .map(
+            layer => layer.color
+        );
+
+    const free =
+        DEFAULT_GENE_COLORS.find(
+            color =>
+                !used.includes(
+                    color
+                )
+        );
+
+    return free ??
+        DEFAULT_GENE_COLORS[0];
+}
+
+
 // Remove genes
 function attachGeneControlEvents() {
 
@@ -2074,27 +2313,10 @@ function attachGeneControlEvents() {
                         const gene =
                             button.dataset.gene;
 
-                        delete geneLayers[
-                            gene
-                        ];
-
-                        Array.from(
-                            geneSelect.options
-                        ).forEach(
-                            option => {
-
-                                if (
-                                    option.value === gene
-                                ) {
-
-                                    option.selected =
-                                        false;
-                                }
-                            }
-                        );
+                        delete geneLayers[gene];
 
                         refreshGeneUI();
-
+                        renderGeneList(geneSearch.value);
                         updateOverlay();
                     }
                 );
@@ -2392,288 +2614,39 @@ document
         }
     );
 
-// Gene select
-geneSelect.addEventListener(
-    "mouseup",
-    async () => {
-
-        const selectedGenes =
-            Array.from(
-                geneSelect.selectedOptions
-            )
-            .map(
-                option => option.value
-            );
-
-        // Remove genes no longer selected
-
-        for (
-            const geneName
-            in geneLayers
-        ) {
-
-            if (
-                !selectedGenes.includes(
-                    geneName
-                )
-            ) {
-
-                delete geneLayers[
-                    geneName
-                ];
-            }
-        }
-
-        // Load newly selected genes
-
-        for (
-            const geneName
-            of selectedGenes
-        ) {
-
-            if (
-                geneLayers[
-                    geneName
-                ]
-            ) {
-                continue;
-            }
-
-            const filename =
-                metadata.genes[
-                    geneName
-                ];
-
-            // Gene loading
-            const compressed =
-                await getCompressedFile(
-                    `genes/${filename}`
-                );
-
-            const jsonText =
-                pako.inflate(
-                    compressed,
-                    {
-                        to: "string"
-                    }
-                );
-
-            const colorIndex =
-                Object.keys(
-                    geneLayers
-                ).length %
-                DEFAULT_GENE_COLORS.length;
-
-            geneLayers[
-                geneName
-            ] = {
-
-                points:
-                    JSON.parse(
-                        jsonText
-                    ),
-
-                color:
-                    DEFAULT_GENE_COLORS[
-                        colorIndex
-                    ],
-
-                size: 3
-            };
-
-            console.log(
-                geneName,
-                geneLayers[
-                    geneName
-                ].points.length
-            );
-        }
-
-        refreshGeneUI();
-        updateOverlay();
-    }
-);
-
 
 // Gene search
 geneSearch.addEventListener(
     "input",
     () => {
 
-        geneSelect.dispatchEvent(
-            new Event(
-                "change"
-            )
-        );
-
-        const query =
+        renderGeneList(
             geneSearch.value
-            .toLowerCase();
-
-        geneSelect.innerHTML = "";
-
-        allGenes
-            .filter(
-                gene =>
-                    gene
-                    .toLowerCase()
-                    .includes(
-                        query
-                    )
-            )
-            .forEach(
-                gene => {
-
-                    const option =
-                        document.createElement(
-                            "option"
-                        );
-
-                    option.value =
-                        gene;
-
-                    option.textContent =
-                        gene;
-
-                    if (
-                        geneLayers[
-                            gene
-                        ]
-                    ) {
-
-                        option.selected =
-                            true;
-                    }
-
-                    geneSelect.appendChild(
-                        option
-                    );
-                }
-            );
+        );
     }
 );
 
 
-// Load proteins
-proteinSelect.addEventListener(
-    "change",
-    async () => {
+// Clear genes
+document
+    .getElementById(
+        "clearGenesBtn"
+    )
+    .addEventListener(
+        "click",
+        () => {
 
-        const selectedMarkers =
-            Array.from(
-                proteinSelect.selectedOptions
-            )
-            .map(
-                option => option.value
+            geneLayers = {};
+
+            refreshGeneUI();
+
+            renderGeneList(
+                geneSearch.value
             );
 
-        // Deselection
-        for (
-            const marker
-            in proteinLayers
-        ) {
-
-            if (
-                !selectedMarkers.includes(
-                    marker
-                )
-            ) {
-
-                delete proteinLayers[
-                    marker
-                ];
-            }
+            updateOverlay();
         }
-
-        refreshProteinUI();
-        updateOverlay();
-
-        for (
-            const marker
-            of selectedMarkers
-        ) {
-
-            if (
-                proteinLayers[
-                    marker
-                ]
-            ) {
-                continue;
-            }
-
-            const proteinPath =
-                metadata.proteins[
-                    marker
-                ].file;
-
-            const img =
-                new Image();
-
-            img.onload = () => {
-
-                console.log(
-                    "Loaded protein:",
-                    marker
-                );
-
-                const colorIndex =
-                    Object.keys(
-                        proteinLayers
-                    ).length %
-                    DEFAULT_PROTEIN_COLORS.length;
-
-                proteinLayers[marker] = {
-
-                    image: img,
-
-                    color:
-                        DEFAULT_PROTEIN_COLORS[
-                            colorIndex
-                        ],
-
-                    opacity:
-                        proteinOpacity,
-
-                    threshold: 0
-                };
-
-                refreshProteinUI();
-
-                proteinCanvas =
-                    document.createElement(
-                        "canvas"
-                    );
-
-                proteinCanvas.width =
-                    img.width;
-
-                proteinCanvas.height =
-                    img.height;
-
-                updateOverlay();
-
-                proteinCanvas.width =
-                    img.width;
-
-                proteinCanvas.height =
-                    img.height;
-
-                updateOverlay();
-            };
-
-            // Protein loading
-            const proteinBlob =
-                await getBlob(
-                    proteinPath
-                );
-
-            img.src =
-                URL.createObjectURL(
-                    proteinBlob
-                );
-        }
-    }
-);
+    );
 
 
 // Protein search
@@ -2681,49 +2654,30 @@ proteinSearch.addEventListener(
     "input",
     () => {
 
-        const query =
+        renderProteinList(
             proteinSearch.value
-            .toLowerCase();
-
-        proteinSelect.innerHTML = "";
-
-        allProteins
-            .filter(
-                protein =>
-                    protein
-                    .toLowerCase()
-                    .includes(
-                        query
-                    )
-            )
-            .forEach(
-                protein => {
-
-                    const option =
-                        document.createElement(
-                            "option"
-                        );
-
-                    option.value =
-                        protein;
-
-                    option.textContent =
-                        protein;
-
-                    if (
-                        proteinLayers[
-                            protein
-                        ]
-                    ) {
-
-                        option.selected =
-                            true;
-                    }
-
-                    proteinSelect.appendChild(
-                        option
-                    );
-                }
-            );
+        );
     }
 );
+
+
+// Clear proteins
+document
+    .getElementById(
+        "clearProteinsBtn"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            proteinLayers = {};
+
+            refreshProteinUI();
+
+            renderProteinList(
+                proteinSearch.value
+            );
+
+            updateOverlay();
+        }
+    );
