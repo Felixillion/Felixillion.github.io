@@ -1,0 +1,2680 @@
+// .ulviewer load
+let loadedZip = null;
+
+// Metadata
+let metadata = null;
+let metadataFileHandle = null;
+
+// H&E
+let heOpacity = 1.0;
+
+// Segmentation data
+let segmentationData = [];
+let segmentationVisible = true;
+let segmentationColor = "#00ffff";
+let segmentationThickness = 0.5;
+let segmentationOpacity = 0.5;
+
+// Genes
+let geneLayers = {};
+
+let overlayCanvas = null;
+let overlayCtx = null;
+
+let datasetRoot = "";
+
+// Proteins
+let proteinLayers = {};
+let proteinOpacity = 0.8;
+let proteinCanvas = null;
+
+// Cell info
+let selectedCell = null;
+let hoveredCell = null;
+let activeGene = null;
+
+
+// Dropzone for dragging file
+const dropZone =
+    document.getElementById(
+        "dropZone"
+    );
+
+// Scale bar
+const SHOW_VIEWER_SCALEBAR =
+    true;
+
+// Screenshot
+const saveScreenshotBtn =
+    document.getElementById(
+        "saveScreenshotBtn"
+    );
+
+// Export sections
+const exportHE =
+    document.getElementById(
+        "exportHE"
+    );
+
+const exportGenes =
+    document.getElementById(
+        "exportGenes"
+    );
+
+const exportProteins =
+    document.getElementById(
+        "exportProteins"
+    );
+
+const exportSegs =
+    document.getElementById(
+        "exportSegs"
+    );
+
+const exportScaleBar =
+    document.getElementById(
+        "exportScaleBar"
+    );
+
+const exportCellInfo =
+    document.getElementById(
+        "exportCellInfo"
+    );
+
+// H&E opacity
+const heOpacitySlider =
+    document.getElementById(
+        "heOpacity"
+    );
+
+// Default protein colours
+const DEFAULT_PROTEIN_COLORS = [
+    "#00ff00", // green
+    "#ff0000", // red
+    "#00ffff", // cyan
+    "#ffff00", // yellow
+    "#ff00ff", // magenta
+    "#ffffff"  // white
+];
+
+// Default gene colours
+const DEFAULT_GENE_COLORS = [
+    "#ff00ff",
+    "#00ffff",
+    "#ffff00",
+    "#ff8800",
+    "#ffffff"
+];
+
+const infoBox =
+    document.getElementById(
+        "info"
+    );
+
+// Populate gene dropdown
+const geneSelect =
+    document.getElementById(
+        "geneSelect"
+    );
+
+// Gene search
+const geneSearch =
+    document.getElementById(
+        "geneSearch"
+    );    
+
+// Proteins
+const proteinSelect =
+    document.getElementById(
+        "proteinSelect"
+    );
+
+const proteinSearch =
+    document.getElementById(
+        "proteinSearch"
+    );
+
+const proteinOpacitySlider =
+    document.getElementById(
+        "proteinOpacity"
+    );
+
+const loadedProteinsDiv =
+    document.getElementById(
+        "loadedProteins"
+    );
+
+const loadedGenesDiv =
+    document.getElementById(
+        "loadedGenes"
+    );
+
+// Cell info
+const cellInfo =
+    document.getElementById(
+        "cellInfo"
+    );
+
+let allGenes = [];
+let allProteins = [];
+
+let viewer = null;
+let heImage = null;
+
+
+// Load data
+async function loadUlviewer(file) {
+    if (!file) {
+        return;
+    }
+
+    loadedZip =
+        await JSZip.loadAsync(
+            file
+        );
+
+        const metadataText =
+            await loadedZip
+                .file(
+                    "metadata.json"
+                )
+                .async(
+                    "string"
+                );
+
+        metadata =
+            JSON.parse(
+                metadataText
+            );
+
+        geneSelect.innerHTML = "";
+        proteinSelect.innerHTML = "";
+
+        allGenes =
+            Object.keys(
+                metadata.genes
+            ).sort();
+
+        allProteins =
+            Object.keys(
+                metadata.proteins
+            ).sort();
+
+        allGenes.forEach(
+            gene => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    gene;
+
+                option.textContent =
+                    gene;
+
+                geneSelect.appendChild(
+                    option
+                );
+            }
+        );
+
+        allProteins.forEach(
+            protein => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    protein;
+
+                option.textContent =
+                    protein;
+
+                proteinSelect.appendChild(
+                    option
+                );
+            }
+        );
+
+        infoBox.textContent =
+            `Core: ${metadata.core}
+            Version: ${metadata.export_version}
+            Genes: ${Object.keys(metadata.genes).length}
+            Proteins: ${Object.keys(metadata.proteins).length}
+            Segmentations: ${Object.keys(metadata.segmentations).length}`;
+
+        const heBlob =
+            await loadedZip
+                .file(
+                    metadata.image.file
+                )
+                .async(
+                    "blob"
+                );
+
+        const imageURL =
+            URL.createObjectURL(
+                heBlob
+            );
+
+        heImage =
+            new Image();
+
+        heImage.src =
+            imageURL;
+
+        if (viewer) {
+            viewer.destroy();
+        }
+
+        viewer =
+            OpenSeadragon({
+
+                id: "viewer",
+
+                prefixUrl:
+                    "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/5.0.1/images/",
+
+                tileSources: {
+                    type: "image",
+                    url: imageURL
+                }
+            });
+
+        viewer.addHandler(
+            "open",
+            setupOverlay
+        );
+}
+
+
+function setupOverlay() {
+
+    const container =
+        viewer.canvas;
+
+    overlayCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    overlayCanvas.className =
+        "overlay-canvas";
+
+    container.appendChild(
+        overlayCanvas
+    );
+
+    overlayCtx =
+        overlayCanvas.getContext(
+            "2d",
+            {
+                willReadFrequently: true,
+            }
+        );
+
+    updateOverlay();
+
+    viewer.addHandler(
+        "viewport-change",
+        updateOverlay
+    );
+
+    viewer.addHandler(
+        "resize",
+        updateOverlay
+    );
+
+    // Cell info
+    viewer.addHandler(
+        "canvas-click",
+        onViewerClick
+    );
+
+    // Mouse tracking
+    viewer.container.addEventListener(
+        "mousemove",
+        onViewerMove
+    );
+}
+
+
+function clearCanvas() {
+
+    if (!overlayCanvas) {
+        return;
+    }
+
+    const rect =
+        viewer.canvas.getBoundingClientRect();
+
+    overlayCanvas.width =
+        rect.width;
+
+    overlayCanvas.height =
+        rect.height;
+
+    overlayCtx.clearRect(
+        0,
+        0,
+        rect.width,
+        rect.height
+    );
+}
+
+
+// Save screenshot
+function saveScreenshot() {
+
+    if (!heImage) {
+        return;
+    }
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+    canvas.width =
+        overlayCanvas.width;
+
+    canvas.height =
+        overlayCanvas.height;
+
+    const exportCtx =
+        canvas.getContext(
+            "2d"
+        );
+
+    // Black background
+    exportCtx.fillStyle =
+        "black";
+
+    exportCtx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // H&E with current opacity
+    if (
+        exportHE.checked
+    ) {
+
+        exportCtx.globalAlpha =
+            heOpacity;
+
+        exportCtx.drawImage(
+            viewer.drawer.canvas,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        exportCtx.globalAlpha =
+            1;
+    }
+
+    // Overlay
+    if (
+        exportProteins.checked
+    ) {
+
+        drawProteinsToContext(
+            exportCtx
+        );
+    }
+
+    if (
+        exportSegs.checked
+    ) {
+
+        drawSegmentationsToContext(
+            exportCtx
+        );
+    }
+
+    if (
+        exportGenes.checked
+    ) {
+
+        drawGenesToContext(
+            exportCtx
+        );
+    }
+
+    // Scale bar
+    if (
+        exportScaleBar.checked
+    ) {
+
+        drawScaleBar(
+            exportCtx
+        );
+    }
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+    link.download =
+        "ulviewer_screenshot.png";
+
+    link.href =
+        canvas.toDataURL(
+            "image/png"
+        );
+
+    link.click();
+}
+
+
+// Screenshot genes
+function drawGenesToContext(targetCtx) {
+
+    for (
+        const geneName
+        in geneLayers
+    ) {
+
+        const layer =
+            geneLayers[
+                geneName
+            ];
+
+        targetCtx.fillStyle =
+            layer.color;
+
+        for (
+            const pt
+            of layer.points
+        ) {
+
+            const vp =
+                viewer.viewport.imageToViewerElementCoordinates(
+                    new OpenSeadragon.Point(
+                        pt.x,
+                        pt.y
+                    )
+                );
+
+            targetCtx.beginPath();
+
+            targetCtx.arc(
+                vp.x,
+                vp.y,
+                layer.size,
+                0,
+                2 * Math.PI
+            );
+
+            targetCtx.fill();
+        }
+    }
+}
+
+
+// Screenshot segmentations
+function drawSegmentationsToContext(targetCtx) {
+
+    for (
+        const cell
+        of segmentationData
+    ) {
+
+        // Don't screenshot selected cell
+        const isSelected =
+            false;
+        // Don't screenshot hovered cell
+        const isHovered =
+            false;
+
+        targetCtx.strokeStyle =
+            hexToRgba(
+                segmentationColor,
+                segmentationOpacity
+            );
+
+        targetCtx.lineWidth =
+            segmentationThickness;
+
+        targetCtx.beginPath();
+
+        cell.vertices.forEach(
+            (pt, idx) => {
+
+                const vp =
+                    viewer.viewport.imageToViewerElementCoordinates(
+                        new OpenSeadragon.Point(
+                            pt[0],
+                            pt[1]
+                        )
+                    );
+
+                if (
+                    idx === 0
+                ) {
+
+                    targetCtx.moveTo(
+                        vp.x,
+                        vp.y
+                    );
+
+                } else {
+
+                    targetCtx.lineTo(
+                        vp.x,
+                        vp.y
+                    );
+                }
+            }
+        );
+
+        targetCtx.closePath();
+
+        targetCtx.stroke();
+    }
+}
+
+
+// Screenshot proteins
+function drawProteinsToContext(targetCtx) {
+
+    for (
+        const marker
+        in proteinLayers
+    ) {
+
+        const layer =
+            proteinLayers[
+                marker
+            ];
+
+        if (
+            !layer.image
+        ) {
+            continue;
+        }
+
+        // Temporary canvas for coloring
+        const tempCanvas =
+            document.createElement(
+                "canvas"
+            );
+
+        tempCanvas.width =
+            layer.image.width;
+
+        tempCanvas.height =
+            layer.image.height;
+
+        const ctx =
+            tempCanvas.getContext(
+                "2d"
+            );
+
+        // Draw original grayscale image
+        ctx.drawImage(
+            layer.image,
+            0,
+            0
+        );
+
+        const imageData =
+            ctx.getImageData(
+                0,
+                0,
+                tempCanvas.width,
+                tempCanvas.height
+            );
+
+        const data =
+            imageData.data;
+
+        const hex =
+            layer.color.replace(
+                "#",
+                ""
+            );
+
+        const r =
+            parseInt(
+                hex.substring(
+                    0,
+                    2
+                ),
+                16
+            );
+
+        const g =
+            parseInt(
+                hex.substring(
+                    2,
+                    4
+                ),
+                16
+            );
+
+        const b =
+            parseInt(
+                hex.substring(
+                    4,
+                    6
+                ),
+                16
+            );
+
+        // Apply threshold + colouring
+        for (
+            let i = 0;
+            i < data.length;
+            i += 4
+        ) {
+
+            const intensity =
+                data[i];
+
+            if (
+                intensity <
+                layer.threshold
+            ) {
+
+                data[i + 3] = 0;
+
+            } else {
+
+                data[i] =
+                    r;
+
+                data[i + 1] =
+                    g;
+
+                data[i + 2] =
+                    b;
+
+                data[i + 3] =
+                    intensity;
+            }
+        }
+
+        ctx.putImageData(
+            imageData,
+            0,
+            0
+        );
+
+        const topLeft =
+            viewer.viewport.imageToViewerElementCoordinates(
+                new OpenSeadragon.Point(
+                    0,
+                    0
+                )
+            );
+
+        const bottomRight =
+            viewer.viewport.imageToViewerElementCoordinates(
+                new OpenSeadragon.Point(
+                    metadata.image.width,
+                    metadata.image.height
+                )
+            );
+
+        const width =
+            bottomRight.x -
+            topLeft.x;
+
+        const height =
+            bottomRight.y -
+            topLeft.y;
+
+        targetCtx.globalCompositeOperation =
+            "lighter";
+
+        targetCtx.globalAlpha =
+            layer.opacity;
+
+        targetCtx.drawImage(
+            tempCanvas,
+            topLeft.x,
+            topLeft.y,
+            width,
+            height
+        );
+
+        targetCtx.globalCompositeOperation =
+            "source-over";
+
+        targetCtx.globalAlpha =
+            1;
+    }
+}
+
+
+// Get scale length
+function getNiceScaleBarLength(visibleWidthUm) {
+
+    const target =
+        visibleWidthUm * 0.2;
+
+    const choices = [
+        10,
+        20,
+        25,
+        50,
+        75,
+        100,
+        200,
+        250,
+        500,
+        1000,
+        2000,
+        5000
+    ];
+
+    for (
+        const choice
+        of choices
+    ) {
+
+        if (
+            choice >= target
+        ) {
+
+            return choice;
+        }
+    }
+
+    return choices[
+        choices.length - 1
+    ];
+}
+
+
+// Scale bar
+function drawScaleBar(ctx) {
+
+    if (
+        !metadata ||
+        !metadata.web_pixel_size_um
+    ) {
+        return;
+    }
+
+    const bounds =
+        viewer.viewport.getBounds();
+
+    const topLeft =
+        viewer.viewport.viewportToImageCoordinates(
+            bounds.getTopLeft()
+        );
+
+    const bottomRight =
+        viewer.viewport.viewportToImageCoordinates(
+            bounds.getBottomRight()
+        );
+
+    const visibleWidthPixels =
+        Math.abs(
+            bottomRight.x -
+            topLeft.x
+        );
+
+    const visibleWidthUm =
+        visibleWidthPixels *
+        metadata.web_pixel_size_um;
+
+    const barUm =
+        getNiceScaleBarLength(
+            visibleWidthUm
+        );
+
+    const barImagePixels =
+        barUm /
+        metadata.web_pixel_size_um;
+
+    const p1 =
+        viewer.viewport.imageToViewerElementCoordinates(
+            new OpenSeadragon.Point(
+                0,
+                0
+            )
+        );
+
+    const p2 =
+        viewer.viewport.imageToViewerElementCoordinates(
+            new OpenSeadragon.Point(
+                barImagePixels,
+                0
+            )
+        );
+
+    const barScreenPixels =
+        p2.x - p1.x;
+
+    const margin = 40;
+
+    const x2 =
+        ctx.canvas.width -
+        margin;
+
+    const x1 =
+        x2 -
+        barScreenPixels;
+
+    const y =
+        ctx.canvas.height -
+        margin;
+
+    let label;
+
+    if (
+        barUm >= 1000
+    ) {
+
+        label =
+            `${barUm / 1000} mm`;
+
+    } else {
+
+        label =
+            `${barUm} µm`;
+    }
+
+
+
+    // DEBUG
+    console.log(
+        metadata.image.width,
+        metadata.web_pixel_size_um
+    );
+
+
+    console.log(
+        "Image width um:",
+        metadata.image.width *
+        metadata.web_pixel_size_um
+    );
+
+
+
+    console.log({
+        visibleWidthPixels,
+        visibleWidthUm,
+        imageWidthPixels:
+            metadata.image.width,
+        imageWidthUm:
+            metadata.image.width *
+            metadata.web_pixel_size_um
+    });
+    // END DEBUG
+
+
+
+
+    // Black outline
+
+    ctx.strokeStyle =
+        "black";
+
+    ctx.lineWidth = 10;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x1,
+        y
+    );
+
+    ctx.lineTo(
+        x2,
+        y
+    );
+
+    ctx.stroke();
+
+    // White bar
+
+    ctx.strokeStyle =
+        "white";
+
+    ctx.lineWidth = 6;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x1,
+        y
+    );
+
+    ctx.lineTo(
+        x2,
+        y
+    );
+
+    ctx.stroke();
+
+    // Text
+
+    ctx.font =
+        "22px Arial";
+
+    ctx.textAlign =
+        "left";
+
+    ctx.lineWidth = 4;
+
+    ctx.strokeStyle =
+        "black";
+
+    ctx.strokeText(
+        label,
+        x1,
+        y - 15
+    );
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.fillText(
+        label,
+        x1,
+        y - 15
+    );
+}
+
+
+function drawSegmentations(ctx) {
+
+    for (
+        const cell
+        of segmentationData
+    ) {
+
+        const isSelected =
+            selectedCell === cell;
+
+        const isHovered =
+            hoveredCell === cell;
+
+        if (isSelected) {
+
+            overlayCtx.strokeStyle =
+                "#ffff00";
+
+            overlayCtx.lineWidth = 3;
+
+        } else if (isHovered) {
+
+            overlayCtx.strokeStyle =
+                "#ff8800";
+
+            overlayCtx.lineWidth = 2;
+
+        } else {
+
+            overlayCtx.strokeStyle =
+                hexToRgba(
+                    segmentationColor,
+                    segmentationOpacity
+                );
+
+            overlayCtx.lineWidth = segmentationThickness;
+        }
+
+        const vertices =
+            cell.vertices;
+
+        if (!vertices.length) {
+            continue;
+        }
+
+        overlayCtx.beginPath();
+
+        vertices.forEach(
+            (pt, idx) => {
+
+                const vp =
+                    viewer.viewport.imageToViewerElementCoordinates(
+                        new OpenSeadragon.Point(
+                            pt[0],
+                            pt[1]
+                        )
+                    );
+
+                if (idx === 0) {
+
+                    overlayCtx.moveTo(
+                        vp.x,
+                        vp.y
+                    );
+
+                } else {
+
+                    overlayCtx.lineTo(
+                        vp.x,
+                        vp.y
+                    );
+                }
+            }
+        );
+
+        overlayCtx.closePath();
+
+        overlayCtx.stroke();
+    }
+}
+
+
+// Segmentation opacity
+function hexToRgba(hex, alpha) {
+
+    const r =
+        parseInt(
+            hex.substring(1, 3),
+            16
+        );
+
+    const g =
+        parseInt(
+            hex.substring(3, 5),
+            16
+        );
+
+    const b =
+        parseInt(
+            hex.substring(5, 7),
+            16
+        );
+
+    return `rgba(
+        ${r},
+        ${g},
+        ${b},
+        ${alpha}
+    )`;
+}
+
+
+function drawGenes(ctx) {
+
+    for (
+        const geneName
+        in geneLayers
+    ) {
+
+        const layer =
+            geneLayers[
+                geneName
+            ];
+
+        const points =
+            layer.points;
+
+        overlayCtx.fillStyle =
+            layer.color;
+
+        for (
+            const pt
+            of points
+        ) {
+
+            const vp =
+                viewer.viewport.imageToViewerElementCoordinates(
+                    new OpenSeadragon.Point(
+                        pt.x,
+                        pt.y
+                    )
+                );
+
+            overlayCtx.beginPath();
+
+            overlayCtx.arc(
+                vp.x,
+                vp.y,
+                layer.size,
+                0,
+                2 * Math.PI
+            );
+
+            overlayCtx.fill();
+        }
+    }
+}
+
+
+// Draw function
+function updateOverlay() {
+
+    if (!overlayCanvas) {
+        return;
+    }
+
+    clearCanvas();
+
+    // Proteins
+    drawProteins();
+
+    // Segmentations
+    if (
+        segmentationVisible
+    ) {
+        drawSegmentations();
+    }
+
+    // Genes
+    drawGenes();
+
+    // Scale bar
+    if (
+        SHOW_VIEWER_SCALEBAR
+    ) {
+
+        drawScaleBar(
+            overlayCtx
+        );
+    }
+}
+
+
+// Draw protein
+function drawProteinLayer(layer) {
+
+    if (
+        !layer.image ||
+        !proteinCanvas
+    ) {
+        return;
+    }
+
+    const ctx =
+        proteinCanvas.getContext(
+            "2d"
+        );
+
+    ctx.clearRect(
+        0,
+        0,
+        proteinCanvas.width,
+        proteinCanvas.height
+    );
+
+    ctx.drawImage(
+        layer.image,
+        0,
+        0
+    );
+
+    const imageData =
+        ctx.getImageData(
+            0,
+            0,
+            proteinCanvas.width,
+            proteinCanvas.height
+        );
+
+    const data =
+        imageData.data;
+
+    const hex =
+        layer.color.replace(
+            "#",
+            ""
+        );
+
+    const r =
+        parseInt(
+            hex.substring(0, 2),
+            16
+        );
+
+    const g =
+        parseInt(
+            hex.substring(2, 4),
+            16
+        );
+
+    const b =
+        parseInt(
+            hex.substring(4, 6),
+            16
+        );
+
+    for (
+        let i = 0;
+        i < data.length;
+        i += 4
+    ) {
+
+        const intensity =
+            data[i];
+
+        if (
+            intensity <
+            layer.threshold
+        ) {
+
+            data[i + 3] = 0;
+
+        } else {
+
+            data[i] =
+                r;
+
+            data[i + 1] =
+                g;
+
+            data[i + 2] =
+                b;
+
+            data[i + 3] =
+                intensity;
+        }
+    }
+
+    ctx.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+    const topLeft =
+        viewer.viewport.imageToViewerElementCoordinates(
+            new OpenSeadragon.Point(
+                0,
+                0
+            )
+        );
+
+    const bottomRight =
+        viewer.viewport.imageToViewerElementCoordinates(
+            new OpenSeadragon.Point(
+                metadata.image.width,
+                metadata.image.height
+            )
+        );
+
+    const width =
+        bottomRight.x - topLeft.x;
+
+    const height =
+        bottomRight.y - topLeft.y;
+
+    overlayCtx.globalCompositeOperation =
+        "lighter";
+
+    overlayCtx.globalAlpha =
+        layer.opacity;
+
+    overlayCtx.drawImage(
+        proteinCanvas,
+        topLeft.x,
+        topLeft.y,
+        width,
+        height
+    );
+
+    overlayCtx.globalCompositeOperation =
+        "source-over";
+
+    overlayCtx.globalAlpha = 1;
+}
+
+
+// Draw proteins
+function drawProteins(ctx) {
+
+    for (
+        const marker
+        in proteinLayers
+    ) {
+
+        const layer =
+            proteinLayers[
+                marker
+            ];
+
+        drawProteinLayer(
+            layer
+        );
+    }
+}
+
+
+// Protein UI
+function refreshProteinUI() {
+
+    loadedProteinsDiv.innerHTML = "";
+
+    for (
+        const marker
+        in proteinLayers
+    ) {
+
+        const layer =
+            proteinLayers[
+                marker
+            ];
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.style.marginBottom =
+            "10px";
+
+        row.innerHTML = `
+            <strong>${marker}</strong>
+
+            <button
+                data-marker="${marker}"
+                class="remove-protein"
+            >
+                X
+            </button>
+
+            Colour<br>
+
+            <input
+                type="color"
+                value="${layer.color}"
+                data-marker="${marker}"
+                class="protein-color"
+            >
+
+            <br>
+
+            Opacity<br>
+
+            <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value="${layer.opacity}"
+                data-marker="${marker}"
+                class="protein-opacity"
+            >
+
+            <br>
+
+            Threshold<br>
+
+            <input
+                type="range"
+                min="0"
+                max="255"
+                value="${layer.threshold}"
+                data-marker="${marker}"
+                class="protein-threshold"
+            >
+        `;
+
+        loadedProteinsDiv.appendChild(
+            row
+        );
+    }
+
+    attachProteinControlEvents();
+}
+
+
+// Handle colour/opacity changes
+function attachProteinControlEvents() {
+
+    document
+        .querySelectorAll(
+            ".protein-color"
+        )
+        .forEach(
+            picker => {
+
+                picker.addEventListener(
+                    "input",
+                    () => {
+
+                        const marker =
+                            picker.dataset.marker;
+
+                        proteinLayers[
+                            marker
+                        ].color =
+                            picker.value;
+
+                        updateOverlay();
+                    }
+                );
+            }
+        );
+
+    document
+        .querySelectorAll(
+            ".protein-opacity"
+        )
+        .forEach(
+            slider => {
+
+                slider.addEventListener(
+                    "input",
+                    () => {
+
+                        const marker =
+                            slider.dataset.marker;
+
+                        proteinLayers[
+                            marker
+                        ].opacity =
+                            parseFloat(
+                                slider.value
+                            );
+
+                        updateOverlay();
+                    }
+                );
+            }
+        );
+
+    document
+        .querySelectorAll(
+            ".protein-threshold"
+        )
+        .forEach(
+            slider => {
+
+                slider.addEventListener(
+                    "input",
+                    () => {
+
+                        const marker =
+                            slider.dataset.marker;
+
+                        proteinLayers[
+                            marker
+                        ].threshold =
+                            parseInt(
+                                slider.value
+                            );
+
+                        updateOverlay();
+                    }
+                );
+            }
+        );
+
+    // Remove proteins individually
+    document
+        .querySelectorAll(
+            ".remove-protein"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const marker =
+                            button.dataset.marker;
+
+                        delete proteinLayers[
+                            marker
+                        ];
+
+                        refreshProteinUI();
+
+                        updateOverlay();
+                    }
+                );
+            }
+        );
+}
+
+
+// Convert click to image coordinates
+function onViewerClick(event) {
+
+    const viewportPoint =
+        viewer.viewport.pointFromPixel(
+            event.position
+        );
+
+    const imagePoint =
+        viewer.viewport.viewportToImageCoordinates(
+            viewportPoint
+        );
+
+    selectCellAtPoint(
+        imagePoint.x,
+        imagePoint.y
+    );
+}
+
+
+// Point-in-polygon test
+function pointInPolygon(x, y, vertices) {
+
+    let inside =
+        false;
+
+    for (
+        let i = 0,
+        j = vertices.length - 1;
+        i < vertices.length;
+        j = i++
+    ) {
+
+        const xi =
+            vertices[i][0];
+
+        const yi =
+            vertices[i][1];
+
+        const xj =
+            vertices[j][0];
+
+        const yj =
+            vertices[j][1];
+
+        const intersect =
+            (
+                (yi > y) !==
+                (yj > y)
+            )
+            &&
+            (
+                x <
+                (
+                    (xj - xi) *
+                    (y - yi)
+                ) /
+                (
+                    yj - yi
+                ) +
+                xi
+            );
+
+        if (
+            intersect
+        ) {
+
+            inside =
+                !inside;
+        }
+    }
+
+    return inside;
+}
+
+
+// Select a cell
+function selectCellAtPoint(x, y) {
+
+    for (
+        const cell
+        of segmentationData
+    ) {
+
+        if (
+            pointInPolygon(
+                x,
+                y,
+                cell.vertices
+            )
+        ) {
+
+            selectedCell =
+                cell;
+
+            const area =
+                calculatePolygonArea(
+                    cell.vertices
+                );
+
+            const centroid =
+                calculateCentroid(
+                    cell.vertices
+                );
+            
+            // Gene count
+            const transcriptCount =
+                countGenesInCell(
+                    cell
+                );
+
+            // Selected cell information panel
+            cellInfo.innerHTML =
+                `
+                <b>Cell Selected</b><br>
+
+                Cell ID:
+                ${
+                    cell.cell_id ??
+                    "Unknown"
+                }
+                <br>
+
+                Vertices:
+                ${
+                    cell.vertices.length
+                }
+                <br>
+
+                Area:
+                ${
+                    Math.round(area)
+                }
+                px²
+                <br>
+
+                Centroid:
+                (
+                ${
+                    Math.round(
+                        centroid.x
+                    )
+                },
+                ${
+                    Math.round(
+                        centroid.y
+                    )
+                }
+                )
+
+                <br>
+
+                <b>Genes</b><br>
+
+                ${
+                    Object.entries(
+                        transcriptCount
+                    )
+                    .map(
+                        ([gene, count]) =>
+                            `${gene}: ${count}`
+                    )
+                    .join("<br>")
+                }
+
+                `;
+
+            updateOverlay();
+
+            return;
+        }
+    }
+
+    selectedCell = null;
+
+    cellInfo.textContent =
+        "No cell selected";
+
+    updateOverlay();
+}
+
+
+// Mouse position
+function onViewerMove(event) {
+
+    const rect =
+        viewer.container.getBoundingClientRect();
+
+    const pixelPoint =
+        new OpenSeadragon.Point(
+            event.clientX - rect.left,
+            event.clientY - rect.top
+        );
+
+    const viewportPoint =
+        viewer.viewport.pointFromPixel(
+            pixelPoint
+        );
+
+    const imagePoint =
+        viewer.viewport.viewportToImageCoordinates(
+            viewportPoint
+        );
+
+    updateHoveredCell(
+        imagePoint.x,
+        imagePoint.y
+    );
+}
+
+
+// Find hovered cell
+function updateHoveredCell(x, y) {
+
+    let newHoveredCell =
+        null;
+
+    for (
+        const cell
+        of segmentationData
+    ) {
+
+        if (
+            pointInPolygon(
+                x,
+                y,
+                cell.vertices
+            )
+        ) {
+
+            newHoveredCell =
+                cell;
+
+            break;
+        }
+    }
+
+    if (
+        hoveredCell !==
+        newHoveredCell
+    ) {
+
+        hoveredCell =
+            newHoveredCell;
+
+        updateOverlay();
+    }
+}
+
+
+// Cell area
+function calculatePolygonArea(vertices) {
+
+    let area = 0;
+
+    for (
+        let i = 0;
+        i < vertices.length;
+        i++
+    ) {
+
+        const j =
+            (
+                i + 1
+            ) %
+            vertices.length;
+
+        area +=
+            vertices[i][0] *
+            vertices[j][1];
+
+        area -=
+            vertices[j][0] *
+            vertices[i][1];
+    }
+
+    return Math.abs(
+        area / 2
+    );
+}
+
+
+// Cell centroid
+function calculateCentroid(vertices) {
+
+    let x = 0;
+    let y = 0;
+
+    for (
+        const vertex
+        of vertices
+    ) {
+
+        x += vertex[0];
+        y += vertex[1];
+    }
+
+    return {
+
+        x:
+            x /
+            vertices.length,
+
+        y:
+            y /
+            vertices.length
+    };
+}
+
+
+// Gene counts in cell
+function countGenesInCell(cell) {
+
+    const counts = {};
+
+    for (
+        const geneName
+        in geneLayers
+    ) {
+
+        let count = 0;
+
+        const points =
+            geneLayers[
+                geneName
+            ].points;
+
+        for (
+            const point
+            of points
+        ) {
+
+            if (
+                pointInPolygon(
+                    point.x,
+                    point.y,
+                    cell.vertices
+                )
+            ) {
+
+                count++;
+            }
+        }
+
+        counts[
+            geneName
+        ] = count;
+    }
+
+    return counts;
+}
+
+
+// Gene UI
+function refreshGeneUI() {
+
+    loadedGenesDiv.innerHTML = "";
+
+    for (
+        const geneName
+        in geneLayers
+    ) {
+
+        const layer =
+            geneLayers[
+                geneName
+            ];
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.style.marginBottom =
+            "10px";
+
+        row.innerHTML = `
+            <strong>${geneName}</strong>
+
+            <button
+                data-gene="${geneName}"
+                class="remove-gene"
+            >
+                X
+            </button>
+
+            <br>
+
+            Colour
+
+            <br>
+
+            <input
+                type="color"
+                value="${layer.color}"
+                data-gene="${geneName}"
+                class="gene-color"
+            >
+
+            <br>
+
+            Dot Size
+
+            <br>
+
+            <input
+                type="range"
+                min="1"
+                max="20"
+                value="${layer.size}"
+                data-gene="${geneName}"
+                class="gene-size"
+            >
+        `;
+
+        loadedGenesDiv.appendChild(
+            row
+        );
+    }
+
+    attachGeneControlEvents();
+}
+
+
+// Remove genes
+function attachGeneControlEvents() {
+
+    document
+        .querySelectorAll(
+            ".gene-color"
+        )
+        .forEach(
+            picker => {
+
+                picker.addEventListener(
+                    "input",
+                    () => {
+
+                        const gene =
+                            picker.dataset.gene;
+
+                        geneLayers[
+                            gene
+                        ].color =
+                            picker.value;
+
+                        updateOverlay();
+                    }
+                );
+            }
+        );
+
+    document
+        .querySelectorAll(
+            ".gene-size"
+        )
+        .forEach(
+            slider => {
+
+                slider.addEventListener(
+                    "input",
+                    () => {
+
+                        const gene =
+                            slider.dataset.gene;
+
+                        geneLayers[
+                            gene
+                        ].size =
+                            parseInt(
+                                slider.value
+                            );
+
+                        console.log(
+                            gene,
+                            geneLayers[
+                                gene
+                            ].size
+                        );
+
+                        updateOverlay();
+                    }
+                );
+            }
+        );
+
+    document
+        .querySelectorAll(
+            ".remove-gene"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const gene =
+                            button.dataset.gene;
+
+                        delete geneLayers[
+                            gene
+                        ];
+
+                        Array.from(
+                            geneSelect.options
+                        ).forEach(
+                            option => {
+
+                                if (
+                                    option.value === gene
+                                ) {
+
+                                    option.selected =
+                                        false;
+                                }
+                            }
+                        );
+
+                        refreshGeneUI();
+
+                        updateOverlay();
+                    }
+                );
+            }
+        );
+}
+
+
+// Load file from drag and drop
+dropZone.addEventListener(
+    "dragover",
+    event => {
+
+        event.preventDefault();
+
+        dropZone.classList.add(
+            "dragging"
+        );
+    }
+);
+
+dropZone.addEventListener(
+    "dragleave",
+    () => {
+
+        dropZone.classList.remove(
+            "dragging"
+        );
+    }
+);
+
+dropZone.addEventListener(
+    "drop",
+    async event => {
+
+        event.preventDefault();
+
+        dropZone.classList.remove(
+            "dragging"
+        );
+
+        const file =
+            event.dataTransfer.files[0];
+
+        await loadUlviewer(
+            file
+        );
+    }
+);
+
+
+// Save screenshot
+saveScreenshotBtn.addEventListener(
+    "click",
+    saveScreenshot
+);
+
+
+// H&E opacity
+heOpacitySlider.addEventListener(
+    "input",
+    () => {
+
+        heOpacity =
+            parseFloat(
+                heOpacitySlider.value
+            );
+
+        if (
+            viewer &&
+            viewer.world &&
+            viewer.world.getItemCount() > 0
+        ) {
+
+            viewer
+                .world
+                .getItemAt(0)
+                .setOpacity(
+                    heOpacity
+                );
+        }
+    }
+);
+
+
+// Load ulviewer
+document
+    .getElementById(
+        "ulviewerFile"
+    )
+    .addEventListener(
+        "change",
+        async event => {
+
+            const file =
+                event.target.files[0];
+
+            await loadUlviewer(
+                file
+            );
+        }
+    );
+
+document.addEventListener(
+    "dragover",
+    event => {
+
+        event.preventDefault();
+    }
+);
+
+document.addEventListener(
+    "drop",
+    async event => {
+
+        event.preventDefault();
+
+        const file =
+            event.dataTransfer.files[0];
+
+        if (
+            !file
+        ) {
+            return;
+        }
+
+        await loadUlviewer(
+            file
+        );
+    }
+);
+
+// Load data from web link
+document
+.getElementById(
+    "loadUrlBtn"
+)
+.addEventListener(
+    "click",
+    async () => {
+
+        const url =
+            document
+            .getElementById(
+                "urlInput"
+            )
+            .value;
+
+        const response =
+            await fetch(
+                url
+            );
+
+        const fileBlob =
+            await response.blob();
+
+        await loadUlviewer(
+            fileBlob
+        );
+    }
+);
+
+// Load segmentation
+document
+    .getElementById(
+        "loadSegBtn"
+    )
+    .addEventListener(
+        "click",
+        async () => {
+
+            const filename =
+                metadata.segmentations[
+                    "xenium_cells"
+                ];
+
+            console.log(
+                "Segmentation:",
+                filename
+            );
+
+            const compressed =
+                await loadedZip
+                    .file(
+                        filename
+                    )
+                    .async(
+                        "uint8array"
+                    );
+
+            const jsonText =
+                pako.inflate(
+                    compressed,
+                    {
+                        to: "string"
+                    }
+                );
+
+            segmentationData =
+                JSON.parse(
+                    jsonText
+                );
+
+            console.log(
+                "Loaded cells:",
+                segmentationData.length
+            );
+
+            updateOverlay();
+        }
+    );
+
+document
+    .getElementById(
+        "showSegmentations"
+    )
+    .addEventListener(
+        "change",
+        event => {
+
+            segmentationVisible =
+                event.target.checked;
+
+            updateOverlay();
+        }
+    );
+
+document
+    .getElementById(
+        "segmentationColor"
+    )
+    .addEventListener(
+        "input",
+        event => {
+
+            segmentationColor =
+                event.target.value;
+
+            updateOverlay();
+        }
+    );
+
+document
+    .getElementById(
+        "segmentationThickness"
+    )
+    .addEventListener(
+        "input",
+        event => {
+
+            segmentationThickness =
+                parseFloat(
+                    event.target.value
+                );
+
+            updateOverlay();
+        }
+    );
+
+// Segmentation opacity
+document
+    .getElementById(
+        "segmentationOpacity"
+    )
+    .addEventListener(
+        "input",
+        event => {
+
+            segmentationOpacity =
+                parseFloat(
+                    event.target.value
+                );
+
+            updateOverlay();
+        }
+    );
+
+// Gene select
+geneSelect.addEventListener(
+    "mouseup",
+    async () => {
+
+        const selectedGenes =
+            Array.from(
+                geneSelect.selectedOptions
+            )
+            .map(
+                option => option.value
+            );
+
+        // Remove genes no longer selected
+
+        for (
+            const geneName
+            in geneLayers
+        ) {
+
+            if (
+                !selectedGenes.includes(
+                    geneName
+                )
+            ) {
+
+                delete geneLayers[
+                    geneName
+                ];
+            }
+        }
+
+        // Load newly selected genes
+
+        for (
+            const geneName
+            of selectedGenes
+        ) {
+
+            if (
+                geneLayers[
+                    geneName
+                ]
+            ) {
+                continue;
+            }
+
+            const filename =
+                metadata.genes[
+                    geneName
+                ];
+
+            // Gene loading
+            const compressed =
+                await loadedZip
+                    .file(
+                        `genes/${filename}`
+                    )
+                    .async(
+                        "uint8array"
+                    );
+
+            const jsonText =
+                pako.inflate(
+                    compressed,
+                    {
+                        to: "string"
+                    }
+                );
+
+            const colorIndex =
+                Object.keys(
+                    geneLayers
+                ).length %
+                DEFAULT_GENE_COLORS.length;
+
+            geneLayers[
+                geneName
+            ] = {
+
+                points:
+                    JSON.parse(
+                        jsonText
+                    ),
+
+                color:
+                    DEFAULT_GENE_COLORS[
+                        colorIndex
+                    ],
+
+                size: 3
+            };
+
+            console.log(
+                geneName,
+                geneLayers[
+                    geneName
+                ].points.length
+            );
+        }
+
+        refreshGeneUI();
+        updateOverlay();
+    }
+);
+
+
+// Gene search
+geneSearch.addEventListener(
+    "input",
+    () => {
+
+        geneSelect.dispatchEvent(
+            new Event(
+                "change"
+            )
+        );
+
+        const query =
+            geneSearch.value
+            .toLowerCase();
+
+        geneSelect.innerHTML = "";
+
+        allGenes
+            .filter(
+                gene =>
+                    gene
+                    .toLowerCase()
+                    .includes(
+                        query
+                    )
+            )
+            .forEach(
+                gene => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        gene;
+
+                    option.textContent =
+                        gene;
+
+                    if (
+                        geneLayers[
+                            gene
+                        ]
+                    ) {
+
+                        option.selected =
+                            true;
+                    }
+
+                    geneSelect.appendChild(
+                        option
+                    );
+                }
+            );
+    }
+);
+
+
+// Load proteins
+proteinSelect.addEventListener(
+    "change",
+    async () => {
+
+        const selectedMarkers =
+            Array.from(
+                proteinSelect.selectedOptions
+            )
+            .map(
+                option => option.value
+            );
+
+        // Deselection
+        for (
+            const marker
+            in proteinLayers
+        ) {
+
+            if (
+                !selectedMarkers.includes(
+                    marker
+                )
+            ) {
+
+                delete proteinLayers[
+                    marker
+                ];
+            }
+        }
+
+        refreshProteinUI();
+        updateOverlay();
+
+        for (
+            const marker
+            of selectedMarkers
+        ) {
+
+            if (
+                proteinLayers[
+                    marker
+                ]
+            ) {
+                continue;
+            }
+
+            const proteinPath =
+                metadata.proteins[
+                    marker
+                ].file;
+
+            const img =
+                new Image();
+
+            img.onload = () => {
+
+                console.log(
+                    "Loaded protein:",
+                    marker
+                );
+
+                const colorIndex =
+                    Object.keys(
+                        proteinLayers
+                    ).length %
+                    DEFAULT_PROTEIN_COLORS.length;
+
+                proteinLayers[marker] = {
+
+                    image: img,
+
+                    color:
+                        DEFAULT_PROTEIN_COLORS[
+                            colorIndex
+                        ],
+
+                    opacity:
+                        proteinOpacity,
+
+                    threshold: 0
+                };
+
+                refreshProteinUI();
+
+                proteinCanvas =
+                    document.createElement(
+                        "canvas"
+                    );
+
+                proteinCanvas.width =
+                    img.width;
+
+                proteinCanvas.height =
+                    img.height;
+
+                updateOverlay();
+
+                proteinCanvas.width =
+                    img.width;
+
+                proteinCanvas.height =
+                    img.height;
+
+                updateOverlay();
+            };
+
+            // Protein loading
+            const proteinBlob =
+                await loadedZip
+                    .file(
+                        proteinPath
+                    )
+                    .async(
+                        "blob"
+                    );
+
+            img.src =
+                URL.createObjectURL(
+                    proteinBlob
+                );
+        }
+    }
+);
+
+
+// Protein search
+proteinSearch.addEventListener(
+    "input",
+    () => {
+
+        const query =
+            proteinSearch.value
+            .toLowerCase();
+
+        proteinSelect.innerHTML = "";
+
+        allProteins
+            .filter(
+                protein =>
+                    protein
+                    .toLowerCase()
+                    .includes(
+                        query
+                    )
+            )
+            .forEach(
+                protein => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        protein;
+
+                    option.textContent =
+                        protein;
+
+                    if (
+                        proteinLayers[
+                            protein
+                        ]
+                    ) {
+
+                        option.selected =
+                            true;
+                    }
+
+                    proteinSelect.appendChild(
+                        option
+                    );
+                }
+            );
+    }
+);

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        UnumLocalia Viewer
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="./styles.css"
+    >
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/5.0.1/openseadragon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+    <!-- Zipped file (.ulviewer) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+</head>
+
+<body>
+
+    <div id="sidebar">
+
+        <h1>UnumLocalia Viewer</h1>
+        
+        <h3>Open Dataset</h3>
+        <input
+            type="file"
+            id="ulviewerFile"
+            accept=".ulviewer,.zip"
+        />
+
+        <div id="dropZone">Drag .ulviewer file here</div>
+
+        <input
+            id="urlInput"
+            type="text"
+            placeholder="Paste URL..."
+        />
+        <button id="loadUrlBtn">Load URL</button>
+
+        <div id="info">No dataset loaded</div>
+
+        <hr>
+
+        <h3>Export</h3>
+        <button id="saveScreenshotBtn">Save Screenshot</button>
+
+        <h4>Include</h4>
+        <label>
+            <input
+                type="checkbox"
+                id="exportHE"
+                checked
+            >
+            H&E
+        </label>
+
+        <br>
+
+        <label>
+            <input
+                type="checkbox"
+                id="exportGenes"
+                checked
+            >
+            Genes
+        </label>
+
+        <br>
+
+        <label>
+            <input
+                type="checkbox"
+                id="exportProteins"
+                checked
+            >
+            Proteins
+        </label>
+
+        <br>
+
+        <label>
+            <input
+                type="checkbox"
+                id="exportSegs"
+                checked
+            >
+            Segmentations
+        </label>
+
+        <br>
+
+        <label>
+            <input
+                type="checkbox"
+                id="exportScaleBar"
+                checked
+            >
+            Scale Bar
+        </label>
+
+        <hr>
+
+        <!-- H&E -->
+        <label>H&E Opacity</label>
+
+        <input
+            id="heOpacity"
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value="1"
+        >
+
+        <hr>
+
+        <!-- Segmentations -->
+        <h3>Segmentations</h3>
+        <button id="loadSegBtn">Load Segmentations</button>
+
+        <input
+            type="checkbox"
+            id="showSegmentations"
+            checked
+        >
+        Show Segmentations
+
+        <br><br>
+
+        <label>Colour</label><br>
+
+        <input
+            type="color"
+            id="segmentationColor"
+            value="#00ffff"
+        >
+
+        <br><br>
+
+        <label>Thickness</label><br>
+
+        <input
+            type="range"
+            id="segmentationThickness"
+            min="0.5"
+            max="10"
+            step="0.5"
+            value="0.5"
+        >
+
+        <br><br>
+
+        <label>Opacity</label><br>
+
+        <input
+            type="range"
+            id="segmentationOpacity"
+            min="0"
+            max="1"
+            step="0.05"
+            value="0.5"
+        >
+
+        <hr>
+
+        <h3>Genes</h3>
+        <input
+            id="geneSearch"
+            type="text"
+            placeholder="Search genes..."
+        >
+        <br><br>
+
+        <select
+            id="geneSelect"
+            multiple
+            size="8"
+        ></select>
+
+        <hr>
+
+        <h4>Loaded Genes</h4>
+
+        <div id="loadedGenes">
+        </div>
+
+
+        <br><br>
+
+        <hr>
+
+        <h3>Proteins</h3>
+        <input
+            id="proteinSearch"
+            type="text"
+            placeholder="Search proteins..."
+        >
+        <br><br>
+
+        <select
+            id="proteinSelect"
+            multiple
+            size="8"
+        ></select>
+
+        <hr>
+
+        <!-- Loaded proteins -->
+        <h4>Loaded Proteins</h4>
+
+        <div id="loadedProteins">
+        </div>
+
+        <hr>
+
+        <!-- Cell info -->
+        <h3>Cell Information</h3>
+
+        <div id="cellInfo">
+            No cell selected
+        </div>
+
+
+    </div>
+
+    <div id="viewer"></div>
+
+    <script src="./main.js"></script>
+
+</body>
+
+</html>
