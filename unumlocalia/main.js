@@ -164,30 +164,29 @@ let heImage = null;
 
 // Load data
 async function loadUlviewer(file) {
-    if (!file) {
-        return;
-    }
-
     loadedZip =
         await JSZip.loadAsync(
             file
         );
 
-        const metadataText =
-            await loadedZip
-                .file(
-                    "metadata.json"
-                )
-                .async(
-                    "string"
-                );
+    datasetRoot = "";
 
-        metadata =
-            JSON.parse(
-                metadataText
-            );
+    const metadataText =
+        await loadedZip
+            .file("metadata.json")
+            .async("string");
 
-        geneSelect.innerHTML = "";
+    metadata =
+        JSON.parse(
+            metadataText
+        );
+
+    await initialiseDataset();
+}
+
+
+async function initialiseDataset() {
+    geneSelect.innerHTML = "";
         proteinSelect.innerHTML = "";
 
         allGenes =
@@ -248,13 +247,9 @@ async function loadUlviewer(file) {
             Segmentations: ${Object.keys(metadata.segmentations).length}`;
 
         const heBlob =
-            await loadedZip
-                .file(
-                    metadata.image.file
-                )
-                .async(
-                    "blob"
-                );
+            await getBlob(
+                metadata.image.file
+            );
 
         const imageURL =
             URL.createObjectURL(
@@ -289,6 +284,48 @@ async function loadUlviewer(file) {
             "open",
             setupOverlay
         );
+}
+
+
+// Blob loader
+async function getBlob(path) {
+
+    if (loadedZip) {
+
+        return await loadedZip
+            .file(path)
+            .async("blob");
+    }
+
+    const response =
+        await fetch(
+            `${datasetRoot}/${path}`
+        );
+
+    return await response.blob();
+}
+
+
+// Gzip loader
+async function getCompressedFile(path) {
+
+    if (loadedZip) {
+
+        return await loadedZip
+            .file(path)
+            .async(
+                "uint8array"
+            );
+    }
+
+    const response =
+        await fetch(
+            `${datasetRoot}/${path}`
+        );
+
+    return new Uint8Array(
+        await response.arrayBuffer()
+    );
 }
 
 
@@ -2220,6 +2257,30 @@ document
     }
 );
 
+// Load demo dataset
+async function loadDemoDataset() {
+
+    loadedZip = null;
+
+    datasetRoot = "./data";
+
+    metadata =
+        await fetch(
+            `${datasetRoot}/metadata.json`
+        ).then(
+            r => r.json()
+        );
+
+    await initialiseDataset();
+}
+
+document
+    .getElementById("loadDemoBtn")
+    .addEventListener(
+        "click",
+        loadDemoDataset
+    );
+
 // Load segmentation
 document
     .getElementById(
@@ -2240,13 +2301,9 @@ document
             );
 
             const compressed =
-                await loadedZip
-                    .file(
-                        filename
-                    )
-                    .async(
-                        "uint8array"
-                    );
+                await getCompressedFile(
+                    filename
+                );
 
             const jsonText =
                 pako.inflate(
@@ -2389,13 +2446,9 @@ geneSelect.addEventListener(
 
             // Gene loading
             const compressed =
-                await loadedZip
-                    .file(
-                        `genes/${filename}`
-                    )
-                    .async(
-                        "uint8array"
-                    );
+                await getCompressedFile(
+                    `genes/${filename}`
+                );
 
             const jsonText =
                 pako.inflate(
@@ -2610,13 +2663,9 @@ proteinSelect.addEventListener(
 
             // Protein loading
             const proteinBlob =
-                await loadedZip
-                    .file(
-                        proteinPath
-                    )
-                    .async(
-                        "blob"
-                    );
+                await getBlob(
+                    proteinPath
+                );
 
             img.src =
                 URL.createObjectURL(
