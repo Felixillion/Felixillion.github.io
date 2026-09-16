@@ -2890,3 +2890,59 @@ enableCellSelection.addEventListener(
         }
     }
 );
+
+
+// Side tabs (for phones)
+document
+    .getElementById("proteinTab")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById("genePanel")
+                .classList.remove("open");
+
+            document
+                .getElementById("proteinPanel")
+                .classList.toggle("open");
+        }
+    );
+
+document
+    .getElementById("geneTab")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById("proteinPanel")
+                .classList.remove("open");
+
+            document
+                .getElementById("genePanel")
+                .classList.toggle("open");
+        }
+    );
+
+// Close tabs
+document
+    .querySelectorAll(".closePanelBtn")
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .getElementById("proteinPanel")
+                        .classList.remove("open");
+
+                    document
+                        .getElementById("genePanel")
+                        .classList.remove("open");
+                }
+            );
+        }
+    );
