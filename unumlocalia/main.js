@@ -87,6 +87,12 @@ const heOpacitySlider =
         "heOpacity"
     );
 
+// H&E show
+const showHE =
+    document.getElementById(
+        "showHE"
+    );
+
 // Default protein colours
 const DEFAULT_PROTEIN_COLORS = [
     "#00ff00", // green
@@ -152,7 +158,7 @@ const loadedGenesDiv =
 // Cell info
 const cellInfo =
     document.getElementById(
-        "cellInfo"
+        "cellInfoPanel"
     );
 
 let allGenes = [];
@@ -1318,6 +1324,86 @@ function drawProteins(ctx) {
 }
 
 
+// Active layers
+function refreshActiveLayers() {
+
+    const activeProteins =
+        document.getElementById(
+            "activeProteins"
+        );
+
+    const activeGenes =
+        document.getElementById(
+            "activeGenes"
+        );
+
+    activeProteins.innerHTML = "";
+    activeGenes.innerHTML = "";
+
+    // Genes
+    for (
+        const gene
+        in geneLayers
+    ) {
+
+        const chip =
+            document.createElement(
+                "div"
+            );
+
+        chip.className =
+            "layer-chip gene-chip";
+
+        chip.innerHTML = `
+            <span
+                class="chip-colour"
+                style="
+                    background:
+                    ${geneLayers[gene].color}
+                "
+            ></span>
+
+            ${gene}
+        `;
+
+        activeGenes.appendChild(
+            chip
+        );
+    }
+
+    // Proteins
+    for (
+        const protein
+        in proteinLayers
+    ) {
+
+        const chip =
+            document.createElement(
+                "div"
+            );
+
+        chip.className =
+            "layer-chip protein-chip";
+
+        chip.innerHTML = `
+            <span
+                class="chip-colour"
+                style="
+                    background:
+                    ${proteinLayers[protein].color}
+                "
+            ></span>
+
+            ${protein}
+        `;
+
+        activeProteins.appendChild(
+            chip
+        );
+    }
+}
+
+
 // Protein UI
 function refreshProteinUI() {
 
@@ -1533,6 +1619,7 @@ function attachProteinCheckboxEvents() {
                                     img.height;
 
                                 refreshProteinUI();
+                                refreshActiveLayers();
                                 updateOverlay();
                             };
 
@@ -1553,6 +1640,7 @@ function attachProteinCheckboxEvents() {
                             ];
 
                             refreshProteinUI();
+                            refreshActiveLayers();
                             updateOverlay();
                         }
                     }
@@ -1584,6 +1672,7 @@ function attachProteinControlEvents() {
                         ].color =
                             picker.value;
 
+                        refreshActiveLayers();
                         updateOverlay();
                     }
                 );
@@ -1662,6 +1751,7 @@ function attachProteinControlEvents() {
                         delete proteinLayers[marker];
 
                         refreshProteinUI();
+                        refreshActiveLayers();
                         renderProteinList(proteinSearch.value);
                         updateOverlay();
                     }
@@ -1838,6 +1928,9 @@ function selectCellAtPoint(x, y) {
 
                 `;
 
+            cellInfo.style.display =
+                "block";
+
             updateOverlay();
 
             return;
@@ -1848,6 +1941,9 @@ function selectCellAtPoint(x, y) {
 
     cellInfo.textContent =
         "No cell selected";
+
+    cellInfo.style.display =
+        "none";
 
     updateOverlay();
 }
@@ -2205,6 +2301,7 @@ function attachGeneCheckboxEvents() {
                         }
 
                         refreshGeneUI();
+                        refreshActiveLayers();
                         updateOverlay();
                     }
                 );
@@ -2259,6 +2356,7 @@ function attachGeneControlEvents() {
                         ].color =
                             picker.value;
 
+                        refreshActiveLayers();
                         updateOverlay();
                     }
                 );
@@ -2316,6 +2414,7 @@ function attachGeneControlEvents() {
                         delete geneLayers[gene];
 
                         refreshGeneUI();
+                        refreshActiveLayers();
                         renderGeneList(geneSearch.value);
                         updateOverlay();
                     }
@@ -2364,6 +2463,30 @@ dropZone.addEventListener(
         await loadUlviewer(
             file
         );
+    }
+);
+
+// Show H&E
+showHE.addEventListener(
+    "change",
+    () => {
+
+        if (
+            !viewer ||
+            !viewer.world ||
+            viewer.world.getItemCount() === 0
+        ) {
+            return;
+        }
+
+        viewer
+            .world
+            .getItemAt(0)
+            .setOpacity(
+                showHE.checked
+                    ? heOpacity
+                    : 0
+            );
     }
 );
 
@@ -2450,34 +2573,38 @@ document.addEventListener(
 );
 
 // Load data from web link
-document
-.getElementById(
-    "loadUrlBtn"
-)
-.addEventListener(
-    "click",
-    async () => {
+const loadUrlBtn =
+    document.getElementById(
+        "loadUrlBtn"
+    );
 
-        const url =
-            document
-            .getElementById(
-                "urlInput"
-            )
-            .value;
+if (loadUrlBtn) {
 
-        const response =
-            await fetch(
-                url
+    loadUrlBtn.addEventListener(
+        "click",
+        async () => {
+
+            const url =
+                document
+                .getElementById(
+                    "urlInput"
+                )
+                .value;
+
+            const response =
+                await fetch(
+                    url
+                );
+
+            const fileBlob =
+                await response.blob();
+
+            await loadUlviewer(
+                fileBlob
             );
-
-        const fileBlob =
-            await response.blob();
-
-        await loadUlviewer(
-            fileBlob
-        );
-    }
-);
+        }
+    );
+}
 
 // Load demo dataset
 async function loadDemoDataset() {
@@ -2639,6 +2766,7 @@ document
             geneLayers = {};
 
             refreshGeneUI();
+            refreshActiveLayers();
 
             renderGeneList(
                 geneSearch.value
@@ -2673,6 +2801,7 @@ document
             proteinLayers = {};
 
             refreshProteinUI();
+            refreshActiveLayers();
 
             renderProteinList(
                 proteinSearch.value

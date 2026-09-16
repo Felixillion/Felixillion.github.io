@@ -28,231 +28,265 @@
 
 <body>
 
-    <div id="sidebar">
+<div id="app">
 
-        <h1>UnumLocalia Viewer</h1>
+    <!-- Active toolbar (top) -->
+    <div id="topbar">
 
-        <h3>Demo Dataset</h3>
+        <div class="toolbar-group">
+            <button id="loadDemoBtn">
+                Demo
+            </button>
 
-        <button id="loadDemoBtn">
-            Load Demo Dataset
-        </button>
-
-        <hr>
-        
-        <h3>Open Dataset</h3>
-        <input
-            type="file"
-            id="ulviewerFile"
-            accept=".ulviewer,.zip"
-        />
-
-        <div id="dropZone">Drag .ulviewer file here</div>
-
-        <input
-            id="urlInput"
-            type="text"
-            placeholder="Paste URL..."
-        />
-        <button id="loadUrlBtn">Load URL</button>
-
-        <div id="info">No dataset loaded</div>
-
-        <hr>
-
-        <h3>Export</h3>
-        <button id="saveScreenshotBtn">Save Screenshot</button>
-
-        <h4>Include</h4>
-        <label>
             <input
-                type="checkbox"
-                id="exportHE"
-                checked
+                type="file"
+                id="ulviewerFile"
+                accept=".ulviewer,.zip"
             >
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- H&E options -->
+        <div class="toolbar-group">
             H&E
-        </label>
-
-        <br>
-
-        <label>
             <input
-                type="checkbox"
-                id="exportGenes"
-                checked
+                id="heOpacity"
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value="1"
             >
-            Genes
-        </label>
 
-        <br>
+            <label>
 
-        <label>
-            <input
-                type="checkbox"
-                id="exportProteins"
-                checked
-            >
-            Proteins
-        </label>
+                <input
+                    type="checkbox"
+                    id="showHE"
+                    checked
+                >
+                Show
+            </label>
 
-        <br>
+        </div>
 
-        <label>
-            <input
-                type="checkbox"
-                id="exportSegs"
-                checked
-            >
-            Segmentations
-        </label>
+        <div class="toolbar-divider"></div>
 
-        <br>
+        <!-- Export panel -->
+        <div id="exportPanel">
 
-        <label>
-            <input
-                type="checkbox"
-                id="exportScaleBar"
-                checked
-            >
-            Scale Bar
-        </label>
+            <label>
+                <input
+                    type="checkbox"
+                    id="exportHE"
+                    checked
+                >
+                H&E
+            </label>
 
-        <hr>
+            <label>
+                <input
+                    type="checkbox"
+                    id="exportGenes"
+                    checked
+                >
+                Genes
+            </label>
 
-        <!-- H&E -->
-        <label>H&E Opacity</label>
+            <label>
+                <input
+                    type="checkbox"
+                    id="exportProteins"
+                    checked
+                >
+                Proteins
+            </label>
 
-        <input
-            id="heOpacity"
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value="1"
-        >
+            <label>
+                <input
+                    type="checkbox"
+                    id="exportSegs"
+                    checked
+                >
+                Segmentations
+            </label>
 
-        <hr>
+            <label>
+                <input
+                    type="checkbox"
+                    id="exportScaleBar"
+                    checked
+                >
+                Scale Bar
+            </label>
+
+        </div>
+
+        <div class="toolbar-group">
+            <button id="saveScreenshotBtn">
+                Export
+            </button>
+        </div>
+
+        <div class="toolbar-divider"></div>
 
         <!-- Segmentations -->
-        <h3>Segmentations</h3>
-        <button id="loadSegBtn">Load Segmentations</button>
-
-        <input
-            type="checkbox"
-            id="showSegmentations"
-            checked
-        >
-        Show Segmentations
-
-        <br><br>
-
-        <label>Colour</label><br>
-
-        <input
-            type="color"
-            id="segmentationColor"
-            value="#00ffff"
-        >
-
-        <br><br>
-
-        <label>Thickness</label><br>
-
-        <input
-            type="range"
-            id="segmentationThickness"
-            min="0.5"
-            max="10"
-            step="0.5"
-            value="0.5"
-        >
-
-        <br><br>
-
-        <label>Opacity</label><br>
-
-        <input
-            type="range"
-            id="segmentationOpacity"
-            min="0"
-            max="1"
-            step="0.05"
-            value="0.5"
-        >
-
-        <hr>
-
-        <!-- GENES -->
-        <h3>Genes</h3>
-        <button id="clearGenesBtn">
-            Clear All Genes
-        </button>
-
-        <input
-            id="geneSearch"
-            type="text"
-            placeholder="Search genes..."
-        >
-        <br><br>
-
-        <div
-            id="geneList"
-            class="search-list"
-        ></div>
-
-        <hr>
-
-        <h4>Loaded Genes</h4>
-
-        <div id="loadedGenes">
+        <div class="toolbar-group">
+            <button id="loadSegBtn">
+                Segmentations
+            </button>
         </div>
 
+        <div class="toolbar-group">
+            Seg
+            <input
+                type="checkbox"
+                id="showSegmentations"
+                checked
+            >
 
-        <br><br>
+            <input
+                type="color"
+                id="segmentationColor"
+                value="#00ffff"
+            >
 
-        <hr>
+            <input
+                type="range"
+                id="segmentationThickness"
+                min="0.5"
+                max="10"
+                step="0.5"
+                value="0.5"
+            >
 
-        <!-- PROTEINS -->
-        <h3>Proteins</h3>
-        <button id="clearProteinsBtn">
-            Clear All Proteins
-        </button>
+            <input
+                type="range"
+                id="segmentationOpacity"
+                min="0"
+                max="1"
+                step="0.05"
+                value="0.5"
+            >
 
-        <input
-            id="proteinSearch"
-            type="text"
-            placeholder="Search proteins..."
-        >
-        <br><br>
-
-        <div
-            id="proteinList"
-            class="search-list"
-        ></div>
-
-        <hr>
-
-        <!-- Loaded proteins -->
-        <h4>Loaded Proteins</h4>
-
-        <div id="loadedProteins">
         </div>
+    
+    </div>
 
-        <hr>
+    <!-- Active proteins/genes -->
+    <div id="layerBar">
 
-        <!-- Cell info -->
-        <h3>Cell Information</h3>
+        <div id="activeProteins"></div>
 
-        <div id="cellInfo">
-            No cell selected
-        </div>
+        <div class="toolbar-divider"></div>
 
+        <div id="activeGenes"></div>
 
     </div>
 
-    <div id="viewer"></div>
+    <!-- Main area -->
+    <div id="mainLayout">
 
-    <script src="./main.js"></script>
+        <!-- Protein panel (left) -->
+        <div id="proteinPanel">
+
+            <h3>Proteins</h3>
+
+            <input
+                id="proteinSearch"
+                type="text"
+                placeholder="Search proteins..."
+            >
+
+            <div
+                id="proteinList"
+                class="search-list"
+            ></div>
+
+            <h4>
+                Loaded Proteins
+                <button id="clearProteinsBtn">
+                    Clear
+                </button>
+            </h4>
+
+            <div id="loadedProteins"></div>
+
+        </div>
+
+        <!-- Central viewer -->
+        <div id="viewerWrapper">
+
+            <div id="viewer"></div>
+
+            <!-- Cell information -->
+            <div id="cellInfoPanel">
+                No cell selected
+            </div>
+
+        </div>
+
+        <!-- Gene panel (right) -->
+        <div id="genePanel">
+
+            <h3>Genes</h3>
+
+            <input
+                id="geneSearch"
+                type="text"
+                placeholder="Search genes..."
+            >
+
+            <div
+                id="geneList"
+                class="search-list"
+            ></div>
+
+            <h4>
+                Loaded Genes
+                <button id="clearGenesBtn">
+                    Clear
+                </button>
+            </h4>
+
+            <div id="loadedGenes"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- TEMPORARY -->
+
+<div id="hiddenControls">
+
+    <div id="dropZone"></div>
+
+    <div id="info"></div>
+
+
+</div>
+
+
+<div id="legacyControls" style="display:none;">
+
+    <input
+        id="urlInput"
+        type="text"
+    >
+
+    <button id="loadUrlBtn">
+        Load URL
+    </button>
+
+</div>
+
+<!-- END TEMPORARY -->
+
+<script src="./main.js"></script>
 
 </body>
 
