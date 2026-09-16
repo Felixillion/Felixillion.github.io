@@ -14,6 +14,7 @@ let segmentationVisible = true;
 let segmentationColor = "#00ffff";
 let segmentationThickness = 0.5;
 let segmentationOpacity = 0.5;
+let cellSelectionEnabled = false;
 
 // Genes
 let geneLayers = {};
@@ -33,16 +34,19 @@ let selectedCell = null;
 let hoveredCell = null;
 let activeGene = null;
 
+// Visibility states (to do with screenshot)
+let showGenes = true;
+let showProteins = true;
+let showSegs = true;
+let showHELayer = true;
+let showScaleBar = true;
+
 
 // Dropzone for dragging file
 const dropZone =
     document.getElementById(
         "dropZone"
     );
-
-// Scale bar
-const SHOW_VIEWER_SCALEBAR =
-    true;
 
 // Screenshot
 const saveScreenshotBtn =
@@ -85,12 +89,6 @@ const exportCellInfo =
 const heOpacitySlider =
     document.getElementById(
         "heOpacity"
-    );
-
-// H&E show
-const showHE =
-    document.getElementById(
-        "showHE"
     );
 
 // Default protein colours
@@ -160,6 +158,13 @@ const cellInfo =
     document.getElementById(
         "cellInfoPanel"
     );
+
+// Cell info selection
+const enableCellSelection =
+    document.getElementById(
+        "enableCellSelection"
+    );
+
 
 let allGenes = [];
 let allProteins = [];
@@ -1136,21 +1141,26 @@ function updateOverlay() {
     clearCanvas();
 
     // Proteins
-    drawProteins();
+    if (showProteins) {
+        drawProteins();
+    }
 
     // Segmentations
     if (
-        segmentationVisible
+        segmentationVisible &&
+        showSegs
     ) {
         drawSegmentations();
     }
 
     // Genes
-    drawGenes();
+    if (showGenes) {
+        drawGenes();
+    }
 
     // Scale bar
     if (
-        SHOW_VIEWER_SCALEBAR
+        showScaleBar
     ) {
 
         drawScaleBar(
@@ -1484,9 +1494,7 @@ function refreshProteinUI() {
 
 
 // Protein list renderer
-function renderProteinList(
-    filter = ""
-) {
+function renderProteinList(filter = "") {
 
     proteinList.innerHTML = "";
 
@@ -1764,6 +1772,10 @@ function attachProteinControlEvents() {
 // Convert click to image coordinates
 function onViewerClick(event) {
 
+    if (!cellSelectionEnabled) {
+        return;
+    }
+
     const viewportPoint =
         viewer.viewport.pointFromPixel(
             event.position
@@ -1951,6 +1963,10 @@ function selectCellAtPoint(x, y) {
 
 // Mouse position
 function onViewerMove(event) {
+
+    if (!cellSelectionEnabled) {
+        return;
+    }
 
     const rect =
         viewer.container.getBoundingClientRect();
@@ -2466,27 +2482,82 @@ dropZone.addEventListener(
     }
 );
 
-// Show H&E
-showHE.addEventListener(
+
+// Checkbox H&E
+exportHE.addEventListener(
     "change",
     () => {
 
-        if (
-            !viewer ||
-            !viewer.world ||
-            viewer.world.getItemCount() === 0
-        ) {
-            return;
-        }
+        showHELayer =
+            exportHE.checked;
 
-        viewer
-            .world
-            .getItemAt(0)
-            .setOpacity(
-                showHE.checked
-                    ? heOpacity
-                    : 0
-            );
+        if (
+            viewer &&
+            viewer.world &&
+            viewer.world.getItemCount() > 0
+        ) {
+
+            viewer
+                .world
+                .getItemAt(0)
+                .setOpacity(
+                    showHELayer
+                        ? heOpacity
+                        : 0
+                );
+        }
+    }
+);
+
+
+// Checkbox genes
+exportGenes.addEventListener(
+    "change",
+    () => {
+
+        showGenes =
+            exportGenes.checked;
+
+        updateOverlay();
+    }
+);
+
+
+// Checkbox proteins
+exportProteins.addEventListener(
+    "change",
+    () => {
+
+        showProteins =
+            exportProteins.checked;
+
+        updateOverlay();
+    }
+);
+
+
+// Checkbox segmentation
+exportSegs.addEventListener(
+    "change",
+    () => {
+
+        showSegs =
+            exportSegs.checked;
+
+        updateOverlay();
+    }
+);
+
+
+// Checkbox scale bar
+exportScaleBar.addEventListener(
+    "change",
+    () => {
+
+        showScaleBar =
+            exportScaleBar.checked;
+
+        updateOverlay();
     }
 );
 
@@ -2667,25 +2738,11 @@ document
                     jsonText
                 );
 
-            console.log(
-                "Loaded cells:",
-                segmentationData.length
-            );
-
-            updateOverlay();
-        }
-    );
-
-document
-    .getElementById(
-        "showSegmentations"
-    )
-    .addEventListener(
-        "change",
-        event => {
-
-            segmentationVisible =
-                event.target.checked;
+            document
+                .getElementById(
+                    "enableCellSelection"
+                )
+                .disabled = false;
 
             updateOverlay();
         }
@@ -2810,3 +2867,26 @@ document
             updateOverlay();
         }
     );
+
+// Cell info selection
+enableCellSelection.addEventListener(
+    "change",
+    () => {
+
+        cellSelectionEnabled =
+            enableCellSelection.checked;
+
+        if (
+            !cellSelectionEnabled
+        ) {
+
+            selectedCell = null;
+            hoveredCell = null;
+
+            cellInfo.style.display =
+                "none";
+
+            updateOverlay();
+        }
+    }
+);
