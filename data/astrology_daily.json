@@ -8,23 +8,23 @@
     },
     "moon": {
       "sign": "Sagittarius",
-      "degree": 2.9,
+      "degree": 3.2,
       "retrograde": false,
       "phase": "First Quarter"
     },
     "mercury": {
       "sign": "Scorpio",
-      "degree": 4.8,
+      "degree": 4.9,
       "retrograde": false
     },
     "venus": {
       "sign": "Pisces",
-      "degree": 2,
+      "degree": 2.1,
       "retrograde": false
     },
     "mars": {
       "sign": "Gemini",
-      "degree": 7.2,
+      "degree": 7.3,
       "retrograde": false
     },
     "jupiter": {
@@ -51,19 +51,19 @@
   "major_aspects": [
     {
       "planets": [
-        "Moon",
-        "Neptune"
-      ],
-      "type": "trine",
-      "orb": 0.2
-    },
-    {
-      "planets": [
         "Mercury",
         "Jupiter"
       ],
       "type": "square",
-      "orb": 0.3
+      "orb": 0.2
+    },
+    {
+      "planets": [
+        "Moon",
+        "Neptune"
+      ],
+      "type": "trine",
+      "orb": 0.4
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Venus"
       ],
       "type": "square",
-      "orb": 0.8
+      "orb": 1.1
     },
     {
       "planets": [
@@ -79,15 +79,15 @@
         "Uranus"
       ],
       "type": "conjunction",
-      "orb": 1.2
+      "orb": 1.1
     },
     {
       "planets": [
-        "Mercury",
-        "Neptune"
+        "Moon",
+        "Jupiter"
       ],
-      "type": "quincunx",
-      "orb": 2.1
+      "type": "trine",
+      "orb": 2
     },
     {
       "planets": [
@@ -99,11 +99,11 @@
     },
     {
       "planets": [
-        "Moon",
-        "Jupiter"
+        "Mercury",
+        "Neptune"
       ],
-      "type": "trine",
-      "orb": 2.3
+      "type": "quincunx",
+      "orb": 2.2
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Mars"
       ],
       "type": "quincunx",
-      "orb": 2.4
+      "orb": 2.3
     }
   ],
   "readings": {
