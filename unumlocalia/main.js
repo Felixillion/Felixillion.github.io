@@ -2878,24 +2878,17 @@ document
         }
     );
 
-// Close tabs
-document
-    .querySelectorAll(".closePanelBtn")
-    .forEach(
-        button => {
+// Close tabs when clicking viewer
+viewerWrapper.addEventListener(
+    "click",
+    () => {
 
-            button.addEventListener(
-                "click",
-                () => {
+        document
+            .getElementById("proteinPanel")
+            .classList.remove("open");
 
-                    document
-                        .getElementById("proteinPanel")
-                        .classList.remove("open");
-
-                    document
-                        .getElementById("genePanel")
-                        .classList.remove("open");
-                }
-            );
-        }
-    );
+        document
+            .getElementById("genePanel")
+            .classList.remove("open");
+    }
+);

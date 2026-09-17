@@ -252,10 +252,6 @@ h1 {
     width: 100%;
 }
 
-.closePanelBtn {
-    display: none;
-}
-
 /* Active gene/protein appearance */
 .gene-chip .chip-colour {
     border-radius: 50%;
@@ -337,18 +333,6 @@ h1 {
         -webkit-overflow-scrolling: touch;
         touch-action: pan-y;
         overscroll-behavior: contain;
-    }
-
-    .closePanelBtn {
-        display: block;
-        width: 100%;
-        text-align: left;
-        padding: 12px;
-        background: #f5f5f5;
-        border: none;
-        border-bottom: 1px solid #ddd;
-        font-size: 14px;
-        font-weight: 600;
     }
 
     /* Tabs */
