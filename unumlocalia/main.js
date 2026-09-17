@@ -2330,7 +2330,7 @@ function showProteinBrowse() {
 
     document
         .getElementById("proteinBrowseView")
-        .style.display = "block";
+        .style.display = "flex";
 
     document
         .getElementById("proteinLoadedView")
@@ -2345,14 +2345,14 @@ function showProteinLoaded() {
 
     document
         .getElementById("proteinLoadedView")
-        .style.display = "block";
+        .style.display = "flex";
 }
 
 function showGeneBrowse() {
 
     document
         .getElementById("geneBrowseView")
-        .style.display = "block";
+        .style.display = "flex";
 
     document
         .getElementById("geneLoadedView")
@@ -2367,7 +2367,7 @@ function showGeneLoaded() {
 
     document
         .getElementById("geneLoadedView")
-        .style.display = "block";
+        .style.display = "flex";
 }
 
 document
