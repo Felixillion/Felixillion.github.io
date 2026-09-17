@@ -30,179 +30,212 @@
 
 <div id="app">
 
+    <!-- MOBILE VERSION (top tabs) -->
+    <div id="mobileTopTabs">
+
+        <button id="mobileDataTab">
+            Data
+        </button>
+
+        <button id="mobileDisplayTab"
+            style="display:none;">
+            Display
+        </button>
+
+        <button id="mobileScreenshotTab"
+            style="display:none;">
+            Screenshot
+        </button>
+
+    </div>
+
+
     <!-- Active toolbar (top) -->
     <div id="topbar">
 
-        <div class="toolbar-group">
-            <button id="loadDemoBtn">
-                Demo
-            </button>
+        <div id="dataSection"
+            class="mobileTopSection">
 
-            <input
-                type="file"
-                id="ulviewerFile"
-                accept=".ulviewer,.zip"
-            >
-        </div>
-
-        <div class="toolbar-divider"></div>
-
-        <!-- H&E options -->
-        <div class="toolbar-section">
-            <div class="section-title">
-                H&E
-            </div>
             <div class="toolbar-group">
-                <label>Opacity</label>
+                <button id="loadDemoBtn">
+                    Demo
+                </button>
+
                 <input
-                    id="heOpacity"
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value="1"
+                    type="file"
+                    id="ulviewerFile"
+                    accept=".ulviewer,.zip"
                 >
+            </div>
+        
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <div id="displaySection"
+            class="mobileTopSection">
+            
+            <!-- H&E options -->
+            <div class="toolbar-section">
+                <div class="section-title">
+                    H&E
+                </div>
+                <div class="toolbar-group">
+                    <label>Opacity</label>
+                    <input
+                        id="heOpacity"
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.05"
+                        value="1"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="toolbar-divider"></div>
+        
+            <!-- Segmentations -->
+            <div class="toolbar-section">
+                <div class="section-title">Segmentation</div>
+
+                <div class="toolbar-group">
+                    <div class="toolbar-group">
+                        <button id="loadSegBtn">
+                            Load Cells
+                        </button>
+                    </div>
+                    
+                    <div id="segmentationControls">
+                        <label>Outline</label>
+                        <input
+                            type="color"
+                            id="segmentationColor"
+                            value="#00ffff"
+                        >
+
+                        <label>Width</label>
+                        <input
+                            type="range"
+                            id="segmentationThickness"
+                            min="0.5"
+                            max="10"
+                            step="0.5"
+                            value="0.5"
+                        >
+
+                        <label>Opacity</label>
+                        <input
+                            id="segmentationOpacity"
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.05"
+                            value="1"
+                        >
+
+                        <label>
+                            <input
+                                type="checkbox"
+                                id="enableCellSelection"
+                            >
+                            Cells
+                        </label>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
         <div class="toolbar-divider"></div>
-        
 
         <!-- Export panel -->
-        <div class="toolbar-section">
-            <div class="section-title">Screenshot</div>
+        <div
+            id="screenshotSection"
+            class="mobileTopSection">
+            
+            <div class="toolbar-section">
+                <div class="section-title">Screenshot</div>
 
-            <div id="exportPanel">
-                <label>
-                    <input
-                        type="checkbox"
-                        id="exportHE"
-                        checked
-                    >
-                    H&E
-                </label>
+                <div id="exportPanel">
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="exportHE"
+                            checked
+                        >
+                        H&E
+                    </label>
 
-                <label>
-                    <input
-                        type="checkbox"
-                        id="exportGenes"
-                        checked
-                    >
-                    Genes
-                </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="exportGenes"
+                            checked
+                        >
+                        Genes
+                    </label>
 
-                <label>
-                    <input
-                        type="checkbox"
-                        id="exportProteins"
-                        checked
-                    >
-                    Proteins
-                </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="exportProteins"
+                            checked
+                        >
+                        Proteins
+                    </label>
 
-                <label>
-                    <input
-                        type="checkbox"
-                        id="exportSegs"
-                        checked
-                    >
-                    Segmentations
-                </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="exportSegs"
+                            checked
+                        >
+                        Cells
+                    </label>
 
-                <label>
-                    <input
-                        type="checkbox"
-                        id="exportScaleBar"
-                        checked
-                    >
-                    Scale Bar
-                </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="exportScaleBar"
+                            checked
+                        >
+                        Scale Bar
+                    </label>
 
-            </div>
+                </div>
 
-            <div class="toolbar-group">
-                <button id="saveScreenshotBtn">
-                    Export
-                </button>
-            </div>
-        </div>
-
-        <div class="toolbar-divider"></div>
-
-        
-        <!-- Segmentations -->
-        <div class="toolbar-section">
-            <div class="section-title">Segmentation</div>
-
-            <div class="toolbar-group">
                 <div class="toolbar-group">
-                    <button id="loadSegBtn">
-                        Load Cells
+                    <button id="saveScreenshotBtn">
+                        Export
                     </button>
                 </div>
-                
-                <label>Outline</label>
-                <input
-                    type="color"
-                    id="segmentationColor"
-                    value="#00ffff"
-                >
-
-                <label>Width</label>
-                <input
-                    type="range"
-                    id="segmentationThickness"
-                    min="0.5"
-                    max="10"
-                    step="0.5"
-                    value="0.5"
-                >
-
-                <label>Opacity</label>
-                <input
-                    id="segmentationOpacity"
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value="1"
-                >
-
-                <label>
-                    <input
-                        type="checkbox"
-                        id="enableCellSelection"
-                    >
-                    Cell Selection
-                </label>
-
             </div>
-
         </div>
     
     </div>
 
     <!-- Active proteins/genes -->
+    <button id="toggleLayersBtn">
+        Layers ▼
+    </button>
+    
     <div id="layerBar">
-
         <div class="layer-group">
-
             <strong>Proteins:</strong>
-
             <div id="activeProteins"></div>
-
         </div>
 
         <div class="toolbar-divider"></div>
 
         <div class="layer-group">
-
             <strong>Genes:</strong>
-
             <div id="activeGenes"></div>
-
         </div>
 
     </div>

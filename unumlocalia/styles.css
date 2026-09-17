@@ -129,6 +129,10 @@ body {
     background: #fafafa;
 }
 
+#layerBar.hidden {
+    display: none;
+}
+
 .layer-group {
     display: flex;
     align-items: center;
@@ -283,10 +287,31 @@ h1 {
     margin-bottom: 2px;
 }
 
+#mobileTopTabs {
+    display: none;
+}
+
+.mobileTopSection {
+    display: contents;
+}
+
+#segmentationControls {
+    display: none;
+}
+
 
 /* LAYOUT SETTINGS */
 /* Mobile */
 @media (max-width: 768px) {
+    .section-title {
+        font-size: 11px;
+        margin-bottom: 0;
+    }
+
+    #screenshotSection .section-title {
+        display: none;
+    }
+
     /* Panels */
     #proteinPanel,
     #genePanel {
@@ -369,16 +394,76 @@ h1 {
     }
 
     #topbar {
+        display: block;
         flex-wrap: nowrap;
-        overflow-x: auto;
+        overflow-x: hidden;
         overflow-y: hidden;
         justify-content: flex-start;
-        white-space: nowrap;
+        white-space: normal;
     }
 
     .toolbar-section {
         display: flex;
         flex-shrink: 0;
+    }
+
+    /* Tabs */
+    #mobileTopTabs {
+        display: flex;
+        background: #fafafa;
+        border-bottom: 1px solid #ddd;
+        gap: 4px;
+        padding: 4px;
+    }
+
+    #mobileTopTabs button {
+        flex: 1;
+    }
+
+    #mobileTopTabs button.active {
+        background: #1976d2;
+        color: white;
+    }
+
+    .mobileTopSection {
+        display: none;
+        padding: 4px;
+    }
+
+    .mobileTopSection.active {
+        display: block;
+        max-height: 200px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .toolbar-divider {
+        display: none;
+    }
+
+    .toolbar-group {
+        flex-wrap: wrap;
+        gap: 3px;
+    }
+
+    #heOpacity,
+    #segmentationThickness,
+    #segmentationOpacity {
+        width: 70px;
+    }
+
+    #exportPanel {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+    }
+
+    #displaySection .toolbar-group {
+        flex-wrap: nowrap;
+    }
+
+    #topbar.collapsed {
+        display: none;
     }
 }
 

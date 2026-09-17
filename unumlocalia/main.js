@@ -165,6 +165,12 @@ const enableCellSelection =
         "enableCellSelection"
     );
 
+// Update button text
+const btn =
+    document.getElementById(
+        "toggleLayersBtn"
+    );
+
 
 let allGenes = [];
 let allProteins = [];
@@ -193,6 +199,16 @@ async function loadUlviewer(file) {
         );
 
     await initialiseDataset();
+
+    // Mobile-specific conditions
+    if (
+        window.innerWidth <= 768
+    ) {
+
+        showMobileTopSection(
+            "displaySection"
+        );
+    }
 }
 
 
@@ -259,6 +275,18 @@ async function initialiseDataset() {
         "open",
         setupOverlay
     );
+
+    document
+        .getElementById(
+            "mobileDisplayTab"
+        )
+        .style.display = "block";
+
+    document
+        .getElementById(
+            "mobileScreenshotTab"
+        )
+        .style.display = "block";
 }
 
 
@@ -2390,7 +2418,174 @@ document
 if (window.innerWidth <= 768) {
     showProteinBrowse();
     showGeneBrowse();
+
+    showMobileTopSection(
+        "dataSection"
+    );
 }
+
+
+// Mobile tabs
+function showMobileTopSection(id) {
+
+    document
+        .getElementById(
+            "topbar"
+        )
+        .classList.remove(
+            "collapsed"
+        );
+
+    document
+        .querySelectorAll(".mobileTopSection")
+        .forEach(section =>
+            section.classList.remove("active")
+        );
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+
+    document
+        .querySelectorAll("#mobileTopTabs button")
+        .forEach(button =>
+            button.classList.remove("active")
+        );
+
+    if (id === "dataSection") {
+        document
+            .getElementById("mobileDataTab")
+            .classList.add("active");
+    }
+
+    if (id === "displaySection") {
+        document
+            .getElementById("mobileDisplayTab")
+            .classList.add("active");
+    }
+
+    if (id === "screenshotSection") {
+        document
+            .getElementById("mobileScreenshotTab")
+            .classList.add("active");
+    }
+}
+
+
+// Hide tabs
+function hideMobileTopSections() {
+
+    document
+        .querySelectorAll(
+            ".mobileTopSection"
+        )
+        .forEach(
+            section =>
+                section.classList.remove(
+                    "active"
+                )
+        );
+
+    document
+        .querySelectorAll(
+            "#mobileTopTabs button"
+        )
+        .forEach(
+            button =>
+                button.classList.remove(
+                    "active"
+                )
+        );
+
+    document
+        .getElementById(
+            "topbar"
+        )
+        .classList.add(
+            "collapsed"
+        );
+}
+
+
+// Close tabs when clicking viewer
+viewerWrapper.addEventListener(
+    "click",
+    () => {
+
+        hideMobileTopSections();
+
+        document
+            .getElementById("proteinPanel")
+            .classList.remove("open");
+
+        document
+            .getElementById("genePanel")
+            .classList.remove("open");
+    }
+);
+
+
+document
+    .getElementById(
+        "mobileDataTab"
+    )
+    .addEventListener(
+        "click",
+        () =>
+            showMobileTopSection(
+                "dataSection"
+            )
+    );
+
+document
+    .getElementById(
+        "mobileDisplayTab"
+    )
+    .addEventListener(
+        "click",
+        () =>
+            showMobileTopSection(
+                "displaySection"
+            )
+    );
+
+document
+    .getElementById(
+        "mobileScreenshotTab"
+    )
+    .addEventListener(
+        "click",
+        () =>
+            showMobileTopSection(
+                "screenshotSection"
+            )
+    );
+
+
+document
+    .getElementById("toggleLayersBtn")
+    .addEventListener(
+        "click",
+        () => {
+
+            const layerBar =
+                document.getElementById(
+                    "layerBar"
+                );
+
+            layerBar.classList.toggle(
+                "hidden"
+            );
+
+            btn.textContent =
+                layerBar.classList.contains(
+                    "hidden"
+                )
+                    ? "Layers ▶"
+                    : "Layers ▼";
+        }
+    );
 
 
 // Load file from drag and drop
@@ -2645,6 +2840,16 @@ async function loadDemoDataset() {
         );
 
     await initialiseDataset();
+
+    // Mobile-specific conditions
+    if (
+        window.innerWidth <= 768
+    ) {
+
+        showMobileTopSection(
+            "displaySection"
+        );
+    }
 }
 
 document
@@ -2687,9 +2892,9 @@ document
                 );
 
             segmentationData =
-                JSON.parse(jsonText);
-
-            
+                JSON.parse(
+                    jsonText
+                );
 
             document
                 .getElementById(
@@ -2697,10 +2902,23 @@ document
                 )
                 .disabled = false;
 
+            document
+                .getElementById(
+                    "loadSegBtn"
+                )
+                .style.display = "none";
+
+            document
+                .getElementById(
+                    "segmentationControls"
+                )
+                .style.display = "flex";
+
             updateOverlay();
         }
     );
 
+// Segmentation line colour
 document
     .getElementById(
         "segmentationColor"
@@ -2716,6 +2934,7 @@ document
         }
     );
 
+// Segmentation line thickness
 document
     .getElementById(
         "segmentationThickness"
@@ -2878,17 +3097,3 @@ document
         }
     );
 
-// Close tabs when clicking viewer
-viewerWrapper.addEventListener(
-    "click",
-    () => {
-
-        document
-            .getElementById("proteinPanel")
-            .classList.remove("open");
-
-        document
-            .getElementById("genePanel")
-            .classList.remove("open");
-    }
-);
