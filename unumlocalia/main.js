@@ -13,7 +13,7 @@ let segmentationData = [];
 let segmentationVisible = true;
 let segmentationColor = "#00ffff";
 let segmentationThickness = 0.5;
-let segmentationOpacity = 0.5;
+let segmentationOpacity = 1.0;
 let cellSelectionEnabled = false;
 
 // Genes
@@ -329,6 +329,7 @@ function setupOverlay() {
             }
         );
 
+    resizeOverlayCanvas();
     updateOverlay();
 
     viewer.addHandler(
@@ -338,7 +339,10 @@ function setupOverlay() {
 
     viewer.addHandler(
         "resize",
-        updateOverlay
+        () => {
+            resizeOverlayCanvas();
+            updateOverlay();
+        }
     );
 
     // Cell info
@@ -361,6 +365,16 @@ function clearCanvas() {
         return;
     }
 
+    overlayCtx.clearRect(
+        0,
+        0,
+        overlayCanvas.width,
+        overlayCanvas.height
+    );
+}
+
+
+function resizeOverlayCanvas() {
     const rect =
         viewer.canvas.getBoundingClientRect();
 
@@ -369,13 +383,6 @@ function clearCanvas() {
 
     overlayCanvas.height =
         rect.height;
-
-    overlayCtx.clearRect(
-        0,
-        0,
-        rect.width,
-        rect.height
-    );
 }
 
 
@@ -605,122 +612,11 @@ function drawProteinsToContext(targetCtx) {
     ) {
 
         const layer =
-            proteinLayers[
-                marker
-            ];
+            proteinLayers[marker];
 
-        if (
-            !layer.image
-        ) {
+        if (!layer.cachedCanvas) {
             continue;
         }
-
-        // Temporary canvas for coloring
-        const tempCanvas =
-            document.createElement(
-                "canvas"
-            );
-
-        tempCanvas.width =
-            layer.image.width;
-
-        tempCanvas.height =
-            layer.image.height;
-
-        const ctx =
-            tempCanvas.getContext(
-                "2d"
-            );
-
-        // Draw original grayscale image
-        ctx.drawImage(
-            layer.image,
-            0,
-            0
-        );
-
-        const imageData =
-            ctx.getImageData(
-                0,
-                0,
-                tempCanvas.width,
-                tempCanvas.height
-            );
-
-        const data =
-            imageData.data;
-
-        const hex =
-            layer.color.replace(
-                "#",
-                ""
-            );
-
-        const r =
-            parseInt(
-                hex.substring(
-                    0,
-                    2
-                ),
-                16
-            );
-
-        const g =
-            parseInt(
-                hex.substring(
-                    2,
-                    4
-                ),
-                16
-            );
-
-        const b =
-            parseInt(
-                hex.substring(
-                    4,
-                    6
-                ),
-                16
-            );
-
-        // Apply threshold + colouring
-        for (
-            let i = 0;
-            i < data.length;
-            i += 4
-        ) {
-
-            const intensity =
-                data[i];
-
-            if (
-                intensity <
-                layer.threshold
-            ) {
-
-                data[i + 3] = 0;
-
-            } else {
-
-                data[i] =
-                    r;
-
-                data[i + 1] =
-                    g;
-
-                data[i + 2] =
-                    b;
-
-                data[i + 3] =
-                    intensity;
-            }
-        }
-
-        ctx.putImageData(
-            imageData,
-            0,
-            0
-        );
 
         const topLeft =
             viewer.viewport.imageToViewerElementCoordinates(
@@ -753,7 +649,7 @@ function drawProteinsToContext(targetCtx) {
             layer.opacity;
 
         targetCtx.drawImage(
-            tempCanvas,
+            layer.cachedCanvas,
             topLeft.x,
             topLeft.y,
             width,
@@ -1174,102 +1070,10 @@ function updateOverlay() {
 function drawProteinLayer(layer) {
 
     if (
-        !layer.image ||
-        !proteinCanvas
+        !layer.cachedCanvas
     ) {
         return;
     }
-
-    const ctx =
-        proteinCanvas.getContext(
-            "2d"
-        );
-
-    ctx.clearRect(
-        0,
-        0,
-        proteinCanvas.width,
-        proteinCanvas.height
-    );
-
-    ctx.drawImage(
-        layer.image,
-        0,
-        0
-    );
-
-    const imageData =
-        ctx.getImageData(
-            0,
-            0,
-            proteinCanvas.width,
-            proteinCanvas.height
-        );
-
-    const data =
-        imageData.data;
-
-    const hex =
-        layer.color.replace(
-            "#",
-            ""
-        );
-
-    const r =
-        parseInt(
-            hex.substring(0, 2),
-            16
-        );
-
-    const g =
-        parseInt(
-            hex.substring(2, 4),
-            16
-        );
-
-    const b =
-        parseInt(
-            hex.substring(4, 6),
-            16
-        );
-
-    for (
-        let i = 0;
-        i < data.length;
-        i += 4
-    ) {
-
-        const intensity =
-            data[i];
-
-        if (
-            intensity <
-            layer.threshold
-        ) {
-
-            data[i + 3] = 0;
-
-        } else {
-
-            data[i] =
-                r;
-
-            data[i + 1] =
-                g;
-
-            data[i + 2] =
-                b;
-
-            data[i + 3] =
-                intensity;
-        }
-    }
-
-    ctx.putImageData(
-        imageData,
-        0,
-        0
-    );
 
     const topLeft =
         viewer.viewport.imageToViewerElementCoordinates(
@@ -1300,7 +1104,7 @@ function drawProteinLayer(layer) {
         layer.opacity;
 
     overlayCtx.drawImage(
-        proteinCanvas,
+        layer.cachedCanvas,
         topLeft.x,
         topLeft.y,
         width,
@@ -1310,7 +1114,8 @@ function drawProteinLayer(layer) {
     overlayCtx.globalCompositeOperation =
         "source-over";
 
-    overlayCtx.globalAlpha = 1;
+    overlayCtx.globalAlpha =
+        1;
 }
 
 
@@ -1323,14 +1128,100 @@ function drawProteins(ctx) {
     ) {
 
         const layer =
-            proteinLayers[
-                marker
-            ];
+            proteinLayers[marker];
 
         drawProteinLayer(
             layer
         );
     }
+}
+
+
+// Rebuild proteins
+function rebuildProteinCache(layer) {
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width =
+        layer.image.width;
+
+    canvas.height =
+        layer.image.height;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.drawImage(
+        layer.image,
+        0,
+        0
+    );
+
+    const imageData =
+        ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+    const data =
+        imageData.data;
+
+    const hex =
+        layer.color.replace("#", "");
+
+    const r =
+        parseInt(
+            hex.substring(0, 2),
+            16
+        );
+
+    const g =
+        parseInt(
+            hex.substring(2, 4),
+            16
+        );
+
+    const b =
+        parseInt(
+            hex.substring(4, 6),
+            16
+        );
+
+    for (
+        let i = 0;
+        i < data.length;
+        i += 4
+    ) {
+
+        const intensity =
+            data[i];
+
+        if (
+            intensity < layer.threshold
+        ) {
+
+            data[i + 3] = 0;
+
+        } else {
+
+            data[i] = r;
+            data[i + 1] = g;
+            data[i + 2] = b;
+            data[i + 3] = intensity;
+        }
+    }
+
+    ctx.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+    layer.cachedCanvas =
+        canvas;
 }
 
 
@@ -1425,9 +1316,7 @@ function refreshProteinUI() {
     ) {
 
         const layer =
-            proteinLayers[
-                marker
-            ];
+            proteinLayers[marker];
 
         const row =
             document.createElement(
@@ -1600,20 +1489,17 @@ function attachProteinCheckboxEvents() {
 
                             img.onload = () => {
 
-                                proteinLayers[
-                                    marker
-                                ] = {
-
+                                proteinLayers[marker] = {
                                     image: img,
-
-                                    color:
-                                        getUnusedProteinColor(),
-
-                                    opacity:
-                                        proteinOpacity,
-
-                                    threshold: 0
+                                    color: getUnusedProteinColor(),
+                                    opacity: proteinOpacity,
+                                    threshold: 0,
+                                    cachedCanvas: null
                                 };
+
+                                rebuildProteinCache(
+                                    proteinLayers[marker]
+                                );
 
                                 proteinCanvas =
                                     document.createElement(
@@ -1675,12 +1561,15 @@ function attachProteinControlEvents() {
                         const marker =
                             picker.dataset.marker;
 
-                        proteinLayers[
-                            marker
-                        ].color =
+                        proteinLayers[marker].color =
                             picker.value;
 
+                        rebuildProteinCache(
+                            proteinLayers[marker]
+                        );
+
                         refreshActiveLayers();
+
                         updateOverlay();
                     }
                 );
@@ -1701,9 +1590,7 @@ function attachProteinControlEvents() {
                         const marker =
                             slider.dataset.marker;
 
-                        proteinLayers[
-                            marker
-                        ].opacity =
+                        proteinLayers[marker].opacity =
                             parseFloat(
                                 slider.value
                             );
@@ -1728,12 +1615,14 @@ function attachProteinControlEvents() {
                         const marker =
                             slider.dataset.marker;
 
-                        proteinLayers[
-                            marker
-                        ].threshold =
+                        proteinLayers[marker].threshold =
                             parseInt(
                                 slider.value
                             );
+
+                        rebuildProteinCache(
+                            proteinLayers[marker]
+                        );
 
                         updateOverlay();
                     }
@@ -2367,9 +2256,7 @@ function attachGeneControlEvents() {
                         const gene =
                             picker.dataset.gene;
 
-                        geneLayers[
-                            gene
-                        ].color =
+                        geneLayers[gene].color =
                             picker.value;
 
                         refreshActiveLayers();
@@ -2393,9 +2280,7 @@ function attachGeneControlEvents() {
                         const gene =
                             slider.dataset.gene;
 
-                        geneLayers[
-                            gene
-                        ].size =
+                        geneLayers[gene].size =
                             parseInt(
                                 slider.value
                             );
@@ -2437,6 +2322,74 @@ function attachGeneControlEvents() {
                 );
             }
         );
+}
+
+
+// Protein/gene browse/load tabs
+function showProteinBrowse() {
+
+    document
+        .getElementById("proteinBrowseView")
+        .style.display = "block";
+
+    document
+        .getElementById("proteinLoadedView")
+        .style.display = "none";
+}
+
+function showProteinLoaded() {
+
+    document
+        .getElementById("proteinBrowseView")
+        .style.display = "none";
+
+    document
+        .getElementById("proteinLoadedView")
+        .style.display = "block";
+}
+
+function showGeneBrowse() {
+
+    document
+        .getElementById("geneBrowseView")
+        .style.display = "block";
+
+    document
+        .getElementById("geneLoadedView")
+        .style.display = "none";
+}
+
+function showGeneLoaded() {
+
+    document
+        .getElementById("geneBrowseView")
+        .style.display = "none";
+
+    document
+        .getElementById("geneLoadedView")
+        .style.display = "block";
+}
+
+document
+    .getElementById("proteinBrowseBtn")
+    .addEventListener("click", showProteinBrowse);
+
+document
+    .getElementById("proteinLoadedBtn")
+    .addEventListener("click", showProteinLoaded);
+
+document
+    .getElementById("geneBrowseBtn")
+    .addEventListener("click", showGeneBrowse);
+
+document
+    .getElementById("geneLoadedBtn")
+    .addEventListener("click", showGeneLoaded);
+
+// Show panels if on phone
+if (window.innerWidth <= 768) {
+    showProteinBrowse();
+    showGeneBrowse();
 }
 
 
@@ -2734,9 +2687,9 @@ document
                 );
 
             segmentationData =
-                JSON.parse(
-                    jsonText
-                );
+                JSON.parse(jsonText);
+
+            
 
             document
                 .getElementById(

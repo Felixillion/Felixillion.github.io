@@ -19,7 +19,7 @@ body {
 #app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
 }
 
@@ -59,6 +59,7 @@ body {
     box-sizing: border-box;
     background: #fafafa;
     overflow: hidden;
+    min-height: 0;
 }
 
 #viewerWrapper {
@@ -77,14 +78,20 @@ body {
 #loadedGenes,
 #loadedProteins {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
-    background: white;
-    padding: 5px;
-    overflow-y: scroll;
     overflow-x: hidden;
-    border: 1px solid #444;
-    padding: 5px;
     background: white;
+    padding: 5px;
+    border: 1px solid #444;
+}
+
+#proteinLoadedView,
+#geneLoadedView {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
 #activeLayers {
@@ -200,6 +207,10 @@ body {
     display: none;
 }
 
+.mobilePanelTabs {
+    display: none;
+}
+
 h1 {
     font-size: 20px;
     margin-top: 0;
@@ -292,6 +303,7 @@ h1 {
         background: white;
         z-index: 3000;
         transition: transform 0.25s ease;
+        overscroll-behavior: contain;
     }
 
     #mainLayout {
@@ -302,6 +314,29 @@ h1 {
     #genePanel.open {
         display: flex;
         flex-direction: column;
+        min-height: 0;
+    }
+
+    #proteinBrowseView,
+    #proteinLoadedView,
+    #geneBrowseView,
+    #geneLoadedView {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #loadedProteins,
+    #loadedGenes,
+    #proteinList,
+    #geneList {
+        flex: 1;
+        min-height: 0;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+        overscroll-behavior: contain;
     }
 
     .closePanelBtn {
@@ -322,6 +357,16 @@ h1 {
         display: block;
     }
 
+    .mobilePanelTabs {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    .mobilePanelTabs button {
+        flex: 1;
+    }
+
     #mobileBar {
         display: flex;
         justify-content: center;
@@ -329,7 +374,8 @@ h1 {
         background: #fafafa;
         border-top: 1px solid #ddd;
         gap: 10px;
-        z-index: 2500;   
+        position: relative;
+        z-index: 4000;
     }
 
     #layerBar {
@@ -338,8 +384,17 @@ h1 {
         white-space: nowrap;
     }
 
+    #topbar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        justify-content: flex-start;
+        white-space: nowrap;
+    }
+
     .toolbar-section {
-        display: none;
+        display: flex;
+        flex-shrink: 0;
     }
 }
 

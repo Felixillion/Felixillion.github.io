@@ -162,12 +162,12 @@
 
                 <label>Opacity</label>
                 <input
-                    type="range"
                     id="segmentationOpacity"
+                    type="range"
                     min="0"
                     max="1"
                     step="0.05"
-                    value="0.5"
+                    value="1"
                 >
 
                 <label>
@@ -216,25 +216,46 @@
 
             <h3>Proteins</h3>
 
-            <input
-                id="proteinSearch"
-                type="text"
-                placeholder="Search proteins..."
-            >
+            <div class="mobilePanelTabs">
 
-            <div
-                id="proteinList"
-                class="search-list"
-            ></div>
-
-            <h4>
-                Loaded Proteins
-                <button id="clearProteinsBtn">
-                    Clear
+                <button id="proteinBrowseBtn">
+                    Browse
                 </button>
-            </h4>
 
-            <div id="loadedProteins"></div>
+                <button id="proteinLoadedBtn">
+                    Loaded
+                </button>
+
+            </div>
+
+            <div id="proteinBrowseView">
+
+                <input
+                    id="proteinSearch"
+                    type="text"
+                    placeholder="Search proteins..."
+                >
+
+                <div
+                    id="proteinList"
+                    class="search-list"
+                ></div>
+
+            </div>
+
+            <div id="proteinLoadedView">
+
+                <h4>
+                    Loaded Proteins
+
+                    <button id="clearProteinsBtn">
+                        Clear
+                    </button>
+                </h4>
+
+                <div id="loadedProteins"></div>
+
+            </div>
 
         </div>
 
@@ -256,25 +277,46 @@
 
             <h3>Genes</h3>
 
-            <input
-                id="geneSearch"
-                type="text"
-                placeholder="Search genes..."
-            >
+            <div class="mobilePanelTabs">
 
-            <div
-                id="geneList"
-                class="search-list"
-            ></div>
-
-            <h4>
-                Loaded Genes
-                <button id="clearGenesBtn">
-                    Clear
+                <button id="geneBrowseBtn">
+                    Browse
                 </button>
-            </h4>
 
-            <div id="loadedGenes"></div>
+                <button id="geneLoadedBtn">
+                    Loaded
+                </button>
+
+            </div>
+
+            <div id="geneBrowseView">
+
+                <input
+                    id="geneSearch"
+                    type="text"
+                    placeholder="Search genes..."
+                >
+
+                <div
+                    id="geneList"
+                    class="search-list"
+                ></div>
+
+            </div>
+
+            <div id="geneLoadedView">
+
+                <h4>
+                    Loaded Genes
+
+                    <button id="clearGenesBtn">
+                        Clear
+                    </button>
+                </h4>
+
+                <div id="loadedGenes"></div>
+
+            </div>
 
         </div>
 
