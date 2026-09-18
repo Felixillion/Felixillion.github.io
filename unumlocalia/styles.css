@@ -297,6 +297,10 @@ h1 {
 
 #segmentationControls {
     display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
 }
 
 /* Controls */
@@ -332,8 +336,10 @@ h1 {
 
 #exportPanel {
     display: flex;
-    gap: 16px;
+    justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 #segmentationColor {
@@ -349,10 +355,6 @@ h1 {
     .section-title {
         font-size: 11px;
         margin-bottom: 0;
-    }
-
-    #screenshotSection .section-title {
-        display: none;
     }
 
     /* Panels */
@@ -445,10 +447,11 @@ h1 {
         white-space: normal;
     }
 
-    #displaySection {
+    #displaySection.active {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        justify-content: center;
+        gap: 20px;
         align-items: flex-start;
     }
 
@@ -501,12 +504,6 @@ h1 {
     #segmentationThickness,
     #segmentationOpacity {
         width: 70px;
-    }
-
-    #exportPanel {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-        gap: 6px;
     }
 
     #displaySection .toolbar-group {
