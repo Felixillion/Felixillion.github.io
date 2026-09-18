@@ -77,19 +77,21 @@
             
             <!-- H&E options -->
             <div class="toolbar-section">
-                <div class="section-title">
-                    H&E
-                </div>
                 <div class="toolbar-group">
-                    <label>Opacity</label>
-                    <input
-                        id="heOpacity"
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.05"
-                        value="1"
-                    >
+                    <div class="control-item">
+                        <div class="control-label">
+                            H&E Opacity
+                        </div>
+
+                        <input
+                            id="heOpacity"
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.05"
+                            value="1"
+                        >
+                    </div>
 
                 </div>
 
@@ -109,39 +111,54 @@
                     </div>
                     
                     <div id="segmentationControls">
-                        <label>Outline</label>
-                        <input
-                            type="color"
-                            id="segmentationColor"
-                            value="#00ffff"
-                        >
+                        <div class="control-item">
+                            <div class="control-label">
+                                Cell Colour
+                            </div>
 
-                        <label>Width</label>
-                        <input
-                            type="range"
-                            id="segmentationThickness"
-                            min="0.5"
-                            max="10"
-                            step="0.5"
-                            value="0.5"
-                        >
+                            <input
+                                type="color"
+                                id="segmentationColor"
+                                value="#00ffff"
+                            >
+                        </div>
 
-                        <label>Opacity</label>
-                        <input
-                            id="segmentationOpacity"
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.05"
-                            value="1"
-                        >
+                        <div class="control-item">
+                            <div class="control-label">
+                                Cell Width
+                            </div>
 
-                        <label>
+                            <input
+                                type="range"
+                                id="segmentationThickness"
+                                min="0.5"
+                                max="5"
+                                step="0.5"
+                                value="0.5"
+                            >
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                Cell Opacity
+                            </div>
+
+                            <input
+                                type="range"
+                                id="segmentationOpacity"
+                                min="0"
+                                max="1"
+                                step="0.05"
+                                value="1"
+                            >
+                        </div>
+
+                        <label class="control-checkbox">
                             <input
                                 type="checkbox"
                                 id="enableCellSelection"
                             >
-                            Cells
+                            Cell Info
                         </label>
 
                     </div>
@@ -163,49 +180,54 @@
                 <div class="section-title">Screenshot</div>
 
                 <div id="exportPanel">
-                    <label>
+                    <label class="export-item">
+                        <span>H&E</span>
+
                         <input
                             type="checkbox"
                             id="exportHE"
                             checked
                         >
-                        H&E
                     </label>
 
-                    <label>
+                    <label class="export-item">
+                        <span>Genes</span>
+
                         <input
                             type="checkbox"
                             id="exportGenes"
                             checked
                         >
-                        Genes
                     </label>
 
-                    <label>
+                    <label class="export-item">
+                        <span>Proteins</span>
+
                         <input
                             type="checkbox"
                             id="exportProteins"
                             checked
                         >
-                        Proteins
                     </label>
 
-                    <label>
+                    <label class="export-item">
+                        <span>Cells</span>
+
                         <input
                             type="checkbox"
                             id="exportSegs"
                             checked
                         >
-                        Cells
                     </label>
 
-                    <label>
+                    <label class="export-item">
+                        <span>Scale Bar</span>
+
                         <input
                             type="checkbox"
                             id="exportScaleBar"
                             checked
                         >
-                        Scale Bar
                     </label>
 
                 </div>
@@ -222,7 +244,7 @@
 
     <!-- Active proteins/genes -->
     <button id="toggleLayersBtn">
-        Layers ▼
+        Active Layers ▼
     </button>
     
     <div id="layerBar">

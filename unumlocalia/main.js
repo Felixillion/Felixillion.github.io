@@ -2582,8 +2582,8 @@ document
                 layerBar.classList.contains(
                     "hidden"
                 )
-                    ? "Layers ▶"
-                    : "Layers ▼";
+                    ? "Active Layers ▶"
+                    : "Active Layers ▼";
         }
     );
 
