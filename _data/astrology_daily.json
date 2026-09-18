@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Sagittarius",
-      "degree": 26.4,
+      "degree": 26.6,
       "retrograde": false,
       "phase": "First Quarter"
     },
     "mercury": {
       "sign": "Scorpio",
-      "degree": 11.5,
+      "degree": 11.6,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Jupiter"
       ],
       "type": "quincunx",
-      "orb": 0.1
+      "orb": 0
     },
     {
       "planets": [
@@ -71,7 +71,7 @@
         "Moon"
       ],
       "type": "square",
-      "orb": 0.3
+      "orb": 0.6
     },
     {
       "planets": [
