@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Capricorn",
-      "degree": 20,
+      "degree": 20.2,
       "retrograde": false,
       "phase": "First Quarter"
     },
     "mercury": {
       "sign": "Scorpio",
-      "degree": 18.2,
+      "degree": 18.3,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 0.1
+      "orb": 0
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Saturn"
       ],
       "type": "quincunx",
-      "orb": 1.7
+      "orb": 1.8
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Mercury"
       ],
       "type": "sextile",
-      "orb": 1.8
+      "orb": 2
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Jupiter"
       ],
       "type": "quincunx",
-      "orb": 2.9
+      "orb": 3
     },
     {
       "planets": [
