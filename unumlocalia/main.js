@@ -209,6 +209,12 @@ async function loadUlviewer(file) {
             "displaySection"
         );
     }
+
+    // Count number of times custom dataset is loaded
+    window.goatcounter?.count({
+        path: "event/custom-loaded",
+        title: "Custom Dataset Loaded"
+    });
 }
 
 
@@ -520,6 +526,12 @@ function saveScreenshot() {
         );
 
     link.click();
+
+    // Count number of exported screenshots
+    window.goatcounter?.count({
+        path: "event/screenshot-export",
+        title: "Screenshot Export"
+    });
 }
 
 
@@ -2850,6 +2862,12 @@ async function loadDemoDataset() {
             "displaySection"
         );
     }
+
+    // Count number of loaded demo datasets
+    window.goatcounter?.count({
+        path: "event/demo-loaded",
+        title: "Demo Loaded"
+    });
 }
 
 document
@@ -2913,6 +2931,12 @@ document
                     "segmentationControls"
                 )
                 .style.display = "flex";
+
+            // Count number of segmentations loaded
+            window.goatcounter?.count({
+                path: "event/load-segmentations",
+                title: "Load Segmentations"
+            });
 
             updateOverlay();
         }
