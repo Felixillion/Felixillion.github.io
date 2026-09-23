@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Aquarius",
-      "degree": 27.3,
+      "degree": 27.6,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
@@ -55,7 +55,7 @@
         "Mercury"
       ],
       "type": "square",
-      "orb": 1
+      "orb": 0.8
     },
     {
       "planets": [
@@ -75,19 +75,19 @@
     },
     {
       "planets": [
+        "Sun",
+        "Mercury"
+      ],
+      "type": "sextile",
+      "orb": 2.5
+    },
+    {
+      "planets": [
         "Mars",
         "Uranus"
       ],
       "type": "conjunction",
       "orb": 2.5
-    },
-    {
-      "planets": [
-        "Sun",
-        "Mercury"
-      ],
-      "type": "sextile",
-      "orb": 2.6
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Neptune"
       ],
       "type": "trine",
-      "orb": 4.4
+      "orb": 4.3
     }
   ],
   "readings": {
