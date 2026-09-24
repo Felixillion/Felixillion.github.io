@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Pisces",
-      "degree": 10.4,
+      "degree": 10.7,
       "retrograde": false,
       "phase": "Full Moon"
     },
@@ -55,7 +55,7 @@
         "Mercury"
       ],
       "type": "sextile",
-      "orb": 0.2
+      "orb": 0.1
     },
     {
       "planets": [
@@ -67,19 +67,19 @@
     },
     {
       "planets": [
-        "Mercury",
-        "Neptune"
-      ],
-      "type": "trine",
-      "orb": 1
-    },
-    {
-      "planets": [
         "Moon",
         "Mars"
       ],
       "type": "square",
-      "orb": 1.1
+      "orb": 0.8
+    },
+    {
+      "planets": [
+        "Mercury",
+        "Neptune"
+      ],
+      "type": "trine",
+      "orb": 0.9
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 1.9
+      "orb": 2.2
     },
     {
       "planets": [
