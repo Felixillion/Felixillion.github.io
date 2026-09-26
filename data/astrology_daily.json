@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 6.9,
+      "degree": 7.3,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Sagittarius",
-      "degree": 8.4,
+      "degree": 8.5,
       "retrograde": false
     },
     "venus": {
@@ -55,15 +55,7 @@
         "Uranus"
       ],
       "type": "opposition",
-      "orb": 0.1
-    },
-    {
-      "planets": [
-        "Moon",
-        "Jupiter"
-      ],
-      "type": "trine",
-      "orb": 1
+      "orb": 0
     },
     {
       "planets": [
@@ -79,7 +71,7 @@
         "Mercury"
       ],
       "type": "trine",
-      "orb": 1.5
+      "orb": 1.2
     },
     {
       "planets": [
@@ -87,7 +79,15 @@
         "Uranus"
       ],
       "type": "sextile",
-      "orb": 1.6
+      "orb": 1.2
+    },
+    {
+      "planets": [
+        "Moon",
+        "Jupiter"
+      ],
+      "type": "trine",
+      "orb": 1.3
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Jupiter"
       ],
       "type": "trine",
-      "orb": 2.5
+      "orb": 2.6
     },
     {
       "planets": [
