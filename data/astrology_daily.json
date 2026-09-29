@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Taurus",
-      "degree": 5.9,
+      "degree": 6,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
     "mercury": {
       "sign": "Sagittarius",
-      "degree": 15.4,
+      "degree": 15.5,
       "retrograde": false
     },
     "venus": {
@@ -55,15 +55,7 @@
         "Moon"
       ],
       "type": "quincunx",
-      "orb": 0
-    },
-    {
-      "planets": [
-        "Sun",
-        "Jupiter"
-      ],
-      "type": "sextile",
-      "orb": 0.2
+      "orb": 0.1
     },
     {
       "planets": [
@@ -71,6 +63,14 @@
         "Jupiter"
       ],
       "type": "square",
+      "orb": 0.1
+    },
+    {
+      "planets": [
+        "Sun",
+        "Jupiter"
+      ],
+      "type": "sextile",
       "orb": 0.2
     },
     {
