@@ -3,33 +3,33 @@
   "planetary_positions": {
     "sun": {
       "sign": "Libra",
-      "degree": 5.9,
+      "degree": 6.8,
       "retrograde": false
     },
     "moon": {
       "sign": "Taurus",
-      "degree": 6,
+      "degree": 19.3,
       "retrograde": false,
       "phase": "Waning Gibbous"
     },
     "mercury": {
       "sign": "Sagittarius",
-      "degree": 15.5,
+      "degree": 18.6,
       "retrograde": false
     },
     "venus": {
       "sign": "Pisces",
-      "degree": 21.3,
+      "degree": 22.8,
       "retrograde": false
     },
     "mars": {
       "sign": "Gemini",
-      "degree": 13.7,
+      "degree": 14.2,
       "retrograde": false
     },
     "jupiter": {
       "sign": "Leo",
-      "degree": 6.1,
+      "degree": 6.2,
       "retrograde": false
     },
     "saturn": {
@@ -39,7 +39,7 @@
     },
     "uranus": {
       "sign": "Gemini",
-      "degree": 8.5,
+      "degree": 8.6,
       "retrograde": false
     },
     "neptune": {
@@ -52,26 +52,26 @@
     {
       "planets": [
         "Sun",
-        "Moon"
+        "Jupiter"
       ],
-      "type": "quincunx",
-      "orb": 0.1
+      "type": "sextile",
+      "orb": 0.6
     },
     {
       "planets": [
         "Moon",
-        "Jupiter"
+        "Mercury"
       ],
-      "type": "square",
-      "orb": 0.1
+      "type": "quincunx",
+      "orb": 0.7
     },
     {
       "planets": [
         "Sun",
-        "Jupiter"
+        "Uranus"
       ],
-      "type": "sextile",
-      "orb": 0.2
+      "type": "trine",
+      "orb": 1.7
     },
     {
       "planets": [
@@ -79,14 +79,6 @@
         "Saturn"
       ],
       "type": "trine",
-      "orb": 1.3
-    },
-    {
-      "planets": [
-        "Mercury",
-        "Mars"
-      ],
-      "type": "opposition",
       "orb": 1.8
     },
     {
@@ -99,19 +91,27 @@
     },
     {
       "planets": [
-        "Sun",
-        "Uranus"
+        "Mars",
+        "Saturn"
       ],
-      "type": "trine",
+      "type": "sextile",
       "orb": 2.6
     },
     {
       "planets": [
-        "Sun",
+        "Jupiter",
         "Neptune"
       ],
-      "type": "opposition",
-      "orb": 3.1
+      "type": "trine",
+      "orb": 3.4
+    },
+    {
+      "planets": [
+        "Moon",
+        "Venus"
+      ],
+      "type": "sextile",
+      "orb": 3.5
     }
   ],
   "readings": {
