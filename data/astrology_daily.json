@@ -3,18 +3,18 @@
   "planetary_positions": {
     "sun": {
       "sign": "Libra",
-      "degree": 10.7,
+      "degree": 10.8,
       "retrograde": false
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 15.6,
+      "degree": 16,
       "retrograde": false,
       "phase": "Last Quarter"
     },
     "mercury": {
       "sign": "Capricorn",
-      "degree": 2,
+      "degree": 2.1,
       "retrograde": false
     },
     "venus": {
@@ -63,7 +63,7 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 0.8
+      "orb": 0.7
     },
     {
       "planets": [
@@ -71,15 +71,7 @@
         "Saturn"
       ],
       "type": "square",
-      "orb": 1.3
-    },
-    {
-      "planets": [
-        "Sun",
-        "Uranus"
-      ],
-      "type": "trine",
-      "orb": 2.1
+      "orb": 1
     },
     {
       "planets": [
@@ -91,11 +83,19 @@
     },
     {
       "planets": [
+        "Sun",
+        "Uranus"
+      ],
+      "type": "trine",
+      "orb": 2.2
+    },
+    {
+      "planets": [
         "Mercury",
         "Venus"
       ],
       "type": "square",
-      "orb": 2.9
+      "orb": 3
     },
     {
       "planets": [
