@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Leo",
-      "degree": 15.3,
+      "degree": 15.4,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
@@ -55,7 +55,7 @@
         "Neptune"
       ],
       "type": "conjunction",
-      "orb": 0.4
+      "orb": 0.3
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Saturn"
       ],
       "type": "trine",
-      "orb": 1.7
+      "orb": 1.6
     },
     {
       "planets": [
