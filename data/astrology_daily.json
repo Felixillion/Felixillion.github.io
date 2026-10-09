@@ -3,23 +3,23 @@
   "planetary_positions": {
     "sun": {
       "sign": "Libra",
-      "degree": 15.7,
+      "degree": 15.8,
       "retrograde": false
     },
     "moon": {
       "sign": "Virgo",
-      "degree": 25.6,
+      "degree": 25.9,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Capricorn",
-      "degree": 19.3,
+      "degree": 19.4,
       "retrograde": false
     },
     "venus": {
       "sign": "Aries",
-      "degree": 7.1,
+      "degree": 7.2,
       "retrograde": false
     },
     "mars": {
