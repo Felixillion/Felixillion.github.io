@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Libra",
-      "degree": 21.4,
+      "degree": 21.7,
       "retrograde": false,
       "phase": "New Moon"
     },
     "mercury": {
       "sign": "Capricorn",
-      "degree": 26,
+      "degree": 26.1,
       "retrograde": false
     },
     "venus": {
@@ -63,7 +63,7 @@
         "Mars"
       ],
       "type": "trine",
-      "orb": 1.3
+      "orb": 1.6
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Moon"
       ],
       "type": "conjunction",
-      "orb": 3.7
+      "orb": 4
     }
   ],
   "readings": {
