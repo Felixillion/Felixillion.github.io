@@ -14,12 +14,12 @@
     },
     "mercury": {
       "sign": "Aquarius",
-      "degree": 3.4,
+      "degree": 3.5,
       "retrograde": false
     },
     "venus": {
       "sign": "Aries",
-      "degree": 13.6,
+      "degree": 13.7,
       "retrograde": false
     },
     "mars": {
@@ -63,7 +63,7 @@
         "Saturn"
       ],
       "type": "quincunx",
-      "orb": 0.9
+      "orb": 1
     },
     {
       "planets": [
@@ -91,6 +91,14 @@
     },
     {
       "planets": [
+        "Moon",
+        "Mars"
+      ],
+      "type": "quincunx",
+      "orb": 3
+    },
+    {
+      "planets": [
         "Venus",
         "Saturn"
       ],
@@ -103,15 +111,7 @@
         "Jupiter"
       ],
       "type": "opposition",
-      "orb": 3.9
-    },
-    {
-      "planets": [
-        "Mars",
-        "Saturn"
-      ],
-      "type": "sextile",
-      "orb": 3.9
+      "orb": 3.8
     }
   ],
   "readings": {
