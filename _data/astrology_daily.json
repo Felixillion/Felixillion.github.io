@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Capricorn",
-      "degree": 4.3,
+      "degree": 4.5,
       "retrograde": false,
       "phase": "First Quarter"
     },
@@ -51,19 +51,19 @@
   "major_aspects": [
     {
       "planets": [
-        "Sun",
-        "Mars"
-      ],
-      "type": "trine",
-      "orb": 0.3
-    },
-    {
-      "planets": [
         "Mercury",
         "Saturn"
       ],
       "type": "sextile",
       "orb": 0.3
+    },
+    {
+      "planets": [
+        "Sun",
+        "Mars"
+      ],
+      "type": "trine",
+      "orb": 0.4
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 1.4
+      "orb": 1.6
     },
     {
       "planets": [
