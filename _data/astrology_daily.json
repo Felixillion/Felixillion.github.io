@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Capricorn",
-      "degree": 27.8,
+      "degree": 28,
       "retrograde": false,
       "phase": "First Quarter"
     },
     "mercury": {
       "sign": "Aquarius",
-      "degree": 24.2,
+      "degree": 24.3,
       "retrograde": false
     },
     "venus": {
@@ -55,7 +55,7 @@
         "Mars"
       ],
       "type": "trine",
-      "orb": 0.1
+      "orb": 0
     },
     {
       "planets": [
@@ -103,7 +103,7 @@
         "Moon"
       ],
       "type": "square",
-      "orb": 2.3
+      "orb": 2.4
     },
     {
       "planets": [
