@@ -8,7 +8,7 @@
     },
     "moon": {
       "sign": "Aquarius",
-      "degree": 10.7,
+      "degree": 10.8,
       "retrograde": false,
       "phase": "First Quarter"
     },
@@ -79,15 +79,7 @@
         "Mars"
       ],
       "type": "trine",
-      "orb": 1.7
-    },
-    {
-      "planets": [
-        "Moon",
-        "Uranus"
-      ],
-      "type": "trine",
-      "orb": 1.9
+      "orb": 1.8
     },
     {
       "planets": [
@@ -95,6 +87,14 @@
         "Venus"
       ],
       "type": "opposition",
+      "orb": 2
+    },
+    {
+      "planets": [
+        "Moon",
+        "Uranus"
+      ],
+      "type": "trine",
       "orb": 2
     },
     {
