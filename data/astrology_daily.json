@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Pisces",
-      "degree": 18.3,
+      "degree": 18.6,
       "retrograde": false,
       "phase": "Waxing Gibbous"
     },
     "mercury": {
       "sign": "Pisces",
-      "degree": 9.2,
+      "degree": 9.3,
       "retrograde": false
     },
     "venus": {
       "sign": "Aries",
-      "degree": 29.3,
+      "degree": 29.4,
       "retrograde": false
     },
     "mars": {
@@ -63,7 +63,7 @@
         "Uranus"
       ],
       "type": "square",
-      "orb": 0.4
+      "orb": 0.5
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Jupiter"
       ],
       "type": "quincunx",
-      "orb": 1.1
+      "orb": 1.2
     },
     {
       "planets": [
