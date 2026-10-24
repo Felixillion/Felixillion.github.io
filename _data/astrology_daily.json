@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 15,
+      "degree": 15.2,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Pisces",
-      "degree": 16.7,
+      "degree": 16.8,
       "retrograde": false
     },
     "venus": {
@@ -79,7 +79,7 @@
         "Saturn"
       ],
       "type": "conjunction",
-      "orb": 2.7
+      "orb": 2.4
     },
     {
       "planets": [
