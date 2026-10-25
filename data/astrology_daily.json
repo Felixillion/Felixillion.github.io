@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Aries",
-      "degree": 29.1,
+      "degree": 29.4,
       "retrograde": false,
       "phase": "Full Moon"
     },
     "mercury": {
       "sign": "Pisces",
-      "degree": 20.6,
+      "degree": 20.7,
       "retrograde": false
     },
     "venus": {
@@ -71,7 +71,7 @@
         "Mars"
       ],
       "type": "sextile",
-      "orb": 1.1
+      "orb": 1.4
     },
     {
       "planets": [
@@ -87,7 +87,7 @@
         "Moon"
       ],
       "type": "opposition",
-      "orb": 3.4
+      "orb": 3.1
     },
     {
       "planets": [
@@ -111,7 +111,7 @@
         "Venus"
       ],
       "type": "conjunction",
-      "orb": 4.9
+      "orb": 4.7
     }
   ],
   "readings": {
