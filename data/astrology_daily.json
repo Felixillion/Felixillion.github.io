@@ -8,18 +8,18 @@
     },
     "moon": {
       "sign": "Cancer",
-      "degree": 26.7,
+      "degree": 27,
       "retrograde": false,
       "phase": "Last Quarter"
     },
     "mercury": {
       "sign": "Aries",
-      "degree": 15.1,
+      "degree": 15.2,
       "retrograde": false
     },
     "venus": {
       "sign": "Taurus",
-      "degree": 13.6,
+      "degree": 13.7,
       "retrograde": false
     },
     "mars": {
@@ -87,7 +87,7 @@
         "Saturn"
       ],
       "type": "conjunction",
-      "orb": 2.8
+      "orb": 2.7
     },
     {
       "planets": [
