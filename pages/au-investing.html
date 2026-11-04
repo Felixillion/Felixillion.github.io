@@ -194,7 +194,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <select id="swr-tax-profile" style="flex:2;">
             <option value="nfp">0% (NFP / Pension)</option>
             <option value="super15">15% (Super Accum)</option>
-            <option value="ind_16">16% (Ind &lt; $45k)</option>
+            <option value="ind_16">15% (Ind $18k–$45k, 2026-27)</option>
             <option value="ind_30" selected>30% (Ind $45k–$135k)</option>
             <option value="ind_37">37% (Ind $135k–$190k)</option>
             <option value="ind_45">45% (Ind &gt; $190k)</option>
@@ -286,7 +286,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
         <strong>Franking credits</strong> add ~0.3–0.8% per year to AU share returns for domestic investors — invisible in index returns but real in your pocket. For a 100% AU portfolio, this is worth 0.5–0.7% annually. For VDHG-like portfolios (~36% AU shares), closer to 0.2–0.3%.
         <br><br>
-        <strong>Long data record:</strong> 124 years including two World Wars, the Great Depression (−30% AU 1930), hyperinflation, and GFC. The SWR you see is truly stress-tested.
+        <strong>Long data record:</strong> ~124 years including two World Wars, the Great Depression (All Ords accumulation −28% in 1930), the 1970s stagflation (CPI 15% in 1974–75) and the GFC. The SWR you see is truly stress-tested.
       </div>
     </div>
     <div class="aui-card">
@@ -302,23 +302,23 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="aui-card">
       <div class="aui-label" style="color:var(--amber);">💡 Takeaways</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
-        • The <strong>AU 4% rule holds reasonably well</strong> for balanced portfolios (60%+ growth) at 90% success over 30 years.
+        • With the corrected data (Nov 2026), a 4% inflation-adjusted withdrawal over 30 years survived in roughly 94–98% of historical Australian start years for both 100% AU shares and VDHG-like mixes — use the heat map above for your exact case, as it is computed live.
         <br><br>
-        • For 40–50 year retirements (FIRE), target <strong>3.0–3.5%</strong> for 95% success.
+        • Longer retirements need lower rates: at 50 years, 3.5% failed in about one in five historical windows for a VDHG-like mix.
         <br><br>
-        • Franking credits effectively lift the rule by ~0.3% for AU-heavy portfolios.
+        • Franking credits lift effective returns for AU-heavy portfolios; the size depends on your tax rate (largest for 0–15% taxpayers).
         <br><br>
-        • A <strong>flexible withdrawal strategy</strong> (reduce by 10% in down years) dramatically improves outcomes without meaningfully reducing expected lifetime spending.
+        • Flexible spending (cutting withdrawals after bad years) is widely found to improve survival rates; this tool currently models fixed real withdrawals only.
         <br><br>
-        • The <strong>worst retirement cohort</strong> in AU history started in 1929–1930 followed by 1969–1970 (stagflation). Both were recoverable with diversification; neither was recoverable with 100% AU shares and 5%+ withdrawal.
+        • In this dataset the <strong>worst starting years</strong> are 1969–1973: share prices fell while inflation of 10–16% a year pushed up the real cost of withdrawals. Results for diversified mixes before 1970 rely on approximate international and bond data and should be treated cautiously.
       </div>
     </div>
   </div>
 
   <div class="aui-callout">
     <strong>Sources &amp; methodology:</strong>
-    Asset class returns from Vanguard/Dimensional AU long-run data series (embedded in <code>_data/etf_data.json</code>).
-    AU CPI from ABS 6401.0. Franking credit boost estimated at 0.53%/yr for 100% AU shares (imputation value at 30% company tax, 75% payout franked, effective marginal rate 32.5%). All simulations are historical — not Monte Carlo. Each simulation window slides forward one year from 1901.
+    AU shares: All Ordinaries Accumulation Index calendar-year returns (Market Index); cash: RBA Table F1; other asset classes are approximate long-run estimates (see <code>data/etf_data.json</code> → meta.sources). Pre-1980 data are reconstructions.
+    AU CPI: RBA Table G1 (ABS CPI) from 1924; 1901–1923 are estimates. Franking boost depends on the tax rate you select. The default method uses every historical window (sliding one year at a time from 1901); the Monte Carlo option resamples historical years at random.
     This is not financial advice.
   </div>
 
@@ -330,8 +330,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div class="aui-panel" id="panel-bess">
 
   <div class="aui-callout">
-    <strong>Bessembinder (2018)</strong> found that over 1926–2016, just <strong>4% of US stocks</strong> (90 companies) accounted for all net wealth creation above Treasury Bills.
-    The other 96% collectively earned zero or negative returns relative to T-bills.
+    <strong>Bessembinder (2018)</strong> found that over 1926–2016, the best-performing <strong>4% of US-listed stocks</strong> (about 1,000 of ~26,000) accounted for all of the net wealth creation above one-month Treasury bills, and just 86 stocks accounted for half of it.
+    The other 96% collectively matched T-bills, and more than half of all stocks returned less than T-bills over their lifetimes.
     This has profound implications for stock-picking vs diversification.
     Below is a Bessembinder-style analysis of the <strong>Australian market</strong>.
   </div>
@@ -346,6 +346,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
   <!-- Key findings cards -->
   <div class="aui-sec-title">Key Findings — ASX Analysis</div>
+  {% unless site.data.bessembinder %}<div class="aui-callout aui-callout-red"><strong>Placeholder figures:</strong> the numbers below are illustrative, not computed from market data. They will be replaced automatically once the weekly Bessembinder job has run.</div>{% endunless %}
   <div class="aui-g2" id="bess-finding-cards" style="margin-bottom:1.5rem;"></div>
 
   <!-- Cumulative contribution chart -->
@@ -410,10 +411,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="aui-card">
       <div class="aui-label" style="color:var(--amber);">📚 Comparison with US Findings</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
-        Bessembinder's original finding: top 90 US stocks (4%) → 100% of net wealth creation above T-bills (1926–2016).
-        Top 50 stocks (2%) → majority of gains. Apple alone created more wealth than the bottom 1,000 stocks combined.
+        Bessembinder's original finding (1926–2016): the top 4% of stocks (~1,000 companies) → 100% of net wealth creation above T-bills; the top 86 stocks → about half of it.
+        A follow-up study of global markets (Bessembinder, Chen, Choi &amp; Wei, 2023) found similarly extreme concentration outside the US.
         <br><br>
-        For Australia, the concentration is somewhat lower (our market is smaller and more resource-heavy, spreading returns across fewer sectors) — but the pattern is directionally the same.
+        For Australia, expect the same direction of result; the size of the effect can't be measured properly without delisted companies (see survivorship warning).
         CBA, CSL, BHP, RIO, and Macquarie together account for a disproportionate share of total ASX wealth creation since 1990.
         <br><br>
         <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X18301521" target="_blank" rel="noopener" style="color:var(--blue);font-size:.78rem;">↗ Bessembinder (2018) — original paper</a>
@@ -429,7 +430,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     Add it to <code>daily-update.yml</code> (already done — runs Sundays).
     On first run: trigger via GitHub Actions → workflow_dispatch → "Compute Bessembinder ASX Analysis".
     The script writes <code>_data/bessembinder.json</code> and Jekyll injects it at build time.
-    Until then, the charts below show representative pre-computed estimates.
+    Until then, the charts below show <strong>illustrative placeholder numbers, not measured data</strong>.
   </div>
   <div class="aui-callout">
     <strong>Run the full analysis:</strong>
@@ -450,19 +451,21 @@ const BESS_DATA    = {{ site.data.bessembinder | jsonify | default: 'null' }};
 
 // Historical AU CPI (ABS 6401.0) — extended back with estimated series
 const AU_CPI = {
-  1901:5.0,1902:-2.0,1903:2.0,1904:0.0,1905:-1.0,1906:2.0,1907:5.0,1908:2.0,1909:1.0,1910:3.0,
-  1911:6.0,1912:4.0,1913:2.0,1914:3.0,1915:8.0,1916:10.0,1917:12.0,1918:6.0,1919:8.0,1920:14.0,
-  1921:-10.0,1922:-8.0,1923:2.0,1924:0.0,1925:1.0,1926:1.0,1927:0.0,1928:-1.0,1929:-1.0,1930:-4.0,
-  1931:-8.0,1932:-5.0,1933:-3.0,1934:1.0,1935:2.0,1936:2.0,1937:3.0,1938:2.0,1939:3.0,1940:5.0,
-  1941:5.0,1942:5.0,1943:2.0,1944:1.0,1945:2.0,1946:4.0,1947:6.0,1948:8.0,1949:7.0,1950:10.0,
-  1951:20.0,1952:14.0,1953:5.0,1954:2.0,1955:3.0,1956:5.0,1957:4.0,1958:2.0,1959:2.0,1960:4.0,
-  1961:2.0,1962:0.0,1963:1.0,1964:2.0,1965:3.0,1966:3.0,1967:4.0,1968:3.0,1969:3.0,1970:4.0,
-  1971:7.0,1972:6.0,1973:10.0,1974:16.0,1975:15.0,1976:13.0,1977:12.0,1978:8.0,1979:9.0,1980:10.0,
-  1981:9.0,1982:11.0,1983:10.0,1984:4.0,1985:7.0,1986:9.0,1987:8.0,1988:7.0,1989:7.0,1990:7.0,
-  1991:3.0,1992:1.0,1993:2.0,1994:2.0,1995:5.0,1996:3.0,1997:0.0,1998:1.0,1999:1.5,
-  2000:4.5,2001:4.4,2002:3.0,2003:2.8,2004:2.3,2005:2.7,2006:3.5,2007:2.3,2008:4.4,2009:1.8,
-  2010:2.8,2011:3.3,2012:1.8,2013:2.4,2014:2.5,2015:1.5,2016:1.3,2017:1.9,2018:1.9,2019:1.6,
-  2020:0.9,2021:3.8,2022:7.8,2023:5.4,2024:3.8,
+  // 1924–2025: RBA Table G1 (ABS CPI), annual-average % change — see data/ground_truth/reference_series.json
+  // 1901–1923: rough historical ESTIMATES (no official CPI before 1922) — treat with caution
+  1901:5.0, 1902:-2.0, 1903:2.0, 1904:0.0, 1905:-1.0, 1906:2.0, 1907:5.0, 1908:2.0, 1909:1.0, 1910:3.0,
+  1911:6.0, 1912:4.0, 1913:2.0, 1914:3.0, 1915:8.0, 1916:10.0, 1917:12.0, 1918:6.0, 1919:8.0, 1920:14.0,
+  1921:-10.0, 1922:-8.0, 1923:2.0, 1924:-2, 1925:2.2, 1926:1.3, 1927:-0.9, 1928:0.9, 1929:2.4, 1930:-6,
+  1931:-10.6, 1932:-4.9, 1933:-3.1, 1934:1.7, 1935:1.7, 1936:2.1, 1937:2.7, 1938:3, 1939:2.4, 1940:4,
+  1941:5.4, 1942:8.3, 1943:3.6, 1944:-0.6, 1945:0, 1946:1.7, 1947:3.8, 1948:8.8, 1949:9, 1950:9.1,
+  1951:19.7, 1952:17.3, 1953:4.3, 1954:0.7, 1955:2.2, 1956:5.9, 1957:2.6, 1958:1.2, 1959:1.8, 1960:3.8,
+  1961:2.5, 1962:-0.2, 1963:0.4, 1964:2.5, 1965:3.8, 1966:3.1, 1967:3.2, 1968:2.7, 1969:3, 1970:3.7,
+  1971:6, 1972:6, 1973:9.3, 1974:15.2, 1975:15.2, 1976:13.3, 1977:12.3, 1978:8, 1979:9.1, 1980:10.2,
+  1981:9.6, 1982:11.2, 1983:10.1, 1984:3.9, 1985:6.8, 1986:9.1, 1987:8.5, 1988:7.3, 1989:7.5, 1990:7.3,
+  1991:3.2, 1992:1, 1993:1.8, 1994:1.9, 1995:4.6, 1996:2.6, 1997:0.3, 1998:0.9, 1999:1.5, 2000:4.5,
+  2001:4.4, 2002:3, 2003:2.8, 2004:2.3, 2005:2.7, 2006:3.5, 2007:2.4, 2008:4.3, 2009:1.8, 2010:2.9,
+  2011:3.4, 2012:1.7, 2013:2.4, 2014:2.5, 2015:1.5, 2016:1.3, 2017:1.9, 2018:1.9, 2019:1.6, 2020:0.9,
+  2021:2.9, 2022:6.6, 2023:5.6, 2024:3.2, 2025:2.8
 };
 
 // Historical US CPI (approximated for Trinity Control)
@@ -500,7 +503,7 @@ const ALLOC_LABELS = {
 const TAX_PROFILES = {
   nfp:    { rate: 0.00 },
   super15:{ rate: 0.15 },
-  ind_16: { rate: 0.16 },
+  ind_16: { rate: 0.15 },   // 16% → 15% from 1 Jul 2026
   ind_30: { rate: 0.30 },
   ind_37: { rate: 0.37 },
   ind_45: { rate: 0.45 },
@@ -986,7 +989,7 @@ function drawPath(ctx2, pts, startYrMin, years, pad, iw, ih, maxVal){
 // Pre-computed representative AU data (updated by compute_bessembinder.py)
 // Fallback embedded data based on known ASX history
 const BESS_FALLBACK = {
-  meta:{last_updated:'Embedded estimates (run compute_bessembinder.py for live data)',
+  meta:{last_updated:'ILLUSTRATIVE PLACEHOLDER — not real data (compute_bessembinder.py has not produced results yet)',
         period:'~2000–2024',stocks_analysed:200,total_wealth_created_bn:1820},
   concentration:{
     top1pct_share:28.5,   // top 2 stocks = 28.5% of all wealth created

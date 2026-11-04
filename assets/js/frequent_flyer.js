@@ -19,7 +19,7 @@
 
 let cardData = null;
 let currentScheme = 'qantas';
-let sortConfig = { key: 'centsPoint', direction: 'asc' };
+let sortConfig = { key: 'netValue', direction: 'desc' };
 
 // Detect mobile (< 700px) once on load
 const IS_MOBILE = window.innerWidth < 700;
@@ -30,20 +30,43 @@ function initFF() {
     renderTable();
     const el = document.getElementById('last-updated');
     if (el && cardData.lastUpdated) {
-      el.textContent = `Last updated: ${cardData.lastUpdated}`;
+      el.textContent = `Offers last verified: ${cardData.lastUpdated} (manually curated — always confirm on the bank's site)`;
     }
   } catch (err) {
     console.error('Failed to load card data:', err);
     const c = document.getElementById('card-table-container');
-    if (c) c.innerHTML = '<p style="color:var(--tritc-red);padding:2rem;">Bank data feed currently offline. Please check back next Monday.</p>';
+    if (c) c.innerHTML = '<p style="color:var(--tritc-red);padding:2rem;">Card data failed to load. Please try again later.</p>';
   }
 }
 
+// Cost per bonus point, in cents.
+//   Year 1:  (first-year fee − cashback) / year-1 bonus
+//   2 years: (first-year fee + ongoing fee − cashback) / (year-1 + year-2 bonus)
+// Ignores points earned from normal spending, interest, FX fees and perks.
+function yr1Fee(card) { return (card.firstYearFee ?? card.fee) - (card.cashback || 0); }
 function calcCentsPerPoint(card, twoYear = false) {
-  const fees = twoYear ? card.fee * 2 : card.fee;
+  const fees = twoYear ? yr1Fee(card) + card.fee : yr1Fee(card);
   const pts  = twoYear ? (card.signupBonus + (card.year1Bonus || 0)) : card.signupBonus;
   if (!pts) return null;
   return ((fees * 100) / pts).toFixed(2);
+}
+
+// Estimated net $ value in year 1 at the user's chosen point valuation
+let pointValueCents = 1.5;
+function netValueYr1(card) {
+  return Math.round(card.signupBonus * pointValueCents / 100 - yr1Fee(card));
+}
+function newsFlag(card) {
+  const f = (window.FF_PROMOS?.card_flags || {})[`${card.bank}|${card.name}`];
+  if (!f || !f.length) return '';
+  const n = f[0];
+  return `<div style="font-size:.7rem;margin-top:.2rem;"><a href="${n.link}" target="_blank" rel="noopener" style="color:#fbbf24;">📰 In the news ${n.date} — offer may have changed</a></div>`;
+}
+function verifiedBadge(card) {
+  if (!card.verified) return '<div style="font-size:.68rem;color:var(--tritc-red);">Offer not re-verified</div>' + newsFlag(card);
+  const days = Math.floor((Date.now() - new Date(card.verified)) / 86400000);
+  const col = days > 45 ? 'var(--tritc-red)' : 'var(--text-secondary)';
+  return `<div style="font-size:.68rem;color:${col};" title="${card.source || ''}">Checked ${card.verified}${days > 45 ? ' — may be out of date' : ''}</div>` + newsFlag(card);
 }
 
 function renderTable() {
@@ -54,6 +77,7 @@ function renderTable() {
     ...card,
     centsPoint:       parseFloat(calcCentsPerPoint(card))          || Infinity,
     annualCentsPoint: parseFloat(calcCentsPerPoint(card, true))    || Infinity,
+    netValue:         netValueYr1(card),
   }));
 
   data.sort((a, b) => {
@@ -108,14 +132,20 @@ function renderCards(container, data) {
             <div>
               <div style="color:var(--text-secondary);font-size:.68rem;text-transform:uppercase;
                           letter-spacing:.04em;">Annual Fee</div>
-              <div style="color:white;">$${card.fee}</div>
+              <div style="color:white;">$${card.fee}${(card.firstYearFee ?? card.fee) !== card.fee ? ` <span style="font-size:.7rem;color:var(--text-secondary);">($${card.firstYearFee} yr 1)</span>` : ''}${card.cashback ? `<div style="font-size:.7rem;color:var(--fitc-green);">−$${card.cashback} cashback</div>` : ''}</div>
+            </div>
+            <div>
+              <div style="color:var(--text-secondary);font-size:.68rem;text-transform:uppercase;
+                          letter-spacing:.04em;">Est. net value yr 1</div>
+              <div style="color:${card.netValue >= 0 ? 'var(--fitc-green)' : 'var(--tritc-red)'};font-weight:600;">$${card.netValue.toLocaleString()}</div>
             </div>
             <div>
               <div style="color:var(--text-secondary);font-size:.68rem;text-transform:uppercase;
                           letter-spacing:.04em;">Min Spend</div>
-              <div style="color:white;">$${card.minSpend.toLocaleString()}</div>
+              <div style="color:white;">$${card.minSpend.toLocaleString()}${card.spendDays ? ` / ${card.spendDays} days` : ''}</div>
             </div>
           </div>
+          ${verifiedBadge(card)}
           ${card.loungePasses && card.loungePasses !== 'None' ? `
             <div style="margin-top:.5rem;font-size:.78rem;color:#a78bfa;">
               ✈ ${card.loungePasses}
@@ -148,8 +178,9 @@ function renderDesktopTable(container, data) {
           <tr style="text-align:left;border-bottom:2px solid var(--glass-border);">
             ${th('Bank / Card', '')}
             ${th('Bonus pts', 'signupBonus')}
-            ${th('¢/pt (Yr1) [Yr2]', 'centsPoint')}
-            ${th('Annual Fee', '')}
+            ${th('Cost ¢/pt yr 1 [2-yr]', 'centsPoint')}
+            ${th(`Est. net value yr 1 (@${pointValueCents}¢/pt)`, 'netValue')}
+            ${th('Annual Fee', 'fee')}
             ${th('Min Spend', '')}
             ${th('Lounge', '')}
             ${th('Apply', '', true)}
@@ -164,6 +195,7 @@ function renderDesktopTable(container, data) {
                 <div style="font-weight:600;color:white;">${card.bank}</div>
                 <div style="font-size:.8rem;color:var(--text-secondary);">${card.name}</div>
                 ${card.notes ? `<div style="font-size:.72rem;color:#64748b;margin-top:.2rem;font-style:italic;">${card.notes}</div>` : ''}
+                ${verifiedBadge(card)}
               </td>
               <td style="padding:1rem;">
                 <div style="color:var(--fitc-green);font-weight:bold;">
@@ -181,8 +213,9 @@ function renderDesktopTable(container, data) {
                   [${(card.annualCentsPoint === Infinity || !card.year1Bonus) ? '—' : card.annualCentsPoint + '¢'}]
                 </span>
               </td>
-              <td style="padding:1rem;">$${card.fee}</td>
-              <td style="padding:1rem;">$${card.minSpend.toLocaleString()}</td>
+              <td style="padding:1rem;color:${card.netValue >= 0 ? 'var(--fitc-green)' : 'var(--tritc-red)'};font-weight:600;">$${card.netValue.toLocaleString()}</td>
+              <td style="padding:1rem;">$${card.fee}${(card.firstYearFee ?? card.fee) !== card.fee ? `<div style="font-size:.7rem;color:var(--text-secondary);">$${card.firstYearFee} yr 1</div>` : ''}${card.cashback ? `<div style="font-size:.7rem;color:var(--fitc-green);">−$${card.cashback} cashback</div>` : ''}</td>
+              <td style="padding:1rem;">$${card.minSpend.toLocaleString()}${card.spendDays ? `<div style="font-size:.7rem;color:var(--text-secondary);">in ${card.spendDays} days</div>` : ''}</td>
               <td style="padding:1rem;font-size:.8rem;color:${card.loungePasses && card.loungePasses !== 'None' ? '#a78bfa' : 'var(--text-secondary)'};">
                 ${card.loungePasses ?? '—'}
               </td>
@@ -223,8 +256,25 @@ document.getElementById('toggle-velocity')?.addEventListener('click', e => {
   renderTable();
 });
 
+// Point valuation input
+document.getElementById('point-value')?.addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  if (v > 0 && v < 10) { pointValueCents = v; renderTable(); }
+});
+
 // Set Qantas as active on load
 const qBtn = document.getElementById('toggle-qantas');
 if (qBtn) qBtn.style.opacity = '1';
 
 initFF();
+
+// Auto-updated news list (headlines + links only)
+(function renderNews() {
+  const ul = document.getElementById('ff-news');
+  if (!ul) return;
+  const items = (window.FF_PROMOS?.cards || []).slice(0, 8);
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  ul.innerHTML = items.length
+    ? items.map(n => `<li>${n.date} · <a href="${esc(n.link)}" target="_blank" rel="noopener" style="color:var(--fitc-green);">${esc(n.title)}</a> <span style="opacity:.6;">(${esc(n.source)})</span></li>`).join('')
+    : '<li>No card-offer headlines in the last few months yet — the list fills in automatically.</li>';
+})();

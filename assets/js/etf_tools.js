@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════════════
 //  AU ETF Tools — etf_tools.js
 //  Tabs: Compounding | Portfolio | Overlap | Retirement
-//  Version: 2026-03-10-v4   ← bump this on each deploy to bust cache
+//  Version: 2026-11-04-audit   ← bump this on each deploy to bust cache
 // ═══════════════════════════════════════════════════════════════
-const ETF_TOOLS_VERSION = '2026-03-10-v4';
-console.info(`[ETF Tools] Loaded version ${ETF_TOOLS_VERSION}. Tax profiles: ATO 2025-26 Stage 3 rates (16/30/37/45%).`);
+const ETF_TOOLS_VERSION = '2026-11-04-audit';
+console.info(`[ETF Tools] Loaded version ${ETF_TOOLS_VERSION}. Tax profiles: ATO 2026-27 resident rates (15/30/37/45%).`);
 
 let etfData = null;
 let currentTab = 'compound';
@@ -16,15 +16,26 @@ const MOS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 const rerender = debounce(() => renderETFTools(), 60);
 
-// ── Australian CPI by year (ABS 6401.0, calendar-year average, %) ────────────
-// Used in historical mode so the inflation-adjustment uses REAL past CPI
-// rather than a flat user assumption. 2025 is the current estimate.
+// ── Australian CPI by year (annual-average % change) ─────────────────────────
+// 1924–2025: RBA Statistical Table G1 (ABS CPI) — validated by tests/audit_checks.py
+// 1901–1923: rough estimates (no official CPI) — used only by the retirement simulator.
+// IMPORTANT: the retirement simulator needs CPI for EVERY year it has returns for;
+// previously only 2000–2025 existed, so 1970s withdrawals grew at a flat 2.5%
+// while returns were 1970s nominal returns — badly overstating success rates.
 const AU_CPI_YR = {
-  2000:4.5, 2001:4.4, 2002:3.0, 2003:2.8, 2004:2.3, 2005:2.7,
-  2006:3.5, 2007:2.3, 2008:4.4, 2009:1.8, 2010:2.8, 2011:3.3,
-  2012:1.8, 2013:2.4, 2014:2.5, 2015:1.5, 2016:1.3, 2017:1.9,
-  2018:1.9, 2019:1.6, 2020:0.9, 2021:3.8, 2022:7.8, 2023:5.4,
-  2024:3.8, 2025:2.8
+  1901:5.0, 1902:-2.0, 1903:2.0, 1904:0.0, 1905:-1.0, 1906:2.0, 1907:5.0, 1908:2.0, 1909:1.0, 1910:3.0,
+  1911:6.0, 1912:4.0, 1913:2.0, 1914:3.0, 1915:8.0, 1916:10.0, 1917:12.0, 1918:6.0, 1919:8.0, 1920:14.0,
+  1921:-10.0, 1922:-8.0, 1923:2.0, 1924:-2, 1925:2.2, 1926:1.3, 1927:-0.9, 1928:0.9, 1929:2.4, 1930:-6,
+  1931:-10.6, 1932:-4.9, 1933:-3.1, 1934:1.7, 1935:1.7, 1936:2.1, 1937:2.7, 1938:3, 1939:2.4, 1940:4,
+  1941:5.4, 1942:8.3, 1943:3.6, 1944:-0.6, 1945:0, 1946:1.7, 1947:3.8, 1948:8.8, 1949:9, 1950:9.1,
+  1951:19.7, 1952:17.3, 1953:4.3, 1954:0.7, 1955:2.2, 1956:5.9, 1957:2.6, 1958:1.2, 1959:1.8, 1960:3.8,
+  1961:2.5, 1962:-0.2, 1963:0.4, 1964:2.5, 1965:3.8, 1966:3.1, 1967:3.2, 1968:2.7, 1969:3, 1970:3.7,
+  1971:6, 1972:6, 1973:9.3, 1974:15.2, 1975:15.2, 1976:13.3, 1977:12.3, 1978:8, 1979:9.1, 1980:10.2,
+  1981:9.6, 1982:11.2, 1983:10.1, 1984:3.9, 1985:6.8, 1986:9.1, 1987:8.5, 1988:7.3, 1989:7.5, 1990:7.3,
+  1991:3.2, 1992:1, 1993:1.8, 1994:1.9, 1995:4.6, 1996:2.6, 1997:0.3, 1998:0.9, 1999:1.5, 2000:4.5,
+  2001:4.4, 2002:3, 2003:2.8, 2004:2.3, 2005:2.7, 2006:3.5, 2007:2.4, 2008:4.3, 2009:1.8, 2010:2.9,
+  2011:3.4, 2012:1.7, 2013:2.4, 2014:2.5, 2015:1.5, 2016:1.3, 2017:1.9, 2018:1.9, 2019:1.6, 2020:0.9,
+  2021:2.9, 2022:6.6, 2023:5.6, 2024:3.2, 2025:2.8
 };
 
 // ── Franking credit tax profiles ─────────────────────────────────
@@ -33,7 +44,9 @@ const AU_CPI_YR = {
 // whose marginal rate is below 30% — and the FULL credit is refunded to tax-exempt
 // entities (NFPs, charities, pension-phase super). This can substantially boost
 // effective returns for low-tax investors.
-// ── ATO 2025-26 resident rates (Stage 3 tax cuts apply from 1 Jul 2024) ──────
+// ── ATO 2026-27 resident rates ────────────────────────────────────────────────
+// Stage 3 brackets from 1 Jul 2024; the 16% rate falls to 15% from 1 Jul 2026 and
+// to 14% from 1 Jul 2027 (Treasury Laws Amendment (Cost of Living Tax Cuts) Act 2025).
 // Source: ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents
 // Note: these rates EXCLUDE the 2% Medicare levy (which is added separately).
 // Franking credit calculations use the statutory income tax rate only.
@@ -42,7 +55,7 @@ const TAX_PROFILES = {
   'pension':{ label:'Super — Pension Phase (0%)',           rate:0.00 },
   'super15':{ label:'Super — Accumulation (15%)',           rate:0.15 },
   'ind_0':  { label:'Individual — 0%  (≤$18,200)',          rate:0.00 },
-  'ind_16': { label:'Individual — 16%  ($18,201–$45,000)',  rate:0.16 },
+  'ind_16': { label:'Individual — 15%  ($18,201–$45,000)',  rate:0.15 },
   'ind_30': { label:'Individual — 30%  ($45,001–$135,000)', rate:0.30 },
   'ind_37': { label:'Individual — 37%  ($135,001–$190,000)',rate:0.37 },
   'ind_45': { label:'Individual — 45%  (>$190,000)',        rate:0.45 },
@@ -184,6 +197,40 @@ function getETF(ticker) {
   return etfData?.etfs[ticker] ?? null;
 }
 
+// ── Actual adjusted-price path (for exact historical period tracking) ──────
+// Weekly adjusted closes (dividends + splits folded in) from data/stocks/*.json.
+// When they cover the chosen dates we follow the REAL price path instead of
+// spreading calendar-year returns evenly — so e.g. 15 Mar 2021 → 10 Jun 2023
+// reflects what actually happened between those dates.
+function buildPricePath(prices) {
+  if (!prices || prices.length < 2) return null;
+  const pts = prices.map(p => [new Date(p.date + 'T00:00:00').getTime(), Math.log(p.close)])
+                    .filter(p => isFinite(p[1])).sort((a, b) => a[0] - b[0]);
+  if (pts.length < 2) return null;
+  return {
+    start: pts[0][0], end: pts[pts.length - 1][0],
+    // log-linear interpolation between weekly points
+    at(ts) {
+      if (ts <= pts[0][0]) return Math.exp(pts[0][1]);
+      if (ts >= pts[pts.length - 1][0]) return Math.exp(pts[pts.length - 1][1]);
+      let lo = 0, hi = pts.length - 1;
+      while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (pts[mid][0] <= ts) lo = mid; else hi = mid; }
+      const f = (ts - pts[lo][0]) / (pts[hi][0] - pts[lo][0]);
+      return Math.exp(pts[lo][1] + f * (pts[hi][1] - pts[lo][1]));
+    },
+  };
+}
+
+// A stored return for the CURRENT year is year-to-date. Convert it to an
+// annual rate so spreading it over 365 days doesn't understate growth.
+function annualiseIfPartial(ret, year, asOf) {
+  if (ret == null || year !== CY || !asOf) return ret;
+  const d = new Date(asOf + 'T00:00:00');
+  const frac = (d - new Date(year, 0, 1)) / (365.25 * 86400000);
+  if (!(frac > 0.05 && frac < 1)) return ret;
+  return (Math.pow(1 + ret / 100, 1 / frac) - 1) * 100;
+}
+
 // ── Daily compounding ────────────────────────────────────────────────
 // Steps one calendar day at a time so every tooltip position snaps to an
 // exactly-calculated value — no intra-period interpolation needed.
@@ -209,7 +256,7 @@ function calcMonthly() {
     : {};
 
   const frankingPct         = compState.frankingMode ? (etf.frankingPct || 0) : 0;
-  const margRate            = TAX_PROFILES[compState.taxProfile]?.rate ?? 0.325;
+  const margRate            = TAX_PROFILES[compState.taxProfile]?.rate ?? 0.30;
   const CORP_TAX            = 0.30;
   const frankingBoostAnnual = (etf.dividendYield / 100) * frankingPct
                               * (CORP_TAX / (1 - CORP_TAX)) * (1 - margRate);
@@ -220,6 +267,17 @@ function calcMonthly() {
   const endDate   = mode === 'projection'
     ? new Date(projStartYear + years, projStartMonth, projStartDay)
     : new Date(histEndYear,    histEndMonth,    histEndDay);
+
+  // Real price path, if this ticker's weekly adjusted prices cover the period
+  const pKey = ticker === 'LIVE' ? compState.liveTickerInput.trim().toUpperCase().replace('.AX','') : ticker;
+  const weekly = (_priceCache[pKey]?.weeklyPrices?.length ? _priceCache[pKey].weeklyPrices : null)
+              || (_liveCache[pKey]?._weeklyPrices?.length ? _liveCache[pKey]._weeklyPrices : null);
+  const path = mode === 'historical' ? buildPricePath(weekly) : null;
+  const WEEK = 7 * 86400000;
+  const usePath = !!path && startDate.getTime() >= path.start - WEEK && endDate.getTime() <= path.end + WEEK;
+  calcMonthly.lastMethod = usePath ? 'price-path' : (mode === 'historical' ? 'calendar-year' : 'projection');
+  const retAsOf = (ticker === 'LIVE' ? _liveCache[pKey]?._lastUpdated : null)
+               || etfData?.meta?.lastUpdated;
 
   const data = [];
   let bal = initial, contrib = initial, divs = 0;
@@ -242,7 +300,7 @@ function calcMonthly() {
     const y = cur.getFullYear(), m = cur.getMonth(), d = cur.getDate();
 
     const rawReturn = mode === 'historical'
-      ? (historicalRets[y] ?? etf.annualReturn)
+      ? (annualiseIfPartial(historicalRets[y], y, retAsOf) ?? etf.annualReturn)
       : etf.annualReturn;
     const merDeduction = mode === 'historical' ? 0 : (etf.mer / 100);
     const divYieldForYear = mode === 'historical'
@@ -250,7 +308,12 @@ function calcMonthly() {
       : etf.dividendYield;
     const netAnnual = (rawReturn / 100) - merDeduction - (drip ? 0 : divYieldForYear / 100);
 
-    const dailyGrowth   = Math.pow(1 + netAnnual,              1 / 365.25) - 1;
+    let dailyGrowth     = Math.pow(1 + netAnnual,              1 / 365.25) - 1;
+    if (usePath) {
+      // actual adjusted-price move for this day, minus cash dividends if DRP is off
+      dailyGrowth = path.at(ts) / path.at(ts - MS_DAY) - 1
+                  - (drip ? 0 : divYieldForYear / 100 / 365.25);
+    }
     const dailyDiv      = drip ? 0 : bal * (divYieldForYear / 100) / 365.25;
     const dailyContrib  = monthly / daysInMonth(y, m);
     const dailyFranking = frankingPct > 0 ? bal * frankingBoostAnnual / 365.25 : 0;
@@ -769,14 +832,14 @@ function renderCompounding() {
   // Franking: show button only for AU equity ETFs
   const frankingPct = etf.frankingPct || 0;
   const hasFranking  = frankingPct > 0;
-  const margRate     = TAX_PROFILES[taxProfile]?.rate ?? 0.325;
+  const margRate     = TAX_PROFILES[taxProfile]?.rate ?? 0.30;
   const CORP_TAX     = 0.30;
   // Annual effective boost per $1 for the chosen tax profile
   const frankingBoostAnnualPct = (etf.dividendYield / 100) * frankingPct * (CORP_TAX / (1 - CORP_TAX)) * (1 - margRate) * 100;
 
   // CPI description: project uses flat rate; historical uses real ABS data
   const cpiDesc = mode === 'historical'
-    ? `Real ABS CPI used year-by-year (e.g. 7.8% in 2022, 0.9% in 2020)`
+    ? `Real ABS CPI (RBA Table G1) used year-by-year (e.g. 6.6% in 2022, 0.9% in 2020)`
     : `2.5% = RBA mid-band target (2–3%). Long-run Aus avg ≈ 2.7% p.a. since 2000.`;
 
   return `<div>
@@ -1837,9 +1900,9 @@ function sourceFooter() {
         etf_tools.js ${ETF_TOOLS_VERSION}
       </span>
       <span style="font-size:.7rem;color:#334155;display:block;overflow-wrap:break-word;word-break:break-word;">
-        Tax rates: NFP 0% · Super Acc 15% · Ind <strong style="color:#4ade80;">16%</strong>/$18k–$45k ·
+        Tax rates: NFP 0% · Super Acc 15% · Ind <strong style="color:#4ade80;">15%</strong>/$18k–$45k ·
         <strong style="color:#4ade80;">30%</strong>/$45k–$135k · <strong style="color:#4ade80;">37%</strong>/$135k–$190k ·
-        <strong style="color:#4ade80;">45%</strong>/$190k+ (ATO 2025-26 Stage 3)
+        <strong style="color:#4ade80;">45%</strong>/$190k+ (ATO 2026-27 resident rates)
       </span>
     </div>
   </div>`;

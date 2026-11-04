@@ -1,0 +1,253 @@
+{
+ "_source": "FlightsFrom.com Qantas (QF) non-stop route lists per airport, retrieved 2026-11-04. Refreshed weekly by .github/workflows/scripts/update_qf_network.py when reachable. Routes can be seasonal \u2014 always check qantas.com.",
+ "updated": "2026-11-04",
+ "airports": [
+  "ADL",
+  "BNE",
+  "CBR",
+  "CNS",
+  "DRW",
+  "HBA",
+  "LST",
+  "MEL",
+  "MKY",
+  "NTL",
+  "OOL",
+  "PER",
+  "ROK",
+  "SYD",
+  "TSV"
+ ],
+ "routes": [
+  {
+   "a": "ADL",
+   "b": "BNE",
+   "miles": 1008
+  },
+  {
+   "a": "ADL",
+   "b": "CBR",
+   "miles": 606
+  },
+  {
+   "a": "ADL",
+   "b": "DRW",
+   "miles": 1638
+  },
+  {
+   "a": "ADL",
+   "b": "MEL",
+   "miles": 400
+  },
+  {
+   "a": "ADL",
+   "b": "NTL",
+   "miles": 781
+  },
+  {
+   "a": "ADL",
+   "b": "PER",
+   "miles": 1322
+  },
+  {
+   "a": "ADL",
+   "b": "SYD",
+   "miles": 727
+  },
+  {
+   "a": "BNE",
+   "b": "CBR",
+   "miles": 594
+  },
+  {
+   "a": "BNE",
+   "b": "CNS",
+   "miles": 870
+  },
+  {
+   "a": "BNE",
+   "b": "DRW",
+   "miles": 1781
+  },
+  {
+   "a": "BNE",
+   "b": "HBA",
+   "miles": 1116
+  },
+  {
+   "a": "BNE",
+   "b": "LST",
+   "miles": 1036
+  },
+  {
+   "a": "BNE",
+   "b": "MEL",
+   "miles": 859
+  },
+  {
+   "a": "BNE",
+   "b": "MKY",
+   "miles": 499
+  },
+  {
+   "a": "BNE",
+   "b": "NTL",
+   "miles": 380
+  },
+  {
+   "a": "BNE",
+   "b": "PER",
+   "miles": 2251
+  },
+  {
+   "a": "BNE",
+   "b": "ROK",
+   "miles": 325
+  },
+  {
+   "a": "BNE",
+   "b": "SYD",
+   "miles": 467
+  },
+  {
+   "a": "BNE",
+   "b": "TSV",
+   "miles": 696
+  },
+  {
+   "a": "CBR",
+   "b": "HBA",
+   "miles": 530
+  },
+  {
+   "a": "CBR",
+   "b": "MEL",
+   "miles": 293
+  },
+  {
+   "a": "CBR",
+   "b": "PER",
+   "miles": 1927
+  },
+  {
+   "a": "CBR",
+   "b": "SYD",
+   "miles": 147
+  },
+  {
+   "a": "CNS",
+   "b": "DRW",
+   "miles": 1046
+  },
+  {
+   "a": "CNS",
+   "b": "MEL",
+   "miles": 1445
+  },
+  {
+   "a": "CNS",
+   "b": "SYD",
+   "miles": 1232
+  },
+  {
+   "a": "CNS",
+   "b": "TSV",
+   "miles": 177
+  },
+  {
+   "a": "DRW",
+   "b": "MEL",
+   "miles": 1957
+  },
+  {
+   "a": "DRW",
+   "b": "PER",
+   "miles": 1656
+  },
+  {
+   "a": "DRW",
+   "b": "SYD",
+   "miles": 1971
+  },
+  {
+   "a": "HBA",
+   "b": "MEL",
+   "miles": 384
+  },
+  {
+   "a": "HBA",
+   "b": "PER",
+   "miles": 1883
+  },
+  {
+   "a": "HBA",
+   "b": "SYD",
+   "miles": 649
+  },
+  {
+   "a": "LST",
+   "b": "MEL",
+   "miles": 297
+  },
+  {
+   "a": "LST",
+   "b": "SYD",
+   "miles": 570
+  },
+  {
+   "a": "MEL",
+   "b": "NTL",
+   "miles": 521
+  },
+  {
+   "a": "MEL",
+   "b": "OOL",
+   "miles": 830
+  },
+  {
+   "a": "MEL",
+   "b": "PER",
+   "miles": 1687
+  },
+  {
+   "a": "MEL",
+   "b": "SYD",
+   "miles": 440
+  },
+  {
+   "a": "MEL",
+   "b": "TSV",
+   "miles": 1285
+  },
+  {
+   "a": "MKY",
+   "b": "ROK",
+   "miles": 174
+  },
+  {
+   "a": "MKY",
+   "b": "TSV",
+   "miles": 206
+  },
+  {
+   "a": "NTL",
+   "b": "PER",
+   "miles": 2095
+  },
+  {
+   "a": "OOL",
+   "b": "SYD",
+   "miles": 424
+  },
+  {
+   "a": "PER",
+   "b": "SYD",
+   "miles": 2047
+  },
+  {
+   "a": "SYD",
+   "b": "TSV",
+   "miles": 1056
+  }
+ ]
+}

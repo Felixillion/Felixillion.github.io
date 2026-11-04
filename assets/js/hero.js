@@ -1,6 +1,7 @@
 /**
  * assets/js/hero.js
- * Hover backdrop animations for the three homepage subheadings.
+ * Hover backdrop animations for the homepage subheadings and section links
+ * (incl. UnumLocalia Viewer → H&E slide with a wandering fluorescence lens).
  *
  * Bioinformagician  → fluorescence microscopy: FITC/DAPI/TRITC/CY5 particles + magic sparks
  * Composer of Worlds → 3-D rotating D&D dice (d4/d6/d8/d20) + abundant arcane/musical glyphs
@@ -2211,16 +2212,140 @@
     ctx.fillStyle='rgba(148,163,184,.55)';
     ctx.fillText(lbl2,W/2,lblY2);
     ctx.restore();
+
   }
+  // ══════════════════════════════════════════════════════════════════════════
+  //  THEME — UnumLocalia Viewer: H&E tissue with a wandering "fluorescence lens"
+  //  Each hover randomises the tissue, the protein channel shown in the lens,
+  //  and the gene transcripts that twinkle across the slide.
+  // ══════════════════════════════════════════════════════════════════════════
+  const UL_PROTEINS = [["CK8", "TRITC"], ["VEGF", "TRITC"], ["CD45RA", "TRITC"], ["vimentin", "TRITC"], ["E-Cadherin", "TRITC"], ["CD1c", "TRITC"], ["IL-10", "TRITC"], ["podoplanin", "FITC"], ["FXIIIa", "FITC"], ["CD66", "FITC"], ["CD20", "TRITC"], ["αSMA", "TRITC"], ["CD45", "TRITC"], ["HepPar1", "TRITC"], ["CD206", "TRITC"]];  // [marker, fluorophore] as imaged in the viewer
+  const UL_GENES    = ["ACE2", "ATG7", "BCL11B", "BCORL1", "BICRAL", "CA4", "CACNA1H", "CAMK2D", "CCDC27", "CCL14", "CD3E", "CD47", "CD68", "CD83", "CDH1", "CDK1", "CDX1", "CRB2", "CST7", "CYP2D6", "DISP1", "DOK5", "FOXJ1", "GATA1", "GLRB", "GPR37", "GRB2", "HNRNPF", "IDO1", "KL", "KMT2D", "MED12", "MYC", "NPY1R", "PDX1", "PER1", "PINK1", "POU5F1", "PPM1A", "PPP1R37", "PRKN", "PTGES", "SNX17", "SOX17", "TCEANC2", "TFAP2A", "TMEM126A", "TNFRSF1B", "TP53", "TRH", "TRPV1", "TYRO3", "UPK3A", "UPK3B", "VAMP3", "WNT5A"];
+  const UL_FLUOR_COL = { FITC:'#39ff14', TRITC:'#ff4136' };
+  let ulHE=null, ulFL=null, ulLens=null, ulSpots=[], ulT=0, ulMarker='', ulCol='#39ff14', ulFluor='FITC', ulBubbles=[];
+
+  function ulBlobPath(c, cx, cy, r, seed) {
+    c.beginPath();
+    for (let a = 0; a <= Math.PI * 2 + 0.01; a += 0.25) {
+      const rr = r * (0.8 + 0.25 * Math.sin(a * 3 + seed) + 0.12 * Math.sin(a * 7 + seed * 2));
+      const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr;
+      a === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+    }
+    c.closePath();
+  }
+
+  function initUnum() {
+    ulT = 0;
+    const pr = UL_PROTEINS[Math.floor(Math.random() * UL_PROTEINS.length)];
+    ulMarker = pr[0]; ulFluor = pr[1]; ulCol = UL_FLUOR_COL[pr[1]] || '#39ff14';
+    // Offscreen slides: H&E (pink/purple) and the matching fluorescence view
+    ulHE = document.createElement('canvas'); ulHE.width = W; ulHE.height = H;
+    ulFL = document.createElement('canvas'); ulFL.width = W; ulFL.height = H;
+    const he = ulHE.getContext('2d'), fc = ulFL.getContext('2d');
+    he.fillStyle = 'rgba(250,236,244,0.10)'; he.fillRect(0, 0, W, H);
+    fc.fillStyle = 'rgba(0,0,0,0.92)'; fc.fillRect(0, 0, W, H);
+    // Eosin stroma lobules
+    const lobes = 9 + Math.floor(Math.random() * 6);
+    const centres = [];
+    for (let i = 0; i < lobes; i++) {
+      const cx = Math.random() * W, cy = Math.random() * H, r = 60 + Math.random() * Math.min(W, H) * 0.18;
+      centres.push([cx, cy, r]);
+      ulBlobPath(he, cx, cy, r, Math.random() * 10);
+      he.fillStyle = `rgba(${225 + Math.random() * 25},${120 + Math.random() * 50},${170 + Math.random() * 40},0.20)`;
+      he.fill();
+    }
+    // Haematoxylin nuclei (and the same nuclei as DAPI + marker in fluorescence)
+    const positive = Math.random() * 0.35 + 0.15;
+    for (let i = 0; i < 900; i++) {
+      const c = centres[Math.floor(Math.random() * centres.length)];
+      const a = Math.random() * Math.PI * 2, d = Math.sqrt(Math.random()) * c[2];
+      const x = c[0] + Math.cos(a) * d, y = c[1] + Math.sin(a) * d, r = 2 + Math.random() * 3.2;
+      he.beginPath(); he.ellipse(x, y, r * 1.2, r, a, 0, Math.PI * 2);
+      he.fillStyle = `rgba(${70 + Math.random() * 40},${30 + Math.random() * 25},${120 + Math.random() * 50},0.55)`; he.fill();
+      fc.beginPath(); fc.ellipse(x, y, r * 1.2, r, a, 0, Math.PI * 2);
+      fc.fillStyle = 'rgba(56,120,255,0.75)'; fc.fill();
+      if (Math.random() < positive) {
+        fc.beginPath(); fc.arc(x, y, r * 2.1, 0, Math.PI * 2);
+        fc.strokeStyle = ulCol; fc.globalAlpha = 0.55; fc.lineWidth = 1.6; fc.stroke(); fc.globalAlpha = 1;
+      }
+    }
+    ulLens = { x: W * 0.3, y: H * 0.5, r: Math.min(W, H) * 0.17, a: Math.random() * 6.28 };
+    // Gene transcript "spots" — tiny twinkling dots, some labelled
+    ulSpots = Array.from({ length: 70 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      g: UL_GENES[Math.floor(Math.random() * UL_GENES.length)],
+      col: ['#fbbf24', '#22d3ee', '#a3e635', '#f472b6', '#ffffff'][Math.floor(Math.random() * 5)],
+      ph: Math.random() * 6.28, sp: 0.02 + Math.random() * 0.04, lab: Math.random() < 0.28,
+    }));
+    ulBubbles = [];
+  }
+
+  function stepUnum() {
+    if (!ulHE) initUnum();
+    ulT += 1;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(8,4,14,0.55)'; ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = 0.9; ctx.drawImage(ulHE, 0, 0); ctx.globalAlpha = 1;
+
+    // Gene spots twinkle; labelled ones occasionally "pop" a speech bubble
+    ctx.font = '10px "DM Mono",monospace'; ctx.textAlign = 'left';
+    for (const s of ulSpots) {
+      s.ph += s.sp;
+      const a = 0.35 + 0.45 * Math.max(0, Math.sin(s.ph));
+      ctx.globalAlpha = a; ctx.fillStyle = s.col;
+      ctx.beginPath(); ctx.arc(s.x, s.y, 2.2, 0, Math.PI * 2); ctx.fill();
+      if (s.lab) { ctx.globalAlpha = a * 0.7; ctx.fillText(s.g, s.x + 5, s.y - 4); }
+      if (s.lab && Math.random() < 0.0006 && ulBubbles.length < 3) {
+        const quips = ['expressed!', 'over here!', 'p < 0.05', 'upregulated', 'just vibing', 'spatially variable', 'am I a marker?'];
+        ulBubbles.push({ x: s.x, y: s.y, g: s.g, q: quips[Math.floor(Math.random() * quips.length)], life: 160 });
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    // Wandering fluorescence lens (Lissajous drift)
+    const L = ulLens;
+    L.x = W * (0.5 + 0.33 * Math.sin(ulT * 0.0042 + L.a));
+    L.y = H * (0.5 + 0.28 * Math.sin(ulT * 0.0061 + L.a * 1.7));
+    ctx.save();
+    ctx.beginPath(); ctx.arc(L.x, L.y, L.r, 0, Math.PI * 2); ctx.clip();
+    ctx.drawImage(ulFL, 0, 0);
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(L.x, L.y, L.r, 0, Math.PI * 2);
+    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(226,232,240,0.55)'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(L.x, L.y, L.r + 6, 0, Math.PI * 2);
+    ctx.lineWidth = 1; ctx.strokeStyle = ulCol; ctx.globalAlpha = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+    // Lens handle + channel label
+    ctx.save(); ctx.translate(L.x, L.y); ctx.rotate(0.8);
+    ctx.fillStyle = 'rgba(148,163,184,0.6)'; ctx.fillRect(L.r + 6, -6, L.r * 0.7, 12); ctx.restore();
+    ctx.font = 'bold 12px "DM Mono",monospace'; ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(2,8,24,0.75)';
+    const lbl = `DAPI + ${ulMarker} (${ulFluor})`;
+    const tw = ctx.measureText(lbl).width + 14;
+    ctx.fillRect(L.x - tw / 2, L.y + L.r + 10, tw, 18);
+    ctx.fillStyle = ulCol; ctx.fillText(lbl, L.x, L.y + L.r + 23);
+
+    // Gene speech bubbles
+    for (const b of ulBubbles) {
+      b.life--; const al = Math.min(1, b.life / 40);
+      const txt = `${b.g}: ${b.q}`; ctx.font = '11px "DM Sans",sans-serif';
+      const w = ctx.measureText(txt).width + 14;
+      ctx.globalAlpha = al; ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(b.x + 6, b.y - 34, w, 20, 8) : ctx.rect(b.x + 6, b.y - 34, w, 20); ctx.fill();
+      ctx.fillStyle = '#1e1b4b'; ctx.textAlign = 'left'; ctx.fillText(txt, b.x + 13, b.y - 20);
+    }
+    ctx.globalAlpha = 1;
+    ulBubbles = ulBubbles.filter(b => b.life > 0);
+  }
+
   //  Loop + theme switching
   // ══════════════════════════════════════════════════════════════════════════
-  const STEPS={bio:stepBio,composer:stepComposer,cats:stepCats,cv:stepCV,gallery:stepGallery,ff:stepFF,etf:stepETF,cosmic:stepCosmic,legacy:stepLegacy};
-  const INITS={bio:initBio,composer:initComposer,cats:initCats,cv:initCV,gallery:initGallery,ff:initFF,etf:initETF,cosmic:initCosmic,legacy:initLegacy};
+  const STEPS={bio:stepBio,composer:stepComposer,cats:stepCats,cv:stepCV,gallery:stepGallery,ff:stepFF,etf:stepETF,cosmic:stepCosmic,legacy:stepLegacy,unum:stepUnum};
+  const INITS={bio:initBio,composer:initComposer,cats:initCats,cv:initCV,gallery:initGallery,ff:initFF,etf:initETF,cosmic:initCosmic,legacy:initLegacy,unum:initUnum};
 
   function loop() { if(currentTheme) STEPS[currentTheme]?.(); requestAnimationFrame(loop); }
 
   function activateTheme(t) {
-    if (t === currentTheme) { show(); return; } // same theme — re-show without re-init
+    if (t === currentTheme && t !== 'unum') { show(); return; } // same theme — re-show without re-init (UnumLocalia re-randomises)
     currentTheme = t;
     ctx.clearRect(0, 0, W, H);
     INITS[t]?.();
