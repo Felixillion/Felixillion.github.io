@@ -23,7 +23,7 @@ permalink: /au-investing.html
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 
 .aui-hero{
-  max-width:960px;margin:0 auto;padding:3rem 1.5rem 1.5rem;
+  max-width:960px;margin:0 auto;padding:8rem 1.5rem 1.5rem;  /* clears the fixed site nav */
 }
 .aui-hero-title{
   font-family:'Syne',sans-serif;font-size:clamp(1.7rem,4vw,3rem);font-weight:800;
@@ -39,7 +39,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   display:flex;gap:.4rem;flex-wrap:wrap;padding:.4rem;
   background:var(--surface);border-radius:14px;border:1px solid var(--border);
   margin-bottom:1.5rem;max-width:960px;margin-left:auto;margin-right:auto;
-  position:sticky;top:56px;z-index:80;backdrop-filter:blur(12px);
+  position:sticky;top:110px;z-index:80;backdrop-filter:blur(12px);
 }
 .aui-tab{
   padding:.45rem 1rem;border-radius:10px;border:none;background:transparent;
@@ -111,7 +111,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 /* ── responsive ── */
 .aui-g2{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
 @media(max-width:640px){
-  .aui-tabs{top:52px;}
+  .aui-tabs{top:100px;}
   .aui-heat{font-size:.65rem;}
   .aui-heat th,.aui-heat td{padding:.3rem .35rem;}
 }
@@ -140,7 +140,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     The <strong>4% rule</strong> came from the 1994 Bengen study on US data.
     Australia has a different market history, different inflation, different tax treatment (franking credits),
     and different super rules. This tool runs the same historical sequence-of-returns methodology on
-    <strong>124 years of Australian data (1901–2024)</strong> across different portfolio mixes.
+    <strong>Australian data from 1970 onwards</strong> (or back to 1901 if you choose — with caveats) across different portfolio mixes.
   </div>
 
   <!-- Controls -->
@@ -217,6 +217,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <option value="mc">Monte Carlo (5k paths)</option>
         </select>
       </div>
+      <div class="aui-ctrl">
+        <label>Historical data from</label>
+        <select id="swr-from" title="Before 1970 only Australian shares and CPI are well documented; international share and bond returns are rough reconstructions.">
+          <option value="1970" selected>1970 onwards (recommended)</option>
+          <option value="1901">1901 onwards (pre-1970 partly reconstructed)</option>
+        </select>
+      </div>
     </div>
 
     <div class="aui-sec-title" style="margin-top:.5rem;">Portfolio</div>
@@ -284,7 +291,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="aui-card">
       <div class="aui-label" style="color:#4ade80;">✅ Helps</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
-        <strong>Franking credits</strong> add ~0.3–0.8% per year to AU share returns for domestic investors — invisible in index returns but real in your pocket. For a 100% AU portfolio, this is worth 0.5–0.7% annually. For VDHG-like portfolios (~36% AU shares), closer to 0.2–0.3%.
+        <strong>Franking credits</strong> are worth roughly 1–1.3% a year of portfolio value before tax for 100% Australian shares (≈3.5–4% dividend yield, ~75% franked) — invisible in index returns but real in your pocket. How much you keep depends on your tax rate (all of it at 0%, about 0.7% a year at 45%). For a VDHG-like mix (~36% Australian shares) it's roughly a third of that.
         <br><br>
         <strong>Long data record:</strong> ~124 years including two World Wars, the Great Depression (All Ords accumulation −28% in 1930), the 1970s stagflation (CPI 15% in 1974–75) and the GFC. The SWR you see is truly stress-tested.
       </div>
@@ -302,15 +309,16 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="aui-card">
       <div class="aui-label" style="color:var(--amber);">💡 Takeaways</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
-        • With the corrected data (Nov 2026), a 4% inflation-adjusted withdrawal over 30 years survived in roughly 94–98% of historical Australian start years for both 100% AU shares and VDHG-like mixes — use the heat map above for your exact case, as it is computed live.
+        • Using 1970 onwards (27 thirty-year windows), a 4% inflation-adjusted withdrawal lasted 30 years in about 96% of starting years for 100% Australian shares and about 89% for a VDHG-like mix. The heat map above is calculated live for your exact settings.
         <br><br>
-        • Longer retirements need lower rates: at 50 years, 3.5% failed in about one in five historical windows for a VDHG-like mix.
+        • Longer retirements need lower rates: over 40 years, 3.5% lasted in about 88% of windows for a VDHG-like mix (only 17 windows — a small sample).
         <br><br>
-        • Franking credits lift effective returns for AU-heavy portfolios; the size depends on your tax rate (largest for 0–15% taxpayers).
+        • Franking credits lift effective returns for Australian-share-heavy portfolios; the benefit is largest for 0–15% taxpayers and smallest at 45%.
         <br><br>
-        • Flexible spending (cutting withdrawals after bad years) is widely found to improve survival rates; this tool currently models fixed real withdrawals only.
+        • Flexible spending (cutting withdrawals after bad years) is widely found to improve survival rates; this tool models fixed real withdrawals only.
         <br><br>
-        • In this dataset the <strong>worst starting years</strong> are 1969–1973: share prices fell while inflation of 10–16% a year pushed up the real cost of withdrawals. Results for diversified mixes before 1970 rely on approximate international and bond data and should be treated cautiously.
+        • The <strong>worst starting years</strong> are 1970–1974: shares fell while CPI inflation of roughly 9–15% a year (1973–77) pushed up the real cost of withdrawals.
+        History is one sample path — future returns can be worse than anything in this dataset.
       </div>
     </div>
   </div>
@@ -333,20 +341,17 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <strong>Bessembinder (2018)</strong> found that over 1926–2016, the best-performing <strong>4% of US-listed stocks</strong> (about 1,000 of ~26,000) accounted for all of the net wealth creation above one-month Treasury bills, and just 86 stocks accounted for half of it.
     The other 96% collectively matched T-bills, and more than half of all stocks returned less than T-bills over their lifetimes.
     This has profound implications for stock-picking vs diversification.
-    Below is a Bessembinder-style analysis of the <strong>Australian market</strong>.
+    What would this look like for the <strong>Australian market</strong>?
   </div>
 
   <div class="aui-callout aui-callout-amber">
-    <strong>Data note:</strong>
-    This analysis uses yfinance data for current ASX 200 constituents (available since ~2000).
-    The full ASX history would require hand-curated data including delisted companies — the most important category for Bessembinder-style analysis (survivorship bias affects everything if you exclude failures).
-    Run <code>compute_bessembinder.py</code> via GitHub Actions to update with latest data. The pre-computed results below are embedded in <code>_data/bessembinder.json</code>.
-    {{ site.data.bessembinder.meta.last_updated | default: 'Not yet computed — run the workflow.' }}
+    <strong>Why there are no Australian numbers here (yet):</strong>
+    a fair Australian version needs the full price <em>and</em> shares-on-issue history of every company ever listed — including the
+    failures that were delisted (ABC Learning, HIH, Allco, Centro, MFS…). Free data sources only cover companies that are still listed,
+    which would make the market look far less concentrated than it really is. Rather than publish misleading figures, this section
+    shows only the published research until a proper dataset is available.
   </div>
-
-  <!-- Key findings cards -->
-  <div class="aui-sec-title">Key Findings — ASX Analysis</div>
-  {% unless site.data.bessembinder %}<div class="aui-callout aui-callout-red"><strong>Placeholder figures:</strong> the numbers below are illustrative, not computed from market data. They will be replaced automatically once the weekly Bessembinder job has run.</div>{% endunless %}
+  {% if site.data.bessembinder %}<div class="aui-sec-title">Key Findings — ASX Analysis</div>{% endif %}
   <div class="aui-g2" id="bess-finding-cards" style="margin-bottom:1.5rem;"></div>
 
   <!-- Cumulative contribution chart -->
@@ -394,7 +399,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="aui-card">
       <div class="aui-label" style="color:var(--blue);">📈 For ETF Investors</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
-        Owning an index fund guarantees you hold <em>all</em> of the rare massive winners like CBA (×132 since 1991), CSL (×900 since 1994), and REA Group (×185 since 2000). A stock picker who held these names correctly would look like a genius — but they also needed to avoid the delisted failures.
+        Owning an index fund guarantees you hold <em>all</em> of the rare massive winners like CBA, CSL and REA Group. A stock picker who held these names correctly would look like a genius — but they also needed to avoid the delisted failures.
         <br><br>
         Bessembinder's result doesn't mean stocks are bad — it means that <em>diversification across all stocks is essential</em> to reliably capturing the market's positive skew. Holding 10–20 AU stocks dramatically increases the chance you miss the tiny group that accounts for most returns.
       </div>
@@ -403,7 +408,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <div class="aui-label" style="color:var(--red);">☠️ Survivorship Bias Warning</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
         The most dangerous version of this analysis uses only <em>current</em> index constituents — today's ASX 200.
-        These stocks already survived. The real Bessembinder analysis requires including every company ever listed on the ASX, including delisted failures (ABC Learning, HIH Insurance, Allco Finance, Centro, MFS, etc.) — roughly 3,000+ companies listed and de-listed since 1990 alone.
+        These stocks already survived. The real Bessembinder analysis requires including every company ever listed on the ASX, including delisted failures (ABC Learning, HIH Insurance, Allco Finance, Centro, MFS, etc.) — thousands of companies have listed and delisted over the decades.
         <br><br>
         With survivorship bias removed, the concentration effect is <em>even more extreme</em> than the charts below suggest.
       </div>
@@ -415,27 +420,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         A follow-up study of global markets (Bessembinder, Chen, Choi &amp; Wei, 2023) found similarly extreme concentration outside the US.
         <br><br>
         For Australia, expect the same direction of result; the size of the effect can't be measured properly without delisted companies (see survivorship warning).
-        CBA, CSL, BHP, RIO, and Macquarie together account for a disproportionate share of total ASX wealth creation since 1990.
+        Large companies such as CBA, CSL, BHP, Rio Tinto and Macquarie are likely among the biggest wealth creators — but that can only be quantified properly with the full dataset.
         <br><br>
         <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X18301521" target="_blank" rel="noopener" style="color:var(--blue);font-size:.78rem;">↗ Bessembinder (2018) — original paper</a>
         <br>
         <a href="https://www.investmentoffice.com/Observations/Academia/Do_stocks_outperform_Treasury_bills.html" target="_blank" rel="noopener" style="color:var(--blue);font-size:.78rem;">↗ Summary — Investment Office</a>
       </div>
     </div>
-  </div>
-
-  <div class="aui-callout aui-callout-green">
-    <strong>📋 How to get live data:</strong>
-    Copy <code>compute_bessembinder.py</code> to <code>.github/workflows/scripts/</code> in your repo.
-    Add it to <code>daily-update.yml</code> (already done — runs Sundays).
-    On first run: trigger via GitHub Actions → workflow_dispatch → "Compute Bessembinder ASX Analysis".
-    The script writes <code>_data/bessembinder.json</code> and Jekyll injects it at build time.
-    Until then, the charts below show <strong>illustrative placeholder numbers, not measured data</strong>.
-  </div>
-  <div class="aui-callout">
-    <strong>Run the full analysis:</strong>
-    Add <code>compute_bessembinder.py</code> to <code>.github/workflows/scripts/</code> and trigger via workflow dispatch.
-    The script downloads price history for all ASX 200 constituents via yfinance, computes wealth-creation contribution per stock, and writes results to <code>_data/bessembinder.json</code>.
   </div>
 
 </div>
@@ -468,9 +459,9 @@ const AU_CPI = {
   2021:2.9, 2022:6.6, 2023:5.6, 2024:3.2, 2025:2.8
 };
 
-// Historical US CPI (approximated for Trinity Control)
+// Historical US CPI — BLS CPI-U annual-average % change (used for the US 'Trinity' comparison)
 const US_CPI = {
-  1926:-1.5,1927:-1.5,1928:-1.2,1929:0.0,1930:-2.3,1931:-9.0,1932:-9.9,1933:-5.1,1934:3.1,1935:2.2,
+  1926:1.1,1927:-1.7,1928:-1.7,1929:0.0,1930:-2.3,1931:-9.0,1932:-9.9,1933:-5.1,1934:3.1,1935:2.2,
   1936:1.5,1937:3.6,1938:-2.1,1939:-1.4,1940:0.7,1941:5.0,1942:10.9,1943:6.1,1944:1.7,1945:2.3,
   1946:8.3,1947:14.4,1948:8.1,1949:-1.2,1950:1.3,1951:7.9,1952:1.9,1953:0.8,1954:0.7,1955:-0.4,
   1956:1.5,1957:3.3,1958:2.8,1959:0.7,1960:1.7,1961:1.0,1962:1.0,1963:1.3,1964:1.3,1965:1.6,
@@ -479,20 +470,20 @@ const US_CPI = {
   1986:1.9,1987:3.6,1988:4.1,1989:4.8,1990:5.4,1991:4.2,1992:3.0,1993:3.0,1994:2.6,1995:2.8,
   1996:3.0,1997:2.3,1998:1.6,1999:2.2,2000:3.4,2001:2.8,2002:1.6,2003:2.3,2004:2.7,2005:3.4,
   2006:3.2,2007:2.8,2008:3.8,2009:-0.4,2010:1.6,2011:3.2,2012:2.1,2013:1.5,2014:1.6,2015:0.1,
-  2016:1.3,2017:2.1,2018:2.4,2019:1.8,2020:1.2,2021:4.7,2022:8.0,2023:4.1,2024:2.5
+  2016:1.3,2017:2.1,2018:2.4,2019:1.8,2020:1.2,2021:4.7,2022:8.0,2023:4.1,2024:2.9
 };
 
 const PRESETS = {
   '100AU':  {label:'100% AU Shares',alloc:{AU_SHARES:100},mer:0.07,frank:true},
   'DHHF':   {label:'DHHF',          alloc:{AU_SHARES:37,INTL_SHARES:63},mer:0.19,frank:true},
-  'VDHG':   {label:'VDHG',          alloc:{AU_SHARES:36,INTL_SHARES:37,AU_BONDS:6,GLOBAL_BONDS:16,CASH:5},mer:0.27,frank:true},
+  'VDHG':   {label:'VDHG',          alloc:{AU_SHARES:36,INTL_SHARES:54,AU_BONDS:3,GLOBAL_BONDS:7},mer:0.27,frank:true},
   '60_40':  {label:'60/40 Balanced',alloc:{AU_SHARES:30,INTL_SHARES:30,AU_BONDS:20,GLOBAL_BONDS:20},mer:0.10,frank:true},
-  'VDBA':   {label:'VDBA (Balanced)',alloc:{AU_SHARES:21,INTL_SHARES:19,AU_BONDS:29,GLOBAL_BONDS:27,CASH:4},mer:0.27,frank:true},
+  'VDBA':   {label:'VDBA (Balanced)',alloc:{AU_SHARES:20,INTL_SHARES:30,AU_BONDS:15,GLOBAL_BONDS:35},mer:0.27,frank:true},
   '100GL':  {label:'100% Global',   alloc:{INTL_SHARES:100},mer:0.18,frank:false},
   '100US':  {label:'100% US',       alloc:{US_SHARES:100},mer:0.03,frank:false},
   'US6040': {label:'US 60/40 (Trinity Control)',alloc:{US_SHARES:60,GLOBAL_BONDS:40},mer:0.05,frank:false},
   'BONDS':  {label:'100% AU Bonds', alloc:{AU_BONDS:100},mer:0.10,frank:false},
-  'CUSTOM': {label:'Custom',        alloc:{AU_SHARES:36,INTL_SHARES:37,AU_BONDS:6,GLOBAL_BONDS:16,CASH:5},mer:0.27,frank:true},
+  'CUSTOM': {label:'Custom',        alloc:{AU_SHARES:36,INTL_SHARES:54,AU_BONDS:3,GLOBAL_BONDS:7},mer:0.27,frank:true},
 };
 
 const ALLOC_LABELS = {
@@ -567,7 +558,9 @@ function frankBoost(alloc, enabled, profile) {
 
 function getYears() {
   if(!etfData) return [];
-  return Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).sort((a,b)=>a-b);
+  // Default 1970+: pre-1970 international-share and bond series are rough reconstructions
+  const from = Number(document.getElementById('swr-from')?.value || 1970);
+  return Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).filter(y=>y>=from).sort((a,b)=>a-b);
 }
 
 function simOneSequence(startYear, portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer) {
@@ -697,7 +690,7 @@ function initSWR(){
   buildCustomAllocSliders();
 
   // Wire controls
-  ['swr-pv','swr-wd','swr-yrs','swr-timing','swr-infl','swr-frank','swr-tax-profile','swr-target','swr-method'].forEach(id=>{
+  ['swr-pv','swr-wd','swr-yrs','swr-timing','swr-infl','swr-frank','swr-tax-profile','swr-target','swr-method','swr-from'].forEach(id=>{
     document.getElementById(id).addEventListener('change', readControlsAndUpdate);
     document.getElementById(id).addEventListener('input',  readControlsAndUpdate);
   });
@@ -1028,7 +1021,18 @@ const BESS_FALLBACK = {
 };
 
 function renderBessembinder(){
-  const data = (BESS_DATA && BESS_DATA.top_stocks) ? BESS_DATA : BESS_FALLBACK;
+  // Never show made-up numbers: until the weekly job has produced real results,
+  // hide the charts/tables and show an explanation instead.
+  if (!(BESS_DATA && BESS_DATA.top_stocks)) {
+    const cards = document.getElementById('bess-finding-cards');
+    if (cards) cards.innerHTML = '<div class="aui-callout aui-callout-amber" style="grid-column:1/-1;">No Australian figures are shown — see the note above for why.</div>';
+    ['bess-lorenz-canvas','bess-dist-canvas','bess-top-table'].forEach(id => {
+      const el = document.getElementById(id); const box = el && (el.closest('.aui-card') || el.parentElement);
+      if (box) box.style.display = 'none';
+    });
+    return;
+  }
+  const data = BESS_DATA;
   const c=data.concentration;
   const meta=data.meta;
 

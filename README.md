@@ -230,3 +230,25 @@ The Actions workflow runs separately on its own cron schedule and commits data u
 - **Tax rates:** ATO 2025-26 resident individual rates (Stage 3 tax cuts)
 - **Planetary positions:** VSOP87 truncated series (generate_astrology_data.js)
 - **FF card data:** Manually sourced from bank websites
+
+---
+
+## Data audit & ground truth
+
+`tests/audit_checks.py` (run automatically by `.github/workflows/data-audit.yml` after every data update, and on every push) checks the site against independent references in `data/ground_truth/reference_series.json`:
+
+| Check | Reference | Fails when |
+|---|---|---|
+| Freshness | — | Cosmic Lab data > 1 day old, ETF/stock data > 8 days old |
+| CPI tables (ETF tools, AU investing) | RBA Table G1 | any year differs by > 0.15 pts |
+| AU shares asset class | All Ords Accumulation (Market Index) | any year out of tolerance |
+| Cash asset class | RBA Table F1 | any year differs by > 0.3 pts |
+| ETF annual returns | Yahoo adjusted-close files in `data/stocks/` | stored value differs by > 1 pt |
+| Income tax second bracket | ATO rates by financial year | rate doesn't match the current FY |
+| Status Credits | Qantas earning tables | table or tier thresholds differ |
+| Planet positions | PyEphem (VSOP87/ELP) | any body off by > 0.5° |
+
+Warnings (don't fail the build): FF offers not re-verified in 60 days, Rich List edition out of date, scraped "proposed" values awaiting review.
+If the audit fails, an issue labelled `data-audit` is opened automatically.
+
+**Yearly checklist (Jan–Jun):** add last year's CPI and cash rate from the RBA tables, last year's All Ords Accumulation return, next FY's tax rates (by 1 July) and the new AFR Rich List figures (late May) to `reference_series.json` / `_data/billionaires.json`; re-verify the FF card offers every ~6 weeks (update `verified` per card in `ff_scraper.js`).

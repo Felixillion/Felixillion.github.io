@@ -118,10 +118,11 @@ let retState = {
   preset: 'VDHG',
   portfolioValue: 500000, annualWithdrawal: 25000,
   retirementYears: 30, timing: 'start',
+  fromYear: 1970,
   inflationAdjust: true, inflationRate: 2.5,
   manualMER: null,
   useCustomAlloc: false,
-  customAlloc: { AU_SHARES:36, INTL_SHARES:20, US_SHARES:17, AU_BONDS:6, GLOBAL_BONDS:16, CASH:5 },
+  customAlloc: { AU_SHARES:36, INTL_SHARES:54, US_SHARES:0, AU_BONDS:3, GLOBAL_BONDS:7, CASH:0 },
   // Franking credits on AU Shares component
   frankingMode: false,
   taxProfile: 'ind_30',
@@ -302,7 +303,10 @@ function calcMonthly() {
     const rawReturn = mode === 'historical'
       ? (annualiseIfPartial(historicalRets[y], y, retAsOf) ?? etf.annualReturn)
       : etf.annualReturn;
-    const merDeduction = mode === 'historical' ? 0 : (etf.mer / 100);
+    // Historical returns (and the CAGR used as the projection default for real ETFs)
+    // come from unit prices, which are already NET of fees — so MER is only deducted
+    // for custom/assumed gross returns.
+    const merDeduction = (mode === 'historical' || etf.annualReturnBasis) ? 0 : (etf.mer / 100);
     const divYieldForYear = mode === 'historical'
       ? ((historicalDivYields[String(y)] ?? etf.dividendYield) || 0)
       : etf.dividendYield;
@@ -840,7 +844,7 @@ function renderCompounding() {
   // CPI description: project uses flat rate; historical uses real ABS data
   const cpiDesc = mode === 'historical'
     ? `Real ABS CPI (RBA Table G1) used year-by-year (e.g. 6.6% in 2022, 0.9% in 2020)`
-    : `2.5% = RBA mid-band target (2–3%). Long-run Aus avg ≈ 2.7% p.a. since 2000.`;
+    : `2.5% = RBA mid-band target (2–3%). Australian CPI averaged ≈ 2.9% p.a. over 2000–2025 (RBA G1).`;
 
   return `<div>
   <!-- Mode / DRP / Inflation / Franking row -->
@@ -870,7 +874,7 @@ function renderCompounding() {
   ${showInflation?`<div style="font-size:.7rem;color:#94a3b8;background:rgba(251,146,60,.05);border:1px solid rgba(251,146,60,.15);border-radius:6px;padding:.45rem .8rem;margin-bottom:.75rem;">
     <strong style="color:#fb923c;">Real Value</strong> deflates by CPI so you see purchasing power in today's dollars.
     ${mode==='historical'
-      ?`Uses <strong>real ABS CPI year-by-year</strong> (e.g. 7.8% in 2022, 0.9% in 2020, 3.8% in 2024). No user assumption needed.
+      ?`Uses <strong>real ABS CPI year-by-year</strong> (e.g. 6.6% in 2022, 0.9% in 2020, 3.2% in 2024 — annual averages, RBA Table G1). No user assumption needed.
         Source: <a href="https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia" target="_blank" rel="noopener" style="color:#fb923c;text-decoration:none;">ABS Consumer Price Index ↗</a>`
       :`<strong>2.5%</strong> = RBA's mid-band target (2–3%). Long-run Aus avg since 2000 ≈ 2.7% p.a.
         Other scenarios: 2.0% (low inflation era), 3.5% (late 1990s), 6–8% (1970s–80s).`}
@@ -892,7 +896,8 @@ function renderCompounding() {
       The ATO returns this as a "franking credit" to investors.
       If your marginal rate is <em>below</em> 30%, the surplus is refunded in cash at tax time.
       At 0% (NFP, pension super, below threshold), the <em>entire</em> credit is returned — making
-      franking worth +1–2% p.a. for eligible AU equity holdings at typical dividend yields.
+      franking worth roughly +1–1.5% p.a. for Australian shares at typical dividend yields (≈3.5–4%, ~75% franked).
+      This adds the after-tax value of the credit only — tax on the dividends themselves isn't modelled.
       ${TAX_PROFILES[taxProfile]?.rate >= 0.30
         ? `At ${(TAX_PROFILES[taxProfile].rate*100).toFixed(0)}%, your rate equals or exceeds 30% — credits offset tax but generate no cash refund.`
         : `At ${(TAX_PROFILES[taxProfile]?.rate*100).toFixed(0)}%, a significant portion of the credit is refunded.`}
@@ -926,7 +931,7 @@ function renderCompounding() {
       <div style="font-size:.8rem;color:var(--text-secondary);margin-top:.25rem;">
         ${ticker==='LIVE'&&liveLoaded
           ? `CAGR: <span style="color:var(--fitc-green);">${_liveCache[liveKey]?.annualReturn?.toFixed(1) ?? '—'}%</span> &nbsp;·&nbsp; MER: <span style="color:#ef4444;">not in dataset</span> &nbsp;·&nbsp; <span style="color:#f59e0b;">${Object.keys(_liveCache[liveKey]?.historicalReturns||{}).length} years of data</span>`
-          : `Return: <span style="color:var(--fitc-green);">${etf.annualReturn}%</span> &nbsp;·&nbsp; MER: <span style="color:#ef4444;">${etf.mer}%</span> &nbsp;·&nbsp; Yield: <span style="color:#f59e0b;">${etf.dividendYield}%</span>`
+          : `Return used for projections: <span style="color:var(--fitc-green);" title="${etf.annualReturnBasis ? 'Historical ' + etf.annualReturnBasis + ', after fees. Past returns are not a forecast.' : 'Assumed return'}">${etf.annualReturn}%</span>${etf.annualReturnBasis ? ` <span style="font-size:.7rem;opacity:.7;">(${etf.annualReturnBasis}; not a forecast)</span>` : ''} &nbsp;·&nbsp; MER: <span style="color:#ef4444;">${etf.mer}%</span> &nbsp;·&nbsp; Yield: <span style="color:#f59e0b;">${etf.dividendYield}%</span>`
         }
       </div>
       <div style="font-size:.72rem;color:#334155;margin-top:.2rem;">DRP ${drip?'On — dividends reinvested':'Off — dividends paid out'}</div>
@@ -987,7 +992,7 @@ function renderCompounding() {
         Derive return from asset class allocation
       </label>
       <span style="font-size:.7rem;color:#475569;">
-        (uses long-run asset class averages: AU eq 9.5%, Intl (ex-US) 9.8%, US 10.8%, AU bonds 4.0%, Global bonds 3.5%, Cash 2.5%)
+        (uses assumed forward-looking returns — not historical averages: AU eq 9.5%, Intl (ex-US) 9.8%, US 10.8%, AU bonds 4.0%, Global bonds 3.5%, Cash 2.5% p.a.)
       </span>
     </div>
     ${useCustomAlloc?`
@@ -996,10 +1001,10 @@ function renderCompounding() {
       <label class="etf-label" style="margin-bottom:0;white-space:nowrap;">Load preset:</label>
       <select id="ca-preset" class="etf-select" style="max-width:260px;font-size:.78rem;">
         <option value="">— select to load —</option>
-        <option value="VDHG">VDHG-like (36% AU / 37% Intl / 6% AUB / 16% GB / 5% Cash)</option>
+        <option value="VDHG">VDHG-like (36% AU / 54% Intl / 3% AUB / 7% GB)</option>
         <option value="DHHF">DHHF-like (37% AU / 26% Intl / 37% US)</option>
-        <option value="VDGR">VDGR-like (28% AU / 28% Intl / 16% AUB / 23% GB / 5% Cash)</option>
-        <option value="VDBA">VDBA-like (21% AU / 19% Intl / 29% AUB / 27% GB / 4% Cash)</option>
+        <option value="VDGR">VDGR-like (28% AU / 42% Intl / 9% AUB / 21% GB)</option>
+        <option value="VDBA">VDBA-like (20% AU / 30% Intl / 15% AUB / 35% GB)</option>
         <option value="60_40">60/40 Classic (30% AU / 30% Intl / 20% AUB / 20% GB)</option>
         <option value="100AU">100% AU Shares</option>
         <option value="100GL">100% International (ex-US)</option>
@@ -1347,12 +1352,22 @@ function getEffectiveMER() {
   return etfData.portfolioPresets[retState.preset]?.mer ?? 0.27;
 }
 
+// Which historical years the simulator draws on. Default 1970+: before 1970 only the
+// Australian-share and CPI series are well documented; the international-share and
+// bond series are rough reconstructions, which makes pre-1970 results for diversified
+// portfolios unreliable (they look much worse than 100% AU shares mainly because of
+// that data, not because diversification failed).
+function retYears() {
+  const from = retState.fromYear || 1901;
+  return Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).filter(y => y >= from).sort((a,b)=>a-b);
+}
+
 // ── Retirement solver helpers ──────────────────────────────────────
 // Run a quick sim without mutating retState — used by binary search
 function simSuccessRate(portfolioValue, annualWithdrawal) {
   const {retirementYears, timing, inflationAdjust, inflationRate} = retState;
   const frankBoost = frankingBoostRet() / 100;
-  const yrNums = Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).sort((a,b)=>a-b);
+  const yrNums = retYears();
   const maxStart = yrNums[yrNums.length-1] - retirementYears;
   let succN=0, total=0;
   for (const startYear of yrNums.filter(y=>y<=maxStart)) {
@@ -1371,7 +1386,7 @@ function simSuccessRate(portfolioValue, annualWithdrawal) {
 function simSuccessRateMC(portfolioValue, annualWithdrawal) {
   const {retirementYears, timing, inflationAdjust, inflationRate} = retState;
   const frankBoost = frankingBoostRet() / 100;
-  const yrNums = Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).sort((a,b)=>a-b);
+  const yrNums = retYears();
   let succN=0;
   const PATHS = 5000;
   for (let i = 0; i < PATHS; i++) {
@@ -1432,7 +1447,7 @@ function frankingBoostRet() {
 
 function runSims() {
   const {portfolioValue,annualWithdrawal,retirementYears,timing,inflationAdjust,inflationRate,method} = retState;
-  const yrNums = Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).sort((a,b)=>a-b);
+  const yrNums = retYears();
   const maxStart = yrNums[yrNums.length-1] - retirementYears;
   const frankBoost = frankingBoostRet() / 100;   // add to annual return
 
@@ -1547,50 +1562,44 @@ function renderRetirement() {
       <a href="https://ficalc.app/" target="_blank" style="color:#38bdf8;">FICalc</a>.</p>
 
       <p><strong style="color:#94a3b8;">How each year is calculated</strong><br>
-      Each year, the portfolio return is the weighted average of asset class returns for that calendar year (e.g. VDHG ≈ 36% AU Shares + 37% Intl Shares + 6% AU Bonds + 16% Global Bonds + 5% Cash), minus the fund MER.
+      Each year, the portfolio return is the weighted average of asset class returns for that calendar year (e.g. VDHG ≈ 36% AU Shares + 54% Intl Shares + 3% AU Bonds + 7% Global Bonds), minus the fund MER.
       If inflation-adjustment is on, the withdrawal grows each year by the inflation rate. "Start of year" timing withdraws <em>before</em> returns apply (more conservative); "End of year" applies returns first (more optimistic).</p>
 
       <p><strong style="color:#94a3b8;">Success vs failure</strong><br>
       A scenario is a <span style="color:#4ade80;">Success</span> if the balance stays above zero for the full retirement duration.
       It becomes a <span style="color:#ef4444;">Failure</span> the year the balance hits zero — that calendar year is noted in the heatmap tooltip.</p>
 
-      <p><strong style="color:#94a3b8;">Data sources (1970–2024) — reliable</strong><br>
-      AU Shares: ASX 200 / All Ordinaries total return index.<br>
-      Intl Shares (ex-US): MSCI World ex-Australia (AUD), approximated pre-VGS launch from MSCI data.<br>
-      US Shares: S&P 500 total return (AUD-equivalent). Pre-1957: Ibbotson/DMS US equity series.<br>
-      AU Bonds: Bloomberg AusBond Composite 0+ Yr Index.<br>
-      Cash: RBA overnight cash rate.
-      Full historical tables:
-      <a href="https://www.rba.gov.au/statistics/tables/" target="_blank" style="color:#38bdf8;">RBA Statistics Tables</a>.</p>
+      <p><strong style="color:#94a3b8;">Data sources — and how much to trust them</strong><br>
+      <span style="color:#4ade80;">Checked against independent references (see data/ground_truth):</span>
+      AU Shares — All Ordinaries Accumulation Index calendar-year returns, 1901–2024 (Market Index), 2025 from VAS;
+      CPI — RBA Table G1 (ABS CPI), 1924–2025; Cash — RBA Table F1 cash rate, 1977–2025.<br>
+      <span style="color:#f59e0b;">Approximate (not yet checked against an index provider):</span>
+      Intl Shares (ex-US, AUD) — VGS from 2015, rough estimates before; AU Bonds — VAF from 2015, estimates before;
+      Global Bonds and US Shares (in USD, not AUD) — estimates throughout.
+      Full RBA tables: <a href="https://www.rba.gov.au/statistics/tables/" target="_blank" style="color:#38bdf8;">RBA Statistical Tables</a>.</p>
 
-      <p><strong style="color:#f59e0b;">Pre-1970 data — treat as illustrative only</strong><br>
-      Estimates are reconstructed from two primary academic sources:
-      <a href="https://www.ubs.com/global/en/investment-bank/in-focus/2024/global-investment-returns-yearbook.html" target="_blank" style="color:#38bdf8;">Dimson, Marsh &amp; Staunton — Global Investment Returns Yearbook (UBS, annual)</a>
-      and supplementary RBA archival series. These carry ±2–5 percentage point uncertainty per year.
-      Dashed-border cells in the heatmap indicate pre-1970 start years.
-      Reliable continuous Australian equity data does not exist before approximately 1900.</p>
+      <p><strong style="color:#f59e0b;">Why the simulator defaults to 1970 onwards</strong><br>
+      Before 1970 only the Australian-share and CPI series are well documented; the international-share and bond series are
+      rough reconstructions (their pre-1970 averages look implausibly low). Including those years makes diversified portfolios
+      like VDHG look much riskier than 100% Australian shares, mostly because of the data rather than the investments.
+      You can switch to 1901 onwards to see the longer (partly reconstructed) history. Even the All Ords figures before 1980
+      are reconstructions, which Market Index itself notes are less reliable.</p>
 
       <p><strong style="color:#94a3b8;">Key caveats</strong><br>
-      This tool uses <em>Australian</em> data, which is important — the US-centric 4% rule is derived from US equity returns and may not apply to Australian investors.
-      Australian equities have historically had a higher dividend yield (franking credits) but lower capital growth than the US.
-      What is <em>not</em> modelled: capital gains tax, income tax on distributions, brokerage, or actual sequence-of-returns within a year.</p>
+      This tool uses <em>Australian</em> data — the US-derived 4% rule may not transfer directly to Australian investors.
+      Australian shares have historically paid a higher dividend yield (with franking credits) than US shares.
+      What is <em>not</em> modelled: capital gains tax, income tax on distributions, brokerage, or movements within a year.</p>
 
-      <p><strong style="color:#94a3b8;">Why do 1900–1925 retirements show so many failures?</strong><br>
-      These retirement cohorts faced an unlucky combination of two separate crises across their retirement window.
-      Someone who retired in <strong>1900</strong> with a 30-year plan saw their portfolio run until <strong>1930</strong> —
-      hitting the Great Depression almost at the finish line when reserves may have already been drawn down by 29 years of withdrawals.
-      Someone retiring in <strong>1910</strong> faced WWI market disruption (1914–18) in years 4–8, the post-war recession (1920–21) in years 10–11,
-      and then the Great Depression (1929–33) in years 19–23.
-      The <strong>sequence-of-returns risk</strong> is most lethal when large losses occur in <em>early</em> retirement —
-      the 1910 cohort experienced three separate crises, two of which fell in their first 15 years.
-      Notably, pre-1970 data carries ±2–5% uncertainty per year, so these early failures may be slightly overstated — but the broad pattern is historically accurate.</p>
+      <p><strong style="color:#94a3b8;">Which starting years fail?</strong><br>
+      With 100% Australian shares, the worst starting years are 1969–1973: shares fell in the early 1970s while CPI inflation ran at
+      roughly 9–15% a year (1973–77), rapidly raising the cost of inflation-adjusted withdrawals. If you include pre-1970 years, the
+      late 1920s (Great Depression) and late 1930s also stand out. Sequence-of-returns risk is worst when big losses land early in retirement.</p>
 
       <p><strong style="color:#94a3b8;">Real retirement spending declines with age — a note</strong><br>
       This simulator assumes constant inflation-adjusted withdrawals throughout retirement, which is the conservative standard approach.
       In practice, research by Blanchett (Morningstar, 2013) found that real spending follows a
       <strong>"retirement spending smile"</strong>: higher in the active early years (travel, activities),
       lower in the quieter middle years, and potentially rising again late in life due to healthcare costs.
-      Real spending in mid-retirement may be 20–30% lower than in the first years.
       This means that scenarios the simulator marks as <span style="color:#ef4444;">Failures</span> — where the portfolio runs out in later years —
       would often be <span style="color:#4ade80;">Successes</span> if actual spending had naturally declined.
       The simulator is therefore conservative relative to most people's lived experience.
@@ -1645,6 +1654,11 @@ function renderRetirement() {
       </div>
       <div><label class="etf-label">Duration</label>
         <select id="ret-yrs" class="etf-select">${[10,15,20,25,30,35,40].map(y=>`<option value="${y}" ${y===retirementYears?'selected':''}>${y} years</option>`).join('')}</select></div>
+      <div><label class="etf-label">Historical data from</label>
+        <select id="ret-from" class="etf-select" title="Before 1970 only Australian shares and CPI are well documented; international share and bond returns are rough reconstructions.">
+          <option value="1970" ${retState.fromYear===1970?'selected':''}>1970 onwards (recommended)</option>
+          <option value="1901" ${retState.fromYear===1901?'selected':''}>1901 onwards (pre-1970 partly reconstructed)</option>
+        </select></div>
       <div><label class="etf-label">Withdrawal Timing</label>
         <select id="ret-timing" class="etf-select">
           <option value="start" ${timing==='start'?'selected':''}>Start of year</option>
@@ -1698,7 +1712,7 @@ function renderRetirement() {
       </div>
       <div style="width:100%;font-size:.7rem;color:#94a3b8;line-height:1.5;">
         The boost = <em>AU weight × dividend yield × franked% × (30/70) × (1 − marginal rate)</em>.
-        The 30% corporate tax has already been paid; this fraction is refunded at tax time.
+        The 30% corporate tax has already been paid; the credit offsets your tax, and any excess is refunded. Only the credit's after-tax value is added — tax on the dividends themselves isn't modelled.
         ${taxProfile==='nfp'||taxProfile==='pension'?`<strong style="color:#4ade80;">Full refund</strong> — your entity pays no tax, so the entire credit is returned.`
           :taxProfile==='ind_0'?`<strong style="color:#4ade80;">Full refund</strong> — below tax-free threshold.`
           :taxProfile==='super15'||taxProfile==='ind_16'?`<strong style="color:#4ade80;">Partial refund</strong> — your rate is below 30%, so most of the credit comes back.`
@@ -1748,7 +1762,7 @@ function renderRetirement() {
         </div>
         <div style="font-size:.7rem;color:#475569;margin-top:.4rem;">
           Uses your current preset/allocation/MER/timing/inflation settings above.
-          90% is a common target (the "4% rule" was designed around ~95% historical US success).
+          90% is a common target. (Bengen's 1994 "4% rule" survived every 30-year US period he tested; the Trinity Study reported ~95% success for a 50/50 portfolio.)
         </div>
         `:`
         <!-- Mode 2: solve required portfolio -->
@@ -1838,15 +1852,13 @@ function renderRetirement() {
     <div class="etf-label" style="margin:1.5rem 0 .5rem;">Outcome by Retirement Start Year <span style="color:#475569;text-transform:none;font-size:.7rem;">(hover cells for details)</span></div>
     ${earlyN>0?`<details style="font-size:.72rem;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:.5rem .8rem;margin-bottom:.5rem;line-height:1.6;">
       <summary style="cursor:pointer;font-weight:600;color:#f59e0b;list-style:none;display:flex;align-items:center;gap:.4rem;">
-        <span style="font-size:.8rem;">▶</span> Why do 1900–1940s retirements show many failures?
+        <span style="font-size:.8rem;">▶</span> Why do some early start years fail?
         <span style="color:#94a3b8;font-weight:400;"> — click to expand</span>
       </summary>
       <div style="margin-top:.5rem;color:#94a3b8;">
-        <span style="color:#94a3b8;">This is historically correct, not a data error.</span><br>
-        Those retiring <strong>1927–1933</strong> hit the <strong>Great Depression</strong> almost immediately (sequence-of-returns risk at its worst).
-        Those retiring <strong>1900–1915</strong> faced a different problem: their retirement window <em>spanned</em> multiple crises —
-        WWI economic disruption (1914–18), the post-war recession (1920–21), <em>and</em> the Great Depression (1929–33) — often striking mid-retirement when reserves were already reduced.
-        See the methodology section above for a full explanation. Pre-1970 return data (dashed borders) also carries ±2–5% uncertainty.
+        Pre-1970 cells use the longer data range. Before 1970 the international-share and bond returns are rough reconstructions,
+        so failures for diversified portfolios in those years partly reflect weak data. Those starting in the late 1920s hit the Great Depression early;
+        those starting around 1969–73 faced falling shares plus high inflation. Dashed borders mark pre-1970 start years.
       </div>
     </details>`:''}
     <!-- Spending smile note -->
@@ -1878,9 +1890,8 @@ function renderRetirement() {
 
     ${dlRow(['dl-csv-ret','⬇ Results (CSV)'],['dl-png-ret','⬇ Chart (PNG)'])}
     <p style="font-size:.7rem;color:#475569;margin-top:.75rem;text-align:center;">
-      Returns net of MER. Pre-1970 data is estimated and carries high uncertainty — treat as indicative only.
-      Does not account for CGT, income tax, brokerage, or franking credits.
-      Reliable Australian market data does not extend to the 1800s; earliest figures here begin ~1901.
+      Returns net of MER. Pre-1970 international-share and bond data are rough reconstructions — treat those years as indicative only.
+      Does not account for CGT, income tax or brokerage; franking credits only if you switch them on.
     </p>
   </div>`;
 }
@@ -2256,6 +2267,7 @@ function attachListeners() {
       retState.useCustomAlloc=e.target.checked; rerender();
     });
     document.getElementById('ret-yrs')?.addEventListener('change',e=>{ retState.retirementYears=Number(e.target.value); rerender(); });
+    document.getElementById('ret-from')?.addEventListener('change',e=>{ retState.fromYear=Number(e.target.value); rerender(); });
     document.getElementById('ret-timing')?.addEventListener('change',e=>{ retState.timing=e.target.value; rerender(); });
     document.getElementById('ret-mer')?.addEventListener('change',e=>{
       const v=Number(e.target.value);

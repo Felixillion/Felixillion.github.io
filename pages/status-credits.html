@@ -22,7 +22,7 @@ description: "Find the best Qantas flights for status credits per dollar. Multi-
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 
 /* ── hero ── */
-.sc-hero{max-width:1020px;margin:0 auto;padding:3.5rem 1.5rem 1rem;}
+.sc-hero{max-width:1020px;margin:0 auto;padding:8rem 1.5rem 1rem;}  /* clears the fixed site nav */
 .sc-hero-title{
   font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800;
   line-height:1.05;letter-spacing:-.04em;color:#e8ecf4;margin-bottom:.5rem;
@@ -43,7 +43,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   display:flex;gap:.35rem;flex-wrap:wrap;padding:.35rem;
   background:var(--surface);border-radius:12px;border:1px solid var(--border);
   margin-bottom:1.5rem;max-width:1020px;margin-left:auto;margin-right:auto;
-  position:sticky;top:56px;z-index:80;backdrop-filter:blur(14px);
+  position:sticky;top:110px;z-index:80;backdrop-filter:blur(14px);
 }
 .sc-tab{
   padding:.42rem .9rem;border-radius:9px;border:none;background:transparent;
@@ -165,14 +165,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 }
 .sc-mult-pill.active{background:rgba(228,0,43,.2);border-color:var(--qred);color:#ff8a97;}
 .sc-mult-pill[data-mult="2"].active{background:rgba(251,191,36,.2);border-color:var(--amber);color:var(--amber);}
-.sc-mult-pill[data-mult="3"].active{background:rgba(74,222,128,.2);border-color:var(--green);color:var(--green);}
-.sc-mult-pill[data-mult="4"].active{background:rgba(192,132,252,.2);border-color:#c084fc;color:#c084fc;}
 
 /* ── responsive ── */
 .sc-g2{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem;}
 .sc-g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;}
 @media(max-width:640px){
-  .sc-tabs{top:52px;} .sc-route-table{font-size:.7rem;}
+  .sc-tabs{top:100px;} .sc-route-table{font-size:.7rem;}
   .sc-route-table th,.sc-route-table td{padding:.35rem .4rem;}
 }
 </style>
@@ -186,8 +184,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="sc-status-bar">
     <span>Data source:</span>
     <span class="sc-status-pill">QF Earning Table (published)</span>
-    <span class="sc-status-pill">Route prices: <span id="sc-price-freshness">manually updated</span></span>
-    <span class="sc-status-pill" id="sc-last-update"></span>
+    <span class="sc-status-pill">Fares: estimated typical cheapest prices — check before booking</span>
   </div>
 </div>
 
@@ -204,10 +201,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
       <span style="font-size:.7rem;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Multiplier:</span>
       <div id="sc-multiplier-pills" style="display:flex;gap:.35rem;">
-        <button type="button" class="sc-mult-pill active" data-mult="1">1× (Normal)</button>
+        <button type="button" class="sc-mult-pill active" data-mult="1">Normal</button>
         <button type="button" class="sc-mult-pill" data-mult="2">2× Double</button>
-        <button type="button" class="sc-mult-pill" data-mult="3">3× Triple</button>
-        <button type="button" class="sc-mult-pill" data-mult="4">4×</button>
       </div>
       <span id="dsb-label" style="font-size:.8rem;font-weight:700;color:var(--amber);min-width:7rem;"></span>
     </div>
@@ -417,9 +412,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
   <div class="sc-sec-title">Domestic routes — Status Credits per one-way flight</div>
   <div class="sc-callout amber">
-    Prices shown are <strong>typical cheapest fare ranges</strong> and require manual updates.
-    Run <code>scrape_qantas_fares.py</code> to fetch current best fares from the Qantas website.
-    Last updated: <span id="fare-update-date">manually set</span>
+    Prices shown are <strong>estimated typical cheapest one-way fare ranges</strong>, not live prices.
+    For an exact SC-per-dollar figure, add the flight in the Trip Builder with the fare you actually find.
   </div>
   <div style="overflow-x:auto;">
     <table class="sc-route-table" id="full-route-table">
@@ -864,7 +858,7 @@ const MULTILEG_SCENARIOS = [
 ];
 
 // ── State ─────────────────────────────────────────────────────
-let scMultiplier = 1;   // 1=normal, 2=double, 3=triple, 4=quadruple
+let scMultiplier = 1;   // 1=normal, 2=double (Qantas promotions are always double)
 let tripLegs  = [];
 let legId     = 0;
 
@@ -906,13 +900,11 @@ document.getElementById('sc-multiplier-pills').addEventListener('click', e => {
   scMultiplier = parseInt(btn.dataset.mult) || 1;
   document.querySelectorAll('.sc-mult-pill').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  const labels = {1:'Normal earn',2:'🔴 2× DOUBLE',3:'🟢 3× TRIPLE',4:'🟣 4× QUADRUPLE'};
+  const labels = {1:'Normal earn',2:'🔴 2× DOUBLE'};
   document.getElementById('dsb-label').textContent = labels[scMultiplier] || '';
   document.getElementById('dsb-banner').style.background =
-    scMultiplier === 1 ? 'linear-gradient(135deg,rgba(228,0,43,.18),rgba(251,191,36,.12))' :
-    scMultiplier === 2 ? 'linear-gradient(135deg,rgba(228,0,43,.3),rgba(251,191,36,.2))' :
-    scMultiplier === 3 ? 'linear-gradient(135deg,rgba(74,222,128,.25),rgba(56,189,248,.15))' :
-                         'linear-gradient(135deg,rgba(192,132,252,.25),rgba(251,191,36,.2))';
+    scMultiplier === 2 ? 'linear-gradient(135deg,rgba(228,0,43,.3),rgba(251,191,36,.2))'
+                       : 'linear-gradient(135deg,rgba(228,0,43,.18),rgba(251,191,36,.12))';
   renderOptimizer();
   renderTripTotals();
   if (document.getElementById('panel-table').classList.contains('active')) renderTable();
@@ -1442,32 +1434,4 @@ function addFinderTrip(path, fare, ret) {
 // ── Init ─────────────────────────────────────────────────────
 renderOptimizer();
 renderLegs();
-document.getElementById('sc-last-update').textContent = 'Fares: manually updated';
-
-// Load Jekyll-injected fare data if available
-const FARE_DATA = {{ site.data.qantas_fares | jsonify | default: 'null' }};
-if (FARE_DATA && FARE_DATA.last_updated) {
-  const updated  = FARE_DATA.last_updated;
-  const daysOld  = Math.floor((Date.now() - new Date(updated)) / 86400000);
-  const fresh    = daysOld <= 7;
-  const pf       = document.getElementById('sc-price-freshness');
-  pf.textContent = 'prices ' + (fresh ? 'scraped ' : 'last scraped ') + updated;
-  pf.style.color = fresh ? '#4ade80' : '#fbbf24';
-  document.getElementById('sc-last-update').textContent = daysOld === 0 ? 'Fares updated today' : `Fares updated ${daysOld}d ago`;
-  document.getElementById('fare-update-date').textContent = updated + (fresh ? '' : ' (may be stale)');
-
-  // Patch ROUTES array with live prices from scraped data
-  const fares = FARE_DATA.fares || {};
-  ROUTES.forEach(r => {
-    const key = r[0] + '-' + r[1];
-    const f   = fares[key];
-    if (f && f.min_price && f.min_price > 0) {
-      r[3] = f.min_price;           // update typMin with live scraped price
-      r[4] = Math.round(f.min_price * 2.2); // rough max = 2.2× cheapest
-    }
-  });
-
-  // Trigger re-render now that prices are updated
-  renderOptimizer();
-}
 </script>

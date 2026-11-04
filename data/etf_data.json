@@ -5,17 +5,13 @@
       "AU_SHARES 1901\u20132024: All Ordinaries Accumulation Index calendar-year returns (Market Index historical returns infographic 2025); 2009+ refreshed from VAS adjusted prices by update_etf_data.py. Pre-1980 values are reconstructions.",
       "CASH 1977\u20132025: RBA Table F1 interbank overnight cash rate, annual average. Earlier years approximate.",
       "INTL_SHARES, US_SHARES, AU_BONDS, GLOBAL_BONDS, AU_REIT: approximate long-run estimates \u2014 NOT yet validated against an index provider (see data/ground_truth). US_SHARES are in USD, not AUD.",
+      "MER figures checked against Stockspot's ETF fee comparison (2026) for all ETFs it lists; diversified Vanguard ETFs 0.27% (Vanguard). Vanguard diversified presets use the 90/70/50/30 growth splits with 40:60 Australian:international shares and 30:70 Australian:global bonds (VDHG published allocation: 36% AU shares, 54% international, 3% AU bonds, 7% global bonds) \u2014 approximate.",
       "CALCULATION NOTE: In Historical mode, stored returns are TOTAL RETURNS net of MER (sourced from Yahoo Finance adjusted close prices or fund factsheets which report after-fee returns). MER is NOT deducted again in the calculation to avoid double-counting. In Projection mode, the annualReturn field is a gross estimate and MER IS deducted.",
-      "IMPORTANT DATA NOTE (March 2026): Annual returns for VAS, A200, IOZ, STW have been corrected to total returns (price appreciation + dividends reinvested), sourced from Yahoo Finance adjusted close prices. Previous values were price-only (excluding ~4.5% p.a. dividends) which significantly understated returns. Run .github/workflows/scripts/update_etf_data.py via GitHub Actions for automatic updates.",
-      "Annual total returns sourced from ASX fund factsheets and issuer websites (Vanguard AU, BetaShares, iShares, VanEck).",
-      "MER figures from current product disclosure statements (PDS) on each issuer's website.",
-      "Dividend yields are trailing 12-month estimates from ASX announcements and fund distributions.",
-      "Sector weightings from fund holdings disclosures (end-of-prior-quarter).",
-      "Top holdings reflect approximate current weights from issuer monthly disclosures.",
-      "Data before 1970 for Australian markets is particularly unreliable \u2014 reliable continuous price series for Australian equities do not exist before the 1970s. Pre-1970 figures are reconstructed estimates and may differ significantly from reality.",
-      "Reliable Australian share market data does NOT exist back to the 1800s. The earliest reasonably continuous Australian equity data begins in the 1880s-1900s at best.",
-      "Composite returns for diversified funds (VDHG, DHHF etc.) are estimated by blending asset class histories per published strategic asset allocations.",
-      "All returns in AUD. Past performance does not guarantee future results. Always read the PDS."
+      "ETF annual returns: calendar-year total returns from Yahoo Finance adjusted close prices (data/stocks), refreshed by update_etf_data.py. Years before an ETF existed (or before 2015) come from issuer factsheets/estimates.",
+      "Dividend yields, sector weights and top holdings are approximate snapshots (not live) \u2014 check the issuer's website for current figures.",
+      "Pre-1980 Australian share returns are reconstructions (Market Index's own caveat); pre-1970 international-share and bond returns are rough estimates.",
+      "Diversified funds before their launch (VDHG, DHHF etc.) are estimated by blending asset-class histories using the allocations above.",
+      "All returns in AUD except US_SHARES (USD). Past performance does not guarantee future results. Always read the PDS."
     ],
     "partialYear": "2026"
   },
@@ -144,7 +140,8 @@
       "2021": 17.7,
       "2022": -3.0,
       "2023": 13.0,
-      "2024": 11.4
+      "2024": 11.4,
+      "2025": 10.7
     },
     "INTL_SHARES": {
       "1901": 3.0,
@@ -261,16 +258,17 @@
       "2012": 16.0,
       "2013": 40.0,
       "2014": 10.0,
-      "2015": 4.5,
-      "2016": 7.0,
-      "2017": 14.5,
-      "2018": -3.8,
-      "2019": 28.5,
-      "2020": 7.2,
-      "2021": 26.5,
-      "2022": -13.5,
-      "2023": 24.5,
-      "2024": 20.0
+      "2015": 12.8,
+      "2016": 7.7,
+      "2017": 13.6,
+      "2018": 0.4,
+      "2019": 29.2,
+      "2020": 5.8,
+      "2021": 29.7,
+      "2022": -12.4,
+      "2023": 22.9,
+      "2024": 30.9,
+      "2025": 12.9
     },
     "AU_BONDS": {
       "1901": 4.0,
@@ -388,15 +386,16 @@
       "2013": 2.0,
       "2014": 9.8,
       "2015": 2.6,
-      "2016": 2.9,
-      "2017": 3.7,
-      "2018": 4.7,
-      "2019": 7.3,
-      "2020": 4.0,
+      "2016": 2.2,
+      "2017": 3.3,
+      "2018": 4.6,
+      "2019": 7.0,
+      "2020": 4.3,
       "2021": -3.0,
-      "2022": -9.5,
-      "2023": 5.1,
-      "2024": 1.5
+      "2022": -9.7,
+      "2023": 4.8,
+      "2024": 2.7,
+      "2025": 3.3
     },
     "GLOBAL_BONDS": {
       "1901": 4.0,
@@ -811,10 +810,9 @@
       "mer": 0.27,
       "allocation": {
         "AU_SHARES": 36,
-        "INTL_SHARES": 37,
-        "AU_BONDS": 6,
-        "GLOBAL_BONDS": 16,
-        "CASH": 5
+        "INTL_SHARES": 54,
+        "AU_BONDS": 3,
+        "GLOBAL_BONDS": 7
       }
     },
     "DHHF": {
@@ -830,21 +828,19 @@
       "mer": 0.27,
       "allocation": {
         "AU_SHARES": 28,
-        "INTL_SHARES": 28,
-        "AU_BONDS": 16,
-        "GLOBAL_BONDS": 23,
-        "CASH": 5
+        "INTL_SHARES": 42,
+        "AU_BONDS": 9,
+        "GLOBAL_BONDS": 21
       }
     },
     "VDBA": {
       "label": "VDBA - Vanguard Balanced",
       "mer": 0.27,
       "allocation": {
-        "AU_SHARES": 21,
-        "INTL_SHARES": 19,
-        "AU_BONDS": 29,
-        "GLOBAL_BONDS": 27,
-        "CASH": 4
+        "AU_SHARES": 20,
+        "INTL_SHARES": 30,
+        "AU_BONDS": 15,
+        "GLOBAL_BONDS": 35
       }
     },
     "VDCO": {
@@ -852,10 +848,9 @@
       "mer": 0.27,
       "allocation": {
         "AU_SHARES": 12,
-        "INTL_SHARES": 12,
-        "AU_BONDS": 37,
-        "GLOBAL_BONDS": 35,
-        "CASH": 4
+        "INTL_SHARES": 18,
+        "AU_BONDS": 21,
+        "GLOBAL_BONDS": 49
       }
     },
     "60_40": {
@@ -887,10 +882,9 @@
       "mer": 0.27,
       "allocation": {
         "AU_SHARES": 36,
-        "INTL_SHARES": 37,
-        "AU_BONDS": 6,
-        "GLOBAL_BONDS": 16,
-        "CASH": 5
+        "INTL_SHARES": 54,
+        "AU_BONDS": 3,
+        "GLOBAL_BONDS": 7
       }
     },
     "100US": {
@@ -915,17 +909,16 @@
     "VAS": {
       "name": "Vanguard Australian Shares Index",
       "issuer": "Vanguard",
-      "annualReturn": 13.5,
+      "annualReturn": 8.1,
       "mer": 0.07,
       "dividendYield": 4.2,
       "inceptionYear": 2009,
       "historicalReturns": {
-        "2009": 30.0,
-        "2010": 3.0,
-        "2011": -10.0,
-        "2012": 20.0,
-        "2013": 20.0,
-        "2014": 12.0,
+        "2010": 3.1,
+        "2011": -11.1,
+        "2012": 20.3,
+        "2013": 20.4,
+        "2014": 5.2,
         "2015": 3.0,
         "2016": 11.3,
         "2017": 11.8,
@@ -1023,12 +1016,13 @@
         "Info. Technology": 3,
         "Utilities": 2
       },
-      "frankingPct": 0.75
+      "frankingPct": 0.75,
+      "annualReturnBasis": "CAGR of 16 calendar years 2010\u20132025"
     },
     "A200": {
       "name": "BetaShares Australia 200",
       "issuer": "BetaShares",
-      "annualReturn": 13.5,
+      "annualReturn": 10.5,
       "mer": 0.04,
       "dividendYield": 4.0,
       "inceptionYear": 2018,
@@ -1121,13 +1115,14 @@
         "Info. Technology": 3,
         "Utilities": 2
       },
-      "frankingPct": 0.75
+      "frankingPct": 0.75,
+      "annualReturnBasis": "CAGR of 7 calendar years 2019\u20132025"
     },
     "IOZ": {
       "name": "iShares Core S&P/ASX 200",
       "issuer": "BlackRock",
-      "annualReturn": 13.5,
-      "mer": 0.09,
+      "annualReturn": 8.4,
+      "mer": 0.05,
       "dividendYield": 4.0,
       "inceptionYear": 2010,
       "historicalReturns": {
@@ -1228,13 +1223,14 @@
         "Info. Technology": 3,
         "Utilities": 2
       },
-      "frankingPct": 0.75
+      "frankingPct": 0.75,
+      "annualReturnBasis": "CAGR of 15 calendar years 2011\u20132025"
     },
     "STW": {
       "name": "SPDR S&P/ASX 200",
       "issuer": "State Street",
-      "annualReturn": 13.2,
-      "mer": 0.19,
+      "annualReturn": 8.2,
+      "mer": 0.05,
       "dividendYield": 4.1,
       "inceptionYear": 2001,
       "historicalReturns": {
@@ -1330,12 +1326,13 @@
         "Info. Technology": 3,
         "Utilities": 2
       },
-      "frankingPct": 0.75
+      "frankingPct": 0.75,
+      "annualReturnBasis": "CAGR of 16 calendar years 2010\u20132025"
     },
     "VHY": {
       "name": "Vanguard Australian Shares High Yield",
       "issuer": "Vanguard",
-      "annualReturn": 9.0,
+      "annualReturn": 8.3,
       "mer": 0.25,
       "dividendYield": 5.5,
       "inceptionYear": 2011,
@@ -1418,12 +1415,13 @@
         "Utilities": 7,
         "Other": 5
       },
-      "frankingPct": 0.9
+      "frankingPct": 0.9,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "MVW": {
       "name": "VanEck Australian Equal Weight",
       "issuer": "VanEck",
-      "annualReturn": 9.2,
+      "annualReturn": 9.1,
       "mer": 0.35,
       "dividendYield": 3.8,
       "inceptionYear": 2014,
@@ -1453,12 +1451,13 @@
         "Comm. Services": 4,
         "Info. Technology": 3
       },
-      "frankingPct": 0.7
+      "frankingPct": 0.7,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "VGS": {
       "name": "Vanguard MSCI World ex-AU",
       "issuer": "Vanguard",
-      "annualReturn": 13.0,
+      "annualReturn": 13.2,
       "mer": 0.18,
       "dividendYield": 1.8,
       "inceptionYear": 2014,
@@ -1560,13 +1559,14 @@
         "Real Estate": 2
       },
       "returnsNote": "historicalReturns are total returns (price + dividends reinvested) derived from Vanguard VGS.AX adjusted-close prices via Yahoo Finance, matching Streamlit ETF calculator reference values. annualReturn used for projection mode is a conservative long-term estimate; the 2015-2026 CAGR was 16.7% (unusually strong period for global equities).",
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "IVV": {
       "name": "iShares S&P 500",
       "issuer": "BlackRock",
-      "annualReturn": 13.5,
-      "mer": 0.03,
+      "annualReturn": 16.2,
+      "mer": 0.04,
       "dividendYield": 1.3,
       "inceptionYear": 2017,
       "historicalReturns": {
@@ -1666,12 +1666,13 @@
         "Materials": 3,
         "Real Estate": 2
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 8 calendar years 2018\u20132025"
     },
     "NDQ": {
       "name": "BetaShares NASDAQ 100",
       "issuer": "BetaShares",
-      "annualReturn": 18.0,
+      "annualReturn": 19.9,
       "mer": 0.48,
       "dividendYield": 0.4,
       "inceptionYear": 2015,
@@ -1767,12 +1768,13 @@
         "Industrials": 3,
         "Other": 2
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 10 calendar years 2016\u20132025"
     },
     "QUAL": {
       "name": "VanEck MSCI World Quality",
       "issuer": "VanEck",
-      "annualReturn": 14.0,
+      "annualReturn": 14.8,
       "mer": 0.4,
       "dividendYield": 1.2,
       "inceptionYear": 2014,
@@ -1849,13 +1851,14 @@
         "Industrials": 10,
         "Other": 9
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "MOAT": {
       "name": "VanEck Morningstar Wide Moat",
       "issuer": "VanEck",
-      "annualReturn": 14.0,
-      "mer": 0.54,
+      "annualReturn": 16.1,
+      "mer": 0.49,
       "dividendYield": 1.0,
       "inceptionYear": 2015,
       "historicalReturns": {
@@ -1880,12 +1883,13 @@
         "Consumer Staples": 8,
         "Other": 5
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 10 calendar years 2016\u20132025"
     },
     "VESG": {
       "name": "Vanguard ESG International Shares",
       "issuer": "Vanguard",
-      "annualReturn": 13.0,
+      "annualReturn": 16.2,
       "mer": 0.18,
       "dividendYield": 1.5,
       "inceptionYear": 2018,
@@ -1910,12 +1914,13 @@
         "Materials": 4,
         "Real Estate": 2
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 7 calendar years 2019\u20132025"
     },
     "VDHG": {
       "name": "Vanguard Diversified High Growth",
       "issuer": "Vanguard",
-      "annualReturn": 10.5,
+      "annualReturn": 9.8,
       "mer": 0.27,
       "dividendYield": 2.5,
       "inceptionYear": 2017,
@@ -2030,12 +2035,13 @@
         "Other": 6
       },
       "returnsSource": "Vanguard Australia published fund returns (after fees, AUD, calendar year). Updated by GitHub Action with Yahoo Finance adjusted-close data.",
-      "frankingPct": 0.2
+      "frankingPct": 0.2,
+      "annualReturnBasis": "CAGR of 8 calendar years 2018\u20132025"
     },
     "DHHF": {
       "name": "BetaShares Diversified All Growth",
       "issuer": "BetaShares",
-      "annualReturn": 11.5,
+      "annualReturn": 12.3,
       "mer": 0.19,
       "dividendYield": 1.5,
       "inceptionYear": 2019,
@@ -2137,12 +2143,13 @@
         "Other": 4
       },
       "returnsSource": "BetaShares published fund returns (after fees, AUD). Updated by GitHub Action.",
-      "frankingPct": 0.2
+      "frankingPct": 0.2,
+      "annualReturnBasis": "CAGR of 5 calendar years 2021\u20132025"
     },
     "VDGR": {
       "name": "Vanguard Diversified Growth",
       "issuer": "Vanguard",
-      "annualReturn": 9.0,
+      "annualReturn": 7.9,
       "mer": 0.27,
       "dividendYield": 2.2,
       "inceptionYear": 2017,
@@ -2230,12 +2237,13 @@
         "Real Estate": 5,
         "Other": 11
       },
-      "frankingPct": 0.15
+      "frankingPct": 0.15,
+      "annualReturnBasis": "CAGR of 8 calendar years 2018\u20132025"
     },
     "VDBA": {
       "name": "Vanguard Diversified Balanced",
       "issuer": "Vanguard",
-      "annualReturn": 7.5,
+      "annualReturn": 5.9,
       "mer": 0.27,
       "dividendYield": 2.8,
       "inceptionYear": 2017,
@@ -2308,12 +2316,13 @@
         "Real Estate": 5,
         "Other": 20
       },
-      "frankingPct": 0.1
+      "frankingPct": 0.1,
+      "annualReturnBasis": "CAGR of 8 calendar years 2018\u20132025"
     },
     "VDCO": {
       "name": "Vanguard Diversified Conservative",
       "issuer": "Vanguard",
-      "annualReturn": 5.5,
+      "annualReturn": 4.2,
       "mer": 0.27,
       "dividendYield": 3.2,
       "inceptionYear": 2017,
@@ -2340,12 +2349,13 @@
         "Real Estate": 4,
         "Other": 37
       },
-      "frankingPct": 0.05
+      "frankingPct": 0.05,
+      "annualReturnBasis": "CAGR of 8 calendar years 2018\u20132025"
     },
     "VAP": {
       "name": "Vanguard Australian Property",
       "issuer": "Vanguard",
-      "annualReturn": 8.0,
+      "annualReturn": 8.5,
       "mer": 0.23,
       "dividendYield": 4.5,
       "inceptionYear": 2010,
@@ -2366,12 +2376,13 @@
       "sectors": {
         "Real Estate": 100
       },
-      "frankingPct": 0.4
+      "frankingPct": 0.4,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "ETHI": {
       "name": "BetaShares Global Sustainability Leaders",
       "issuer": "BetaShares",
-      "annualReturn": 13.0,
+      "annualReturn": 16.2,
       "mer": 0.59,
       "dividendYield": 0.8,
       "inceptionYear": 2017,
@@ -2447,12 +2458,13 @@
         "Consumer Staples": 7,
         "Other": 4
       },
-      "frankingPct": 0.1
+      "frankingPct": 0.1,
+      "annualReturnBasis": "CAGR of 8 calendar years 2018\u20132025"
     },
     "HACK": {
       "name": "BetaShares Global Cybersecurity",
       "issuer": "BetaShares",
-      "annualReturn": 14.5,
+      "annualReturn": 16.9,
       "mer": 0.67,
       "dividendYield": 0.3,
       "inceptionYear": 2016,
@@ -2474,7 +2486,8 @@
         "Comm. Services": 7,
         "Other": 3
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 9 calendar years 2017\u20132025"
     },
     "SEMI": {
       "name": "ETFS Semiconductor ETF",
@@ -2523,8 +2536,8 @@
     "VAF": {
       "name": "Vanguard Australian Fixed Interest",
       "issuer": "Vanguard",
-      "annualReturn": 3.5,
-      "mer": 0.2,
+      "annualReturn": 1.9,
+      "mer": 0.1,
       "dividendYield": 3.5,
       "inceptionYear": 2012,
       "historicalReturns": {
@@ -2544,12 +2557,13 @@
       "sectors": {
         "Other": 100
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "QAU": {
       "name": "BetaShares Gold Bullion (AUD Hedged)",
       "issuer": "BetaShares",
-      "annualReturn": 8.5,
+      "annualReturn": 10.6,
       "mer": 0.4,
       "dividendYield": 0.0,
       "inceptionYear": 2011,
@@ -2570,7 +2584,8 @@
       "sectors": {
         "Other": 100
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "BGBL": {
       "name": "BetaShares Global Shares (Unhedged)",
@@ -2662,7 +2677,7 @@
     "VGAD": {
       "name": "Vanguard MSCI World ex-AU (AUD Hedged)",
       "issuer": "Vanguard",
-      "annualReturn": 13.5,
+      "annualReturn": 11.7,
       "mer": 0.21,
       "dividendYield": 1.8,
       "inceptionYear": 2015,
@@ -2743,12 +2758,13 @@
         "Materials": 4,
         "Real Estate": 2
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 10 calendar years 2016\u20132025"
     },
     "IHVV": {
       "name": "iShares S&P 500 AUD Hedged",
       "issuer": "BlackRock",
-      "annualReturn": 14.0,
+      "annualReturn": 12.9,
       "mer": 0.1,
       "dividendYield": 1.2,
       "inceptionYear": 2013,
@@ -2838,12 +2854,13 @@
         "Materials": 3,
         "Real Estate": 2
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 10 calendar years 2016\u20132025"
     },
     "ASIA": {
       "name": "BetaShares Asian Technology Tigers",
       "issuer": "BetaShares",
-      "annualReturn": 10.0,
+      "annualReturn": 16.9,
       "mer": 0.67,
       "dividendYield": 0.5,
       "inceptionYear": 2018,
@@ -2915,13 +2932,14 @@
         "Financials": 5,
         "Other": 3
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 7 calendar years 2019\u20132025"
     },
     "DJRE": {
       "name": "SPDR Dow Jones Global Real Estate",
       "issuer": "State Street",
-      "annualReturn": 7.5,
-      "mer": 0.5,
+      "annualReturn": 4.2,
+      "mer": 0.2,
       "dividendYield": 3.8,
       "inceptionYear": 2013,
       "historicalReturns": {
@@ -2992,12 +3010,13 @@
       "sectors": {
         "Real Estate": 100
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "MVA": {
       "name": "VanEck Australian Property ETF",
       "issuer": "VanEck",
-      "annualReturn": 8.5,
+      "annualReturn": 8.8,
       "mer": 0.35,
       "dividendYield": 4.2,
       "inceptionYear": 2013,
@@ -3069,12 +3088,13 @@
       "sectors": {
         "Real Estate": 100
       },
-      "frankingPct": 0.4
+      "frankingPct": 0.4,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "ATEC": {
       "name": "BetaShares S&P/ASX Australian Technology",
       "issuer": "BetaShares",
-      "annualReturn": 13.0,
+      "annualReturn": 3.8,
       "mer": 0.48,
       "dividendYield": 0.5,
       "inceptionYear": 2020,
@@ -3143,12 +3163,13 @@
         "Consumer Discretionary": 7,
         "Other": 3
       },
-      "frankingPct": 0.05
+      "frankingPct": 0.05,
+      "annualReturnBasis": "CAGR of 5 calendar years 2021\u20132025"
     },
     "RBTZ": {
       "name": "BetaShares Global Robotics & AI ETF",
       "issuer": "BetaShares",
-      "annualReturn": 14.0,
+      "annualReturn": 12.9,
       "mer": 0.57,
       "dividendYield": 0.2,
       "inceptionYear": 2018,
@@ -3209,12 +3230,13 @@
         "Health Care": 8,
         "Other": 2
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 7 calendar years 2019\u20132025"
     },
     "GEAR": {
       "name": "BetaShares Geared Australian Equity (2x)",
       "issuer": "BetaShares",
-      "annualReturn": 16.0,
+      "annualReturn": 11.4,
       "mer": 0.8,
       "dividendYield": 5.0,
       "inceptionYear": 2014,
@@ -3245,12 +3267,13 @@
         "Info. Technology": 3,
         "Utilities": 2
       },
-      "frankingPct": 0.25
+      "frankingPct": 0.25,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "F100": {
       "name": "BetaShares FTSE 100 ETF",
       "issuer": "BetaShares",
-      "annualReturn": 8.5,
+      "annualReturn": 9.2,
       "mer": 0.45,
       "dividendYield": 3.5,
       "inceptionYear": 2016,
@@ -3326,7 +3349,8 @@
         "Comm. Services": 4,
         "Other": 4
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 6 calendar years 2020\u20132025"
     },
     "URNM": {
       "name": "BetaShares Global Uranium ETF",
@@ -3392,7 +3416,7 @@
     "HNDQ": {
       "name": "BetaShares NASDAQ 100 (AUD Hedged)",
       "issuer": "BetaShares",
-      "annualReturn": 18.5,
+      "annualReturn": 12.7,
       "mer": 0.51,
       "dividendYield": 0.3,
       "inceptionYear": 2020,
@@ -3463,12 +3487,13 @@
         "Industrials": 3,
         "Other": 2
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 5 calendar years 2021\u20132025"
     },
     "QPON": {
       "name": "BetaShares Australian Bank Senior Floating Rate Bond",
       "issuer": "BetaShares",
-      "annualReturn": 5.5,
+      "annualReturn": 3.1,
       "mer": 0.22,
       "dividendYield": 5.5,
       "inceptionYear": 2016,
@@ -3486,12 +3511,13 @@
       "sectors": {
         "Other": 100
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 8 calendar years 2018\u20132025"
     },
     "IEM": {
       "name": "iShares MSCI Emerging Markets ETF",
       "issuer": "BlackRock",
-      "annualReturn": 7.5,
+      "annualReturn": 7.1,
       "mer": 0.69,
       "dividendYield": 2.5,
       "inceptionYear": 2012,
@@ -3561,14 +3587,15 @@
         "Consumer Staples": 4,
         "Other": 3
       },
-      "frankingPct": 0
+      "frankingPct": 0,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "AFI": {
       "name": "Aust. Foundation Investment Co.",
       "issuer": "AFIC",
       "mer": 0.14,
       "dividendYield": 3.8,
-      "annualReturn": 9.5,
+      "annualReturn": 7.1,
       "inceptionYear": 1928,
       "description": "Oldest and largest ASX LIC. Actively managed diversified Australian equities, concentrated large-cap portfolio. Pays fully franked dividends. Compare vs VAS/IOZ to see active vs passive performance.",
       "type": "LIC",
@@ -3628,14 +3655,15 @@
           "weight": 5.0
         }
       ],
-      "frankingPct": 1.0
+      "frankingPct": 1.0,
+      "annualReturnBasis": "CAGR of 16 calendar years 2010\u20132025"
     },
     "ARG": {
       "name": "Argo Investments",
       "issuer": "Argo",
       "mer": 0.13,
       "dividendYield": 3.5,
-      "annualReturn": 9.5,
+      "annualReturn": 7.3,
       "inceptionYear": 1946,
       "description": "Second largest ASX LIC. Actively managed diversified Australian equities, similar holdings to AFI and passive AU index. Fully franked dividends.",
       "type": "LIC",
@@ -3695,14 +3723,15 @@
           "weight": 4.8
         }
       ],
-      "frankingPct": 1.0
+      "frankingPct": 1.0,
+      "annualReturnBasis": "CAGR of 16 calendar years 2010\u20132025"
     },
     "WAM": {
       "name": "WAM Capital",
       "issuer": "Wilson Asset Mgmt",
       "mer": 1.5,
       "dividendYield": 5.5,
-      "annualReturn": 8.5,
+      "annualReturn": 5.3,
       "inceptionYear": 1999,
       "description": "Active Australian small & mid-cap LIC managed by Geoff Wilson. Higher MER than passive funds. Performance has been mixed in recent years. Pays fully franked dividends from income and capital gains.",
       "type": "LIC",
@@ -3755,14 +3784,15 @@
           "weight": 3.5
         }
       ],
-      "frankingPct": 1.0
+      "frankingPct": 1.0,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "WGB": {
       "name": "WAM Leaders",
       "issuer": "Wilson Asset Mgmt",
       "mer": 0.35,
       "dividendYield": 5.8,
-      "annualReturn": 8.0,
+      "annualReturn": 6.9,
       "inceptionYear": 2016,
       "description": "Active Australian large-cap LIC by Wilson Asset Management. Lower MER than WAM Capital, targeting ASX 200 large-caps. Compare vs VAS/IOZ for active-vs-passive insight.",
       "type": "LIC",
@@ -3814,14 +3844,15 @@
           "weight": 4.9
         }
       ],
-      "frankingPct": 1.0
+      "frankingPct": 1.0,
+      "annualReturnBasis": "CAGR of 9 calendar years 2017\u20132025"
     },
     "MFF": {
       "name": "MFF Capital Investments",
       "issuer": "Magellan",
       "mer": 1.25,
       "dividendYield": 2.0,
-      "annualReturn": 16.0,
+      "annualReturn": 15.4,
       "inceptionYear": 2006,
       "description": "Actively managed global equity LIC by Chris Mackay (formerly Magellan). Concentrated portfolio of international quality businesses. Strong long-run track record vs VGS/QUAL; higher MER.",
       "type": "LIC",
@@ -3874,14 +3905,15 @@
           "weight": 6.5
         }
       ],
-      "frankingPct": 0.05
+      "frankingPct": 0.05,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "PMC": {
       "name": "Platinum Capital",
       "issuer": "Platinum AM",
       "mer": 1.1,
       "dividendYield": 4.0,
-      "annualReturn": 5.5,
+      "annualReturn": 1.3,
       "inceptionYear": 1994,
       "description": "Active global equity LIC with a contrarian, value-oriented approach. Has significantly underperformed passive international ETFs over the last decade. Useful for illustrating the cost of active management with underperformance.",
       "type": "LIC",
@@ -3934,14 +3966,15 @@
           "weight": 3.2
         }
       ],
-      "frankingPct": 0.05
+      "frankingPct": 0.05,
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     },
     "VTS": {
       "name": "US Total Market ETF",
       "issuer": "Vanguard",
       "description": "Tracks the CRSP US Total Market Index \u2014 the broadest US equity index (~3,700 stocks). Currency unhedged (USD exposure). Oldest Vanguard ETF on ASX (est. 2009). Note: treated as a US trust for tax; distributions may have different treatment \u2014 see your tax adviser.",
       "inceptionYear": 2009,
-      "annualReturn": 14.5,
+      "annualReturn": 14.9,
       "mer": 0.03,
       "dividendYield": 1.3,
       "frankingPct": 0.0,
@@ -3958,12 +3991,6 @@
         "Other": 7
       },
       "historicalReturns": {
-        "2009": 27.0,
-        "2010": 17.3,
-        "2011": 1.0,
-        "2012": 16.0,
-        "2013": 33.5,
-        "2014": 12.5,
         "2015": 12.7,
         "2016": 13.0,
         "2017": 12.5,
@@ -4017,7 +4044,8 @@
           "name": "Tesla",
           "weight": 1.4
         }
-      ]
+      ],
+      "annualReturnBasis": "CAGR of 11 calendar years 2015\u20132025"
     }
   }
 }

@@ -520,7 +520,7 @@ footer_scripts: assets/js/hero.js
     <strong>The core problem:</strong> Australia taxes what you <em>earn</em>, not what you <em>own</em>.
     Billionaires accumulate wealth through rising asset values — not wages.
     <a href="https://www.oxfam.org.au/what-we-do/advocacy-and-campaigns/make-tax-fair/bill-the-billionaires/" target="_blank" rel="noopener">Oxfam estimates</a>
-    the average Australian billionaire's wealth rose by almost $600,000 a day in 2025 (about $25,000 an hour) — mostly appreciation in shares and private company equity that doesn't trigger income tax unless sold. Many never sell.
+    the average Australian billionaire's wealth rose by almost $600,000 a day in 2025 (about $25,000 an hour) — mostly rising values of shares and private company equity, which isn't taxed unless it's sold. Many never sell.
   </div>
   <div class="bl-g2" style="margin-bottom:1.5rem;">
     <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:12px;padding:1rem 1.1rem;">
@@ -542,7 +542,7 @@ footer_scripts: assets/js/hero.js
   </div>
   <div class="bl-g-auto" id="bl-donate-grid"></div>
   <div class="bl-callout-blue">
-    Even including the most generous billionaire philanthropists in Australia, charitable contributions represent a fraction of 1% of total wealth per year.
+    For scale: the AFR Philanthropy 50 — Australia's 50 biggest givers — donated about $1.37B in its 2025 list, roughly 0.2% of the $707B held by the 200 people on the 2026 Rich List.
     Warren Buffett famously pledged 99% of his wealth to charity — this is extraordinary and exceedingly rare.
     Most Australian billionaire philanthropy occurs through private foundations which confer <strong>ongoing tax deductibility</strong> and allow donors to maintain influence over assets.
     Government figures (Giving Australia 2016) put individual giving at about $12.5B a year — with the top 1% contributing disproportionately, but <em>not</em> in amounts that offset the billions in untaxed accumulated wealth.
@@ -865,7 +865,7 @@ footer_scripts: assets/js/hero.js
   </div>
   <div class="bl-g3" style="margin-bottom:1.3rem;">
     <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">$16.3B</div><div class="bl-stat-label">Total Australian government (federal + state) fossil fuel subsidies in 2025–26 (Australia Institute, March 2026)</div></div>
-    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">$10.8B</div><div class="bl-stat-label">Fuel Tax Credits Scheme alone in 2025–26 — the single largest fossil fuel subsidy. Major beneficiary: coal &amp; iron ore mining.</div></div>
+    <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">$10.8B</div><div class="bl-stat-label">Fuel Tax Credits Scheme alone in 2025–26 — the single largest fossil fuel subsidy. Mining is the largest claimant.</div></div>
     <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">$590</div><div class="bl-stat-label">Fossil fuel subsidies per Australian per year in 2025–26 — or about $31,000 per minute.</div></div>
     <div class="bl-stat"><div class="bl-stat-num" style="color:var(--red);">$72.7B</div><div class="bl-stat-label">Budgeted fossil fuel subsidies over the life of current programs — about 14× the Disaster Ready Fund balance ($5.1B).</div></div>
     <div class="bl-stat"><div class="bl-stat-num" style="color:var(--amber);">+9.4%</div><div class="bl-stat-label">Increase in fossil fuel subsidies from 2024–25 to 2025–26. Rising, not falling.</div></div>
@@ -877,8 +877,8 @@ footer_scripts: assets/js/hero.js
   <!-- Connection to billionaires -->
   <div class="bl-sec-title">Who Benefits?</div>
   <div class="bl-callout">
-    The Fuel Tax Credits Scheme — the largest single fossil fuel subsidy at $10.8B in 2025–26 — primarily benefits coal and iron ore miners. These are the same industries underlying the fortunes of Rinehart, Palmer, and Pratt.
-    <strong>Today, these billionaires' estates will pass to their children with $0 estate tax, while their mining companies receive billions in annual fuel tax rebates from the very government that charges them nothing at death.</strong>
+    The Fuel Tax Credits Scheme — the largest single fossil fuel subsidy at $10.8B in 2025–26 — mining companies are its largest claimants. Mining underlies the fortunes of Rinehart and Palmer.
+    <strong>Today, these billionaires' estates will pass to their children with $0 estate tax, while the mining sector receives billions in annual fuel tax credits from the very government that charges nothing at death.</strong>
     <a href="https://australiainstitute.org.au/wp-content/uploads/2026/03/P1916-Fossil-Fuel-Subsidies-2026-Web.pdf" target="_blank" rel="noopener">Australia Institute ↗</a> and
     <a href="https://michaelwest.com.au/ranking-australias-billionaires-as-taxpayers/" target="_blank" rel="noopener">Michael West Media ↗</a> have both documented the gap between public subsidies and private tax minimisation.
   </div>
@@ -948,7 +948,7 @@ footer_scripts: assets/js/hero.js
     AFR Rich List {{ site.data.billionaires._meta.edition | default: '2025' }}</a>
   (published {{ site.data.billionaires._meta.published | default: 'May 2025' }}).
   Other billionaire wealth figures require manual update when AFR publishes the next edition (~May each year).
-  ABS median salary last updated: {{ site.data.billionaires._stats.abs_median_salary_updated | default: '2024-03' }}.
+  ABS average earnings figure last updated: {{ site.data.billionaires._stats.abs_median_salary_updated | default: '2024-03' }}.
   Fossil fuel subsidies: Australia Institute {{ site.data.billionaires._stats.fossil_fuel_subsidies_updated | default: '2025-03' }}.
   NHMRC budget: {{ site.data.billionaires._stats.nhmrc_budget_updated | default: '2024-05' }}.
   Asset breakdowns are rough estimates — actual allocations through trusts and holding companies are not publicly disclosed.
@@ -1020,7 +1020,7 @@ const FUND_CATS=[
 const COUNTRIES=[
   {name:'🇦🇺 Australia',rate:0,note:'No estate tax since 1979',color:'#ef4444'},
   {name:'🇨🇦 Canada',rate:0,note:'No estate tax; CGT deemed disposition on death',color:'#ef4444'},
-  {name:'🇩🇪 Germany',rate:30,note:'Up to 30% on large estates',color:'#fbbf24'},
+  {name:'🇩🇪 Germany',rate:30,note:'Up to 30% for spouses/children (up to 50% for others)',color:'#fbbf24'},
   {name:'🇬🇧 UK',rate:40,note:'40% above £325k',color:'#f59e0b'},
   {name:'🇺🇸 USA',rate:40,note:'40% above US$15M (2026)',color:'#f59e0b'},
   {name:'🇫🇷 France',rate:45,note:'Up to 45% direct heirs',color:'#4ade80'},
@@ -1063,10 +1063,10 @@ const PROFESSIONS=[
   },
   {role:'🩺 GP',
    unit:'consultations/yr',
-   rate:2000,
+   rate:4500,   // rough: total Medicare GP services ÷ number of GPs
    context:(absurd,mult)=>{
-     // Avg Australian visits GP ~5x/yr — so capacity = absurd/5 patients fully covered
-     const patientsFullyCovered=absurd/5;
+     // rough: Australians average ~6 GP visits a year
+     const patientsFullyCovered=absurd/6;
      if(patientsFullyCovered>=AU_POP)
        return `That's ${(patientsFullyCovered/AU_POP).toFixed(1)}× the entire Australian population fully covered for GP visits each year.`;
      return `That's full GP coverage for ${(patientsFullyCovered/1e6).toFixed(2)}M Australians/yr (${(patientsFullyCovered/AU_POP*100).toFixed(1)}% of population).`;
@@ -1076,46 +1076,43 @@ const PROFESSIONS=[
    unit:'callouts/yr',
    rate:1200,
    context:(absurd,mult)=>{
-     // Australia averages ~1.4M emergency callouts/yr across all states (AIHW 2023)
-     const auCallouts=1400000;
-     return `That's ${(absurd/auCallouts).toFixed(1)}× all emergency callouts across Australia in a year.`;
+     return `That's ${fmtN(absurd)} callouts a year — about ${absurd>=AU_POP?(absurd/AU_POP).toFixed(1)+' for every Australian':'one for every '+Math.round(AU_POP/absurd).toLocaleString()+' Australians'}.`;
    }
   },
   {role:'🔬 Researcher',
    unit:'studies/career',
    rate:3,
    context:(absurd,mult)=>{
-     // NHMRC funds ~1000 grants/yr
-     return `That's ${(absurd/1000).toFixed(0)}k research careers' worth of output — compare to NHMRC funding ~${NHMRC_M/1}M total this year.`;
+     return `That's ${fmtN(absurd/3)} entire research careers' worth of studies — every single year.`;
    }
   },
 ];
 
 const SCALE_CONTEXTS=[
   {thresh:1,      label:'$1 — one dollar',         color:'#64748b',
-   desc:'One dollar. A coin. You\'d find this down the back of a couch. At median salary you earn this every 3 seconds at work.'},
+   desc:'One dollar. A coin. You\'d find this down the back of a couch. On average full-time earnings you earn this roughly every minute at work.'},
   {thresh:10,     label:'$10',                      color:'#64748b',
-   desc:'A coffee. Ten minutes of work at median wage.'},
+   desc:'A coffee. About 12 minutes of work on average full-time earnings.'},
   {thresh:100,    label:'$100',                     color:'#94a3b8',
-   desc:'A tank of petrol. A night out. About an hour of median-salary work.'},
+   desc:'A tank of petrol. A night out. About two hours of work on average full-time earnings.'},
   {thresh:1000,   label:'$1,000 — a grand',         color:'#4ade80',
-   desc:'A week\'s groceries for a family. About 5 working days of median salary. This is a tangible goal for most Australians.'},
+   desc:'A week\'s groceries for a family. About 2½ working days on average full-time earnings. This is a tangible goal for most Australians.'},
   {thresh:10000,  label:'$10,000',                  color:'#38bdf8',
-   desc:'A used car. A cheap holiday. 50 working days of median salary. Still very reachable.'},
+   desc:'A used car. A cheap holiday. About 26 working days on average full-time earnings. Still very reachable.'},
   {thresh:1e5,    label:'$100,000 — one hundred thousand', color:'#f59e0b',
-   desc:'The ABS average full-time salary for a year. An entire year of work. In 1985 this was a Sydney house deposit. Today it barely scratches a deposit in most capital cities.'},
+   desc:'The ABS average full-time salary for a year. An entire year of work. Today it falls well short of a 20% deposit on a median Sydney home.'},
   {thresh:1e6,    label:'$1,000,000 — one million', color:'#f472b6',
-   desc:'A median Sydney home. 10 years of saving 100% of your salary. Most Australians never see this as a lump sum in their lifetime. 1,000 × $1,000.'},
+   desc:'Still less than a median Sydney dwelling (around $1.2M+). 10 years of saving 100% of your salary. Most Australians never see this as a lump sum in their lifetime. 1,000 × $1,000.'},
   {thresh:1e7,    label:'$10 million',              color:'#c084fc',
-   desc:'100 years of median salary saved entirely. The top ~0.1% of Australians have wealth near this level. A very successful small business might be worth this after a lifetime of work.'},
+   desc:'100 years of average salary saved entirely. Only a very small share of Australians have wealth at this level. A very successful small business might be worth this after a lifetime of work.'},
   {thresh:1e8,    label:'$100 million',             color:'#ef4444',
-   desc:'1,000 years of median salary. We\'re now in the territory of major company founders and successful investors. Still 10× below a billion.'},
+   desc:'1,000 years of average salary. We\'re now in the territory of major company founders and successful investors. Still 10× below a billion.'},
   {thresh:1e9,    label:'$1,000,000,000 — ONE BILLION', color:'#ef4444',
-   desc:'10,000 years of median salary saved entirely. Spend $10,000 every single day for 274 years before running out. 1,000 × $1,000,000. This is where comprehension breaks down entirely. Your brain cannot feel the difference between 1 million and 1 billion — but the difference is 999 more millions.'},
+   desc:'10,000 years of average salary saved entirely. Spend $10,000 every single day for 274 years before running out. 1,000 × $1,000,000. This is where comprehension breaks down entirely. Your brain cannot feel the difference between 1 million and 1 billion — but the difference is 999 more millions.'},
   {thresh:1e10,   label:'$10 billion',              color:'#d4a017',
-   desc:'100,000 years of median salary. The GDP of a small country. At this wealth level, passive returns from investment (~4%/yr) generate $400M/year — $4,000 per minute — without lifting a finger.'},
+   desc:'100,000 years of average salary. The GDP of a small country. At this wealth level, passive returns from investment (~4%/yr) generate $400M/year — about $760 per minute — without lifting a finger.'},
   {thresh:39.01e9,label:'$39.01 billion — Gina Rinehart', color:'#d4a017',
-   desc:'381,000+ years of median salary. $10,000/day for 10,440 years. Grew by ~$22B from 2020–2025 — a gain of ~$12M per day — without triggering a dollar of income or capital gains tax. More than the annual combined budget of NHMRC + ARC + MRFF (all Australian government research) × 14.'},
+   desc:'About 390,000 years of average full-time salary. $10,000/day for about 10,700 years. Grew by ~$10B between the 2020 and 2026 Rich Lists — roughly $4.5M a day — largely as unrealised gains that aren\'t taxed unless sold. About 15× the combined annual NHMRC + ARC + MRFF research budgets.'},
 ];
 
 const LINEAR_COMPARISONS=[
@@ -1124,7 +1121,7 @@ const LINEAR_COMPARISONS=[
   {label:'$100',                         val:100,     color:'#94a3b8'},
   {label:'$1,000',                       val:1000,    color:'#4ade80'},
   {label:'$10,000',                      val:1e4,     color:'#38bdf8'},
-  {label:'$100,000 (median salary)',     val:1e5,     color:'#f59e0b'},
+  {label:'$100,000 (≈ average salary)',     val:1e5,     color:'#f59e0b'},
   {label:'$1,000,000',                   val:1e6,     color:'#f472b6'},
   {label:'$10,000,000',                  val:1e7,     color:'#c084fc'},
   {label:'$100,000,000',                 val:1e8,     color:'#fb923c'},
@@ -1236,22 +1233,22 @@ function updateZoomViz(sliderVal){
 function renderLinearBars(){
   const el=document.getElementById('bl-linear-bars');
   if(!el||el.children.length) return;
-  const ref=1e5; // median salary = reference
+  const ref=1e5; // average full-time salary = reference
   // For visual: cap bar at 100% of container, but show actual multiples
   const maxMultiple=39.01e9/ref; // ~390,100
   el.innerHTML=LINEAR_COMPARISONS.map(item=>{
     const multiple=item.val/ref;
     // Log-based visual width so we can see all bars, but label with TRUE multiples
     const logPct=Math.max(0.3,(Math.log10(Math.max(1,item.val))/Math.log10(39.01e9))*100);
-    const multipleLabel=item.val>=ref?(item.val/ref).toFixed(item.val/ref>=100?0:2)+'× median salary':
-      (item.val/ref*100).toFixed(1)+'% of median salary';
+    const multipleLabel=item.val>=ref?(item.val/ref).toFixed(item.val/ref>=100?0:2)+'× average salary':
+      (item.val/ref*100).toFixed(1)+'% of average salary';
     return`<div class="bl-cmp-row" style="margin-bottom:.6rem;align-items:center;">
       <div class="bl-cmp-lbl" style="width:220px;font-size:.72rem;">${item.label}</div>
       <div class="bl-cmp-wrap"><div class="bl-cmp-bar" style="width:${logPct.toFixed(1)}%;background:${item.color};opacity:.8;min-width:2px;"></div></div>
       <div style="font-size:.65rem;color:${item.color};width:160px;padding-left:.5rem;flex-shrink:0;">${multipleLabel}</div>
     </div>`;}).join('');
   // Add legend note
-  el.insertAdjacentHTML('beforeend','<div style="font-size:.62rem;color:#334155;margin-top:.5rem;">Bar width is logarithmic (so all values are visible). The <strong style="color:#f59e0b;">labels show true multiples of median salary</strong>. On a true linear scale, the Gina Rinehart bar would be 381,100× longer than the median salary bar — impossible to show on screen.</div>');
+  el.insertAdjacentHTML('beforeend','<div style="font-size:.62rem;color:#334155;margin-top:.5rem;">Bar width is logarithmic (so all values are visible). The <strong style="color:#f59e0b;">labels show true multiples of average salary</strong>. On a true linear scale, the Gina Rinehart bar would be 381,100× longer than the average-salary bar — impossible to show on screen.</div>');
 }
 
 function renderScaleViz(){
@@ -1280,7 +1277,7 @@ function renderCards(){
       <div class="bl-card-wealth">$${b.wealth.toFixed(2)}B</div>
       <div class="bl-card-source">${b.source}</div>
       <div class="bl-card-tag tag-${b.tag}">${b.tagLabel}</div>
-      <div class="bl-card-donate">🎁 Charity (est.): <span>$${b.donateAmt}M</span> = ${pctOf(b.donateAmt*1e6,b.wealth*1e9)} of wealth</div>
+      <div class="bl-card-donate">🎁 Charity: <span>${b.donateAmt!=null ? '$'+b.donateAmt+'M = '+pctOf(b.donateAmt*1e6,b.wealth*1e9)+' of wealth' : 'no verifiable public figure'}</span></div>
       <div class="bl-card-donate" style="color:#64748b;">🗳️ Political: ${b.polDonate}</div>
       <div style="font-size:.65rem;color:#475569;margin-top:.3rem;">Origin: ${b.inherited}</div>
     </div>`).join('');
@@ -1291,7 +1288,12 @@ function renderCards(){
 
 // ── Donation grids ────────────────────────────────────────
 function renderDonateGrid(){
-  document.getElementById('bl-donate-grid').innerHTML=BILLIONAIRES.map(b=>{
+  const withGiving = BILLIONAIRES.filter(b => b.donateAmt != null);
+  if (!withGiving.length) {
+    document.getElementById('bl-donate-grid').innerHTML = '<div class="bl-stat" style="grid-column:1/-1;"><div class="bl-stat-label">Individual giving totals for these people aren\'t published in a verifiable form, so none are shown. For scale: the AFR Philanthropy 50 — Australia\'s 50 biggest givers — donated about $1.37B in total in its 2025 list.</div></div>';
+    return;
+  }
+  document.getElementById('bl-donate-grid').innerHTML=withGiving.map(b=>{
     const pct=(b.donateAmt*1e6/(b.wealth*1e9)*100).toFixed(3);
     return`<div class="bl-stat">
       <div style="font-size:.75rem;font-weight:700;color:#e2e8f0;margin-bottom:.4rem;">${b.name}</div>
@@ -1562,7 +1564,7 @@ function updateProductivity(){
   const sal=Math.max(1,parseFloat(document.getElementById('bl-salary').value)||MEDIAN_SALARY);
   const mult=Math.round(b.wealth*1e9/sal);
   document.getElementById('bl-prod-multi-box').innerHTML=
-    `<strong>If wealth = proportional productivity:</strong> ${b.name} would need to produce <strong style="color:#fca5a5;font-size:1.2em;">${fmtN(mult)}×</strong> more output than you — every single year of their career. Here's what that looks like in Australian terms:`;
+    `<strong>If wealth = proportional productivity:</strong> ${b.name} would need to produce <strong style="color:#fca5a5;font-size:1.2em;">${fmtN(mult)}×</strong> more output than you — every single year of their career. Here's what that looks like in Australian terms: <span style="font-size:.8em;opacity:.7;">(Output rates per profession are rough illustrative averages.)</span>`;
   document.getElementById('bl-prod-grid').innerHTML=PROFESSIONS.map(p=>{
     const absurd=p.rate*mult;
     const ctx=p.context(absurd,mult);
@@ -1621,7 +1623,7 @@ function renderTimeGrid(){
     {amount:100,     label:'$100',            color:'#94a3b8'},
     {amount:1000,    label:'$1,000',          color:'#4ade80'},
     {amount:1e4,     label:'$10,000',         color:'#38bdf8'},
-    {amount:1e5,     label:'$100k (median salary)', color:'#f59e0b'},
+    {amount:1e5,     label:'$100k (≈ average salary)', color:'#f59e0b'},
     {amount:1e6,     label:'$1,000,000',      color:'#f472b6'},
     {amount:1e7,     label:'$10 million',     color:'#c084fc'},
     {amount:1e8,     label:'$100 million',    color:'#fb923c'},
@@ -1692,7 +1694,7 @@ function renderDistanceGrid(){
 const BV_MILESTONES=[
   {val:0,        label:'$0 — Start',              color:'#64748b'},
   {val:1000,     label:'$1,000 — a week\'s groceries', color:'#4ade80'},
-  {val:1e5,      label:'$100,000 — median annual salary', color:'#f59e0b'},
+  {val:1e5,      label:'$100,000 — about the average full-time salary', color:'#f59e0b'},
   {val:1e6,      label:'$1,000,000 — one million', color:'#f472b6'},
   {val:1e7,      label:'$10 million',              color:'#c084fc'},
   {val:1e8,      label:'$100 million',             color:'#fb923c'},
@@ -1938,7 +1940,7 @@ function renderIncomeEstGrid(){
     return`<div title="${b.note}" style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:.5rem .65rem;cursor:help;">
       <div style="font-size:.62rem;color:var(--text-secondary);font-weight:700;">${b.name.split(' ')[0]}</div>
       <div style="font-family:'Outfit',sans-serif;font-size:1rem;font-weight:900;color:${color};">${display}</div>
-      <div style="font-size:.6rem;color:#475569;margin-top:.1rem;">${multOfMedian>0?`${fmtN(Math.round(multOfMedian))}× median salary`:'Unrealised / no dividend'}</div>
+      <div style="font-size:.6rem;color:#475569;margin-top:.1rem;">${multOfMedian>0?`${fmtN(Math.round(multOfMedian))}× average salary`:'Unrealised / no dividend'}</div>
     </div>`;
   }).join('');
 }
