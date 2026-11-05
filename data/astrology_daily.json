@@ -8,13 +8,13 @@
     },
     "moon": {
       "sign": "Virgo",
-      "degree": 22.5,
+      "degree": 22.7,
       "retrograde": false,
       "phase": "Waning Crescent"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 2.5,
+      "degree": 2.6,
       "retrograde": false
     },
     "venus": {
@@ -71,7 +71,7 @@
         "Mars"
       ],
       "type": "sextile",
-      "orb": 0.9
+      "orb": 0.8
     },
     {
       "planets": [
@@ -79,7 +79,7 @@
         "Venus"
       ],
       "type": "trine",
-      "orb": 2.4
+      "orb": 2.6
     },
     {
       "planets": [
