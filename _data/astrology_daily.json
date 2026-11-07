@@ -3,33 +3,33 @@
   "planetary_positions": {
     "sun": {
       "sign": "Scorpio",
-      "degree": 14.6,
+      "degree": 15.6,
       "retrograde": false
     },
     "moon": {
-      "sign": "Libra",
-      "degree": 18.3,
+      "sign": "Scorpio",
+      "degree": 0.4,
       "retrograde": false,
-      "phase": "Waning Crescent"
+      "phase": "New Moon"
     },
     "mercury": {
       "sign": "Taurus",
-      "degree": 11.4,
+      "degree": 15.8,
       "retrograde": false
     },
     "venus": {
       "sign": "Taurus",
-      "degree": 23.3,
+      "degree": 24.8,
       "retrograde": false
     },
     "mars": {
       "sign": "Cancer",
-      "degree": 4.5,
+      "degree": 5,
       "retrograde": false
     },
     "jupiter": {
       "sign": "Leo",
-      "degree": 9.3,
+      "degree": 9.4,
       "retrograde": false
     },
     "saturn": {
@@ -51,8 +51,8 @@
   "major_aspects": [
     {
       "planets": [
-        "Moon",
-        "Saturn"
+        "Sun",
+        "Mercury"
       ],
       "type": "opposition",
       "orb": 0.2
@@ -71,31 +71,31 @@
         "Neptune"
       ],
       "type": "square",
-      "orb": 1.5
-    },
-    {
-      "planets": [
-        "Mercury",
-        "Jupiter"
-      ],
-      "type": "square",
-      "orb": 2.1
+      "orb": 2
     },
     {
       "planets": [
         "Sun",
-        "Mercury"
+        "Saturn"
       ],
-      "type": "opposition",
-      "orb": 3.2
+      "type": "quincunx",
+      "orb": 2.5
     },
     {
       "planets": [
-        "Sun",
-        "Jupiter"
+        "Moon",
+        "Neptune"
       ],
-      "type": "square",
-      "orb": 5.3
+      "type": "quincunx",
+      "orb": 2.6
+    },
+    {
+      "planets": [
+        "Moon",
+        "Mars"
+      ],
+      "type": "trine",
+      "orb": 4.6
     },
     {
       "planets": [
@@ -107,11 +107,11 @@
     },
     {
       "planets": [
-        "Jupiter",
-        "Neptune"
+        "Sun",
+        "Jupiter"
       ],
-      "type": "trine",
-      "orb": 6.3
+      "type": "square",
+      "orb": 6.1
     }
   ],
   "readings": {
