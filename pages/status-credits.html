@@ -82,7 +82,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .sc-ctrl-row{display:flex;flex-wrap:wrap;gap:.65rem;align-items:flex-end;margin-bottom:.75rem;}
 .sc-ctrl{display:flex;flex-direction:column;gap:.28rem;}
 .sc-ctrl label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);}
-.sc-ctrl select,.sc-ctrl input[type=number],.sc-ctrl input[type=text]{
+.sc-ctrl select,.sc-ctrl input[type=number],.sc-ctrl input[type=text],.sc-ctrl input[type=date],.sc-ctrl input[type=search]{
   background:var(--surface2);border:1px solid var(--border);border-radius:8px;
   color:var(--text);padding:.38rem .6rem;font-family:'DM Sans',sans-serif;font-size:.83rem;
   outline:none;min-width:120px;
@@ -191,7 +191,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div class="sc-hero">
   <div class="sc-hero-title">Qantas <span>Status Credits</span> Planner</div>
   <div class="sc-hero-sub">
-    Pick a month and see which Qantas destinations from Sydney give the most Status Credits for your money,
+    Pick a month (or your own dates) and see which Qantas destinations from Sydney give the most Status Credits for your money,
     then plan the trip in detail. Status Credits come straight from Qantas's official earning tables; prices are
     a weekly ballpark from Google's flight search — always check the real fare before booking.
   </div>
@@ -246,7 +246,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="sc-card">
     <div class="sc-ctrl-row">
       <div class="sc-ctrl"><label>From</label><select id="wg-from"></select></div>
-      <div class="sc-ctrl"><label>Month</label><select id="wg-month"></select></div>
+      <div class="sc-ctrl"><label>When</label><select id="wg-month"></select></div>
+      <div class="sc-ctrl wg-dates" hidden><label>Leave on or after</label><input type="date" id="wg-leave"></div>
+      <div class="sc-ctrl wg-dates" hidden><label>Back by</label><input type="date" id="wg-back"></div>
       <div class="sc-ctrl"><label>Cabin</label><select id="wg-cabin"><option value="economy">Economy</option><option value="business">Business</option><option value="both">Both</option></select></div>
       <div class="sc-ctrl"><label>Destinations</label><select id="wg-area"><option value="all">Australia &amp; NZ</option><option value="Australia">Australia</option><option value="New Zealand">New Zealand</option></select></div>
       <div class="sc-ctrl"><label>&nbsp;</label><label style="text-transform:none;letter-spacing:0;font-size:.78rem;color:var(--text2);font-weight:400;"><input type="checkbox" id="wg-partner"> include trips with partner airlines</label></div>
@@ -271,7 +273,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         <select id="pl-stops"><option value="0">Direct only</option><option value="1" selected>Up to 1 stop</option><option value="2">Up to 2 stops</option></select></div>
       <div class="sc-ctrl"><label>Trip</label>
         <select id="pl-ret"><option value="1">One way</option><option value="2" selected>Return (same way back)</option></select></div>
+      <div class="sc-ctrl"><label>Depart (optional)</label><input type="date" id="pl-dep"></div>
+      <div class="sc-ctrl" id="pl-backwrap"><label>Return (optional)</label><input type="date" id="pl-back"></div>
     </div>
+    <div style="font-size:.68rem;color:var(--text3);">Dates are passed to the ✈ price links and highlight that month's ballpark fare.</div>
   </div>
   <div id="pl-ballpark"></div>
   <div class="sc-callout amber" id="pl-ratio"></div>
@@ -335,7 +340,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     Distances are great-circle estimates; routes marked ⚠ are within 30 miles of a band edge — confirm with the
     <a href="https://www.qantas.com/au/en/frequent-flyer/calculators.html" target="_blank" rel="noopener" style="color:#ff8a97;">Qantas earning calculator</a>.
   </div>
-  <div class="sc-sec-title">Every Qantas route in Australia and to New Zealand — Status Credits per one-way flight</div>
+  <div class="sc-ctrl-row" style="margin-top:.8rem;">
+    <div class="sc-ctrl" style="flex:1;min-width:220px;"><label>Find a route</label>
+      <input type="search" id="ref-q" placeholder="Airport code or city — e.g. SYD, or Sydney Hobart" autocomplete="off"></div>
+  </div>
+  <div class="sc-sec-title">Every Qantas route in Australia and to New Zealand — Status Credits per one-way flight <span id="ref-count" style="font-weight:400;color:var(--text3);"></span></div>
   <div style="font-size:.72rem;color:var(--text3);margin-bottom:.4rem;">Trans-Tasman flights from Adelaide, Brisbane, Gold Coast, Melbourne and Sydney use Qantas's Australia–NZ table (Saver shown; Sale earns 5 less); Perth–Auckland uses the distance table.</div>
   <div style="overflow-x:auto;"><table class="sc-route-table">
     <thead><tr><th>Route</th><th class="right">Miles</th><th class="right">Sale / Saver</th><th class="right">Flex</th><th class="right">Business</th><th class="right">Business Flex</th></tr></thead>
@@ -345,6 +354,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div style="overflow-x:auto;"><table class="sc-route-table">
     <thead><tr><th>Route</th><th>Table used</th><th class="right">Sale</th><th class="right">Saver</th><th class="right">Flex</th><th class="right">Prem. Econ.</th><th class="right">Business</th><th class="right">Bus. Flex</th></tr></thead>
     <tbody id="intl-tbody"></tbody></table></div>
+  <div id="ref-none" class="sc-callout" hidden>No routes match. Try an airport code (e.g. HBA) or a city name.</div>
 </div>
 
 
@@ -507,6 +517,10 @@ const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const money = v => '$' + Math.round(v).toLocaleString();
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const monthLabel = ym => { const [y, m] = ym.split('-'); return `${MONTHS[+m - 1]} ${y}`; };
+const monthsBetween = (a, b) => { const out = []; let [y, m] = a.slice(0, 7).split('-').map(Number);
+  const [y2, m2] = b.slice(0, 7).split('-').map(Number);
+  while (y < y2 || (y === y2 && m <= m2)) { out.push(`${y}-${String(m).padStart(2, '0')}`); if (++m > 12) { m = 1; y++; } }
+  return out; };
 const shortDate = d => { if (!d) return ''; const [y, m, dd] = d.split('-'); return `${+dd} ${MONTHS[+m - 1]}`; };
 
 function pathSC(path, fare) {
@@ -537,7 +551,7 @@ function openTab(name) {
   document.querySelectorAll('.sc-tab').forEach(b => b.classList.toggle('active', b.dataset.panel === name));
   document.querySelectorAll('.sc-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
 }
-function renderAll() { renderWhere(); renderPlan(); renderCompare(); renderTables(); }
+function renderAll() { renderWhere(); renderPlan(); renderCompare(); renderTables(); filterRef(); }
 
 // ── Double SC toggle, target, tabs ────────────────────────────
 document.getElementById('sc-multiplier-pills').addEventListener('click', e => {
@@ -586,9 +600,9 @@ function historyFor(from, month, cabin, code) {
 }
 function exploreRows(from, month, cabins, area) {
   if (!EXPLORE?.results) return [];
-  const out = [];
+  const out = [], months = [].concat(month);
   for (const r of EXPLORE.results) {
-    if (r.from !== from || r.month !== month || !cabins.includes(r.cabin) || (area !== 'all' && r.area !== area)) continue;
+    if (r.from !== from || !months.includes(r.month) || !cabins.includes(r.cabin) || (area !== 'all' && r.area !== area)) continue;
     for (const d of r.destinations || []) {
       let lo = null, hi = null, via = '', path = [from, d.code];
       // Google names every airline on the trip ("Air New Zealand and Qantas"); only all-Qantas trips
@@ -612,8 +626,8 @@ function exploreRows(from, month, cabins, area) {
           }
         }
       }
-      const hist = historyFor(from, month, r.cabin, d.code);
-      out.push({ ...d, cabin: r.cabin, area: r.area, lo, hi, via, path, partner, per: lo ? d.price / lo : null, hist });
+      const hist = historyFor(from, r.month, r.cabin, d.code);
+      out.push({ ...d, month: r.month, cabin: r.cabin, area: r.area, lo, hi, via, path, partner, per: lo ? d.price / lo : null, hist });
     }
   }
   return out;
@@ -624,8 +638,12 @@ function initWhere() {
   const origins = has ? [...new Set(EXPLORE.results.map(r => r.from))] : ['SYD'];
   fromSel.innerHTML = origins.map(o => `<option value="${o}">${o}</option>`).join('');
   const months = has ? [...new Set(EXPLORE.results.map(r => r.month))].sort() : [];
-  mSel.innerHTML = months.length ? months.map(m => `<option value="${m}">${monthLabel(m)}</option>`).join('') : '<option value="">—</option>';
-  ['wg-from','wg-month','wg-cabin','wg-area','wg-sort','wg-partner'].forEach(id => document.getElementById(id).addEventListener('input', renderWhere));
+  mSel.innerHTML = months.length ? months.map(m => `<option value="${m}">Any time in ${monthLabel(m)}</option>`).join('') + '<option value="mine">My own dates…</option>' : '<option value="">—</option>';
+  // default "my dates": a week, leaving in a fortnight (within the months Google covers)
+  const iso = d => d.toISOString().slice(0, 10), t0 = new Date(Date.now() + 14 * 864e5);
+  document.getElementById('wg-leave').value = iso(t0);
+  document.getElementById('wg-back').value = iso(new Date(t0.getTime() + 9 * 864e5));
+  ['wg-from','wg-month','wg-cabin','wg-area','wg-sort','wg-partner','wg-leave','wg-back'].forEach(id => document.getElementById(id).addEventListener('input', renderWhere));
   if (has) document.getElementById('sc-fare-pill').textContent = `Ballpark fares: Google, updated ${EXPLORE.taken}`;
 }
 function renderWhere() {
@@ -638,14 +656,34 @@ function renderWhere() {
     return;
   }
   const from = document.getElementById('wg-from').value, month = document.getElementById('wg-month').value;
+  const mine = month === 'mine';
+  document.querySelectorAll('.wg-dates').forEach(e => e.hidden = !mine);
+  const leave = document.getElementById('wg-leave').value, back = document.getElementById('wg-back').value;
+  if (mine && (!leave || !back || back <= leave)) {
+    note.innerHTML = ''; el.innerHTML = '<div class="sc-callout">Pick the earliest day you could leave and the day you need to be back by.</div>'; return;
+  }
   const cabinSel = document.getElementById('wg-cabin').value, area = document.getElementById('wg-area').value;
   const sort = document.getElementById('wg-sort').value, tgt = target();
   const cabins = cabinSel === 'both' ? ['economy', 'business'] : [cabinSel];
-  let rows = exploreRows(from, month, cabins, area).filter(r => document.getElementById('wg-partner').checked || !r.partner);
+  let rows = exploreRows(from, mine ? monthsBetween(leave, back) : month, cabins, area).filter(r => document.getElementById('wg-partner').checked || !r.partner);
+  if (mine) {
+    // Google gives one cheapest date pair per destination per month. Keep, for each destination and cabin,
+    // a trip that fits inside the user's window if there is one, otherwise the cheapest from those months
+    // (flagged, as the price on the user's own dates may differ).
+    rows.forEach(r => r.fits = r.start >= leave && r.end <= back);
+    const best = {};
+    for (const r of rows) { const k = r.code + r.cabin, b = best[k];
+      if (!b || (r.fits && !b.fits) || (r.fits === b.fits && r.price < b.price)) best[k] = r; }
+    rows = Object.values(best);
+  }
   rows.sort(sort === 'price' ? (a, b) => a.price - b.price
     : sort === 'sc' ? (a, b) => (b.lo ?? -1) - (a.lo ?? -1)
     : (a, b) => (a.per ?? 1e9) - (b.per ?? 1e9));
-  note.innerHTML = `<div class="sc-callout" style="font-size:.74rem;">Cheapest Qantas <strong>return</strong> fare Google found for each destination in <strong>${monthLabel(month)}</strong>
+  note.innerHTML = mine
+    ? `<div class="sc-callout" style="font-size:.74rem;">Ballpark Qantas <strong>return</strong> fares for trips between <strong>${shortDate(leave)}</strong> and <strong>${shortDate(back)}</strong>.
+    Google gives one cheapest date pair per destination each month, so where that trip doesn't fit your dates the fare is marked <em>nearby dates</em> — use <strong>✈ your dates</strong> for the real price.
+    Updated <strong>${esc(EXPLORE.taken)}</strong>; fares change daily.`
+    : `<div class="sc-callout" style="font-size:.74rem;">Cheapest Qantas <strong>return</strong> fare Google found for each destination in <strong>${monthLabel(month)}</strong>
     (trip of ${esc(EXPLORE.trip_length || 'about a week')}, on Google's suggested dates), updated <strong>${esc(EXPLORE.taken)}</strong>. Ballpark only — fares change daily.
     ${scMultiplier > 1 ? '<strong>Double SC applied.</strong>' : ''}</div>`;
   if (!rows.length) { el.innerHTML = '<div class="sc-callout">No destinations for these settings in the latest update.</div>'; return; }
@@ -661,13 +699,14 @@ function renderWhere() {
       return `<tr>
         <td><strong>${esc(r.name || AIRPORT_NAMES[r.code] || r.code)}</strong> <span class="sc-pt">${esc(r.code)}</span>${r.partner ? ' <span class="sc-chip" style="color:#fbbf24;" title="Part of the trip is on a partner airline, which earns on a different table — check with the Qantas earning calculator">⚠ ' + esc(r.airline || 'partner airline') + '</span>' : ''}
           <div style="font-size:.66rem;color:var(--text3);">${stops}</div></td>
-        <td style="font-size:.74rem;white-space:nowrap;">${shortDate(r.start)} – ${shortDate(r.end)}</td>
+        <td style="font-size:.74rem;white-space:nowrap;${mine && !r.fits ? 'color:var(--text3);' : ''}">${shortDate(r.start)} – ${shortDate(r.end)}${mine && !r.fits ? '<br><span class="sc-chip" style="color:#fbbf24;margin-left:0;" title="Google\'s cheapest dates for this destination fall outside your window — the fare on your dates may differ">nearby dates</span>' : ''}</td>
         ${cabins.length > 1 ? `<td>${r.cabin === 'business' ? 'Business' : 'Economy'}</td>` : ''}
         <td class="right">${money(r.price)}${vs}</td>
         <td class="right" style="font-weight:700;">${r.lo == null ? `<span title="${r.partner ? 'Includes a partner airline — earns on a different table' : 'Not enough information about the connection to work this out'}">—</span>` : scRange([r.lo, r.hi])}</td>
         <td class="right" style="font-weight:700;color:${good ? '#4ade80' : 'var(--text2)'};">${r.per ? '$' + r.per.toFixed(2) + (good ? ' ✓' : '') : '—'}</td>
         <td style="white-space:nowrap;font-size:.68rem;">
-          <a href="${gfLink(from, r.code, r.cabin, r.start, r.end)}" target="_blank" rel="noopener" style="color:#38bdf8;">✈ these dates</a><br>
+          ${mine ? `<a href="${gfLink(from, r.code, r.cabin, leave, back)}" target="_blank" rel="noopener" style="color:#38bdf8;">✈ your dates</a><br>`
+                 : `<a href="${gfLink(from, r.code, r.cabin, r.start, r.end)}" target="_blank" rel="noopener" style="color:#38bdf8;">✈ these dates</a><br>`}
           ${(QF_NET?.airports || []).includes(r.code) ? `<a href="#" onclick="planTo('${from}','${r.code}');return false;" style="color:#ff8a97;">Plan →</a> · ` : ''}${r.lo != null ? `<a href="#" onclick='addCompare(${JSON.stringify(r.path)}, "${fare}", 2, ${r.price});return false;' style="color:#ff8a97;">+ shortlist</a>` : ''}
         </td></tr>`;
     }).join('') + `</tbody></table>
@@ -690,7 +729,7 @@ function initPlan() {
   document.getElementById('pl-to').innerHTML = `<option value="RUN">↻ Status run (back to start)</option>` + grouped('MEL');
   document.getElementById('pl-net-src').textContent = `${(QF_NET?.routes || []).length} Qantas routes (Australian domestic + trans-Tasman), updated ${QF_NET?.updated || '—'} (FlightsFrom.com, refreshed weekly)`;
   document.getElementById('sc-net-pill').textContent = `Qantas route network (updated ${QF_NET?.updated || '—'})`;
-  ['pl-from','pl-to','pl-stops','pl-ret'].forEach(id => document.getElementById(id).addEventListener('input', renderPlan));
+  ['pl-from','pl-to','pl-stops','pl-ret','pl-dep','pl-back'].forEach(id => document.getElementById(id).addEventListener('input', renderPlan));
 }
 function renderBallpark(from, to) {
   const el = document.getElementById('pl-ballpark');
@@ -699,14 +738,16 @@ function renderBallpark(from, to) {
   for (const r of EXPLORE.results) if (r.from === from) for (const d of r.destinations || []) if (d.code === to) rows.push({ ...d, month: r.month, cabin: r.cabin });
   if (!rows.length) { el.innerHTML = ''; return; }
   const months = [...new Set(rows.map(r => r.month))].sort();
+  const dep = document.getElementById('pl-dep').value, depM = dep ? dep.slice(0, 7) : '';
+  const hl = m => m === depM ? ' style="background:rgba(56,189,248,.12);"' : '';
   const cell = (m, c) => { const d = rows.find(r => r.month === m && r.cabin === c);
     return d ? `<a href="${gfLink(from, to, c, d.start, d.end)}" target="_blank" rel="noopener" style="color:var(--text);" title="${shortDate(d.start)} – ${shortDate(d.end)}${d.stops ? ', ' + d.stops + ' stop(s)' : ', non-stop'}">${money(d.price)}</a>` : '—'; };
   el.innerHTML = `<div class="sc-card"><div class="sc-sec-title" style="margin-top:0;">💲 Ballpark return fares ${from} ⇄ ${to}</div>
-    <div style="overflow-x:auto;"><table class="sc-route-table"><thead><tr><th></th>${months.map(m => `<th class="right">${monthLabel(m)}</th>`).join('')}</tr></thead><tbody>
-      <tr><td>Economy</td>${months.map(m => `<td class="right">${cell(m, 'economy')}</td>`).join('')}</tr>
-      <tr><td>Business</td>${months.map(m => `<td class="right">${cell(m, 'business')}</td>`).join('')}</tr>
+    <div style="overflow-x:auto;"><table class="sc-route-table"><thead><tr><th></th>${months.map(m => `<th class="right"${hl(m)}>${monthLabel(m)}</th>`).join('')}</tr></thead><tbody>
+      <tr><td>Economy</td>${months.map(m => `<td class="right"${hl(m)}>${cell(m, 'economy')}</td>`).join('')}</tr>
+      <tr><td>Business</td>${months.map(m => `<td class="right"${hl(m)}>${cell(m, 'business')}</td>`).join('')}</tr>
     </tbody></table></div>
-    <div style="font-size:.68rem;color:var(--text3);margin-top:.35rem;">Cheapest Qantas return Google found in each month (updated ${esc(EXPLORE.taken)}) — click a price to see those dates.</div></div>`;
+    <div style="font-size:.68rem;color:var(--text3);margin-top:.35rem;">Cheapest Qantas return Google found in each month (updated ${esc(EXPLORE.taken)}) — click a price to see those dates.${dep && !months.includes(depM) ? ` Your departure month isn't covered yet — Google's fare search only looks 6 months ahead.` : ''}</div></div>`;
 }
 function renderPlan() {
   const from = document.getElementById('pl-from').value, to = document.getElementById('pl-to').value;
@@ -714,6 +755,9 @@ function renderPlan() {
   const isRun = to === 'RUN';
   const ret = isRun ? 1 : +document.getElementById('pl-ret').value;
   document.getElementById('pl-ret').disabled = isRun;
+  const dep = document.getElementById('pl-dep').value || undefined;
+  const backD = ret === 2 && !isRun ? (document.getElementById('pl-back').value || undefined) : undefined;
+  document.getElementById('pl-backwrap').hidden = ret !== 2 || isRun;
   const tgt = target();
   const el = document.getElementById('pl-result');
   document.getElementById('pl-ratio').innerHTML =
@@ -740,7 +784,7 @@ function renderPlan() {
       const via = r.p.slice(1, -1);
       const how = isRun
         ? `<a href="${QF_MULTI}" target="_blank" rel="noopener">book as one multi-city trip on qantas.com ↗</a>`
-        : `<a href="${gfLink(r.p[0], r.p[r.p.length-1])}" target="_blank" rel="noopener">✈ price this trip</a>${via.length ? ` — pick the option via ${via.join(' & ')}` : ' — pick a non-stop flight'}`;
+        : `<a href="${gfLink(r.p[0], r.p[r.p.length-1], 'economy', dep, backD)}" target="_blank" rel="noopener">✈ price this trip${dep ? ' on ' + shortDate(dep) + (backD ? ' – ' + shortDate(backD) : '') : ''}</a>${via.length ? ` — pick the option via ${via.join(' & ')}` : ' — pick a non-stop flight'}`;
       const ecoSC = r.sc.SALE === r.sc.SAVER ? r.sc.SAVER : `${r.sc.SALE}–${r.sc.SAVER}`;
       return `<tr>
         <td><strong>${r.p.join(' → ')}${ret === 2 ? ' → back' : ''}</strong>${r.sc.SAVER === best ? '<span class="sc-chip" style="color:#4ade80;">most SC</span>' : ''}
@@ -849,17 +893,36 @@ function renderTables() {
   document.getElementById('dom-tbody').innerHTML = routes.map(r => {
     const d = distMiles(r.a, r.b), band = bandFor(r.a, r.b);
     const edge = !r.intl && [750, 1500].some(e => Math.abs(d - e) <= 30);
-    return `<tr><td><strong>${r.a}↔${r.b}</strong> <a href="${gfLink(r.a, r.b)}" target="_blank" rel="noopener" title="Check prices">✈</a></td>
+    return `<tr data-q="${refKey(r.a, r.b)}"><td><strong>${r.a}↔${r.b}</strong> <a href="${gfLink(r.a, r.b)}" target="_blank" rel="noopener" title="Check prices">✈</a></td>
       <td class="right">${d.toLocaleString()}${edge ? ' <span title="Within 30 miles of a band edge — confirm with Qantas">⚠</span>' : ''}</td>
       ${['SAVER','FLEX','BUS','BUSFLEX'].map(k => `<td class="right">${scForBand(band, k) * m}</td>`).join('')}</tr>`;
   }).join('');
   document.getElementById('intl-tbody').innerHTML = INTL_ROUTES.map(([a, b, name]) => {
     const band = bandFor(a, b);
     const tbl = band && band.startsWith('rs:') ? RS_LABEL[band.slice(3)] : `Distance band (${distMiles(a, b).toLocaleString()} mi)`;
-    return `<tr><td><strong>${a}→${b}</strong> <span style="color:var(--text3);font-size:.7rem;">${name}</span></td><td style="font-size:.7rem;color:var(--text2);">${tbl}</td>
+    return `<tr data-q="${refKey(a, b, name)}"><td><strong>${a}→${b}</strong> <span style="color:var(--text3);font-size:.7rem;">${name}</span></td><td style="font-size:.7rem;color:var(--text2);">${tbl}</td>
       ${['SALE','SAVER','FLEX','PE','BUS','BUSFLEX'].map(k => `<td class="right">${scForBand(band, k) * m}</td>`).join('')}</tr>`;
   }).join('');
 }
+
+// Route search: every word typed must match one end of the route (code or city), so "SYD" lists all
+// Sydney routes and "Sydney Hobart" just that one.
+function refKey(a, b, extra) {
+  const city = c => (AIRPORT_NAMES[c] || '').toLowerCase().replace(/[()]/g, '');
+  return esc([a, b].map(c => c.toLowerCase() + ' ' + city(c)).join('|') + (extra ? '|' + extra.toLowerCase() : ''));
+}
+function filterRef() {
+  const words = document.getElementById('ref-q').value.toLowerCase().split(/[\s,]+/).filter(Boolean);
+  let shown = 0, dom = 0;
+  document.querySelectorAll('#dom-tbody tr, #intl-tbody tr').forEach(tr => {
+    const ends = tr.dataset.q.split('|');
+    const ok = words.every(w => ends.some(e => e.split(/\s+/).some(t => t.startsWith(w))));
+    tr.hidden = !ok; if (ok) { shown++; if (tr.parentElement.id === 'dom-tbody') dom++; }
+  });
+  document.getElementById('ref-count').textContent = words.length ? `(${dom} match${dom === 1 ? '' : 'es'})` : '';
+  document.getElementById('ref-none').hidden = shown > 0;
+}
+document.getElementById('ref-q').addEventListener('input', filterRef);
 
 // ── Auto-detected Status Credit promotions (promo_watch.py, daily) ──
 (function promoBanner() {
