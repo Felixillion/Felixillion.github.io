@@ -139,8 +139,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="aui-callout">
     The <strong>4% rule</strong> came from the 1994 Bengen study on US data.
     Australia has a different market history, different inflation, different tax treatment (franking credits),
-    and different super rules. This tool runs the same historical sequence-of-returns methodology on
-    <strong>Australian data from 1970 onwards</strong> (or back to 1901 if you choose — with caveats) across different portfolio mixes.
+    and different super rules. This tool runs the same historical sequence-of-returns test on
+    <strong>Australian-dollar returns from 1970 onwards</strong> (or back to 1901 if you choose — with caveats) across different portfolio mixes:
+    take a starting withdrawal, raise it with inflation every year, and see in how many historical periods the money lasted.
   </div>
 
   <!-- Controls -->
@@ -239,7 +240,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
   <!-- Safe rate bar -->
   <div class="aui-card" id="swr-rate-card">
-    <div class="aui-label">Safe withdrawal rate — this portfolio (historical, ABS CPI-adjusted)</div>
+    <div class="aui-label" id="swr-rate-label">Safe withdrawal rate — this portfolio</div>
     <div style="display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;margin-bottom:.5rem;">
       <div class="aui-big" id="swr-rate-display" style="color:var(--green);">—</div>
       <div id="swr-rate-context" style="font-size:.82rem;color:var(--text2);"></div>
@@ -253,8 +254,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <!-- Heat map -->
   <div class="aui-sec-title">Safe Withdrawal Rate by Portfolio × Retirement Length</div>
   <div class="aui-callout aui-callout-amber">
-    Target: <strong id="swr-heat-target">90%</strong> success rate (historical sequences, ABS CPI inflation, franking included where applicable).
-    Values shown as <strong>% of portfolio per year</strong>.
+    Target: <strong id="swr-heat-target">90%</strong> success rate — <span id="swr-heat-desc">historical sequences, ABS CPI inflation</span>.
+    Values are the starting withdrawal as a <strong>% of the portfolio</strong>, then raised with inflation each year. Hover a cell for the number of windows behind it;
+    “—” means too few. The US 60/40 row uses US dollars and US inflation — a check against the original US research.
   </div>
   <div style="overflow-x:auto;margin-bottom:1.5rem;">
     <table class="aui-heat" id="swr-heat-table"></table>
@@ -263,8 +265,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <!-- Historical sequence fan chart -->
   <div class="aui-sec-title">Historical Sequences — Portfolio Paths</div>
   <div class="aui-callout">
-    Every bar below is a different historical 30-year window. <strong style="color:#f87171;">Red = portfolio ran out.</strong>
-    The worst sequences are labelled. Drag the slider to see any withdrawal rate.
+    Each line is a $1M portfolio retiring in a different historical year, for the retirement length and portfolio chosen above. <strong style="color:#f87171;">Red = the money ran out.</strong>
+    Drag the slider to try any starting withdrawal rate (raised with inflation each year).
   </div>
   <div class="aui-card" style="margin-bottom:.75rem;">
     <div class="aui-ctrl-row" style="margin-bottom:.75rem;">
@@ -291,9 +293,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="aui-card">
       <div class="aui-label" style="color:#4ade80;">✅ Helps</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
-        <strong>Franking credits</strong> are worth roughly 1–1.3% a year of portfolio value before tax for 100% Australian shares (≈3.5–4% dividend yield, ~75% franked) — invisible in index returns but real in your pocket. How much you keep depends on your tax rate (all of it at 0%, about 0.7% a year at 45%). For a VDHG-like mix (~36% Australian shares) it's roughly a third of that.
+        <strong>Franking credits</strong> are worth about 1.3% a year of portfolio value for 100% Australian shares (assuming a 4% dividend yield, 75% franked) — not in index returns but real in your pocket. How much you keep depends on your tax rate: all of it at 0% (e.g. super in pension phase), about 0.9% a year at 30% and 0.7% at 45%. For a VDHG-like mix (~36% Australian shares) it's about a third of that. The tool applies today's rules to every year (imputation only began in 1987, and cash refunds in 2000).
         <br><br>
-        <strong>Long data record:</strong> ~124 years including two World Wars, the Great Depression (All Ords accumulation −28% in 1930), the 1970s stagflation (CPI 15% in 1974–75) and the GFC. The SWR you see is truly stress-tested.
+        <strong>Long data record:</strong> Australian share and inflation data go back to 1901, through two World Wars, the Great Depression (Australian shares about −28% in 1930, a reconstruction), the 1970s stagflation (CPI 15% in 1974–75) and the GFC.
+        The default uses 1970 onwards, when reliable data exist for every asset class; that gives 27 thirty-year periods — a useful test, but not a large sample.
       </div>
     </div>
     <div class="aui-card">
@@ -303,21 +306,25 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         <br><br>
         <strong>Super rules change:</strong> Preservation age, contribution caps, tax treatment in accumulation vs pension phase — the rules since 1992 are a short history. Pre-super SWR analysis models private portfolios, not exactly how Australians actually retire.
         <br><br>
-        <strong>Sequence risk is real:</strong> Retiring in 1929, 1969, or 2000 on AU shares produced dramatically different outcomes than retiring in 1982 or 2009. Timing luck dominates over 10-year horizons.
+        <strong>Sequence risk is real:</strong> with 100% Australian shares, someone retiring at the start of 1970 could only have withdrawn about 3.9% a year (rising with inflation) for 30 years; someone retiring in 1983 could have taken about 12%. The first decade's returns and inflation largely decide the outcome.
+        <br><br>
+        <strong>Recent retirees aren't in the test yet:</strong> a 30-year period needs 30 years of results, so the latest start year counted is 1996. Retirements that began in 2000 or 2008 are still running.
       </div>
     </div>
     <div class="aui-card">
       <div class="aui-label" style="color:var(--amber);">💡 Takeaways</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:1.65;margin-top:.3rem;">
-        • Using 1970 onwards (27 thirty-year windows), a 4% inflation-adjusted withdrawal lasted 30 years in about 96% of starting years for 100% Australian shares and about 89% for a VDHG-like mix. The heat map above is calculated live for your exact settings.
+        • Using 1970 onwards (27 thirty-year periods, after fees, franking at a 30% tax rate), a 4% inflation-adjusted withdrawal lasted 30 years in every period for a VDHG-like mix and in 26 of 27 for 100% Australian shares (the exception: retiring in 1970). The heat map above is calculated live for your settings.
         <br><br>
-        • Longer retirements need lower rates: over 40 years, 3.5% lasted in about 88% of windows for a VDHG-like mix (only 17 windows — a small sample).
+        • Longer retirements need lower rates: over 40 years, 4% lasted in 16 of 17 periods for a VDHG-like mix (a small sample).
+        <br><br>
+        • <strong>Monte Carlo is harsher:</strong> shuffling historical years at random (which ignores the tendency of markets to recover after crashes) gives a 90%-safe rate of about 3.8% for VDHG over 30 years, versus about 4.85% from the actual historical sequences. A sensible plan sits between the two.
         <br><br>
         • Franking credits lift effective returns for Australian-share-heavy portfolios; the benefit is largest for 0–15% taxpayers and smallest at 45%.
         <br><br>
         • Flexible spending (cutting withdrawals after bad years) is widely found to improve survival rates; this tool models fixed real withdrawals only.
         <br><br>
-        • The <strong>worst starting years</strong> are 1970–1974: shares fell while CPI inflation of roughly 9–15% a year (1973–77) pushed up the real cost of withdrawals.
+        • The <strong>worst starting years</strong> are 1970–1973: shares fell sharply in 1970 and 1973–74 while CPI inflation of 9–15% a year (1973–77) pushed up the cost of withdrawals.
         History is one sample path — future returns can be worse than anything in this dataset.
       </div>
     </div>
@@ -325,8 +332,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
   <div class="aui-callout">
     <strong>Sources &amp; methodology:</strong>
-    AU shares: All Ordinaries Accumulation Index calendar-year returns (Market Index); cash: RBA Table F1; other asset classes are approximate long-run estimates (see <code>data/etf_data.json</code> → meta.sources). Pre-1980 data are reconstructions.
-    AU CPI: RBA Table G1 (ABS CPI) from 1924; 1901–1923 are estimates. Franking boost depends on the tax rate you select. The default method uses every historical window (sliding one year at a time from 1901); the Monte Carlo option resamples historical years at random.
+    Calendar-year total returns in Australian dollars, before fees; each fund's fee (MER) is then deducted every year.
+    Australian shares: All Ordinaries Accumulation Index (Market Index; pre-1980 values are reconstructions).
+    International and US shares (1970+): <a href="https://en.wikipedia.org/wiki/MSCI_World" target="_blank" rel="noopener">MSCI World</a> and S&amp;P 500 total returns
+    (<a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histret.html" target="_blank" rel="noopener">Damodaran</a>) converted to A$ at year-end exchange rates (<a href="https://fred.stlouisfed.org/series/DEXUSAL" target="_blank" rel="noopener">FRED</a>), unhedged.
+    Australian bonds: Bloomberg AusBond Composite from 1990; 1970–89 estimated from 10-year bond yields. Global bonds (hedged to A$): estimated from US Treasury yields plus the A$ hedging gain — the Bloomberg Global Aggregate index only starts in the 1990s.
+    Cash: RBA Table F1. Inflation: ABS CPI (RBA Table G1, annual average) from 1924; 1901–1923 and pre-1970 international and bond figures are rough estimates.
+    The historical method tests every full window, starting one year apart; Monte Carlo builds 5,000 retirements from randomly chosen historical years (each with its own inflation).
+    Withdrawals are before personal tax; franking is the only tax effect modelled. Full method and data: <code>data/ground_truth/build_asset_classes.py</code>.
     This is not financial advice.
   </div>
 
@@ -507,7 +520,8 @@ const US_CPI = {
   1986:1.9,1987:3.6,1988:4.1,1989:4.8,1990:5.4,1991:4.2,1992:3.0,1993:3.0,1994:2.6,1995:2.8,
   1996:3.0,1997:2.3,1998:1.6,1999:2.2,2000:3.4,2001:2.8,2002:1.6,2003:2.3,2004:2.7,2005:3.4,
   2006:3.2,2007:2.8,2008:3.8,2009:-0.4,2010:1.6,2011:3.2,2012:2.1,2013:1.5,2014:1.6,2015:0.1,
-  2016:1.3,2017:2.1,2018:2.4,2019:1.8,2020:1.2,2021:4.7,2022:8.0,2023:4.1,2024:2.9
+  2016:1.3,2017:2.1,2018:2.4,2019:1.8,2020:1.2,2021:4.7,2022:8.0,2023:4.1,2024:2.9,
+  2025:2.7   // approx. (Dec–Dec 2.7%, BLS via Economic Report of the President 2026)
 };
 
 const PRESETS = {
@@ -517,15 +531,16 @@ const PRESETS = {
   '60_40':  {label:'60/40 Balanced',alloc:{AU_SHARES:30,INTL_SHARES:30,AU_BONDS:20,GLOBAL_BONDS:20},mer:0.10,frank:true},
   'VDBA':   {label:'VDBA (Balanced)',alloc:{AU_SHARES:20,INTL_SHARES:30,AU_BONDS:15,GLOBAL_BONDS:35},mer:0.27,frank:true},
   '100GL':  {label:'100% Global',   alloc:{INTL_SHARES:100},mer:0.18,frank:false},
-  '100US':  {label:'100% US',       alloc:{US_SHARES:100},mer:0.03,frank:false},
-  'US6040': {label:'US 60/40 (Trinity Control)',alloc:{US_SHARES:60,GLOBAL_BONDS:40},mer:0.05,frank:false},
+  '100US':  {label:'100% US',       alloc:{US_SHARES:100},mer:0.04,frank:false},
+  'US6040': {label:'US 60/40 (Trinity check)',alloc:{US_SHARES_USD:60,US_TBOND_USD:40},mer:0,frank:false},
   'BONDS':  {label:'100% AU Bonds', alloc:{AU_BONDS:100},mer:0.10,frank:false},
   'CUSTOM': {label:'Custom',        alloc:{AU_SHARES:36,INTL_SHARES:54,AU_BONDS:3,GLOBAL_BONDS:7},mer:0.27,frank:true},
 };
 
 const ALLOC_LABELS = {
-  AU_SHARES:'AU Shares',INTL_SHARES:'Intl (ex-US)',US_SHARES:'US Shares',
-  AU_BONDS:'AU Bonds',GLOBAL_BONDS:'Global Bonds',CASH:'Cash',
+  AU_SHARES:'AU Shares',INTL_SHARES:'International',US_SHARES:'US Shares',
+  AU_BONDS:'AU Bonds',GLOBAL_BONDS:'Global Bonds (hedged)',CASH:'Cash',
+  US_SHARES_USD:'US Shares (US$)',US_TBOND_USD:'US 10-yr Treasuries (US$)',
 };
 
 const TAX_PROFILES = {
@@ -576,17 +591,19 @@ fetch(ETF_DATA_URL)
 // SWR ENGINE
 // ─────────────────────────────────────────────────────────────
 function compositeReturn(year, alloc) {
-  if(!etfData) return 7.0;
-  return Object.entries(alloc).reduce((s,[k,w])=>{
-    const r = etfData.assetClassReturns[k]?.[String(year)] ?? etfData.assetClassReturns[k]?.[year];
-    return s + (w/100)*(r ?? 7.0);
-  }, 0);
+  // Weighted calendar-year return (A$, before fees). getYears() only offers years where every
+  // asset in the mix has data, so there is no made-up filler for missing years.
+  return Object.entries(alloc).reduce((s,[k,w])=>s + (w/100)*(etfData.assetClassReturns[k]?.[String(year)] ?? 0), 0);
 }
 
+// Franking credits aren't in the All Ords Accumulation Index. Value added each year = Australian-share
+// weight × dividend yield × share franked × company-tax gross-up (0.30/0.70), kept after tax at your
+// rate — the after-tax gain versus an unfranked dividend. Today's rules (imputation since 1987, cash
+// refunds since 2000) are applied to every year, as the question is what today's retiree can draw.
 function frankBoost(alloc, enabled, profile) {
   if(!enabled) return 0;
   const auWt = (alloc.AU_SHARES||0)/100;
-  const yieldAvg = 0.04; // 4% historical average yield
+  const yieldAvg = 0.04; // long-run average All Ords dividend yield (≈3.5–4.5%)
   const frankPct = 0.75; // 75% franked
   const corpRate = 0.30;
   const margRate = TAX_PROFILES[profile||'ind_30']?.rate ?? 0.30;
@@ -597,7 +614,25 @@ function getYears() {
   if(!etfData) return [];
   // Default 1970+: pre-1970 international-share and bond series are rough reconstructions
   const from = Number(document.getElementById('swr-from')?.value || 1970);
-  return Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).filter(y=>y>=from).sort((a,b)=>a-b);
+  const alloc = arguments[0] || getEffectiveAlloc();
+  const keys = Object.keys(alloc).filter(k => alloc[k] > 0);
+  return Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number)
+    .filter(y => y >= from && keys.every(k => etfData.assetClassReturns[k]?.[String(y)] != null))
+    .sort((a,b)=>a-b);
+}
+// Start years with a full window of data: a window starting in `sy` uses years sy … sy+yrs−1.
+function startYears(yrs, alloc){
+  const ys = getYears(alloc); if(!ys.length) return [];
+  return ys.filter(y => y + yrs - 1 <= ys[ys.length-1]);
+}
+// Seeded random numbers so Monte Carlo gives the same answer every time (and the safe-rate search
+// compares withdrawal levels on the same simulated paths).
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function inflate(wd, yr, inflation){
+  if(inflation==='real')   return wd*(1+(AU_CPI[yr] ?? 2.5)/100);
+  if(inflation==='us_cpi') return wd*(1+(US_CPI[yr] ?? 2.5)/100);
+  if(inflation==='flat')   return wd*1.025;
+  return wd;
 }
 
 function simOneSequence(startYear, portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer) {
@@ -616,26 +651,19 @@ function simOneSequence(startYear, portfolioVal, annualWd, alloc, yrs, timing, i
       bal -= wd;
       if(bal <= 0) return {survived:false, finalBal:0, failYear:yr};
     }
-    // Inflation adjust withdrawal
-    if(inflation==='real'){
-      wd *= (1 + (AU_CPI[yr] ?? 2.5)/100);
-    } else if(inflation==='us_cpi'){
-      wd *= (1 + (US_CPI[yr] ?? 2.5)/100);
-    } else if(inflation==='flat'){
-      wd *= 1.025;
-    }
-    // Fixed: no adjustment
+    // Next year's withdrawal rises with this year's inflation (keeps spending constant in real terms)
+    wd = inflate(wd, yr, inflation);
   }
   return {survived:true, finalBal:bal, failYear:null};
 }
 
-function simOneMCSequence(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer) {
+function simOneMCSequence(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer, rnd, yrNums) {
   let bal = portfolioVal;
   let wd  = annualWd;
   const frank = frankBoost(alloc, frankEnabled, taxProfile) / 100;
-  const yrNums = getYears();
   for(let y=0; y<yrs; y++){
-    const randYr = yrNums[Math.floor(Math.random() * yrNums.length)];
+    // Each simulated year is a random historical year: its returns AND its inflation travel together
+    const randYr = yrNums[Math.floor(rnd() * yrNums.length)];
     const ret = (compositeReturn(randYr, alloc) - mer) / 100 + frank;
     if(timing==='start'){
       bal -= wd;
@@ -646,13 +674,7 @@ function simOneMCSequence(portfolioVal, annualWd, alloc, yrs, timing, inflation,
       bal -= wd;
       if(bal <= 0) return {survived:false, finalBal:0};
     }
-    if(inflation==='real'){
-      wd *= (1 + (AU_CPI[randYr] ?? 2.5)/100);
-    } else if(inflation==='us_cpi'){
-      wd *= (1 + (US_CPI[randYr] ?? 2.5)/100);
-    } else if(inflation==='flat'){
-      wd *= 1.025;
-    }
+    wd = inflate(wd, randYr, inflation);
   }
   return {survived:true, finalBal:bal};
 }
@@ -660,18 +682,16 @@ function simOneMCSequence(portfolioVal, annualWd, alloc, yrs, timing, inflation,
 function simSuccessRate(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer, method) {
   if (method === 'mc') {
     let ok = 0;
-    const PATHS = 5000;
+    const PATHS = 5000, rnd = mulberry32(20261110), yrNums = getYears(alloc);
     for (let i = 0; i < PATHS; i++) {
-      const r = simOneMCSequence(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer);
+      const r = simOneMCSequence(portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer, rnd, yrNums);
       if (r.survived) ok++;
     }
     return ok / PATHS * 100;
   }
   
-  const yrNums = getYears();
-  const maxStart = yrNums[yrNums.length-1] - yrs;
   let ok=0, total=0;
-  for(const sy of yrNums.filter(y=>y<=maxStart)){
+  for(const sy of startYears(yrs, alloc)){
     const r = simOneSequence(sy, portfolioVal, annualWd, alloc, yrs, timing, inflation, frankEnabled, taxProfile, mer);
     if(r.survived) ok++;
     total++;
@@ -697,6 +717,9 @@ function getEffectiveAlloc(){
     document.querySelectorAll('.swr-alloc-input').forEach(inp=>{
       result[inp.dataset.cls]=parseInt(inp.value)||0;
     });
+    // scale to 100% so the sliders don't have to add up exactly
+    const tot = Object.values(result).reduce((a,b)=>a+b,0) || 1;
+    Object.keys(result).forEach(k => result[k] = result[k]*100/tot);
     return result;
   }
   return p.alloc;
@@ -717,8 +740,10 @@ function initSWR(){
       document.querySelectorAll('#swr-presets .aui-pill').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('swr-custom-alloc').style.display = key==='CUSTOM'?'block':'none';
-      if(key==='US6040') document.getElementById('swr-infl').value = 'us_cpi';
-      updateSWR();
+      // the US check portfolio is in US dollars, so it must use US inflation (and back again)
+      const inf=document.getElementById('swr-infl');
+      if(key==='US6040') inf.value='us_cpi'; else if(inf.value==='us_cpi') inf.value='real';
+      readControlsAndUpdate();
     });
     pillRow.appendChild(btn);
   });
@@ -786,6 +811,7 @@ function readControlsAndUpdate(){
   window._heatMapTimer = setTimeout(buildHeatMap, 300);
 }
 
+const nWinTxt=(yrs,alloc)=>startYears(yrs,alloc).length;
 function updateSWR(){
   if(!etfData) return;
   const alloc = getEffectiveAlloc();
@@ -809,13 +835,13 @@ function updateSWR(){
      ctx:`$${(withdrawal/1000).toFixed(0)}k/yr from $${(portfolioVal/1e6).toFixed(1)}M`,
      color:wr<=swrPct?'#4ade80':'#f87171'},
     {label:`Success rate (${years}yr)`,val:successRate.toFixed(0)+'%',
-     ctx:`Of all historical ${years}yr sequences`,
-     color:successRate>=90?'#4ade80':successRate>=75?'#fbbf24':'#f87171'},
+     ctx:method==='mc'?`Of 5,000 simulated ${years}-year retirements`:`Of ${nWinTxt(years,alloc)} historical ${years}-year windows`,
+     color:successRate>=targetRate?'#4ade80':successRate>=targetRate-15?'#fbbf24':'#f87171'},
     {label:`Safe annual withdrawal (${targetRate}% success)`,val:fmtAUD(safeWd),
      ctx:`${swrPct.toFixed(2)}% of portfolio`,
      color:'#38bdf8'},
-    {label:'Franking boost',val:frank?'+'+frankBoost(alloc, frank, taxProfile).toFixed(2)+'%/yr':'—',
-     ctx:frank?`From ${alloc.AU_SHARES||0}% AU shares allocation`:'Disabled',
+    {label:'Franking boost',val:frank&&alloc.AU_SHARES?'+'+frankBoost(alloc, frank, taxProfile).toFixed(2)+'%/yr':'—',
+     ctx:frank?`From ${Math.round(alloc.AU_SHARES||0)}% Australian shares`:'Disabled',
      color:frank?'#a3e635':'#475569'},
   ];
 
@@ -827,6 +853,9 @@ function updateSWR(){
     </div>`).join('');
 
   // SWR rate card
+  const nWin = startYears(years, alloc).length;
+  document.getElementById('swr-rate-label').textContent =
+    `Safe withdrawal rate — this portfolio (${method==='mc'?'Monte Carlo':nWin+' historical '+years+'-year windows'}, ${targetRate}% success)`;
   document.getElementById('swr-rate-display').textContent=swrPct.toFixed(2)+'%';
   document.getElementById('swr-rate-display').style.color=swrPct>=4?'#4ade80':swrPct>=3?'#fbbf24':'#f87171';
   document.getElementById('swr-rate-bar').style.width=Math.min(100,swrPct/8*100)+'%';
@@ -858,10 +887,15 @@ function buildHeatMap(){
     {key:'BONDS', frank:false},
     {key:'100GL', frank:false},
     {key:'100US', frank:false},
+    {key:'US6040',frank:false},
   ];
   const horizons=[20,25,30,35,40,50];
   const targetRate=swrState.targetRate;
   const pv=1000000;
+  document.getElementById('swr-heat-desc').textContent =
+    `${swrState.method==='mc'?'Monte Carlo (5,000 resampled retirements)':'every historical window'} from ${document.getElementById('swr-from').value}, ABS CPI inflation, `+
+    `${swrState.timing==='start'?'withdrawals at the start of each year':'withdrawals at year end'}, `+
+    `${swrState.franking?'franking credits at your chosen tax rate':'no franking credits'}, after each fund's fees`;
 
   // Build header
   let html=`<thead><tr><th style="text-align:left;padding:.4rem .6rem;color:var(--text3);">Portfolio</th>`;
@@ -872,12 +906,15 @@ function buildHeatMap(){
   portfolios.forEach(({key,frank})=>{
     const p=PRESETS[key];
     const inf = key === 'US6040' ? 'us_cpi' : 'real';
-    const swrs=horizons.map(h=>solveWithdrawal(targetRate,pv,p.alloc,h,'start',inf,frank,swrState.taxProfile,p.mer,swrState.method)/pv*100);
+    const swrs=horizons.map(h=>startYears(h,p.alloc).length < 3 ? null
+      : solveWithdrawal(targetRate,pv,p.alloc,h,swrState.timing,inf,frank&&swrState.franking,swrState.taxProfile,p.mer,swrState.method)/pv*100);
     html+=`<tr><td style="text-align:left;padding:.4rem .6rem;font-weight:600;color:var(--text);white-space:nowrap;">${p.label}</td>`;
-    swrs.forEach(swrPct=>{
+    swrs.forEach((swrPct,i)=>{
+      if(swrPct==null){ html+=`<td style="color:var(--text3);" title="Fewer than 3 full ${horizons[i]}-year windows in the data">—</td>`; return; }
+      const n=startYears(horizons[i],p.alloc).length;
       const col=swrPct>=4.5?'rgba(74,222,128,.25)':swrPct>=4.0?'rgba(163,230,53,.15)':swrPct>=3.5?'rgba(251,191,36,.15)':swrPct>=3.0?'rgba(251,146,60,.15)':'rgba(248,113,113,.2)';
       const tc=swrPct>=4.5?'#4ade80':swrPct>=4.0?'#a3e635':swrPct>=3.5?'#fbbf24':swrPct>=3.0?'#fb923c':'#f87171';
-      html+=`<td style="background:${col};color:${tc};font-weight:700;">${swrPct.toFixed(2)}%</td>`;
+      html+=`<td style="background:${col};color:${tc};font-weight:700;" title="${swrState.method==='mc'?'5,000 simulated retirements':n+' historical windows'}">${swrPct.toFixed(2)}%</td>`;
     });
     html+=`</tr>`;
   });
@@ -907,13 +944,11 @@ function drawSequenceChart(){
   const taxProfile=swrState.taxProfile;
   const inflation=swrState.inflation;
 
-  const yrNums=getYears();
-  const maxStart=yrNums[yrNums.length-1]-years;
-  const startYears=yrNums.filter(y=>y<=maxStart);
+  const starts=startYears(years, alloc);
 
   // Simulate all sequences
   const paths=[];
-  startYears.forEach(sy=>{
+  starts.forEach(sy=>{
     let bal=1000000, curWd=wd;
     const pts=[{yr:sy,val:bal}];
     let survived=true;
@@ -921,9 +956,6 @@ function drawSequenceChart(){
     for(let y=0;y<years;y++){
       const yr=sy+y;
       const ret=(compositeReturn(yr,alloc)-mer)/100+frankB;
-      if(inflation==='real') curWd*=(1+(AU_CPI[yr]??2.5)/100);
-      else if(inflation==='us_cpi') curWd*=(1+(US_CPI[yr]??2.5)/100);
-      else if(inflation==='flat') curWd*=1.025;
       if(swrState.timing==='start'){
         bal-=curWd; if(bal<=0){survived=false;pts.push({yr:yr+1,val:0});break;}
         bal*=(1+ret);
@@ -932,6 +964,7 @@ function drawSequenceChart(){
         if(bal<=0){survived=false;pts.push({yr:yr+1,val:0});break;}
       }
       pts.push({yr:yr+1,val:bal});
+      curWd=inflate(curWd, yr, inflation);
     }
     paths.push({sy,pts,survived});
   });
@@ -967,20 +1000,20 @@ function drawSequenceChart(){
   failed.forEach(({pts})=>{
     ctx2.strokeStyle='rgba(248,113,113,.15)'; ctx2.lineWidth=1.2;
     ctx2.globalAlpha=0.5;
-    drawPath(ctx2,pts,startYears[0],years,pad,iw,ih,maxVal);
+    drawPath(ctx2,pts,starts[0],years,pad,iw,ih,maxVal);
     ctx2.globalAlpha=1;
   });
 
   // All surviving (green, semi-transparent)
   surviving.filter(p=>p!==worstSurv).forEach(({pts})=>{
     ctx2.strokeStyle='rgba(74,222,128,.18)'; ctx2.lineWidth=1;
-    drawPath(ctx2,pts,startYears[0],years,pad,iw,ih,maxVal);
+    drawPath(ctx2,pts,starts[0],years,pad,iw,ih,maxVal);
   });
 
   // Worst surviving (amber, bright)
   if(worstSurv){
     ctx2.strokeStyle='rgba(251,191,36,.85)'; ctx2.lineWidth=2;
-    drawPath(ctx2,worstSurv.pts,startYears[0],years,pad,iw,ih,maxVal);
+    drawPath(ctx2,worstSurv.pts,starts[0],years,pad,iw,ih,maxVal);
     document.getElementById('seq-worst-label').textContent=
       `Worst surviving sequence started ${worstSurv.sy}: ended with $${Math.round(worstSurv.pts[worstSurv.pts.length-1].val).toLocaleString()} after ${years} years.`;
   } else {
@@ -989,7 +1022,7 @@ function drawSequenceChart(){
 
   // X axis labels
   ctx2.fillStyle='rgba(148,163,184,.5)'; ctx2.font='9px DM Mono,monospace'; ctx2.textAlign='center'; ctx2.textBaseline='top';
-  [0,5,10,15,20,25,30].filter(t=>t<=years).forEach(t=>{
+  Array.from({length:Math.floor(years/5)+1},(_,i)=>i*5).forEach(t=>{
     const x2=pad.l+iw*(t/years);
     ctx2.fillText('Y'+t, x2, ch-pad.b+4);
   });

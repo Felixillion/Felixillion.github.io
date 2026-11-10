@@ -69,7 +69,8 @@ ASSET_CLASS_PROXIES = {
     'AU_SHARES':   'VAS.AX',
     'INTL_SHARES': 'VGS.AX',
     'AU_BONDS':    'VAF.AX',
-    # GLOBAL_BONDS: no clean ETF proxy available on ASX; skip auto-update
+    'US_SHARES':   'IVV.AX',
+    'GLOBAL_BONDS':'VBND.AX',   # Vanguard Global Aggregate Bond (A$-hedged), from 2018
     # CASH: use RBA cash rate — no ETF proxy; skip auto-update
 }
 
@@ -312,9 +313,12 @@ def update_asset_class_returns(etf_data: dict) -> dict:
             continue
 
         existing = etf_data['assetClassReturns'].get(asset_class, {})
-        # Only update 2009+ (pre-2009 data is academic estimates, keep them)
+        # Only ADD completed years that are missing. Earlier years come from index data
+        # (data/ground_truth/build_asset_classes.py) and must not be replaced by ETF prices,
+        # which are after fees (the simulator deducts fees itself) and can contain split errors.
+        this_year = datetime.now().year
         for yr, ret in new_returns.items():
-            if int(yr) >= 2009:
+            if 2009 <= int(yr) < this_year and yr not in existing:
                 existing[yr] = ret
         etf_data['assetClassReturns'][asset_class] = existing
         print(f"✓  ({len(new_returns)} years)")
