@@ -1,0 +1,11 @@
+{
+ "_readme": "Settings for the weekly ballpark-fare refresh (.github/workflows/scripts/fetch_explore.py), which uses SerpApi's Google Travel Explore. Searches per run = origins x areas x months x cabins (default 1 x 2 x 6 x 2 = 24, so ~105 a month on a weekly schedule; SerpApi's free plan allows 250). travel_duration: 1 = weekend, 2 = about a week, 3 = about two weeks. stops: 0 = any, 1 = non-stop only, 2 = up to 1 stop, 3 = up to 2 stops. Only the scheduled GitHub job uses the API key; people viewing the page use none.",
+ "origins": ["SYD"],
+ "areas": {"Australia": "/m/0chghy", "New Zealand": "/m/0ctw_b"},
+ "months": 6,
+ "cabins": ["economy", "business"],
+ "travel_duration": 2,
+ "stops": 0,
+ "max_searches_per_run": 40,
+ "seconds_between_searches": 10
+}

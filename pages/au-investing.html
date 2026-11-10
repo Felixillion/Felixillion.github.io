@@ -344,16 +344,49 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     What would this look like for the <strong>Australian market</strong>?
   </div>
 
+  <div class="aui-sec-title">What the research says about Australia</div>
+  <div class="aui-callout">
+    A 2023 follow-up study (Bessembinder, Chen, Choi &amp; Wei: 63,785 stocks in 42 markets, <strong>1990–2020</strong>) <em>does</em> include
+    Australia, and unlike any free dataset it includes companies that were later delisted. It doesn't publish an Australian
+    "top X% created all the wealth" figure, but it does report these Australian results:
+  </div>
+  <div class="aui-g2" style="margin-bottom:1rem;">
+    <div class="aui-card">
+      <div class="aui-label">Australian stocks that beat US T-bills over the long run</div>
+      <div style="font-size:1.6rem;font-weight:700;color:var(--amber);">36.1%</div>
+      <div style="font-size:.78rem;color:var(--text3);line-height:1.5;">So roughly <strong>2 in 3</strong> did worse than cash. Across all markets: 43.2%. The authors cite Australia, with Greece (25.5%), as one of the lowest.</div>
+    </div>
+    <div class="aui-card">
+      <div class="aui-label">Median Australian stock's buy-and-hold return</div>
+      <div style="font-size:1.6rem;font-weight:700;color:var(--red);">−43.2%</div>
+      <div style="font-size:.78rem;color:var(--text3);line-height:1.5;">The typical Australian listed company <em>lost</em> almost half its value over the period it was in the sample (in US$). Global median: −6.8%.</div>
+    </div>
+    <div class="aui-card">
+      <div class="aui-label">Gross wealth created by the top 1% of Australian firms</div>
+      <div style="font-size:1.6rem;font-weight:700;color:var(--green);">&gt;60%</div>
+      <div style="font-size:.78rem;color:var(--text3);line-height:1.5;">Australia is one of the markets where the authors say the top 1% of firms accounted for more than sixty percent (exact figure not given in the text).</div>
+    </div>
+    <div class="aui-card">
+      <div class="aui-label">Global benchmark</div>
+      <div style="font-size:1.6rem;font-weight:700;color:var(--blue);">2.4%</div>
+      <div style="font-size:.78rem;color:var(--text3);line-height:1.5;">of all 63,785 firms (1,526 companies) created all of the US$75.7 trillion of net wealth above T-bills, 1990–2020.</div>
+    </div>
+  </div>
   <div class="aui-callout aui-callout-amber">
-    <strong>Why there are no Australian numbers here (yet):</strong>
-    a fair Australian version needs the full price <em>and</em> shares-on-issue history of every company ever listed — including the
-    failures that were delisted (ABC Learning, HIH, Allco, Centro, MFS…). Free data sources only cover companies that are still listed,
-    which would make the market look far less concentrated than it really is. Rather than publish misleading figures, this section
-    shows only the published research until a proper dataset is available.
+    <strong>Inferred Australian equivalent (approximate):</strong> on every measure the study reports, Australia is <em>more</em> lopsided than the
+    global average: fewer stocks beat cash, and the typical stock did much worse. So it's reasonable to infer that, as with the global
+    2.4%, only a <strong>very small slice of ASX-listed companies, likely a few percent at most, created all of the market's net wealth above
+    cash</strong> over 1990–2020, with a handful of giants doing most of the work.
+    <br><br>
+    <span style="font-size:.8rem;color:var(--text3);">Why this is approximate: it's an inference from the study's Australian results, not a figure the authors published.
+    Returns are in US dollars (so the A$ exchange rate matters) and are compared with US Treasury bills, not Australian cash, and the period
+    is 1990–2020 only. A precise ASX-only figure needs the full history of every listed and delisted company, which isn't freely available,
+    so no ASX chart is drawn here rather than one built only from survivors.</span>
   </div>
   {% if site.data.bessembinder %}<div class="aui-sec-title">Key Findings — ASX Analysis</div>{% endif %}
   <div class="aui-g2" id="bess-finding-cards" style="margin-bottom:1.5rem;"></div>
 
+  <div id="bess-asx-charts">
   <!-- Cumulative contribution chart -->
   <div class="aui-sec-title">Cumulative Wealth Creation by Stock Rank</div>
   <div class="aui-callout">
@@ -393,6 +426,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <canvas id="bess-dist-canvas" style="width:100%;height:220px;"></canvas>
   </div>
 
+  </div>
+
   <!-- Implication for ETFs -->
   <div class="aui-sec-title" style="margin-top:1rem;">What This Means for Australian Investors</div>
   <div class="aui-g2" style="margin-bottom:1.5rem;">
@@ -410,7 +445,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         The most dangerous version of this analysis uses only <em>current</em> index constituents — today's ASX 200.
         These stocks already survived. The real Bessembinder analysis requires including every company ever listed on the ASX, including delisted failures (ABC Learning, HIH Insurance, Allco Finance, Centro, MFS, etc.) — thousands of companies have listed and delisted over the decades.
         <br><br>
-        With survivorship bias removed, the concentration effect is <em>even more extreme</em> than the charts below suggest.
+        With survivorship bias removed, the concentration effect is <em>more extreme</em> than a survivors-only analysis would suggest — which is what the 2023 study's Australian figures show.
       </div>
     </div>
     <div class="aui-card">
@@ -419,10 +454,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         Bessembinder's original finding (1926–2016): the top 4% of stocks (~1,000 companies) → 100% of net wealth creation above T-bills; the top 86 stocks → about half of it.
         A follow-up study of global markets (Bessembinder, Chen, Choi &amp; Wei, 2023) found similarly extreme concentration outside the US.
         <br><br>
-        For Australia, expect the same direction of result; the size of the effect can't be measured properly without delisted companies (see survivorship warning).
-        Large companies such as CBA, CSL, BHP, Rio Tinto and Macquarie are likely among the biggest wealth creators — but that can only be quantified properly with the full dataset.
+        For Australia, the same study found the effect is <em>stronger</em> than average (36.1% beat T-bills vs 43.2% globally; median −43.2% vs −6.8%).
+        The paper's main text doesn't list which ASX companies created the most wealth, so none are ranked here.
         <br><br>
         <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X18301521" target="_blank" rel="noopener" style="color:var(--blue);font-size:.78rem;">↗ Bessembinder (2018) — original paper</a>
+        <br>
+        <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3710251" target="_blank" rel="noopener" style="color:var(--blue);font-size:.78rem;">↗ Bessembinder, Chen, Choi &amp; Wei (2023), Financial Analysts Journal 79(3)</a>
         <br>
         <a href="https://www.investmentoffice.com/Observations/Academia/Do_stocks_outperform_Treasury_bills.html" target="_blank" rel="noopener" style="color:var(--blue);font-size:.78rem;">↗ Summary — Investment Office</a>
       </div>
@@ -979,57 +1016,15 @@ function drawPath(ctx2, pts, startYrMin, years, pad, iw, ih, maxVal){
 // ─────────────────────────────────────────────────────────────
 // BESSEMBINDER
 // ─────────────────────────────────────────────────────────────
-// Pre-computed representative AU data (updated by compute_bessembinder.py)
-// Fallback embedded data based on known ASX history
-const BESS_FALLBACK = {
-  meta:{last_updated:'ILLUSTRATIVE PLACEHOLDER — not real data (compute_bessembinder.py has not produced results yet)',
-        period:'~2000–2024',stocks_analysed:200,total_wealth_created_bn:1820},
-  concentration:{
-    top1pct_share:28.5,   // top 2 stocks = 28.5% of all wealth created
-    top5pct_share:56.8,   // top 10 stocks = 56.8%
-    top10pct_share:71.2,  // top 20 stocks = 71.2%
-    top25pct_share:88.4,  // top 50 stocks = 88.4%
-    pct_stocks_above_tbill:41, // % of stocks that beat cash
-    pct_negative_absolute:33,  // % with negative total return
-  },
-  // Cumulative Lorenz curve: [pct_stocks, pct_wealth] pairs sorted by wealth created
-  lorenz:[[0,0],[1,-4],[2,-7],[3,-8.5],[5,-9],[8,-8],[10,-5],[15,0],[20,8],[25,18],
-          [30,28],[35,39],[40,50],[45,61],[50,70],[60,79],[70,86],[75,88.4],
-          [80,91],[85,93.5],[90,95.5],[95,97.5],[98,99],[99,99.5],[100,100]],
-  top_stocks:[
-    {rank:1,ticker:'CBA.AX',name:'Commonwealth Bank',total_return_x:132,wealth_created_bn:185,pct_total:10.2},
-    {rank:2,ticker:'CSL.AX',name:'CSL Limited',total_return_x:318,wealth_created_bn:130,pct_total:7.1},
-    {rank:3,ticker:'BHP.AX',name:'BHP Group',total_return_x:18,wealth_created_bn:122,pct_total:6.7},
-    {rank:4,ticker:'ANZ.AX',name:'ANZ Bank',total_return_x:14,wealth_created_bn:98,pct_total:5.4},
-    {rank:5,ticker:'NAB.AX',name:'NAB',total_return_x:12,wealth_created_bn:88,pct_total:4.8},
-    {rank:6,ticker:'WBC.AX',name:'Westpac',total_return_x:11,wealth_created_bn:82,pct_total:4.5},
-    {rank:7,ticker:'MQG.AX',name:'Macquarie Group',total_return_x:45,wealth_created_bn:76,pct_total:4.2},
-    {rank:8,ticker:'RIO.AX',name:'Rio Tinto',total_return_x:16,wealth_created_bn:65,pct_total:3.6},
-    {rank:9,ticker:'WES.AX',name:'Wesfarmers',total_return_x:22,wealth_created_bn:58,pct_total:3.2},
-    {rank:10,ticker:'REA.AX',name:'REA Group',total_return_x:185,wealth_created_bn:45,pct_total:2.5},
-    {rank:11,ticker:'XRO.AX',name:'Xero',total_return_x:82,wealth_created_bn:38,pct_total:2.1},
-    {rank:12,ticker:'TCL.AX',name:'Transurban',total_return_x:19,wealth_created_bn:34,pct_total:1.9},
-    {rank:13,ticker:'TLS.AX',name:'Telstra',total_return_x:-0.3,wealth_created_bn:-18,pct_total:-1.0},
-    {rank:14,ticker:'QBE.AX',name:'QBE Insurance',total_return_x:1.2,wealth_created_bn:-5,pct_total:-0.3},
-    {rank:15,ticker:'AGL.AX',name:'AGL Energy',total_return_x:0.4,wealth_created_bn:-12,pct_total:-0.7},
-  ],
-  dist_bins:[
-    {label:'<−90%',count:18},  {label:'−90–50%',count:24}, {label:'−50–0%',count:32},
-    {label:'0–50%',count:28},  {label:'50–200%',count:35}, {label:'200–500%',count:22},
-    {label:'500–1000%',count:14},{label:'>1000%',count:9},
-  ],
-};
-
+// ASX charts are drawn only from real survivorship-free data (BESS_DATA); there is no placeholder.
 function renderBessembinder(){
   // Never show made-up numbers: until the weekly job has produced real results,
-  // hide the charts/tables and show an explanation instead.
+  // hide the charts/tables (the published research figures above are shown instead).
   if (!(BESS_DATA && BESS_DATA.top_stocks)) {
     const cards = document.getElementById('bess-finding-cards');
-    if (cards) cards.innerHTML = '<div class="aui-callout aui-callout-amber" style="grid-column:1/-1;">No Australian figures are shown — see the note above for why.</div>';
-    ['bess-lorenz-canvas','bess-dist-canvas','bess-top-table'].forEach(id => {
-      const el = document.getElementById(id); const box = el && (el.closest('.aui-card') || el.parentElement);
-      if (box) box.style.display = 'none';
-    });
+    if (cards) cards.innerHTML = '';
+    const box = document.getElementById('bess-asx-charts');
+    if (box) box.style.display = 'none';
     return;
   }
   const data = BESS_DATA;
@@ -1182,8 +1177,7 @@ function drawDistribution(data){
 window.addEventListener('resize',()=>{
   if(document.getElementById('panel-swr').classList.contains('active')) drawSequenceChart();
   if(document.getElementById('panel-bess').classList.contains('active')){
-    const data=(BESS_DATA&&BESS_DATA.top_stocks)?BESS_DATA:BESS_FALLBACK;
-    drawLorenzCurve(data); drawDistribution(data);
+    if(BESS_DATA&&BESS_DATA.top_stocks){ drawLorenzCurve(BESS_DATA); drawDistribution(BESS_DATA); }
   }
 });
 

@@ -3,14 +3,14 @@
     "source": "AFR Rich List",
     "edition": "2026",
     "published": "2026-05-28",
-    "last_auto_update": "2026-11-09",
+    "last_auto_update": "2026-11-03",
     "note": "Wealth figures: AFR Rich List 2026 (published 28 May 2026; manual update each May). Entries marked wealth_year 2025 have not yet been re-checked against the 2026 list. Political donations: AEC annual returns. NHMRC/ARC: budget papers. Charitable giving: individual figures removed because no verifiable source was found (the AFR Philanthropy 50 lists foundations, not these individuals' totals).",
     "afr_url": "https://www.afr.com/rich-list"
   },
   "_stats": {
-    "abs_median_salary": 100004,
-    "abs_median_salary_note": "ABS Average Weekly Earnings Nov 2023 \u2014 full-time adult AVERAGE (mean) weekly ordinary time earnings \u00d7 52. NB: this is the mean, not the median (the median is lower).",
-    "abs_median_salary_updated": "2024-03",
+    "abs_median_salary": 108352,
+    "abs_median_salary_note": "ABS Average Weekly Earnings May 2026 \u2014 full-time adult AVERAGE (mean) weekly ordinary time earnings, $2,083.70 \u00d7 52. NB: this is the mean, not the median (the median is lower).",
+    "abs_median_salary_updated": "2026-05",
     "au_population": 27400000,
     "au_population_note": "ABS National, state and territory population (approx. 27.4M, 2025)",
     "au_population_updated": "2025-12",
@@ -20,22 +20,20 @@
     "au_dwellings": 11300000,
     "au_dwellings_note": "ABS Census 2021 + estimated growth to 2024",
     "au_dwellings_updated": "2024-01",
-    "fossil_fuel_subsidies_bn": 14.9,
-    "fossil_fuel_subsidies_note": "Australia Institute, Fossil fuel subsidies in Australia 2025 \u2014 $14.9B in 2024-25 (federal + state). Their 2026 update estimates $16.3B for 2025-26.",
+    "fossil_fuel_subsidies_bn": 16.3,
+    "fossil_fuel_subsidies_note": "Australia Institute, Fossil fuel subsidies in Australia 2026 \u2014 $16.3B in 2025-26 (federal + state), up 9.4% on 2024-25.",
     "fossil_fuel_subsidies_updated": "2026-03-13",
-    "nhmrc_budget_m": 940,
-    "nhmrc_budget_note": "NHMRC Medical Research Endowment Account 2024\u201325 Budget",
-    "nhmrc_budget_updated": "2024-05",
+    "nhmrc_budget_m": 1059,
+    "nhmrc_budget_note": "NHMRC Medical Research Endowment Account grants, 2026-27 Budget (Health PBS 2026-27: $1,058.8M)",
+    "nhmrc_budget_updated": "2026-05",
     "mrff_budget_m": 650,
-    "mrff_budget_note": "Medical Research Future Fund 2024\u201325",
-    "mrff_budget_updated": "2024-05",
-    "arc_budget_m": 1000,
-    "arc_budget_note": "Australian Research Council 2024\u201325 Budget",
-    "arc_budget_updated": "2024-05",
-    "housing_shortfall": 163400,
-    "housing_shortfall_note": "NHFIC 2024",
-    "housing_waitlist": 650000,
-    "housing_waitlist_note": "AIHW 2023",
+    "mrff_budget_note": "MRFF disbursements base of $650M a year (capped since 2018-19); 2026-27 Budget adds $508.5M over 4 years, rising to $1B a year by 2030-31",
+    "mrff_budget_updated": "2026-05",
+    "arc_budget_m": 1081,
+    "arc_budget_note": "ARC grants, 2026-27 Budget (Education PBS 2026-27, Table 3.7: $1,081.1M)",
+    "arc_budget_updated": "2026-05",
+    "housing_waitlist": 206000,
+    "housing_waitlist_note": "AIHW Housing assistance in Australia 2026 \u2014 206,000 households on the consolidated social housing waitlist at June 2025",
     "social_housing_unit_cost": 550000,
     "social_housing_unit_cost_note": "AHURI average build cost 2023",
     "aec_disclosure_year": "2024-25",
@@ -53,7 +51,7 @@
       "tagLabel": "Mining",
       "donate": null,
       "donateAmt": null,
-      "polDonate": "$895k Advance Australia + $204k Liberal (2024\u201325)",
+      "polDonate": "$895k Advance + $204k Liberal, via Hancock Prospecting (2024\u201325)",
       "polAmt": 1.099,
       "assets": [
         {
@@ -107,7 +105,7 @@
         }
       ],
       "assetNote": "Meriton holds a vast rental apartment portfolio in addition to development pipeline. Sydney-centric with QLD presence.",
-      "inherited": "Self-made. Born in China; moved to Australia in 1953 and founded Meriton in 1963.",
+      "inherited": "Self-made. Born in China; came to Australia as a teenager and founded Meriton in 1963.",
       "wealth_year": 2026
     },
     {
@@ -119,10 +117,10 @@
       "source": "Packaging \u2013 Visy / Pratt Ind.",
       "tag": "industry",
       "tagLabel": "Industry",
-      "donate": null,
-      "donateAmt": null,
-      "polDonate": "$1M Pratt Holdings \u2192 Labor Party (2023\u201324)",
-      "polAmt": 1.0,
+      "donate": "Pratt Philanthropies \u2014 AFR Philanthropy 50 (2025 list, FY2024 giving)",
+      "donateAmt": 30.7,
+      "polDonate": "$2M Labor + $1M Liberal, via Pratt Holdings (2024\u201325)",
+      "polAmt": 3.0,
       "assets": [
         {
           "label": "Visy / Pratt Industries (private)",
@@ -155,8 +153,8 @@
       "tagLabel": "Mining",
       "donate": null,
       "donateAmt": null,
-      "polDonate": "~$53M Mineralogy \u2192 Trumpet of Patriots (2024\u201325)",
-      "polAmt": 53.0,
+      "polDonate": "$52.9M Trumpet of Patriots + $0.3M UAP, via Mineralogy (2024\u201325)",
+      "polAmt": 53.2,
       "assets": [
         {
           "label": "Mineralogy / private mining",
@@ -175,7 +173,7 @@
         }
       ],
       "assetNote": "Mineralogy controls iron ore royalties in the Pilbara. Palmer also holds significant hotel and property assets.",
-      "inherited": "Self-made, built through mining royalties and legal battles in Queensland.",
+      "inherited": "Self-made: early wealth from Gold Coast property in the 1980s, then mining royalties (Mineralogy) and long legal battles.",
       "wealth_year": 2026
     },
     {
@@ -189,7 +187,7 @@
       "tagLabel": "Tech",
       "donate": null,
       "donateAmt": null,
-      "polDonate": "Not publicly disclosed (2024\u201325)",
+      "polDonate": "None found in reporting on 2024\u201325 AEC returns",
       "polAmt": 0,
       "assets": [
         {
@@ -209,7 +207,7 @@
         }
       ],
       "assetNote": "Canva remains private, so its value comes from private funding rounds and share sales. An IPO or sale of shares would crystallise gains.",
-      "inherited": "Self-made. Co-founded Canva in Perth in 2012 with Cliff Obrecht and Cameron Adams.",
+      "inherited": "Self-made. Started Fusion Books in Perth, then co-founded Canva in Sydney in 2012 with Cliff Obrecht and Cameron Adams.",
       "wealth_year": 2026
     },
     {
@@ -223,7 +221,7 @@
       "tagLabel": "Infrastructure",
       "donate": null,
       "donateAmt": null,
-      "polDonate": "Not publicly disclosed (2024\u201325)",
+      "polDonate": "None found in reporting on 2024\u201325 AEC returns",
       "polAmt": 0,
       "assets": [
         {
@@ -260,8 +258,8 @@
       "tagLabel": "Media",
       "donate": null,
       "donateAmt": null,
-      "polDonate": "No 2024\u201325 donations verified",
-      "polAmt": 0,
+      "polDonate": "$200k Australian Capital Equity \u2192 WA Labor (2024\u201325, as reported; check AEC register)",
+      "polAmt": 0.2,
       "assets": [
         {
           "label": "Seven Group Holdings (listed)",
@@ -297,7 +295,7 @@
       "tagLabel": "Tech",
       "donate": null,
       "donateAmt": null,
-      "polDonate": "Not publicly disclosed (2024\u201325)",
+      "polDonate": "None found in reporting on 2024\u201325 AEC returns",
       "polAmt": 0,
       "assets": [
         {

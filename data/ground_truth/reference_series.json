@@ -1,7 +1,7 @@
 {
- "_readme": "Independent reference data used by tests/audit_checks.py to validate the site's datasets. Each series lists its source. Values are calendar-year % changes unless noted. Update annually (Jan-Feb) \u2014 see README 'Data audit'.",
+ "_readme": "Independent reference data used by tests/audit_checks.py to validate the site's datasets. Each series lists its source. Values are calendar-year % changes unless noted. Update annually (Jan-Feb) — see README 'Data audit'.",
  "au_cpi_annual_avg": {
-  "source": "Reserve Bank of Australia, Statistical Table G1 'Consumer Price Inflation' (series GCPIAG, quarterly CPI index); annual-average % change computed from the four quarterly index values. https://www.rba.gov.au/statistics/tables/ \u2014 retrieved 2026-11-04",
+  "source": "Reserve Bank of Australia, Statistical Table G1 'Consumer Price Inflation' (series GCPIAG, quarterly CPI index); annual-average % change computed from the four quarterly index values. https://www.rba.gov.au/statistics/tables/ — retrieved 2026-11-04",
   "values": {
    "1924": -2,
    "1925": 2.2,
@@ -108,7 +108,7 @@
   }
  },
  "au_cash_rate_annual_avg": {
-  "source": "Reserve Bank of Australia, Statistical Table F1 (series FIRMMCRI, interbank overnight cash rate, monthly); simple average of the 12 monthly values \u2014 approximates a calendar-year cash return. Retrieved 2026-11-04",
+  "source": "Reserve Bank of Australia, Statistical Table F1 (series FIRMMCRI, interbank overnight cash rate, monthly); simple average of the 12 monthly values — approximates a calendar-year cash return. Retrieved 2026-11-04",
   "values": {
    "1977": 8.64,
    "1978": 8.64,
@@ -162,7 +162,7 @@
   }
  },
  "au_shares_xaoa": {
-  "source": "Market Index, Historical Returns infographic 2025 (All Ordinaries Accumulation Index, calendar years), https://files.marketindex.com.au/files/statistics/historical-returns-infographic-2025.pdf \u2014 pre-1980 values are reconstructions and less reliable (Market Index's own caveat).",
+  "source": "Market Index, Historical Returns infographic 2025 (All Ordinaries Accumulation Index, calendar years), https://files.marketindex.com.au/files/statistics/historical-returns-infographic-2025.pdf — pre-1980 values are reconstructions and less reliable (Market Index's own caveat).",
   "values": {
    "1900": 16.1,
    "1925": 18.5,
@@ -292,7 +292,7 @@
   }
  },
  "qantas_status_credits": {
-  "source": "qantas.com \u2014 Frequent Flyer \u2192 Airline earning tables (Qantas and Jetstar). Domestic table effective for travel on/after 22 Jul 2025; international = 'all other Qantas marketed flights' mileage-band table. Checked 2026-11-04.",
+  "source": "qantas.com — Frequent Flyer → Airline earning tables (Qantas and Jetstar). Domestic table effective for travel on/after 22 Jul 2025; international = 'all other Qantas marketed flights' mileage-band table plus route-specific tables from Australia (AU5 = ADL/BNE/OOL/MEL/SYD; DP = DRW/PER). Checked 2026-11-05.",
   "domestic_bands_miles": [
    750,
    1500
@@ -397,6 +397,102 @@
    "Silver": 300,
    "Gold": 700,
    "Platinum": 1400,
+   "Platinum One": 3600
+  },
+  "route_specific_cols": [
+   "SALE(DE)",
+   "SAVER(E)",
+   "FLEX(FE)",
+   "PE",
+   "BUS(B)",
+   "BUSFLEX(FB)"
+  ],
+  "route_specific": {
+   "AU5-NZ": [
+    20,
+    25,
+    40,
+    45,
+    85,
+    90
+   ],
+   "AU5-ASIA": [
+    30,
+    40,
+    60,
+    65,
+    125,
+    135
+   ],
+   "AU5-IND": [
+    40,
+    50,
+    75,
+    80,
+    155,
+    165
+   ],
+   "AU5-JNB": [
+    40,
+    55,
+    80,
+    85,
+    165,
+    175
+   ],
+   "AU5-WC": [
+    45,
+    60,
+    90,
+    100,
+    190,
+    200
+   ],
+   "AU5-EUR": [
+    70,
+    95,
+    140,
+    150,
+    295,
+    310
+   ],
+   "DP-SEA": [
+    25,
+    25,
+    50,
+    50,
+    100,
+    100
+   ],
+   "DP-NEA": [
+    30,
+    40,
+    60,
+    65,
+    125,
+    135
+   ],
+   "DP-DXB": [
+    35,
+    45,
+    70,
+    75,
+    150,
+    160
+   ],
+   "DP-EUR": [
+    60,
+    80,
+    120,
+    130,
+    255,
+    270
+   ]
+  },
+  "tiers_retain_until_late_2027": {
+   "Silver": 250,
+   "Gold": 600,
+   "Platinum": 1200,
    "Platinum One": 3600
   }
  },

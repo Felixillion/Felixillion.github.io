@@ -65,6 +65,10 @@ if os.path.exists(net_path):
     (fail if fake else ok)(f"Status Credits: {len(fake)} domestic route(s) listed that Qantas doesn't fly {fake[:6] if fake else ''}")
     a = age_days(net.get('updated', '2000-01-01'))
     if a > 45: warn(f"Qantas route network last refreshed {a} days ago")
+fs_path = P('_data', 'explore_snapshot.json')
+if os.path.exists(fs_path):
+    a = age_days(json.load(open(fs_path)).get('taken', '2000-01-01'))
+    (ok if a <= 10 else warn)(f"Ballpark fares (Status Credits page) updated {a} day(s) ago")
 bil = json.load(open(P('_data', 'billionaires.json')))
 ed = int(bil['_meta']['edition'])
 expected = TODAY.year if TODAY >= date(TODAY.year, 6, 15) else TODAY.year - 1
@@ -130,7 +134,20 @@ for tbl in (('dom', 'intl') if 'SC_TABLE' in sc else ()):
 tiers = dict(re.findall(r"name:'(Silver|Gold|Platinum|Platinum One)',\s*sc:(\d+)", sc))
 for t, v in q['tiers_earn'].items():
     if t in tiers and int(tiers[t]) != v: fail(f"Status tier {t} = {tiers[t]} SC, Qantas = {v}")
+for k, arr in re.findall(r"'([A-Z0-9]+-[A-Z]+)':\s*\[([\d,]+)\]", sc):
+    ref = q.get('route_specific', {}).get(k)
+    if ref and [int(x) for x in arr.split(',')] != ref:
+        fail(f"Status credits route table {k} = [{arr}] but Qantas table = {ref}")
 ok("Status credit tables checked against Qantas reference")
+# Golden cases: run the page's own SC code against hand-checked answers
+import shutil, subprocess
+if shutil.which('node'):
+    r = subprocess.run(['node', P('tests', 'sc_golden.js')], capture_output=True, text=True)
+    for line in r.stdout.splitlines():
+        if line.startswith('❌'): fail('Status credits golden case: ' + line[2:])
+        elif line.startswith('⚠️'): warn('Status credits: ' + line[3:])
+    if r.returncode == 0: ok("Status credits: golden route cases match Qantas tables")
+    elif not any(l.startswith('❌') for l in r.stdout.splitlines()): fail("Status credits golden test crashed: " + (r.stderr or '')[-300:])
 
 # ── 6. Astronomy vs PyEphem ─────────────────────────────────────────────────
 try:
