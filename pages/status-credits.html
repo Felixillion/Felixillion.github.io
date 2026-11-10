@@ -249,6 +249,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <div class="sc-ctrl"><label>Month</label><select id="wg-month"></select></div>
       <div class="sc-ctrl"><label>Cabin</label><select id="wg-cabin"><option value="economy">Economy</option><option value="business">Business</option><option value="both">Both</option></select></div>
       <div class="sc-ctrl"><label>Destinations</label><select id="wg-area"><option value="all">Australia &amp; NZ</option><option value="Australia">Australia</option><option value="New Zealand">New Zealand</option></select></div>
+      <div class="sc-ctrl"><label>&nbsp;</label><label style="text-transform:none;letter-spacing:0;font-size:.78rem;color:var(--text2);font-weight:400;"><input type="checkbox" id="wg-partner"> include trips with partner airlines</label></div>
       <div class="sc-ctrl"><label>Sort by</label><select id="wg-sort"><option value="per">Best value ($ per SC)</option><option value="price">Cheapest</option><option value="sc">Most Status Credits</option></select></div>
     </div>
   </div>
@@ -425,6 +426,14 @@ const AIRPORTS = {
   DXB:[25.253,55.366], DOH:[25.273,51.608], DEL:[28.556,77.100], JNB:[-26.139,28.246],
 };
 
+// Every Australian / NZ airport with scheduled flights (OurAirports) — so regional QantasLink
+// destinations found by the fare search can still get a distance-based Status Credit figure.
+const AIRPORT_NAMES = {};
+Object.entries(({{ site.data.airports | jsonify }} || {}).airports || {}).forEach(([c, a]) => {
+  AIRPORT_NAMES[c] = a[3];
+  if (!AIRPORTS[c]) AIRPORTS[c] = a[2] === 'AU' ? [a[0], a[1], 'AU'] : [a[0], a[1]];
+});
+
 // ── Real Qantas domestic network (auto-refreshed weekly, see update_qf_network.py) ──
 const QF_NET = {{ site.data.qf_network | jsonify }};
 const NET_MILES = {};
@@ -489,6 +498,8 @@ const PLAN_FARES = [
   {k:'BUS',    label:'Business',             color:'#f59e0b'},
   {k:'BUSFLEX',label:'Business Flex',        color:'#fb923c'},
 ];
+// QantasLink's regional bases — where a 1-stop trip to a small town most likely connects.
+const REGIONAL_HUBS = new Set(['BNE','MEL','ADL','PER','CNS','TSV','DRW','SYD']);
 const NZ = new Set(QF_NET?.nz_airports || ['AKL','WLG','CHC','ZQN']);
 const EXPLORE = {{ site.data.explore_snapshot | jsonify }};
 const HISTORY = {{ site.data.explore_history | jsonify }};
@@ -580,21 +591,29 @@ function exploreRows(from, month, cabins, area) {
     if (r.from !== from || r.month !== month || !cabins.includes(r.cabin) || (area !== 'all' && r.area !== area)) continue;
     for (const d of r.destinations || []) {
       let lo = null, hi = null, via = '', path = [from, d.code];
-      if (AIRPORTS[d.code]) {
+      // Google names every airline on the trip ("Air New Zealand and Qantas"); only all-Qantas trips
+      // earn on Qantas's own tables, so partner trips get no SC figure here.
+      const partner = (d.airline || '').trim().toLowerCase() !== 'qantas';
+      if (AIRPORTS[d.code] && !partner) {
         if (!d.stops) { [lo, hi] = cabinSC([from, d.code, from], r.cabin); }
-        else {
-          // Google doesn't say where the stop is — show the range over realistic Qantas connections
-          const opts = planOptions(from, d.code, d.stops).filter(p => p.length - 2 === d.stops);
+        else if (d.stops === 1) {
+          // Google doesn't say where the stop is: use the realistic Qantas connections (route map), or for
+          // regional airports not in the map, any Qantas hub that keeps the detour under 60%.
+          let opts = planOptions(from, d.code, 1).filter(p => p.length === 3);
+          if (!opts.length) {
+            const direct = distMiles(from, d.code), adj = adjacency();
+            opts = (adj[from] || []).filter(h => REGIONAL_HUBS.has(h) && h !== d.code && distMiles(from, h) + distMiles(h, d.code) <= 1.6 * direct).map(h => [from, h, d.code]);
+          }
           if (opts.length) {
             const sc = opts.map(p => cabinSC([...p, ...p.slice(0, -1).reverse()], r.cabin));
             lo = Math.min(...sc.map(x => x[0])); hi = Math.max(...sc.map(x => x[1]));
+            via = opts.map(p => p[1]).join(', ');
             path = opts[sc.findIndex(x => x[0] === lo)];        // shortlist uses the lowest-earning likely routing
-            via = opts.map(p => p.slice(1, -1).join('/')).join(', ');
           }
         }
       }
       const hist = historyFor(from, month, r.cabin, d.code);
-      out.push({ ...d, cabin: r.cabin, area: r.area, lo, hi, via, path, per: lo ? d.price / lo : null, hist });
+      out.push({ ...d, cabin: r.cabin, area: r.area, lo, hi, via, path, partner, per: lo ? d.price / lo : null, hist });
     }
   }
   return out;
@@ -606,7 +625,7 @@ function initWhere() {
   fromSel.innerHTML = origins.map(o => `<option value="${o}">${o}</option>`).join('');
   const months = has ? [...new Set(EXPLORE.results.map(r => r.month))].sort() : [];
   mSel.innerHTML = months.length ? months.map(m => `<option value="${m}">${monthLabel(m)}</option>`).join('') : '<option value="">—</option>';
-  ['wg-from','wg-month','wg-cabin','wg-area','wg-sort'].forEach(id => document.getElementById(id).addEventListener('input', renderWhere));
+  ['wg-from','wg-month','wg-cabin','wg-area','wg-sort','wg-partner'].forEach(id => document.getElementById(id).addEventListener('input', renderWhere));
   if (has) document.getElementById('sc-fare-pill').textContent = `Ballpark fares: Google, updated ${EXPLORE.taken}`;
 }
 function renderWhere() {
@@ -622,7 +641,7 @@ function renderWhere() {
   const cabinSel = document.getElementById('wg-cabin').value, area = document.getElementById('wg-area').value;
   const sort = document.getElementById('wg-sort').value, tgt = target();
   const cabins = cabinSel === 'both' ? ['economy', 'business'] : [cabinSel];
-  let rows = exploreRows(from, month, cabins, area);
+  let rows = exploreRows(from, month, cabins, area).filter(r => document.getElementById('wg-partner').checked || !r.partner);
   rows.sort(sort === 'price' ? (a, b) => a.price - b.price
     : sort === 'sc' ? (a, b) => (b.lo ?? -1) - (a.lo ?? -1)
     : (a, b) => (a.per ?? 1e9) - (b.per ?? 1e9));
@@ -640,17 +659,16 @@ function renderWhere() {
       const stops = r.stops ? `${r.stops} stop${r.stops > 1 ? 's' : ''}${r.via ? ` (likely via ${esc(r.via)})` : ''}` : 'non-stop';
       const fare = r.cabin === 'business' ? 'BUSSALE' : 'SALE';
       return `<tr>
-        <td><strong>${esc(r.name || r.code)}</strong> <span class="sc-pt">${esc(r.code)}</span>${r.qantas ? '' : ' <span class="sc-chip" style="color:#fbbf24;" title="Google lists another airline as operating — may earn a different amount">⚠ ' + esc(r.airline || 'other airline') + '</span>'}
+        <td><strong>${esc(r.name || AIRPORT_NAMES[r.code] || r.code)}</strong> <span class="sc-pt">${esc(r.code)}</span>${r.partner ? ' <span class="sc-chip" style="color:#fbbf24;" title="Part of the trip is on a partner airline, which earns on a different table — check with the Qantas earning calculator">⚠ ' + esc(r.airline || 'partner airline') + '</span>' : ''}
           <div style="font-size:.66rem;color:var(--text3);">${stops}</div></td>
         <td style="font-size:.74rem;white-space:nowrap;">${shortDate(r.start)} – ${shortDate(r.end)}</td>
         ${cabins.length > 1 ? `<td>${r.cabin === 'business' ? 'Business' : 'Economy'}</td>` : ''}
         <td class="right">${money(r.price)}${vs}</td>
-        <td class="right" style="font-weight:700;">${r.lo == null ? '<span title="Destination not in the Qantas Australia/NZ network data">—</span>' : scRange([r.lo, r.hi])}</td>
+        <td class="right" style="font-weight:700;">${r.lo == null ? `<span title="${r.partner ? 'Includes a partner airline — earns on a different table' : 'Not enough information about the connection to work this out'}">—</span>` : scRange([r.lo, r.hi])}</td>
         <td class="right" style="font-weight:700;color:${good ? '#4ade80' : 'var(--text2)'};">${r.per ? '$' + r.per.toFixed(2) + (good ? ' ✓' : '') : '—'}</td>
         <td style="white-space:nowrap;font-size:.68rem;">
           <a href="${gfLink(from, r.code, r.cabin, r.start, r.end)}" target="_blank" rel="noopener" style="color:#38bdf8;">✈ these dates</a><br>
-          ${AIRPORTS[r.code] ? `<a href="#" onclick="planTo('${from}','${r.code}');return false;" style="color:#ff8a97;">Plan →</a> ·
-          <a href="#" onclick='addCompare(${JSON.stringify(r.path)}, "${fare}", 2, ${r.price});return false;' style="color:#ff8a97;">+ shortlist</a>` : ''}
+          ${(QF_NET?.airports || []).includes(r.code) ? `<a href="#" onclick="planTo('${from}','${r.code}');return false;" style="color:#ff8a97;">Plan →</a> · ` : ''}${r.lo != null ? `<a href="#" onclick='addCompare(${JSON.stringify(r.path)}, "${fare}", 2, ${r.price});return false;' style="color:#ff8a97;">+ shortlist</a>` : ''}
         </td></tr>`;
     }).join('') + `</tbody></table>
     <div style="font-size:.7rem;color:var(--text3);margin-top:.4rem;line-height:1.5;">Status Credits are for the return trip. Where the cheapest fare could be Sale or Saver (or Discount Business or Business) a range is shown, and $ per SC uses the lower figure.

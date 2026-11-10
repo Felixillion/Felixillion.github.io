@@ -53,7 +53,7 @@ def parse(res):
             "code": code, "name": d.get("name"), "price": price,
             "stops": d.get("number_of_stops"), "minutes": d.get("flight_duration"),
             "start": d.get("start_date"), "end": d.get("end_date"),
-            "airline": airline, "qantas": "qantas" in airline.lower(),
+            "airline": airline, "qantas": airline.strip().lower() == "qantas",
         })
     return sorted(out, key=lambda x: x["price"])
 

@@ -6,7 +6,8 @@ const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'pages/status-credits.html'), 'utf8');
 const net = JSON.parse(fs.readFileSync(path.join(root, '_data/qf_network.json'), 'utf8'));
 const start = html.indexOf('const SC_TABLE'), end = html.indexOf('// ── State');
-let code = html.slice(start, end).replace('{{ site.data.qf_network | jsonify }}', JSON.stringify(net));
+let code = html.slice(start, end).replace('{{ site.data.qf_network | jsonify }}', JSON.stringify(net))
+  .replace('{{ site.data.airports | jsonify }}', fs.readFileSync(path.join(root, '_data/airports.json'), 'utf8'));
 const api = new Function(code + '\nreturn {scForBand, bandFor, distMiles, INTL_ROUTES};')();
 const sc = (a, b, f) => api.scForBand(api.bandFor(a, b), f);
 // [from, to, fare, expected SC one-way] — expected values read straight off the official tables
