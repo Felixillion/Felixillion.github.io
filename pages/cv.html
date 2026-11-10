@@ -56,6 +56,20 @@ window.CV_CONFIG = {
     { name: 'Spectre', 
     description: 'A computational toolkit in R for the integration, exploration, and analysis of high-dimensional single-cell cytometry and imaging data.', 
     url: 'https://immunedynamics.io/Spectre/' },
+    { name: 'UnumLocalia',
+    description: 'An open-source Python toolkit (napari-based GUI and Python API) for visualising, exploring and quantifying multimodal spatial biology data — H&E, COMET protein imaging, Xenium transcripts and cell segmentations — on the original data, with per-cell quantification and exportable analysis sessions.',
+    url: 'https://github.com/Felixillion/UnumLocalia' },
+    { name: 'UnumLocalia Viewer',
+    description: 'A browser-based viewer for exploring spatial multi-omics on a single tissue section — H&E, multiplexed protein immunofluorescence and spatial gene expression, overlaid and explorable side by side.',
+    url: 'https://felixillion.github.io/unumlocalia/' },
+  ],
+
+  // ── Press / speaker photos ─────────────────────────────────
+  // Put image files in assets/images/press/ and list them here. The section is
+  // hidden until at least one photo is listed. Use a high-res JPG for 'file'.
+  photos: [
+    { file: 'felix-marsh-wakefield.jpg', thumb: 'felix-marsh-wakefield-thumb.jpg', caption: 'Headshot (colour, 1201 × 1600 px)' },
+    // { file: 'another-photo.jpg', thumb: 'another-photo-thumb.jpg', caption: '…', credit: 'Photo: [photographer]' },
   ],
 
   // ── Selected talks ─────────────────────────────────────────
@@ -135,9 +149,18 @@ window.CV_CONFIG = {
       <button class="copy-btn" id="copy-bio-btn">Copy</button>
     </div>
     <p id="cv-biosketch"
-       style="line-height:1.75;color:var(--text-secondary);font-style:italic;white-space:pre-wrap;"></p>
+       style="line-height:1.75;color:var(--text-secondary);font-style:italic;"></p>
     <p style="font-size:.72rem;color:#475569;margin-top:.75rem;">
       ↑ Use this for conference introductions, grant bios, and speaker profiles.
+    </p>
+  </div>
+
+  <!-- ── Photos ── -->
+  <div class="glass-card fade-in cv-section" id="cv-photos-section" style="display:none;">
+    <h3>📷 Photos</h3>
+    <div id="cv-photos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1rem;"></div>
+    <p style="font-size:.72rem;color:#475569;margin-top:.75rem;">
+      Free to use for talk introductions, programs and media about my work. Please include the photo credit where given.
     </p>
   </div>
 
@@ -209,11 +232,14 @@ window.CV_CONFIG = {
   }
 
   // ── Biosketch ────────────────────────────────────────────────────────────
+  // Collapse the line breaks/indentation from the source into single spaces, so
+  // copy-paste gives one clean paragraph (blank lines still separate paragraphs).
+  const bioText = C.biosketch.trim().split(/\n\s*\n/).map(p => p.replace(/\s+/g, ' ').trim()).join('\n\n');
   const bioEl = document.getElementById('cv-biosketch');
-  if (bioEl) bioEl.textContent = C.biosketch.trim();
+  if (bioEl) { bioEl.textContent = bioText; bioEl.style.whiteSpace = 'pre-line'; }
 
   document.getElementById('copy-bio-btn')?.addEventListener('click', function () {
-    navigator.clipboard.writeText(C.biosketch.trim()).then(() => {
+    navigator.clipboard.writeText(bioText).then(() => {
       this.textContent = 'Copied ✓';
       this.classList.add('copied');
       setTimeout(() => { this.textContent = 'Copy'; this.classList.remove('copied'); }, 2500);
@@ -224,6 +250,22 @@ window.CV_CONFIG = {
   if (C.scholarUrl) {
     const sl = document.getElementById('scholar-link');
     if (sl) { sl.href = C.scholarUrl; sl.style.display = 'inline'; }
+  }
+
+  // ── Photos ───────────────────────────────────────────────────────────────
+  const photos = (C.photos || []).filter(p => p.file);
+  if (photos.length) {
+    document.getElementById('cv-photos-section').style.display = '';
+    const base = '{{ "/assets/images/press/" | relative_url }}';
+    document.getElementById('cv-photos').innerHTML = photos.map(p => `
+      <figure style="margin:0;">
+        <img src="${base}${p.thumb || p.file}" alt="${p.caption || 'Photo of Dr Felix Marsh-Wakefield'}" loading="lazy"
+             style="width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:10px;border:1px solid var(--glass-border);">
+        <figcaption style="font-size:.74rem;color:var(--text-secondary);margin-top:.4rem;">
+          ${p.caption || ''}${p.credit ? `<br><span style="opacity:.7;">${p.credit}</span>` : ''}
+        </figcaption>
+        <a href="${base}${p.file}" download class="copy-btn" style="display:inline-block;margin-top:.4rem;text-decoration:none;">Download ⬇</a>
+      </figure>`).join('');
   }
 
   // ── Research Interests ───────────────────────────────────────────────────

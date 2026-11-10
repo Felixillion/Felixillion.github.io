@@ -1,0 +1,53 @@
+name: Live Fare Snapshot
+
+# Weekly ballpark Qantas return fares for the Status Credits planner ("Where to go" tab), from
+# Google Travel Explore via SerpApi's free plan. ~24 searches a run (~105 a month of the free 250).
+# Needs a repository secret called SERPAPI_KEY — without it the job just skips.
+on:
+  schedule:
+    - cron: '23 14 * * 1'        # Mondays 14:23 UTC (~1am Tuesday in Sydney)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fare-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Fetch ballpark fares
+        run: python .github/workflows/scripts/fetch_explore.py
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+      - name: Keep the first raw response for checking (Actions → this run → Artifacts)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: explore-debug
+          path: explore_debug/
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Commit and push
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name  "github-actions[bot]"
+          git pull --rebase origin main 2>/dev/null || true
+          git add _data/explore_snapshot.json _data/explore_history.json 2>/dev/null || true
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: ballpark fare refresh $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "No changes to commit"
+          fi

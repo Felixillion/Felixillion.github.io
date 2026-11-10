@@ -64,71 +64,115 @@ function norm360(deg) {
 const rad = d => d * Math.PI / 180;
 
 /**
- * Simplified planetary longitude calculations.
- * Source: Jean Meeus "Astronomical Algorithms", ch. 31-33 (low-precision formulae).
- * T = Julian centuries since J2000.0
- * All results in degrees [0,360).
+ * Geocentric ecliptic longitudes (tropical zodiac, equinox of date).
+ *
+ * Planets: JPL "Approximate Positions of the Planets" Keplerian elements
+ *   (E.M. Standish, Table 1, valid 1800–2050 AD; ~1′ heliocentric accuracy).
+ *   We compute heliocentric J2000 ecliptic XYZ for each planet AND for the
+ *   Earth–Moon barycentre, subtract to get the GEOCENTRIC vector, then add
+ *   general precession so longitudes are referred to the equinox of date.
+ *   (Astrology/zodiac signs are geocentric — the previous version used
+ *   heliocentric mean longitudes, which put e.g. Mercury in Aries while the
+ *   Sun was in Scorpio, and could never show a retrograde planet.)
+ * Sun: Meeus ch.25 low-precision apparent longitude (~0.01°).
+ * Moon: Meeus ch.47 principal periodic terms (~0.1–0.3°).
+ * Validated against PyEphem (VSOP87/ELP) in tests/audit_checks.py: all bodies ≤ 0.5°.
  */
+const KEPLER = {
+  //            a (AU)        e            I (deg)      L (deg)        long.peri      long.node
+  //            da/cy         de/cy        dI/cy        dL/cy          dperi/cy       dnode/cy
+  mercury: [[0.38709927, 0.20563593, 7.00497902, 252.25032350, 77.45779628, 48.33076593],
+            [0.00000037, 0.00001906, -0.00594749, 149472.67411175, 0.16047689, -0.12534081]],
+  venus:   [[0.72333566, 0.00677672, 3.39467605, 181.97909950, 131.60246718, 76.67984255],
+            [0.00000390, -0.00004107, -0.00078890, 58517.81538729, 0.00268329, -0.27769418]],
+  earth:   [[1.00000261, 0.01671123, -0.00001531, 100.46457166, 102.93768193, 0.0],
+            [0.00000562, -0.00004392, -0.01294668, 35999.37244981, 0.32327364, 0.0]],
+  mars:    [[1.52371034, 0.09339410, 1.84969142, -4.55343205, -23.94362959, 49.55953891],
+            [0.00001847, 0.00007882, -0.00813131, 19140.30268499, 0.44441088, -0.29257343]],
+  jupiter: [[5.20288700, 0.04838624, 1.30439695, 34.39644051, 14.72847983, 100.47390909],
+            [-0.00011607, -0.00013253, -0.00183714, 3034.74612775, 0.21252668, 0.20469106]],
+  saturn:  [[9.53667594, 0.05386179, 2.48599187, 49.95424423, 92.59887831, 113.66242448],
+            [-0.00125060, -0.00050991, 0.00193609, 1222.49362201, -0.41897216, -0.28867794]],
+  uranus:  [[19.18916464, 0.04725744, 0.77263783, 313.23810451, 170.95427630, 74.01692503],
+            [-0.00196176, -0.00004397, -0.00242939, 428.48202785, 0.40805281, 0.04240589]],
+  neptune: [[30.06992276, 0.00859048, 1.77004347, -55.12002969, 44.96476227, 131.78422574],
+            [0.00026291, 0.00005105, 0.00035372, 218.45945325, -0.32241464, -0.00508664]],
+};
+
+function helioXYZ(name, T) {
+  const [el, rate] = KEPLER[name];
+  const a = el[0] + rate[0]*T, e = el[1] + rate[1]*T, I = el[2] + rate[2]*T;
+  const L = el[3] + rate[3]*T, wb = el[4] + rate[4]*T, Om = el[5] + rate[5]*T;
+  const w = wb - Om;
+  let M = norm360(L - wb); if (M > 180) M -= 360;
+  // Solve Kepler's equation (degrees)
+  const eDeg = e * 180 / Math.PI;
+  let E = M + eDeg * Math.sin(rad(M));
+  for (let k = 0; k < 10; k++) {
+    const dM = M - (E - eDeg * Math.sin(rad(E)));
+    const dE = dM / (1 - e * Math.cos(rad(E)));
+    E += dE; if (Math.abs(dE) < 1e-7) break;
+  }
+  const xp = a * (Math.cos(rad(E)) - e);
+  const yp = a * Math.sqrt(1 - e*e) * Math.sin(rad(E));
+  const cw = Math.cos(rad(w)), sw = Math.sin(rad(w));
+  const cO = Math.cos(rad(Om)), sO = Math.sin(rad(Om));
+  const cI = Math.cos(rad(I)), sI = Math.sin(rad(I));
+  return [
+    (cw*cO - sw*sO*cI)*xp + (-sw*cO - cw*sO*cI)*yp,
+    (cw*sO + sw*cO*cI)*xp + (-sw*sO + cw*cO*cI)*yp,
+    (sw*sI)*xp + (cw*sI)*yp,
+  ];
+}
+
 function planetaryLongitudes(date) {
   const jd = julianDay(date);
   const T  = (jd - 2451545.0) / 36525;   // Julian centuries since J2000.0
+  const precession = 1.396971 * T + 0.0003086 * T * T;  // J2000 → equinox of date (deg)
 
-  // Sun (apparent longitude)
+  // Sun (apparent longitude, Meeus ch.25) — already referred to equinox of date
   const L0 = norm360(280.46646 + 36000.76983 * T);
   const M  = norm360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
   const C  = (1.914602 - 0.004817*T - 0.000014*T*T) * Math.sin(rad(M))
            + (0.019993 - 0.000101*T) * Math.sin(rad(2*M))
            +  0.000289 * Math.sin(rad(3*M));
-  const sun = norm360(L0 + C);
+  const omega = 125.04 - 1934.136 * T;
+  const sun = norm360(L0 + C - 0.00569 - 0.00478 * Math.sin(rad(omega)));
 
-  // Moon (simplified, ~1° accuracy)
-  const Lm = norm360(218.3165 + 481267.8813 * T);
-  const Mm = norm360(134.9634 + 477198.8676 * T);
-  const D  = norm360(297.8502 + 445267.1115 * T);
-  const F  = norm360(93.2721  + 483202.0175 * T);
-  const moon = norm360(Lm
-    + 6.2888 * Math.sin(rad(Mm))
-    + 1.2740 * Math.sin(rad(2*D - Mm))
-    + 0.6583 * Math.sin(rad(2*D))
-    + 0.2136 * Math.sin(rad(2*Mm))
-    - 0.1851 * Math.sin(rad(D))
-    + 0.1144 * Math.sin(rad(2*F))
-    - 0.0588 * Math.sin(rad(2*D - 2*Mm)));
+  // Moon (Meeus ch.47, principal longitude terms; equinox of date)
+  const Lm = norm360(218.3164477 + 481267.88123421 * T);
+  const D  = norm360(297.8501921 + 445267.1114034 * T);
+  const Ms = norm360(357.5291092 + 35999.0502909 * T);
+  const Mm = norm360(134.9633964 + 477198.8675055 * T);
+  const F  = norm360(93.2720950  + 483202.0175233 * T);
+  const Ecc = 1 - 0.002516 * T;
+  const MOON_TERMS = [ // [D, M, M', F, coeff (1e-6 deg)]
+    [0,0,1,0,6288774],[2,0,-1,0,1274027],[2,0,0,0,658314],[0,0,2,0,213618],
+    [0,1,0,0,-185116],[0,0,0,2,-114332],[2,0,-2,0,58793],[2,-1,-1,0,57066],
+    [2,0,1,0,53322],[2,-1,0,0,45758],[0,1,-1,0,-40923],[1,0,0,0,-34720],
+    [0,1,1,0,-30383],[2,0,0,-2,15327],[0,0,1,2,-12528],[0,0,1,-2,10980],
+    [4,0,-1,0,10675],[0,0,3,0,10034],[4,0,-2,0,8548],[2,1,-1,0,-7888],
+    [2,1,0,0,-6766],[1,0,-1,0,-5163],[1,1,0,0,4987],[2,-1,1,0,4036],
+    [2,0,2,0,3994],[4,0,0,0,3861],[2,0,-3,0,3665],[0,1,-2,0,-2689],
+  ];
+  let sumL = 0;
+  for (const [d, m, mp, f, c] of MOON_TERMS) {
+    const arg = d*D + m*Ms + mp*Mm + f*F;
+    const eFac = Math.abs(m) === 1 ? Ecc : (Math.abs(m) === 2 ? Ecc*Ecc : 1);
+    sumL += c * eFac * Math.sin(rad(arg));
+  }
+  const moon = norm360(Lm + sumL / 1e6);
 
-  // Mercury (low-precision VSOP87-derived)
-  const mercury = norm360(252.2509 + 149472.6742 * T
-    + 23.4400 * Math.sin(rad(168.6 + 87654.0 * T))
-    +  2.9818 * Math.sin(rad(337.2 + 175308.1 * T)));
+  // Planets — geocentric = planet − Earth (heliocentric J2000 ecliptic)
+  const earth = helioXYZ('earth', T);
+  const geo = {};
+  for (const p of ['mercury','venus','mars','jupiter','saturn','uranus','neptune']) {
+    const h = helioXYZ(p, T);
+    const x = h[0] - earth[0], y = h[1] - earth[1];
+    geo[p] = norm360(Math.atan2(y, x) * 180 / Math.PI + precession);
+  }
 
-  // Venus
-  const venus = norm360(181.9798 + 58517.8156 * T
-    + 0.7758 * Math.sin(rad(238.0 + 36000.8 * T))
-    + 0.0033 * Math.sin(rad(116.0 + 72001.6 * T)));
-
-  // Mars
-  const mars = norm360(355.4330 + 19140.2993 * T
-    + 0.4439 * Math.sin(rad(297.3 + 19036.4 * T))
-    + 0.3246 * Math.sin(rad(243.0 + 38015.6 * T)));
-
-  // Jupiter
-  const jupiter = norm360(34.3515 + 3034.9057 * T
-    + 0.3300 * Math.sin(rad(178.6 + 1159.8 * T))
-    + 0.1003 * Math.sin(rad(342.0 + 2319.9 * T)));
-
-  // Saturn
-  const saturn = norm360(50.0774 + 1222.1138 * T
-    + 0.3400 * Math.sin(rad(234.8 + 1222.1 * T))
-    + 0.0323 * Math.sin(rad(104.2 + 2444.2 * T)));
-
-  // Uranus
-  const uranus = norm360(314.0550 + 428.4669 * T
-    + 0.0977 * Math.sin(rad(141.7 + 428.5 * T)));
-
-  // Neptune
-  const neptune = norm360(304.3487 + 218.4610 * T
-    + 0.0134 * Math.sin(rad(347.0 + 218.5 * T)));
-
-  return { sun, moon, mercury, venus, mars, jupiter, saturn, uranus, neptune };
+  return { sun, moon, ...geo };
 }
 
 /** Longitude in degrees → zodiac sign + degree within sign */
@@ -198,6 +242,40 @@ function findAspects(lons) {
 
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 
+
+// ── Real-sky science notes ─────────────────────────────────────────────────
+// Silly-but-true: each note is built from TODAY's computed sky, with the real
+// physics attached, so the "horoscope" stays science-based.
+const RETRO_WHY = {
+  mercury: "Earth isn't overtaking Mercury — Mercury is lapping us on the inside track, so it appears to drift backwards against the stars. Your western blot is unaffected.",
+  venus:   "Venus is passing between us and the Sun, so it appears to slide backwards for ~6 weeks. Gravity on your bench is unchanged.",
+  mars:    "Earth is overtaking Mars on the inside lane, so Mars appears to loop backwards. Same parallax trick as passing a slower car.",
+  jupiter: "Earth is overtaking Jupiter, so it appears to move backwards for ~4 months. Jupiter has not noticed.",
+  saturn:  "Earth is overtaking Saturn — an apparent backwards loop that happens every year for ~4.5 months. Plan your timecourse accordingly (or don't).",
+  uranus:  "Uranus spends ~5 months of every year appearing to go backwards because Earth laps it. It's tilted 98°, so it's used to looking odd.",
+  neptune: "Neptune appears retrograde ~5 months a year as Earth laps it. Light from Neptune takes ~4 hours to reach you, so this news is already old.",
+};
+const PHASE_WHY = {
+  'New Moon': "New Moon: the Moon is roughly between Earth and the Sun, so its sunlit side faces away from us. Ideal conditions for astronomers; irrelevant to your cells.",
+  'Waxing Crescent': "Waxing crescent: we see a growing sliver of the Moon's sunlit half as it moves ~12° further east of the Sun each day.",
+  'First Quarter': "First quarter: Moon and Sun are ~90° apart, so exactly half the visible disc is lit. Tides are at their weakest (neap) around now.",
+  'Waxing Gibbous': "Waxing gibbous: more than half lit and growing. The Moon is also moving ~3.8 cm further from Earth every year — budget accordingly.",
+  'Full Moon': "Full Moon: Sun, Earth and Moon roughly line up, giving spring tides. Large studies find no reliable effect of the full moon on ER admissions or lab mishaps.",
+  'Waning Gibbous': "Waning gibbous: the lit fraction shrinks a little each night as the Moon swings back toward the Sun.",
+  'Last Quarter': "Last quarter: Moon and Sun ~90° apart again; tides are weaker (neap). The Moon now rises around midnight.",
+  'Waning Crescent': "Waning crescent: only a thin morning sliver is lit. Earthshine — sunlight reflected off Earth — may faintly light the dark part.",
+};
+function skyNotes(positions, aspects) {
+  const notes = [];
+  for (const [p, why] of Object.entries(RETRO_WHY)) {
+    if (positions[p] && positions[p].retrograde) notes.push(`${cap(p)} appears retrograde today. ${why}`);
+  }
+  if (positions.moon && PHASE_WHY[positions.moon.phase]) notes.push(PHASE_WHY[positions.moon.phase]);
+  const conj = aspects.find(a => a.type === 'conjunction' && !a.planets.includes('Sun'));
+  if (conj) notes.push(`${conj.planets[0]} and ${conj.planets[1]} are within ${conj.orb}° of each other in the sky — a line-of-sight coincidence; in reality they are hundreds of millions of km apart.`);
+  return notes;
+}
+
 // ── Deterministic date-seeded PRNG ────────────────────────────────────────────
 // Mulberry32 — fast, good quality, seeded by today's date integer
 function makePRNG(seed) {
@@ -212,10 +290,12 @@ function makePRNG(seed) {
 }
 
 function dateSeed(date) {
+  // Accepts a Date or a 'YYYY-MM-DD' string (the Sydney calendar day).
+  if (typeof date === 'string') return Number(date.replace(/-/g, ''));  // e.g. 20260307
   const y = date.getUTCFullYear();
   const m = date.getUTCMonth() + 1;
   const d = date.getUTCDate();
-  return y * 10000 + m * 100 + d;  // e.g. 20260307
+  return y * 10000 + m * 100 + d;
 }
 
 function pick(arr, rng) {
@@ -1208,12 +1288,22 @@ function buildCompatibilityMatrix(rng) {
 }
 
 // ── Main ───────────────────────────────────────────────────────────────────────
-function main() {
-  const today     = new Date();
-  const yesterday = new Date(today.getTime() - 86400000);
+/** Calendar date in Sydney (the site's audience) as 'YYYY-MM-DD'. */
+function sydneyDate(d = new Date()) {
+  // en-CA formats as YYYY-MM-DD
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Sydney',
+    year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+}
 
-  // Format date as YYYY-MM-DD using UTC
-  const dateStr = today.toISOString().slice(0, 10);
+function main() {
+  // The reading "day" is the SYDNEY calendar day. Previously the UTC date was
+  // used, but the job runs at ~7am Sydney (= previous day in UTC), so the site
+  // was always labelled with yesterday's date.
+  // Positions are computed for ~midday Sydney time on that day (01:30 UTC), so
+  // re-runs on the same day produce byte-identical output (no duplicate commits).
+  const dateStr   = process.env.ASTRO_DATE || sydneyDate();
+  const today     = new Date(`${dateStr}T01:30:00Z`);
+  const yesterday = new Date(today.getTime() - 86400000);
 
   // Calculate planetary longitudes
   const lons      = planetaryLongitudes(today);
@@ -1239,7 +1329,7 @@ function main() {
   const aspects = findAspects(lonMap);
 
   // Seeded daily readings — seed is today's date so every run today gives same output
-  const rng = makePRNG(dateSeed(today));
+  const rng = makePRNG(dateSeed(dateStr));
 
   // Pick one base reading + one independent suffix coda per sign.
   // 60 bases × 30 suffixes = 1,800 combinations per sign before any repeat.
@@ -1260,9 +1350,11 @@ function main() {
     planetary_positions: positions,
     major_aspects: aspects,
     readings,
+    sky_notes: skyNotes(positions, aspects),
     compatibility_matrix: compatibilityMatrix,
     calculation_methods: [
-      "Planetary longitudes: Jean Meeus 'Astronomical Algorithms' low-precision formulae (±1° accuracy)",
+      "Planetary longitudes: geocentric, from JPL Keplerian elements (Standish, valid 1800–2050) + Meeus ch.25/47 for Sun & Moon; checked against PyEphem to within 0.5°",
+      "Positions are for ~midday Sydney time on the stated date (tropical zodiac, equinox of date)",
       "Retrograde: computed from direction of longitude change vs previous day",
       "Aspects: angular separation with standard orbs (conjunction 8°, sextile 6°, square/trine/opposition 8°, quincunx 3°)",
       "Compatibility: element harmony base score + modality adjustment + date-seeded variance",
@@ -1287,4 +1379,7 @@ function main() {
   console.log(`   Compatibility pairs: ${Object.keys(compatibilityMatrix).length}`);
 }
 
-main();
+if (require.main === module) main();
+
+// Exported for tests/audit_checks (node) — no side effects when required.
+module.exports = { planetaryLongitudes, toZodiac, moonPhase, isRetrograde, sydneyDate, makePRNG, dateSeed };

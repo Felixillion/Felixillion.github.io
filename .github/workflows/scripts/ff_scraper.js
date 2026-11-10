@@ -21,6 +21,9 @@
  * Citi Velocity Platinum   — same reason; citibank.com.au now redirects to NAB
  * Bankwest Halo Platinum   — Bankwest stopped issuing all new credit cards December 2022
  * Coles Rewards Mastercard — earns Flybuys, NOT Velocity points; wrong category
+ * HSBC Platinum Qantas, CBA Ultimate Awards, Amex Qantas Premium, Amex Velocity Platinum,
+ * Virgin Money Velocity Flyer, BOM Amplify — not in the Oct 2026 comparison lists; re-add
+ * once their current offers are verified.
  *
  * ── Path note ─────────────────────────────────────────────────────────────
  * __dirname = .github/workflows/scripts/
@@ -33,147 +36,171 @@ const path = require('path');
 
 const REPO_ROOT = path.join(__dirname, '..', '..', '..');
 
+// ── Card data ─────────────────────────────────────────────────────────────
+// Field guide:
+//   signupBonus   points for meeting the first min-spend (year 1)
+//   year1Bonus    (legacy name) EXTRA points offered in year 2 / at 12 months
+//   fee           ongoing annual fee (incl. any separate rewards-program fee)
+//   firstYearFee  fee actually charged in year 1 (defaults to fee)
+//   cashback      $ statement credit in year 1 (0 if none)
+//   minSpend / spendDays   spend requirement for the year-1 bonus
+//   verified      date a human last checked the offer (YYYY-MM-DD) — the page
+//                 warns when this is > 45 days old. null = not re-verified.
+//   source        where the figures were checked
+//
+// NB: figures below were re-checked on 2026-11-04 against Point Hacks
+// (Qantas list updated 6 Oct 2026) and Australian Frequent Flyer (Velocity
+// list, July 2026). Always confirm on the issuer's page before applying.
+const PH_Q   = 'Point Hacks — Best Qantas cards (updated 6 Oct 2026)';
+const AFF_V  = 'Australian Frequent Flyer — Best Velocity offers (Jul 2026)';
+
 const data = {
   _comment_affiliate: "To add an affiliate link, set 'affiliateLink' to your referral URL. Leave empty to use the official bank link.",
-  lastUpdated: new Date().toISOString().split('T')[0],
+  // lastUpdated = when the DATA was last verified by a human, not when the job ran
+  lastUpdated: "2026-11-04",
 
   qantas: [
     {
-      bank: "AMEX", name: "Qantas Ultimate",
-      signupBonus: 100000, year1Bonus: 0, fee: 450, minSpend: 3000,
-      link: "https://www.americanexpress.com/au/credit-cards/qantas-ultimate-card/",
-      affiliateLink: "",
-      loungePasses: "2 Qantas + 2 Amex",
-      notes: "Best lounge access; Qantas Club + Centurion Lounge.",
+      bank: "Westpac", name: "Altitude Qantas Black",
+      signupBonus: 90000, year1Bonus: 60000, fee: 450, firstYearFee: 450, cashback: 0,
+      minSpend: 6000, spendDays: 90,
+      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-qantas/",
+      affiliateLink: "", loungePasses: "2 Qantas Club invitations / yr",
+      notes: "Fee = $295 card + $155 Qantas Rewards fee. Year-2 bonus needs another $6k spend in 90 days of anniversary. Also 50 Status Credits.",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
-      bank: "AMEX", name: "Qantas Premium",
-      signupBonus: 55000, year1Bonus: 0, fee: 249, minSpend: 1500,
-      link: "https://www.americanexpress.com/au/credit-cards/qantas-premium-card/",
-      affiliateLink: "",
-      loungePasses: "2 Qantas",
-      notes: "Lower-fee AMEX Qantas option.",
+      bank: "AMEX", name: "Qantas Ultimate",
+      signupBonus: 70000, year1Bonus: 50000, fee: 450, firstYearFee: 450, cashback: 0,
+      minSpend: 5000, spendDays: 90,
+      link: "https://www.americanexpress.com/en-au/credit-cards/qantas-ultimate-card/",
+      affiliateLink: "", loungePasses: "2 Qantas Club invitations + Amex lounges",
+      notes: "Includes a $450 Qantas Travel Credit each year, which can offset the fee if you'd fly Qantas anyway.",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
       bank: "ANZ", name: "Frequent Flyer Black",
-      signupBonus: 130000, year1Bonus: 0, fee: 425, minSpend: 5000,
+      signupBonus: 50000, year1Bonus: 50000, fee: 425, firstYearFee: 425, cashback: 0,
+      minSpend: 6000, spendDays: 90,
       link: "https://www.anz.com.au/personal/credit-cards/frequent-flyer-black/",
-      affiliateLink: "",
-      loungePasses: "2 Qantas Club",
-      notes: "Highest bonus from a Big 4 bank.",
+      affiliateLink: "", loungePasses: "2 Qantas Club invitations / yr",
+      notes: "Second 50k awarded at 12 months. No points on spend above $50k per statement period.",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
       bank: "ANZ", name: "Frequent Flyer Platinum",
-      signupBonus: 70000, year1Bonus: 0, fee: 295, minSpend: 2000,
+      signupBonus: 25000, year1Bonus: 25000, fee: 295, firstYearFee: 295, cashback: 0,
+      minSpend: 3500, spendDays: 120,
       link: "https://www.anz.com.au/personal/credit-cards/frequent-flyer-platinum/",
-      affiliateLink: "",
-      loungePasses: "None",
+      affiliateLink: "", loungePasses: "None",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
       bank: "NAB", name: "Qantas Rewards Signature",
-      signupBonus: 90000, year1Bonus: 30000, fee: 295, minSpend: 3000,
+      signupBonus: 40000, year1Bonus: 20000, fee: 449, firstYearFee: 449, cashback: 200,
+      minSpend: 5000, spendDays: 90,
       link: "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-signature-card",
-      affiliateLink: "",
-      loungePasses: "None",
-      notes: "Year 2 bonus of 30k is unusual — good for long-term holders.",
+      affiliateLink: "", loungePasses: "None",
+      notes: "Includes $200 cashback in year 1.",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
       bank: "NAB", name: "Qantas Rewards Premium",
-      signupBonus: 60000, year1Bonus: 0, fee: 150, minSpend: 2500,
+      signupBonus: 25000, year1Bonus: 15000, fee: 295, firstYearFee: 295, cashback: 150,
+      minSpend: 3000, spendDays: 90,
       link: "https://www.nab.com.au/personal/credit-cards/nab-qantas-rewards-premium-card",
-      affiliateLink: "",
-      loungePasses: "None",
+      affiliateLink: "", loungePasses: "None",
+      notes: "Includes $150 cashback in year 1.",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
-      bank: "Westpac", name: "Altitude Black (Qantas)",
-      signupBonus: 90000, year1Bonus: 30000, fee: 250, minSpend: 6000,
-      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-qantas/",
-      affiliateLink: "",
-      loungePasses: "2 Qantas Club",
-      notes: "High minimum spend to unlock full bonus.",
+      bank: "Qantas Money", name: "Qantas Money Titanium",
+      signupBonus: 120000, year1Bonus: 0, fee: 1200, firstYearFee: 1200, cashback: 0,
+      minSpend: 5000, spendDays: 90,
+      link: "https://www.qantasmoney.com/credit-cards",
+      affiliateLink: "", loungePasses: "2 Qantas First Lounge passes / yr",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
-      bank: "Westpac", name: "Altitude Platinum (Qantas)",
-      signupBonus: 60000, year1Bonus: 0, fee: 150, minSpend: 3000,
-      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-platinum-qantas/",
-      affiliateLink: "",
-      loungePasses: "None",
+      bank: "Qantas Money", name: "Qantas Money Platinum",
+      signupBonus: 80000, year1Bonus: 0, fee: 399, firstYearFee: 349, cashback: 0,
+      minSpend: 5000, spendDays: 90,
+      link: "https://www.qantasmoney.com/credit-cards",
+      affiliateLink: "", loungePasses: "None",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
-      bank: "CBA", name: "Ultimate Awards (Qantas)",
-      signupBonus: 60000, year1Bonus: 0, fee: 350, minSpend: 2500,
-      link: "https://www.commbank.com.au/credit-cards/ultimate-awards.html",
-      affiliateLink: "",
-      loungePasses: "None",
+      bank: "MyCard", name: "Premier (Qantas)",
+      signupBonus: 40000, year1Bonus: 40000, fee: 350, firstYearFee: 350, cashback: 0,
+      minSpend: 7000, spendDays: 90,
+      link: "https://www.mycard.com.au/",
+      affiliateLink: "", loungePasses: "None",
+      notes: "MyCard is the former Citi cards business (now owned by NAB). Points capped at 100k per 12 months.",
+      verified: "2026-11-04", source: PH_Q,
     },
     {
-      bank: "BOM", name: "Amplify Signature (Qantas)",
-      signupBonus: 90000, year1Bonus: 0, fee: 279, minSpend: 3000,
-      link: "https://www.bankofmelbourne.com.au/personal/credit-cards/qantas/amplify-signature",
-      affiliateLink: "",
-      loungePasses: "2 Qantas Club",
-    },
-    {
-      bank: "St.George", name: "Amplify Signature (Qantas)",
-      signupBonus: 90000, year1Bonus: 0, fee: 279, minSpend: 3000,
+      bank: "St.George", name: "Amplify Qantas Signature",
+      signupBonus: 0, year1Bonus: 0, fee: 450, firstYearFee: 450, cashback: 0,
+      minSpend: 0, spendDays: 0,
       link: "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-signature",
-      affiliateLink: "",
-      loungePasses: "2 Qantas Club",
-    },
-    {
-      bank: "St.George", name: "Amplify Platinum (Qantas)",
-      signupBonus: 60000, year1Bonus: 0, fee: 99, minSpend: 2000,
-      link: "https://www.stgeorge.com.au/personal/credit-cards/qantas/amplify-platinum",
-      affiliateLink: "",
-      loungePasses: "None",
-    },
-    {
-      bank: "HSBC", name: "Platinum Qantas",
-      signupBonus: 70000, year1Bonus: 0, fee: 199, minSpend: 2500,
-      link: "https://www.hsbc.com.au/credit-cards/products/platinum-qantas/",
-      affiliateLink: "",
-      loungePasses: "None",
+      affiliateLink: "", loungePasses: "—",
+      notes: "No bonus offer currently available (Point Hacks, Oct 2026). Fee = $295 + $155 Qantas Rewards fee.",
+      verified: "2026-11-04", source: PH_Q,
     },
   ],
 
   velocity: [
     {
-      bank: "AMEX", name: "Velocity Platinum",
-      signupBonus: 100000, year1Bonus: 0, fee: 375, minSpend: 3000,
-      link: "https://www.americanexpress.com/au/credit-cards/velocity-platinum-card/",
-      affiliateLink: "",
-      loungePasses: "2 Virgin + 2 Amex",
-      notes: "Best Velocity card on the market.",
+      bank: "Westpac", name: "Altitude Velocity Black",
+      signupBonus: 90000, year1Bonus: 60000, fee: 370, firstYearFee: 370, cashback: 0,
+      minSpend: 6000, spendDays: 90,
+      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-velocity/",
+      affiliateLink: "", loungePasses: "2 Virgin lounge passes / yr",
+      notes: "First-year fee $275 for existing Westpac customers.",
+      verified: "2026-07-06", source: AFF_V,
+    },
+    {
+      bank: "Westpac", name: "Altitude Velocity Platinum",
+      signupBonus: 70000, year1Bonus: 30000, fee: 250, firstYearFee: 250, cashback: 0,
+      minSpend: 4000, spendDays: 90,
+      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/",
+      affiliateLink: "", loungePasses: "None",
+      notes: "First-year fee $174 for existing Westpac customers.",
+      verified: "2026-07-06", source: AFF_V,
     },
     {
       bank: "Virgin Money", name: "Velocity High Flyer",
-      signupBonus: 80000, year1Bonus: 20000, fee: 289, minSpend: 4000,
+      signupBonus: 80000, year1Bonus: 20000, fee: 329, firstYearFee: 329, cashback: 0,
+      minSpend: 7000, spendDays: 60,
       link: "https://virginmoney.com.au/credit-cards/velocity-high-flyer",
-      affiliateLink: "",
-      loungePasses: "2 Virgin",
-      notes: "Year 2 bonus of 20k makes this competitive over two years.",
+      affiliateLink: "", loungePasses: "2 Virgin lounge passes / yr",
+      notes: "40k for each of the first two months with $3,500 spend per month; 20k more on renewal.",
+      verified: "2026-07-06", source: AFF_V,
     },
     {
-      bank: "Virgin Money", name: "Velocity Flyer",
-      signupBonus: 30000, year1Bonus: 0, fee: 64, minSpend: 1500,
-      link: "https://virginmoney.com.au/credit-cards/velocity-flyer-card",
-      affiliateLink: "",
-      loungePasses: "None",
-      notes: "Lowest-fee Velocity card. Good entry point.",
+      bank: "NAB", name: "Rewards Platinum (Velocity)",
+      signupBonus: 70000, year1Bonus: 20000, fee: 195, firstYearFee: 195, cashback: 0,
+      minSpend: 4000, spendDays: 90,
+      link: "https://www.nab.com.au/personal/credit-cards",
+      affiliateLink: "", loungePasses: "None",
+      verified: "2026-07-06", source: AFF_V,
     },
     {
-      bank: "Westpac", name: "Altitude Black (Velocity)",
-      signupBonus: 90000, year1Bonus: 30000, fee: 250, minSpend: 6000,
-      link: "https://www.westpac.com.au/personal-banking/credit-cards/reward/altitude-black-velocity/",
-      affiliateLink: "",
-      loungePasses: "2 Virgin",
+      bank: "NAB", name: "Rewards Signature (Velocity)",
+      signupBonus: 60000, year1Bonus: 20000, fee: 420, firstYearFee: 420, cashback: 0,
+      minSpend: 5000, spendDays: 90,
+      link: "https://www.nab.com.au/personal/credit-cards",
+      affiliateLink: "", loungePasses: "None",
+      verified: "2026-07-06", source: AFF_V,
     },
     {
-      bank: "NAB", name: "Velocity Rewards Premium",
-      signupBonus: 60000, year1Bonus: 20000, fee: 150, minSpend: 1500,
-      link: "https://www.nab.com.au/personal/credit-cards/nab-velocity-rewards-premium-card",
-      affiliateLink: "",
-      loungePasses: "None",
+      bank: "ANZ", name: "Rewards Platinum (→ Velocity)",
+      signupBonus: 60000, year1Bonus: 20000, fee: 149, firstYearFee: 99, cashback: 0,
+      minSpend: 3500, spendDays: 90,
+      link: "https://www.anz.com.au/personal/credit-cards/",
+      affiliateLink: "", loungePasses: "None",
+      notes: "Bonus quoted in Velocity points via auto-redemption (must be enabled within 3 months).",
+      verified: "2026-07-06", source: AFF_V,
     },
   ],
 };

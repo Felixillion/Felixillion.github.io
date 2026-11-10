@@ -56,6 +56,14 @@ def save_data(data):
 def today_str():
     return date.today().isoformat()
 
+def propose(data, key, value, url):
+    """Record a scraped candidate value for human review. Returns True only if it's new."""
+    prop = data.setdefault("_proposed", {})
+    if prop.get(key, {}).get("value") == value:
+        return False
+    prop[key] = {"value": value, "seen": today_str(), "url": url}
+    return True
+
 # ── 1. Update listed-equity wealth estimates ─────────────────────────────────
 # For each billionaire with wealth_auto_update=true, fetch the current stock
 # price and compute an estimated total wealth.
@@ -144,10 +152,10 @@ def update_abs_salary(data):
         weekly = float(observations[last_idx][0])
         annual = round(weekly * 52)
         old = data["_stats"]["abs_median_salary"]
-        data["_stats"]["abs_median_salary"] = annual
-        data["_stats"]["abs_median_salary_updated"] = today_str()
-        print(f"  ABS median salary: ${old:,} → ${annual:,}/yr  (weekly ${weekly:.0f})")
-        return True
+        if annual == old:
+            return False
+        print(f"  ABS earnings: candidate ${annual:,}/yr (current ${old:,}) — saved to _proposed for review")
+        return propose(data, "abs_median_salary", annual, ABS_EEH_URL)
     except Exception as e:
         print(f"  ABS salary fetch failed: {e} — keeping ${data['_stats']['abs_median_salary']:,}")
         return False
@@ -174,10 +182,10 @@ def update_research_budgets(data):
                 if 100 <= val <= 2000:
                     old = data["_stats"]["nhmrc_budget_m"]
                     if val != old:
-                        data["_stats"]["nhmrc_budget_m"] = val
-                        data["_stats"]["nhmrc_budget_updated"] = today_str()
-                        print(f"  NHMRC budget: ${old}M → ${val}M")
-                        return True
+                        # Regex-scraping "the first $X million on the page" is far too
+                        # fragile to publish automatically — record it for a human to check.
+                        print(f"  NHMRC budget: candidate ${val}M (current ${old}M) — saved to _proposed for review")
+                        return propose(data, "nhmrc_budget_m", val, url)
     except Exception as e:
         print(f"  NHMRC budget fetch failed: {e}")
     return False
@@ -200,10 +208,8 @@ def update_fossil_fuel_subsidies(data):
             if 5 <= val <= 50:   # sanity range
                 old = data["_stats"]["fossil_fuel_subsidies_bn"]
                 if abs(val - old) > 0.05:
-                    data["_stats"]["fossil_fuel_subsidies_bn"] = val
-                    data["_stats"]["fossil_fuel_subsidies_updated"] = today_str()
-                    print(f"  Fossil fuel subsidies: ${old}B → ${val}B")
-                    return True
+                    print(f"  Fossil fuel subsidies: candidate ${val}B (current ${old}B) — saved to _proposed for review")
+                    return propose(data, "fossil_fuel_subsidies_bn", val, url)
     except Exception as e:
         print(f"  Fossil fuel subsidy fetch failed: {e}")
     return False
@@ -236,9 +242,14 @@ def main():
     print("\n── Fossil fuel subsidies ───────────────────────────────────────")
     changed |= update_fossil_fuel_subsidies(data)
 
-    stamp_meta(data)
-    save_data(data)
-    print(f"\n{'Changes detected — file updated.' if changed else 'No numeric changes — timestamps updated.'}")
+    if changed:
+        stamp_meta(data)
+        save_data(data)
+        print("\nChanges detected — file updated.")
+    else:
+        # Don't rewrite the file just to bump a date: that created a daily commit
+        # implying the figures had been refreshed when nothing had changed.
+        print("\nNo changes — file left untouched.")
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,51 @@
+name: Data Audit
+
+# Checks the site's numbers against independent references
+# (data/ground_truth/reference_series.json), checks astronomy against PyEphem,
+# and checks every auto-updating dataset is fresh. Free: runs on GitHub Actions.
+on:
+  workflow_run:
+    workflows: ["Daily Data Update"]
+    types: [completed]
+  push:
+    branches: ["main"]
+    paths-ignore: ["data/stocks/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: data-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: pip install ephem
+      - name: Run audit
+        id: audit
+        run: python tests/audit_checks.py | tee audit_report.md
+      - name: Open / update an issue when the audit fails
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          num=$(gh issue list --label data-audit --state open --json number -q '.[0].number')
+          if [ -z "$num" ]; then
+            gh label create data-audit --color B60205 --description "Automated data audit" 2>/dev/null || true
+            gh issue create --title "Data audit failing" --label data-audit --body-file audit_report.md
+          else
+            gh issue comment "$num" --body-file audit_report.md
+          fi

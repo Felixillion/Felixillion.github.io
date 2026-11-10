@@ -3,6 +3,12 @@ name: Deploy Jekyll site to Pages
 on:
   push:
     branches: ["main"]   # adjust if your default branch is different
+  # Commits pushed by the data-update workflow use GITHUB_TOKEN, and GitHub
+  # deliberately does NOT fire `push` workflows for those. Without this trigger
+  # the live site never picks up the daily data (it was frozen at 22 Sep 2026).
+  workflow_run:
+    workflows: ["Daily Data Update", "Live Fare Snapshot"]
+    types: [completed]
   workflow_dispatch:
 
 # Opt into Node.js 24 for all actions (avoids Node 20 deprecation warnings)
@@ -24,6 +30,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main   # always build the latest main (includes the bot's data commits)
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1

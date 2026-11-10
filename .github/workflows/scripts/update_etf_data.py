@@ -34,7 +34,9 @@ except ImportError:
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-BASE_DIR   = Path(__file__).parent.parent
+# scripts/ → workflows/ → .github/ → repo root  (was .parent.parent, which pointed at
+# .github/workflows and made the script exit before fetching anything since March 2026)
+BASE_DIR   = Path(__file__).resolve().parents[3]
 DATA_DIR   = BASE_DIR / 'data'
 STOCKS_DIR = DATA_DIR / 'stocks'
 STOCKS_DIR.mkdir(parents=True, exist_ok=True)   # parents=True creates data/ if missing in fresh checkout
@@ -85,7 +87,7 @@ TOP_ASX_STOCKS = [
     'WES.AX', 'WOW.AX', 'COL.AX', 'JBH.AX', 'HVN.AX', 'PMV.AX',
     # Tech / software
     'WTC.AX', 'XRO.AX', 'REA.AX', 'CPU.AX', 'CAR.AX', 'SEK.AX',
-    'NXT.AX', 'ALU.AX', 'TYR.AX',
+    'NXT.AX', 'TYR.AX',   # ALU.AX removed: Altium delisted Aug 2024
     # Industrials / infrastructure
     'TCL.AX', 'APA.AX', 'TLS.AX', 'WDS.AX', 'STO.AX',
     'AMC.AX', 'BXB.AX', 'QAN.AX', 'FLT.AX',
@@ -128,11 +130,11 @@ def annual_total_returns(hist, start_year: int = 2009) -> dict:
 
     IMPORTANT: Because MER is charged internally by the fund and is already
     reflected in the ETF's NAV/price, these returns are NET of MER.
-    The compounding calculator deducts MER again on top of historical returns,
-    which causes a small (~MER × years) double-deduction in historical mode.
-    For typical AU ETFs (MER 0.07–0.67%) this is 0.7–6.7% over 10 years —
-    acceptable for planning but worth knowing. Projection mode returns are
-    gross estimates, so the MER deduction there is correct.
+    The compounding calculator therefore does NOT deduct MER in historical
+    mode (see calcMonthly in etf_tools.js); it only deducts MER in projection mode.
+
+    The current calendar year is stored as a YEAR-TO-DATE figure and flagged
+    in 'partialYear' so the front end doesn't treat it as a full-year rate.
 
     We use Dec-close / prior-Dec-close for each calendar year so that year
     boundaries are consistent regardless of trading day calendar.
@@ -217,7 +219,7 @@ def annual_dividend_yields(ticker_str: str, start_year: int = 2009) -> dict:
         return {}
 
 
-
+def build_weekly_prices(hist, max_weeks: int = 262) -> list:
     """Return last N weeks of weekly closing prices for charting."""
     if hist is None:
         return []
@@ -271,13 +273,20 @@ def update_etf_returns(etf_data: dict) -> dict:
         existing_dy.update(div_yields)
         etf_data['etfs'][key]['historicalDividendYields'] = existing_dy
 
-        # Update long-run average return (5-year CAGR as annualReturn)
+        # Update annualReturn = CAGR of all complete calendar years (used as the projection default)
+        # (geometric, not the arithmetic mean, which overstates compound growth)
         cur_yr = date.today().year
-        recent = {k: v for k, v in new_returns.items()
-                  if int(k) >= cur_yr - 5 and int(k) < cur_yr}
+        # all complete calendar years since inception (a longer window is less
+        # dominated by the last few boom years than a 5-year figure)
+        recent = {k: v for k, v in etf_data['etfs'][key]['historicalReturns'].items()
+                  if v is not None and int(k) < cur_yr}
         if recent:
-            avg = round(sum(recent.values()) / len(recent), 1)
+            growth = 1.0
+            for v in recent.values():
+                growth *= 1 + v / 100
+            avg = round((growth ** (1 / len(recent)) - 1) * 100, 1)
             etf_data['etfs'][key]['annualReturn'] = avg
+            etf_data['etfs'][key]['annualReturnBasis'] = f"CAGR of {len(recent)} calendar years {min(recent)}–{max(recent)}"
 
         print(f"✓  ({len(new_returns)} years, avg {avg if recent else '—'}%)")
         time.sleep(0.3)  # polite rate limiting
@@ -347,8 +356,15 @@ def fetch_and_save_stock(ticker_ax: str) -> dict | None:
     else:
         cagr = None
 
-    div_yield_raw = info.get('dividendYield') or info.get('yield') or 0
-    div_yield = round(div_yield_raw * 100, 2) if div_yield_raw < 1 else round(div_yield_raw, 2)
+    # yfinance >= 0.2.5x returns info['dividendYield'] already in PERCENT (e.g. 3.1),
+    # while info['yield'] (funds) is a FRACTION (e.g. 0.031). The old "< 1 → ×100"
+    # heuristic turned a genuine 0.5% yield into 50%.
+    if info.get('dividendYield') is not None:
+        div_yield = round(float(info['dividendYield']), 2)
+    elif info.get('yield') is not None:
+        div_yield = round(float(info['yield']) * 100, 2)
+    else:
+        div_yield = 0.0
 
     result = {
         'ticker': key,
@@ -420,8 +436,9 @@ def main():
     # Update asset class returns for retirement simulator
     etf_data = update_asset_class_returns(etf_data)
 
-    # Stamp last updated
+    # Stamp last updated + record which year is partial (YTD)
     etf_data['meta']['lastUpdated'] = str(date.today())
+    etf_data['meta']['partialYear'] = str(date.today().year)
 
     # Save
     with open(etf_data_path, 'w') as f:

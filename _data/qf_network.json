@@ -1,0 +1,354 @@
+{
+ "_source": "FlightsFrom.com Qantas (QF) non-stop route lists per airport (Australian domestic + trans-Tasman), retrieved 2026-11-04. Refreshed weekly by .github/workflows/scripts/update_qf_network.py when reachable. Routes can be seasonal \u2014 always check qantas.com.",
+ "updated": "2026-11-04",
+ "airports": [
+  "ADL",
+  "BNE",
+  "CBR",
+  "CNS",
+  "DRW",
+  "HBA",
+  "LST",
+  "MEL",
+  "MKY",
+  "NTL",
+  "OOL",
+  "PER",
+  "ROK",
+  "SYD",
+  "TSV",
+  "AKL",
+  "WLG",
+  "CHC",
+  "ZQN"
+ ],
+ "routes": [
+  {
+   "a": "ADL",
+   "b": "BNE",
+   "miles": 1008
+  },
+  {
+   "a": "ADL",
+   "b": "CBR",
+   "miles": 606
+  },
+  {
+   "a": "ADL",
+   "b": "DRW",
+   "miles": 1638
+  },
+  {
+   "a": "ADL",
+   "b": "MEL",
+   "miles": 400
+  },
+  {
+   "a": "ADL",
+   "b": "NTL",
+   "miles": 781
+  },
+  {
+   "a": "ADL",
+   "b": "PER",
+   "miles": 1322
+  },
+  {
+   "a": "ADL",
+   "b": "SYD",
+   "miles": 727
+  },
+  {
+   "a": "BNE",
+   "b": "CBR",
+   "miles": 594
+  },
+  {
+   "a": "BNE",
+   "b": "CNS",
+   "miles": 870
+  },
+  {
+   "a": "BNE",
+   "b": "DRW",
+   "miles": 1781
+  },
+  {
+   "a": "BNE",
+   "b": "HBA",
+   "miles": 1116
+  },
+  {
+   "a": "BNE",
+   "b": "LST",
+   "miles": 1036
+  },
+  {
+   "a": "BNE",
+   "b": "MEL",
+   "miles": 859
+  },
+  {
+   "a": "BNE",
+   "b": "MKY",
+   "miles": 499
+  },
+  {
+   "a": "BNE",
+   "b": "NTL",
+   "miles": 380
+  },
+  {
+   "a": "BNE",
+   "b": "PER",
+   "miles": 2251
+  },
+  {
+   "a": "BNE",
+   "b": "ROK",
+   "miles": 325
+  },
+  {
+   "a": "BNE",
+   "b": "SYD",
+   "miles": 467
+  },
+  {
+   "a": "BNE",
+   "b": "TSV",
+   "miles": 696
+  },
+  {
+   "a": "CBR",
+   "b": "HBA",
+   "miles": 530
+  },
+  {
+   "a": "CBR",
+   "b": "MEL",
+   "miles": 293
+  },
+  {
+   "a": "CBR",
+   "b": "PER",
+   "miles": 1927
+  },
+  {
+   "a": "CBR",
+   "b": "SYD",
+   "miles": 147
+  },
+  {
+   "a": "CNS",
+   "b": "DRW",
+   "miles": 1046
+  },
+  {
+   "a": "CNS",
+   "b": "MEL",
+   "miles": 1445
+  },
+  {
+   "a": "CNS",
+   "b": "SYD",
+   "miles": 1232
+  },
+  {
+   "a": "CNS",
+   "b": "TSV",
+   "miles": 177
+  },
+  {
+   "a": "DRW",
+   "b": "MEL",
+   "miles": 1957
+  },
+  {
+   "a": "DRW",
+   "b": "PER",
+   "miles": 1656
+  },
+  {
+   "a": "DRW",
+   "b": "SYD",
+   "miles": 1971
+  },
+  {
+   "a": "HBA",
+   "b": "MEL",
+   "miles": 384
+  },
+  {
+   "a": "HBA",
+   "b": "PER",
+   "miles": 1883
+  },
+  {
+   "a": "HBA",
+   "b": "SYD",
+   "miles": 649
+  },
+  {
+   "a": "LST",
+   "b": "MEL",
+   "miles": 297
+  },
+  {
+   "a": "LST",
+   "b": "SYD",
+   "miles": 570
+  },
+  {
+   "a": "MEL",
+   "b": "NTL",
+   "miles": 521
+  },
+  {
+   "a": "MEL",
+   "b": "OOL",
+   "miles": 830
+  },
+  {
+   "a": "MEL",
+   "b": "PER",
+   "miles": 1687
+  },
+  {
+   "a": "MEL",
+   "b": "SYD",
+   "miles": 440
+  },
+  {
+   "a": "MEL",
+   "b": "TSV",
+   "miles": 1285
+  },
+  {
+   "a": "MKY",
+   "b": "ROK",
+   "miles": 174
+  },
+  {
+   "a": "MKY",
+   "b": "TSV",
+   "miles": 206
+  },
+  {
+   "a": "NTL",
+   "b": "PER",
+   "miles": 2095
+  },
+  {
+   "a": "OOL",
+   "b": "SYD",
+   "miles": 424
+  },
+  {
+   "a": "PER",
+   "b": "SYD",
+   "miles": 2047
+  },
+  {
+   "a": "SYD",
+   "b": "TSV",
+   "miles": 1056
+  },
+  {
+   "a": "AKL",
+   "b": "BNE",
+   "miles": 1426,
+   "intl": true
+  },
+  {
+   "a": "AKL",
+   "b": "OOL",
+   "miles": 1377,
+   "intl": true
+  },
+  {
+   "a": "AKL",
+   "b": "MEL",
+   "miles": 1639,
+   "intl": true
+  },
+  {
+   "a": "AKL",
+   "b": "PER",
+   "miles": 3316,
+   "intl": true
+  },
+  {
+   "a": "AKL",
+   "b": "SYD",
+   "miles": 1342,
+   "intl": true
+  },
+  {
+   "a": "ADL",
+   "b": "AKL",
+   "miles": 2020,
+   "intl": true
+  },
+  {
+   "a": "BNE",
+   "b": "WLG",
+   "miles": 1560,
+   "intl": true
+  },
+  {
+   "a": "MEL",
+   "b": "WLG",
+   "miles": 1609,
+   "intl": true
+  },
+  {
+   "a": "SYD",
+   "b": "WLG",
+   "miles": 1384,
+   "intl": true
+  },
+  {
+   "a": "BNE",
+   "b": "CHC",
+   "miles": 1552,
+   "intl": true
+  },
+  {
+   "a": "CHC",
+   "b": "MEL",
+   "miles": 1500,
+   "intl": true
+  },
+  {
+   "a": "CHC",
+   "b": "SYD",
+   "miles": 1321,
+   "intl": true
+  },
+  {
+   "a": "BNE",
+   "b": "ZQN",
+   "miles": 1492,
+   "intl": true
+  },
+  {
+   "a": "MEL",
+   "b": "ZQN",
+   "miles": 1333,
+   "intl": true
+  },
+  {
+   "a": "SYD",
+   "b": "ZQN",
+   "miles": 1205,
+   "intl": true
+  }
+ ],
+ "nz_airports": [
+  "AKL",
+  "WLG",
+  "CHC",
+  "ZQN"
+ ],
+ "_nz_note": "Trans-Tasman Qantas routes seeded 2026-11-10 from airport route lists (Auckland, Wellington, Christchurch, Queenstown); AKL-ADL is seasonal. Refreshed weekly with the rest of the network."
+}

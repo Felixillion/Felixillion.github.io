@@ -15,6 +15,13 @@ const ORGANELLES = {
     saturn: { name: 'Cytoskeleton', color: '#00ffcc', radius: 22, type: 'orbit', ring: true, glow: '#00ffcc' },
 };
 
+const ZODIAC = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+// Full ecliptic longitude (0–360°) from {sign, degree-within-sign}
+function fullLongitude(data) {
+    const idx = ZODIAC.indexOf(data.sign);
+    return (idx >= 0 ? idx * 30 : 0) + (data.degree || 0);
+}
+
 // Valid "Experiments" and "Avoidances" (Medical Biology Themed)
 const EXPERIMENTS = [
     { text: "Optimizing flow cytometry voltage settings", why: "Because spectral overlap is a myth created by big filter companies." },
@@ -108,9 +115,9 @@ function generateDailyProtocol() {
     if (!titleEl) return;
 
     // Seed based on Year + Week (Weekly update)
-    const seed = year * 100 + week;
+    let seed = year * 100 + week;
     const seededRandom = () => {
-        const x = Math.sin(seed) * 10000;
+        const x = Math.sin(seed++) * 10000;   // advance so each draw differs
         return x - Math.floor(x);
     };
 
@@ -120,7 +127,7 @@ function generateDailyProtocol() {
         avoidContainer.style.display = "none";
     } else {
         const expIndex = Math.floor(seededRandom() * EXPERIMENTS.length);
-        const avoidIndex = Math.floor((seededRandom() + 0.5) * AVOIDANCES.length) % AVOIDANCES.length;
+        const avoidIndex = Math.floor(seededRandom() * AVOIDANCES.length);
 
         titleEl.textContent = "Recommended Experiment (Weekly)";
         descEl.innerHTML = `<strong>${EXPERIMENTS[expIndex].text}</strong><br><em style="font-size: 0.9em; opacity: 0.8;">"${EXPERIMENTS[expIndex].why}"</em>`;
@@ -129,10 +136,7 @@ function generateDailyProtocol() {
         avoidDescEl.innerHTML = `<strong>${AVOIDANCES[avoidIndex].text}</strong><br><em style="font-size: 0.9em; opacity: 0.8;">"${AVOIDANCES[avoidIndex].why}"</em>`;
     }
 
-    const dateDisplay = document.getElementById('date-display');
-    if (dateDisplay) {
-        dateDisplay.textContent = `Week ${week}, ${year}`;
-    }
+    if (!isWeekend) titleEl.textContent = `Recommended Experiment (Week ${week}, ${year})`;
 }
 
 // -----------------------------------------------------------------------------
@@ -149,11 +153,19 @@ async function initAstrobiology() {
         if (!data) throw new Error("No data available from Jekyll.");
         planetaryData = data.planetary_positions;
 
+        // Show which day the horoscope/positions are for, and flag stale data
+        const dd = document.getElementById('date-display');
+        if (dd && data.lastUpdated) {
+            const todaySyd = new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Sydney' }).format(new Date());
+            const stale = data.lastUpdated < todaySyd;
+            dd.textContent = `Readings for ${data.lastUpdated} (Sydney)` + (stale ? ' — not yet refreshed today' : '');
+        }
+
         renderPlanetaryData(planetaryData);
         initCanvas(planetaryData);
 
         // Setup Restored Widgets
-        if (data.readings) setupSignSelector(data.readings);
+        if (data.readings) setupSignSelector(data.readings, data.sky_notes || []);
         if (data.compatibility_matrix) setupCompatibility(data.compatibility_matrix);
 
         // Handle window resize
@@ -190,7 +202,7 @@ function renderPlanetaryData(positions) {
                     <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${org.color}; box-shadow: 0 0 8px ${org.glow};"></div>
                     <div>
                         <div style="font-weight: bold; color: #fff;">${org.name}</div>
-                        <div style="font-size: 0.75rem;">${planet.charAt(0).toUpperCase() + planet.slice(1)} (${Math.floor(data.degree)}°)</div>
+                        <div style="font-size: 0.75rem;">${planet.charAt(0).toUpperCase() + planet.slice(1)}: ${data.sign || ''} ${Math.floor(data.degree)}°${data.retrograde ? ' ℞ (retrograde)' : ''}</div>
                     </div>
                 </div>
             `;
@@ -265,7 +277,7 @@ function initCanvas(positions) {
             // Calculate position on the ellipse
             // Slower outer orbits
             const orbitSpeed = 0.0002 + (1 - normalizedDist) * 0.0008;
-            const angle = (data.degree * Math.PI / 180) + (time * orbitSpeed);
+            const angle = (fullLongitude(data) * Math.PI / 180) + (time * orbitSpeed);
 
             // Ellipse parametric equation with rotation
             const x0 = a * Math.cos(angle);
@@ -352,7 +364,7 @@ function drawOrganelle(ctx, x, y, type, time) {
 // 4. Logic: Restored Interactive Widgets
 // -----------------------------------------------------------------------------
 
-function setupSignSelector(readings) {
+function setupSignSelector(readings, skyNotes) {
     const select = document.getElementById('zodiac-select');
     const readingDisplay = document.getElementById('personal-reading');
 
@@ -361,7 +373,12 @@ function setupSignSelector(readings) {
         if (sign && readings[sign]) {
             readingDisplay.style.opacity = 0;
             setTimeout(() => {
-                readingDisplay.innerHTML = `"${readings[sign]}"`;
+                // Pick one real-sky note per sign (stable for the day)
+                const idx = ZODIAC.indexOf(sign);
+                const note = skyNotes.length ? skyNotes[idx % skyNotes.length] : '';
+                readingDisplay.innerHTML = `"${readings[sign]}"` + (note
+                    ? `<div style="margin-top:.75rem;font-style:normal;font-size:.85rem;color:var(--text-secondary);"><strong>Today's actual sky:</strong> ${note}</div>`
+                    : '');
                 readingDisplay.style.opacity = 1;
             }, 200);
         } else {
