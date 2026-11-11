@@ -151,6 +151,25 @@ footer_scripts: assets/js/hero.js
 .bl-scale-num{font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:900;letter-spacing:-.03em;margin-bottom:.3rem;}
 .bl-scale-desc{font-size:.82rem;color:var(--text-secondary);line-height:1.6;}
 .bl-scale-visual{height:8px;border-radius:4px;background:var(--gold);margin-top:.7rem;transition:width .5s ease;}
+/* ─── "In short" summaries and collapsible detail ───────────── */
+.bl-inshort{background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.25);border-radius:12px;padding:.8rem 1rem .8rem 1rem;margin-bottom:1.2rem;}
+.bl-inshort-t{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:.35rem;}
+.bl-inshort ul{margin:0;padding-left:1.1rem;font-size:.84rem;line-height:1.6;color:#e2e8f0;}
+.bl-inshort li{margin:.15rem 0;}
+.bl-stat-label a,.bl-inshort a{color:#7dd3fc;}
+.bl-details{margin:.4rem 0;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.45rem .7rem;}
+.bl-details summary{cursor:pointer;font-weight:600;color:#bbf7d0;}
+.bl-details>div{margin-top:.5rem;}
+
+/* ─── Collapsible debate sections ─────────────────────────── */
+.bl-sect{border:1px solid var(--border);border-radius:12px;margin:.6rem 0;background:rgba(255,255,255,.015);}
+.bl-sect>summary{cursor:pointer;list-style:none;padding:.85rem 1rem;font-family:'Outfit',sans-serif;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-lt);font-weight:600;display:flex;justify-content:space-between;gap:.8rem;}
+.bl-sect>summary::-webkit-details-marker{display:none;}
+.bl-sect>summary::after{content:'+';color:var(--gold);font-size:1rem;line-height:1;}
+.bl-sect[open]>summary::after{content:'−';}
+.bl-sect-body{padding:0 1rem 1rem;}
+.bl-expand-hint{font-size:.75rem;color:#64748b;margin:.2rem 0 .4rem;} .bl-expand-hint a{color:var(--gold-lt);}
+
 /* ─── Disclaimer ─────────────────────────────────────────── */
 .bl-disclaimer{font-size:.68rem;color:#475569;line-height:1.65;border-top:1px solid var(--border);padding-top:1.3rem;margin-top:2rem;}
 .bl-disclaimer a{color:#64748b;}
@@ -183,13 +202,11 @@ footer_scripts: assets/js/hero.js
 <!-- ─── Tab Navigation ─────────────────────────────────── -->
 <div class="bl-tabs" id="bl-tabs">
   <button type="button" class="bl-tab active" data-panel="law">📜 The Law</button>
-  <button type="button" class="bl-tab" data-panel="scale">💰 Scale of Wealth</button>
-  <button type="button" class="bl-tab" data-panel="billion">🔢 A Billion</button>
+  <button type="button" class="bl-tab" data-panel="scale">💰 The Scale</button>
+  <button type="button" class="bl-tab" data-panel="made">🏗️ How It's Made</button>
   <button type="button" class="bl-tab" data-panel="calc">🧮 Calculator</button>
   <button type="button" class="bl-tab" data-panel="arguments">⚖️ The Debate</button>
-  <button type="button" class="bl-tab" data-panel="housing">🏠 Housing</button>
-  <button type="button" class="bl-tab" data-panel="research">🔬 Research &amp; Subsidies</button>
-  <button type="button" class="bl-tab" data-panel="flight">✈️ Capital Flight</button>
+  <button type="button" class="bl-tab" data-panel="context">🏠 Housing &amp; Public Money</button>
 </div>
 
 <!-- ══════════════════════════════════════════════════════
@@ -198,6 +215,7 @@ footer_scripts: assets/js/hero.js
 <div class="bl-panel active" id="panel-law">
 
   <div class="bl-sec-title">The Law — What actually happens when an Australian billionaire dies</div>
+  <div class="bl-inshort"><div class="bl-inshort-t">In short</div><ul><li>Australia has had <strong>no estate, inheritance or gift tax since 1979</strong>, and doesn't tax capital gains at death (Canada does).</li><li>Heirs usually take over the original cost base, so tax on gains is <strong>deferred</strong>, not wiped — except for assets bought before September 1985, whose growth is never taxed.</li><li>Large fortunes sit in companies and family trusts that don't die, so control passes to the next generation <strong>without any sale or tax</strong>.</li></ul></div>
   <div class="bl-callout">
     <strong>Australia abolished federal estate duty in 1979</strong>, and the states had abolished theirs by the early 1980s (Queensland first, in 1977) — one of about a third of OECD countries (including Canada, New Zealand, Sweden and Norway) with no inheritance or estate tax.
     Unlike Canada, though, Australia doesn't tax capital gains at death either.
@@ -217,16 +235,18 @@ footer_scripts: assets/js/hero.js
         <strong>The key point first:</strong> When someone dies, their investment properties do <strong>not</strong> get a step-up in cost base. Instead, the beneficiary inherits the deceased's original cost base.
         This means <strong>lifetime capital gains are not wiped; they are deferred</strong>. <strong>One big exception:</strong> assets the deceased acquired <em>before 20 September 1985</em> (when CGT began) pass to heirs at their market value on the day of death — so all the growth up to death is never taxed (<a href="https://www.ato.gov.au/individuals-and-families/investments-and-assets/capital-gains-tax/inherited-assets-and-capital-gains-tax/cost-base-of-inherited-assets" target="_blank" rel="noopener">ATO</a>). Long-held family fortunes often include such assets. While $0 tax is paid at death, the heir inherits the historical tax liability.
         <br><br>
+        <details class="bl-details"><summary>Worked example from the ATO (Vicki and Lesley)</summary><div>
         <strong>The ATO Vicki/Lesley example unpacked:</strong>
         Vicki bought a rental property in 1997 and died in 2000. Lesley inherited it, lived in it as her main residence, and sold it in 2024 for a $400,000 capital gain (measured from Vicki's original 1997 purchase price).
         Because Lesley lived in it as her main residence, her ownership period is exempt. But Vicki's rental period is taxable.
         The formula calculates the taxable portion of the total gain: Total Gain × (non-main-residence days ÷ total days).
         Non-main-residence days is Vicki's 1,375 rental days. Total ownership days is 10,152 days (1997 to 2024).
         Result: $400k × (1,375 ÷ 10,152) = <strong>$54,176 capital gain</strong> — halved to about $27,088 of taxable income if the 50% CGT discount applies.
-        <br><br>
-        <strong>What this means:</strong> Lesley is paying CGT on the portion of the capital gain that corresponds to Vicki's rental ownership. Vicki's gains were <strong>not wiped</strong>; they were rolled over and taxed when Lesley sold the property.
+                <strong>What this means:</strong> Lesley is paying CGT on the portion of the capital gain that corresponds to Vicki's rental ownership. Vicki's gains were <strong>not wiped</strong>; they were rolled over and taxed when Lesley sold the property.
         If Vicki had used it as her main residence before death, Lesley would have qualified for a market value cost base reset at the date of death, reducing her tax liability.
         <br><br>
+        </div></details>
+        <br>
         Heirs also get the 50% CGT discount if the combined holding period of the deceased and the heir exceeds 12 months.
         <br><br>
         <strong>The bottom line:</strong> For individuals, inherited investment properties do not escape CGT. However, billionaires rarely own properties in their personal names. They hold them in corporate and discretionary family trust structures, which do not die, meaning control passes to heirs with <strong>no transfer of legal ownership</strong> and therefore $0 CGT triggered.
@@ -270,15 +290,11 @@ footer_scripts: assets/js/hero.js
 </div>
 
 <!-- ══════════════════════════════════════════════════════
-     TAB 2: SCALE OF WEALTH
+     TAB 2: THE SCALE (incl. "How big is a billion")
 ══════════════════════════════════════════════════════ -->
 <div class="bl-panel" id="panel-scale">
 
-  <div class="bl-callout">
-    The <strong>🔢 A Billion</strong> tab has the full scale visualiser — pixel ruler, time-in-seconds, and distance comparisons.
-    This tab focuses on Australia's wealthiest individuals and how their wealth compares to working life.
-  </div>
-
+  <div class="bl-inshort"><div class="bl-inshort-t">In short</div><ul><li>The 200 richest Australians hold about <strong>$707 billion</strong>; the eight profiled here hold about $172 billion between them.</li><li>Saving every cent of an average full-time salary, it would take you <strong>more than 100,000 years</strong> to match any of these fortunes — see below.</li><li>Further down: what a billion looks like in seconds, pixels and kilometres.</li></ul></div>
   <!-- Billionaire cards -->
   <div class="bl-sec-title" style="margin-top:1.5rem;">Australia's Wealthiest — AFR Rich List 2026</div>
   <div class="bl-asof">📅 Wealth figures as at the AFR Rich List {{ site.data.billionaires._meta.edition }} (published {{ site.data.billionaires._meta.published | date: '%-d %B %Y' }}) · average earnings: ABS (updated {{ site.data.billionaires._stats.abs_median_salary_updated }})</div>
@@ -314,50 +330,14 @@ footer_scripts: assets/js/hero.js
     <div id="bl-time-bars"></div>
   </div>
 
-  <!-- Productivity -->
-  <div class="bl-sec-title" style="margin-top:1.5rem;">But Surely They Work Harder?</div>
-  <div class="bl-callout">
-    <strong>The common defence:</strong> "They earned it through hard work and talent." But if wealth reflected proportional productivity, what would that actually mean?
-  </div>
 
-  <!-- Fairness note: annual salary vs total wealth -->
-  <div class="bl-callout-blue" style="margin-bottom:1rem;">
-    <strong>⚠️ Comparison caveat:</strong>
-    The calculator above compares your <em>yearly salary</em> with a billionaire's <em>total wealth</em> — a stock, not a yearly flow, so it isn't apples-to-apples.
-    A fairer yearly comparison is roughly what that wealth could <em>earn in a year</em>. Their actual incomes aren't public, so the cards below simply apply the same
-    illustrative return to everyone's wealth — the kind of long-run return (growth plus dividends) a diversified portfolio might make. Pick a rate:
-    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.55rem;" id="bl-income-rate-btns"></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-top:.65rem;" id="bl-income-est-grid"></div>
-    <div style="font-size:.68rem;color:#94a3b8;margin-top:.5rem;line-height:1.55;">
-      This is <strong>not</strong> their taxable income. Much of these returns is never paid out as cash: Atlassian and Canva pay no dividends, and most of Gina Rinehart's wealth is unlisted company equity.
-      Fortunes can also fall — Scott Farquhar's dropped from ~$21B to ~$12B between the 2025 and 2026 Rich Lists as Atlassian's share price fell.
-    </div>
-  </div>
-
-  <div id="bl-prod-none" style="text-align:center;padding:1rem;color:var(--text-secondary);font-size:.88rem;">← Select a billionaire above.</div>
-  <div id="bl-prod-disp" style="display:none;">
-    <div class="bl-callout-red" id="bl-prod-multi-box" style="margin-bottom:1rem;"></div>
-    <div class="bl-g-auto" id="bl-prod-grid"></div>
-    <div class="bl-callout-green">
-      <strong>The reality:</strong> The wealth gap is driven by <strong>capital ownership and compounding</strong> — not proportional effort.
-      Gina Rinehart's wealth grew from ~$29B (AFR 2020) to ~$39B (AFR 2026) largely because iron ore prices rose and her private company equity compounded — not because she worked harder.
-      Scott Farquhar's fortune reflects Atlassian's global product-market fit and equity valuation, not that he personally coded tens of thousands of times more lines than the average developer.
-      Pay and performance are loosely linked even for executives: an <a href="https://www.msci.com/ceo-pay" target="_blank" rel="noopener">MSCI study (2016)</a> of 429 large US companies over 10 years found firms with the lowest-paid CEOs delivered higher shareholder returns than those with the highest-paid. Inherited wealth, by definition, reflects no work by the heir at all.
-    </div>
-  </div>
-
-</div>
-
-<!-- ══════════════════════════════════════════════════════
-     TAB 2b: A BILLION — dedicated scale visualiser
-══════════════════════════════════════════════════════ -->
-<div class="bl-panel" id="panel-billion">
-  <div class="bl-sec-title">How Big Is A Billion, Really?</div>
+  <!-- How big is a billion (was its own tab) -->
+  <div class="bl-sec-title" style="margin-top:2rem;">How Big Is A Billion, Really?</div>
   <div class="bl-callout">
     The word "billion" gets thrown around in political debate as if it's just a large number.
     It isn't. We can only picture about four objects at a glance, and have no real intuition for numbers in the thousands, let alone billions.
     A billion is so far outside that range that even comparison fails.
-    This tab tries to make it visceral — in time, in space, and in pixels.
+    This section tries to make it visceral — in time, in space, and in pixels.
   </div>
 
   <!-- ① Time in seconds -->
@@ -427,10 +407,125 @@ footer_scripts: assets/js/hero.js
 </div>
 
 <!-- ══════════════════════════════════════════════════════
+     TAB 3: HOW FORTUNES ARE MADE
+══════════════════════════════════════════════════════ -->
+<div class="bl-panel" id="panel-made">
+  <div class="bl-sec-title">How Are These Fortunes Made?</div>
+  <div class="bl-inshort">
+    <div class="bl-inshort-t">In short</div>
+    <ul>
+      <li>Two of the eight largest Australian fortunes profiled here were <strong>inherited</strong>; worldwide in 2025, heirs received about three-quarters as much new billionaire wealth as founders created.</li>
+      <li>A billion dollars is about <strong id="bl-careers-1b">200</strong> lifetimes of full-time work on average Australian earnings. Fortunes this size come from <strong>owning</strong> things that grow in value — not from wages.</li>
+      <li>Money compounds: the same rate of return on an average inheritance and on a billion-dollar one produces wildly different results.</li>
+      <li>How the gains from a business are shared — with workers, through tax, and through royalties on public resources — matters as much as the size of the fortune.</li>
+    </ul>
+  </div>
+
+  <div class="bl-sec-title" style="margin-top:1.4rem;">Inherited or built?</div>
+  <div class="bl-callout">
+    “Self-made” here means the person founded or built the business; it doesn't mean they started with nothing (education, family support and timing all matter).
+    “Inherited” means the core of the fortune was passed down. Because Australia doesn't tax inheritances (see <em>The Law</em>), inherited fortunes pass to the next generation intact.
+  </div>
+  <div class="bl-g-auto" id="bl-made-grid"></div>
+  <div class="bl-callout-blue">
+    <strong>Worldwide:</strong> in 2025, <strong>91 heirs inherited a record US$297.8 billion</strong>, 36% more than in 2024, while 196 people became self-made billionaires, adding US$386.5 billion.
+    UBS expects billionaires to pass on about <strong>US$6.9 trillion by 2040</strong>, at least US$5.9 trillion of it to their children
+    (<a href="https://www.ubs.com/global/en/media/display-page-ndp/en-20251204-billionaire-ambitions-report-2025.html" target="_blank" rel="noopener">UBS Billionaire Ambitions Report, Dec 2025</a>).
+    In Australia, the Productivity Commission estimates about $3.5 trillion will pass between generations from 2018 to 2050 — and wealthier families pass on far more.
+  </div>
+
+  <div class="bl-sec-title" style="margin-top:1.4rem;">Same return, different starting point</div>
+  <div class="bl-callout">
+    Inheritances compound. The average inheritance in Australia is about <strong>$125,000</strong> (among people who receive one; Productivity Commission, 2018 dollars — many people receive nothing).
+    Even if you invested yours more successfully than any billionaire, the dollars wouldn't compare: what matters is what you start with.
+    <div style="display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;margin:.7rem 0 .2rem;font-size:.78rem;">
+      <label>Your inheritance $<input id="bl-inh-amt" type="number" min="0" step="1000" value="125000" style="width:8rem;background:var(--surface);color:#e2e8f0;border:1px solid var(--border);border-radius:6px;padding:.25rem .45rem;"></label>
+      <label>Return per year <input id="bl-inh-rate" type="number" min="0" max="30" step="0.5" value="7" style="width:4.5rem;background:var(--surface);color:#e2e8f0;border:1px solid var(--border);border-radius:6px;padding:.25rem .45rem;">%</label>
+      <label>Years <input id="bl-inh-yrs" type="number" min="1" max="60" step="1" value="30" style="width:4rem;background:var(--surface);color:#e2e8f0;border:1px solid var(--border);border-radius:6px;padding:.25rem .45rem;"></label>
+    </div>
+    <div id="bl-inh-out" style="font-size:.82rem;line-height:1.7;margin-top:.4rem;"></div>
+  </div>
+
+  <div class="bl-sec-title" style="margin-top:1.4rem;">A billion dollars in working lives</div>
+  <div class="bl-callout">
+    A full-time career on average earnings — <strong id="bl-career-wage">$108,352</strong> a year (ABS average full-time ordinary earnings) for <strong>45 years</strong> — adds up to about
+    <strong id="bl-career-total">$4.9M</strong> before tax, before spending a cent. Here's each fortune measured in those careers:
+  </div>
+  <div id="bl-careers"></div>
+  <div style="font-size:.7rem;color:#64748b;margin:.3rem 0 1rem;">Gross earnings in today's dollars; no tax, housing or living costs taken out. Wealth: AFR Rich List.</div>
+
+  <div class="bl-sec-title" style="margin-top:1.4rem;">Who shares in the gains?</div>
+  <div class="bl-g2" style="margin-bottom:1rem;">
+    <div class="bl-stat"><div class="bl-kick">Top executives</div><div class="bl-stat-num" style="color:var(--amber);">55×</div>
+      <div class="bl-stat-label">ASX 100 chief executives' average realised pay was $5.7M in 2024 — 55 times average adult earnings, up from 50 times the year before
+      (<a href="https://thenightly.com.au/business/asx-100-bosses-now-earning-55-times-their-workers-pay-according-to-new-data-c-19082239" target="_blank" rel="noopener">ACSI, June 2025</a>). Most billionaires are owners rather than executives, but it shows how pay at the top has moved.</div></div>
+    <div class="bl-stat"><div class="bl-kick">Underpaid workers</div><div class="bl-stat-num" style="color:var(--red);">$358M</div>
+      <div class="bl-stat-label">Back-paid to more than 249,000 underpaid workers after Fair Work Ombudsman action in 2024–25 — over $2B in five years, about 60% of it from large companies
+      (<a href="https://www.fairwork.gov.au/newsroom/media-releases/2025-media-releases/october-2025/20251029-annual-report-2024-25-media-release" target="_blank" rel="noopener">FWO, Oct 2025</a>). These figures aren't about the people on this page; they show how often the cost of cutting corners lands on workers.</div></div>
+    <div class="bl-stat"><div class="bl-kick">Mining productivity</div><div class="bl-stat-num" style="color:var(--gold);">To capital</div>
+      <div class="bl-stat-label">Across most of the economy, wages have broadly kept pace with productivity — but in mining, where Australia's biggest fortunes sit, the gains have gone mainly to owners
+      (<a href="https://www.pc.gov.au/ongoing/productivity-insights/productivity-growth-wages" target="_blank" rel="noopener">Productivity Commission, 2023</a>).</div></div>
+    <div class="bl-stat"><div class="bl-kick">Public resources</div><div class="bl-stat-num" style="color:var(--blue);">Crown-owned</div>
+      <div class="bl-stat-label">Minerals in the ground belong to the Crown (in practice, the states), which charge royalties for mining them. Iron ore fortunes are built on a resource the public owns — how much of its value comes back through royalties and tax is a policy choice.</div></div>
+  </div>
+  <div class="bl-sec-title" style="margin-top:1.4rem;">Big employers and workers' pay</div>
+  <div class="bl-callout">
+    <strong>It's more nuanced than “big companies pay badly”.</strong> On an hourly basis, large employers usually pay <em>more</em> than small ones
+    (the employer-size wage premium — e.g. <a href="https://econpapers.repec.org/RePEc:bla:labour:v:21:y:2007:i:4-5:p:809-835" target="_blank" rel="noopener">Waddoups, 2007</a>). Where the evidence points is how the overall pie is split:
+    <ul style="margin:.5rem 0 0;padding-left:1.1rem;line-height:1.65;">
+      <li><strong>Wages' share of the economy hit a record low.</strong> In early 2022, employees' pay fell to about 45% of GDP — the lowest since quarterly records began in 1959 (ABS national accounts; <a href="https://inkl.com/news/sally-mcmanus-says-labour-s-share-of-gdp-is-the-lowest-its-been-since-1960-is-that-correct" target="_blank" rel="noopener">The Conversation fact check</a>). A smaller share for wages means a larger share for profits.</li>
+      <li><strong>Fewer employers competing for workers holds pay down.</strong> Treasury research found the growing effect of employer concentration lowered wages by a little under 1% on average in 2011–15, mainly because fewer new firms are starting up (<a href="https://treasury.gov.au/publication/p2023-368379" target="_blank" rel="noopener">Treasury, 2023</a>).</li>
+      <li><strong>Non-compete clauses.</strong> About 1 in 5 Australian workers (roughly 3 million) are bound by one, and they earn about 4% less than comparable workers — which is why they're being banned for workers earning under the high-income threshold from 2027 (<a href="https://ministers.treasury.gov.au/ministers/andrew-leigh-2025/articles/opinion-piece-setting-australian-talent-free" target="_blank" rel="noopener">Treasury, Nov 2025</a>, citing e61 Institute research).</li>
+      <li><strong>Underpayment is common, including at large companies</strong> — they accounted for about 60% of the $358M back-paid in 2024–25 (see above).</li>
+    </ul>
+    None of this is specific to the people on this page. It's about how the gains from Australian businesses are shared between owners and the people who work in them.
+  </div>
+
+  <div class="bl-callout-green">
+    <strong>The fair counterpoint:</strong> many founders took real risks and built things people value — Canva and Atlassian employ thousands and pay substantial tax, and mining companies pay large royalties and company tax.
+    The question this page asks isn't whether they deserved success, but whether wealth on this scale should pass between generations with no tax at all.
+  </div>
+
+  <!-- Productivity -->
+  <div class="bl-sec-title" style="margin-top:1.5rem;">But Surely They Work Harder?</div>
+  <div class="bl-callout-blue" style="margin-bottom:.8rem;">Select a billionaire on <em>The Scale</em> tab (or here, above) to fill this in.</div>
+  <div class="bl-callout">
+    <strong>The common defence:</strong> "They earned it through hard work and talent." But if wealth reflected proportional productivity, what would that actually mean?
+  </div>
+
+  <!-- Fairness note: annual salary vs total wealth -->
+  <div class="bl-callout-blue" style="margin-bottom:1rem;">
+    <strong>⚠️ Comparison caveat:</strong>
+    The calculator above compares your <em>yearly salary</em> with a billionaire's <em>total wealth</em> — a stock, not a yearly flow, so it isn't apples-to-apples.
+    A fairer yearly comparison is roughly what that wealth could <em>earn in a year</em>. Their actual incomes aren't public, so the cards below simply apply the same
+    illustrative return to everyone's wealth — the kind of long-run return (growth plus dividends) a diversified portfolio might make. Pick a rate:
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.55rem;" id="bl-income-rate-btns"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-top:.65rem;" id="bl-income-est-grid"></div>
+    <div style="font-size:.68rem;color:#94a3b8;margin-top:.5rem;line-height:1.55;">
+      This is <strong>not</strong> their taxable income. Much of these returns is never paid out as cash: Atlassian and Canva pay no dividends, and most of Gina Rinehart's wealth is unlisted company equity.
+      Fortunes can also fall — Scott Farquhar's dropped from ~$21B to ~$12B between the 2025 and 2026 Rich Lists as Atlassian's share price fell.
+    </div>
+  </div>
+
+  <div id="bl-prod-none" style="text-align:center;padding:1rem;color:var(--text-secondary);font-size:.88rem;">← Select a billionaire above.</div>
+  <div id="bl-prod-disp" style="display:none;">
+    <div class="bl-callout-red" id="bl-prod-multi-box" style="margin-bottom:1rem;"></div>
+    <div class="bl-g-auto" id="bl-prod-grid"></div>
+    <div class="bl-callout-green">
+      <strong>The reality:</strong> The wealth gap is driven by <strong>capital ownership and compounding</strong> — not proportional effort.
+      Gina Rinehart's wealth grew from ~$29B (AFR 2020) to ~$39B (AFR 2026) largely because iron ore prices rose and her private company equity compounded — not because she worked harder.
+      Scott Farquhar's fortune reflects Atlassian's global product-market fit and equity valuation, not that he personally coded tens of thousands of times more lines than the average developer.
+      Pay and performance are loosely linked even for executives: an <a href="https://www.msci.com/ceo-pay" target="_blank" rel="noopener">MSCI study (2016)</a> of 429 large US companies over 10 years found firms with the lowest-paid CEOs delivered higher shareholder returns than those with the highest-paid. Inherited wealth, by definition, reflects no work by the heir at all.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
      TAB 3: CALCULATOR
 ══════════════════════════════════════════════════════ -->
 <div class="bl-panel" id="panel-calc">
   <div class="bl-sec-title">Estate Tax Calculator</div>
+  <div class="bl-inshort"><div class="bl-inshort-t">In short</div><ul><li>Pick a fortune and a tax system (UK, US, France, or an illustrative Australian design) to see what the public would receive.</li><li>Then choose what the revenue could build — schools, hospitals, social housing — using rough cost benchmarks.</li></ul></div>
   <div class="bl-asof">📅 Tax rates and thresholds as at November 2026 · wealth: AFR Rich List {{ site.data.billionaires._meta.edition }}</div>
 
   <!-- Quick billionaire selector (compact, inline) -->
@@ -521,8 +616,19 @@ footer_scripts: assets/js/hero.js
 ══════════════════════════════════════════════════════ -->
 <div class="bl-panel" id="panel-arguments">
 
-  <!-- Wealth vs income -->
-  <div class="bl-sec-title">Why Taxing Wealth Is Very Different From Taxing Income</div>
+  <div class="bl-sec-title">The Debate — the case for and against an estate tax</div>
+  <div class="bl-inshort"><div class="bl-inshort-t">In short</div><ul><li><strong>For:</strong> most of a large estate is growth that has never been taxed; a high threshold would only touch the very largest estates; it could raise billions a year.</li><li><strong>Against:</strong> it can hit family businesses and farms, invites avoidance through trusts and gifts, and where it exists usually raises under 1% of tax revenue.</li><li>Below: each argument, the evidence on both sides, who gives what back, and whether the rich would leave.</li></ul></div>
+  <div class="bl-callout-blue" style="margin-bottom:1.3rem;">
+    <strong>The case against, at its strongest:</strong>
+    (1) Billionaires' companies already pay substantial company tax and mining royalties, so some of the wealth has been taxed on the way up.
+    (2) Estate taxes raise relatively little: in OECD countries that have them, inheritance, estate and gift taxes average only about 0.5% of total tax revenue (<a href="https://www.oecd.org/en/publications/inheritance-taxation-in-oecd-countries_e2879a7d-en.html" target="_blank" rel="noopener">OECD, 2021</a>) — partly because the wealthy plan around them.
+    (3) They can force sales of family firms or farms at a bad time, and evidence from Greece suggests higher succession taxes reduced investment in firms being handed down.
+    (4) Mobile wealth can move. The sections below weigh each point against the evidence.
+  </div>
+
+<p class="bl-expand-hint">Tap a heading to open it. <a href="#" class="bl-open-all" data-panel="panel-arguments">Open all</a></p>
+    <!-- Wealth vs income -->
+  <details class="bl-sect"><summary>Why Taxing Wealth Is Very Different From Taxing Income</summary><div class="bl-sect-body">
   <div class="bl-callout-green">
     <strong>The core problem:</strong> Australia taxes what you <em>earn</em>, not what you <em>own</em>.
     Billionaires accumulate wealth through rising asset values — not wages.
@@ -543,7 +649,8 @@ footer_scripts: assets/js/hero.js
   </div>
 
   <!-- Donation comparison -->
-  <div class="bl-sec-title">What Do They Give Back?</div>
+  </div></details>
+  <details class="bl-sect"><summary>What Do They Give Back?</summary><div class="bl-sect-body">
   <div class="bl-callout">
     <strong>The philanthropy defence:</strong> "They give it away anyway." Unlike political donations, there is no public register of what an individual gives to charity, so only verifiable figures are shown.
     <br><br><strong>🔎 Where to check:</strong>
@@ -581,7 +688,8 @@ footer_scripts: assets/js/hero.js
   </div>
 
   <!-- Political donations -->
-  <div class="bl-sec-title">Political Donations — Why Estate Tax Remains Off the Agenda</div>
+  </div></details>
+  <details class="bl-sect"><summary>Political Donations — Why Estate Tax Remains Off the Agenda</summary><div class="bl-sect-body">
   <div class="bl-asof">📅 AEC annual returns for 2024–25 (released February 2026) · next release: February 2027</div>
   <div class="bl-callout-red">
     <strong>Both major parties oppose an estate tax.</strong> Companies controlled by some of the people whose estates would be taxed are among the largest political donors — to the major parties, minor parties and campaign groups.
@@ -615,11 +723,12 @@ footer_scripts: assets/js/hero.js
   </div>
 
   <!-- Rebuttals to "Against" arguments -->
-  <div class="bl-sec-title" style="margin-top:1.8rem;">Examining the "Against" Arguments</div>
+  </div></details>
+  <details class="bl-sect"><summary>Common objections — and what the evidence says</summary><div class="bl-sect-body">
   <div class="bl-g2" style="gap:.85rem;">
 
     <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
-      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">❌ "Double taxation"</div>
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">Objection: "Double taxation"</div>
       <div style="font-size:.8rem;color:#c49a9a;line-height:1.65;">
         Partly true, mostly overstated. Companies like Hancock Prospecting do pay large amounts of company tax and royalties on their profits.
         But much of a large estate is <strong>growth in the value of assets that has never been taxed</strong> as personal income or capital gain — rising share and company values aren't taxed unless they're sold, and at death they pass on without a sale.
@@ -628,7 +737,7 @@ footer_scripts: assets/js/hero.js
     </div>
 
     <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
-      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">❌ "Small businesses will be destroyed"</div>
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">Objection: "Small businesses will be destroyed"</div>
       <div style="font-size:.8rem;color:#c49a9a;line-height:1.65;">
         <strong>The vast majority of Australian businesses turn over less than $2M a year</strong> (turnover isn't the same as a business's value, but it shows how small most are).
         See the <a href="https://www.abs.gov.au/statistics/economy/business-indicators/counts-australian-businesses-including-entries-and-exits/latest-release" target="_blank" rel="noopener" style="color:#f87171;">ABS Counts of Australian Businesses</a> for the turnover breakdown.
@@ -639,7 +748,7 @@ footer_scripts: assets/js/hero.js
     </div>
 
     <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
-      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">❌ "Valuing illiquid assets is too hard"</div>
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">Objection: "Valuing illiquid assets is too hard"</div>
       <div style="font-size:.8rem;color:#c49a9a;line-height:1.65;">
         Private company and pastoral property valuations happen routinely for other purposes: stamp duty, family law settlements, ASIC reporting, bank lending. The US, UK and France all manage estate tax on unlisted assets.
         Moreover, if an estate is <em>too illiquid</em> to pay a 30% levy, that is itself an argument for allowing payment in instalments (standard in most proposals) — not for exempting it entirely.
@@ -648,7 +757,7 @@ footer_scripts: assets/js/hero.js
     </div>
 
     <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.14);border-radius:12px;padding:1rem 1.1rem;">
-      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">❌ "They'll just use trusts to avoid it"</div>
+      <div style="font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:#fca5a5;font-weight:700;margin-bottom:.5rem;">Objection: "They'll just use trusts to avoid it"</div>
       <div style="font-size:.8rem;color:#c49a9a;line-height:1.65;">
         Tax avoidance is a design problem — not a reason to not have a tax. Australia's CGT regime was introduced in 1985 despite avoidance concerns; ATO data shows it raises substantial revenue.
         Estate taxes can be designed to reach trusts — the UK, for example, charges inheritance tax on trust assets every ten years, so a trust can't hold wealth outside the system forever. No country does this perfectly.
@@ -659,7 +768,8 @@ footer_scripts: assets/js/hero.js
   </div>
 
   <!-- Employment argument — separate section for depth -->
-  <div class="bl-sec-title" style="margin-top:1.8rem;">❌ "But They Create Jobs!" — Is This A Valid Argument?</div>
+  </div></details>
+  <details class="bl-sect"><summary>“But they create jobs” — how strong is this argument?</summary><div class="bl-sect-body">
   <div class="bl-callout-blue">
     <strong>The claim:</strong> Billionaires employ thousands of people and drive economic activity — taxing their estates would destroy jobs and reduce investment.
     This is probably the most emotionally resonant argument and deserves a careful answer.
@@ -697,7 +807,7 @@ footer_scripts: assets/js/hero.js
     </div>
   </div>
   <div class="bl-callout-green">
-    <strong>The verdict:</strong> The job creator argument conflates "this person owns a business that employs people" with "this person's personal wealth is the cause of those jobs."
+    <strong>In short:</strong> The job creator argument conflates "this person owns a business that employs people" with "this person's personal wealth is the cause of those jobs."
     An estate tax is paid by the estate — the business assets, not the workers. The businesses continue.
     And in mining — where Australia's largest fortunes sit — the Productivity Commission (2023) found the gains have flowed mainly to capital rather than wages.
   </div>
@@ -708,7 +818,8 @@ footer_scripts: assets/js/hero.js
   </div></div>
 
   <!-- Estate tax impact data -->
-  <div class="bl-sec-title" style="margin-top:1.8rem;">Who Would A 30% Estate Tax Above $5M Actually Affect?</div>
+  </div></details>
+  <details class="bl-sect"><summary>Who Would A 30% Estate Tax Above $5M Actually Affect?</summary><div class="bl-sect-body">
   <div class="bl-callout-green">
     <strong>A high-threshold estate tax would be one of the most targeted taxes Australia could introduce — affecting only a small minority of deaths.</strong>
   </div>
@@ -737,9 +848,10 @@ footer_scripts: assets/js/hero.js
   </div></div>
 
   <!-- The case FOR - Scandinavian wellbeing -->
-  <div class="bl-sec-title" style="margin-top:1.8rem;">The Affirmative Case: What Could the Revenue Fund?</div>
+  </div></details>
+  <details class="bl-sect"><summary>The Case For: What Could the Revenue Fund?</summary><div class="bl-sect-body">
   <div class="bl-callout-green">
-    <strong>Estate taxes don't just redistribute wealth — they fund the things that make life better for everyone.</strong>
+    <strong>Revenue from an estate tax could help pay for public services.</strong>
     The three happiest countries in the world (Finland, Iceland, Denmark) all tax inheritances and fund strong public services — though their high happiness has many causes, and inheritance tax is only a small part of their tax take.
     A high-threshold estate tax (e.g. 30% above $5M) would affect only the largest estates — those most able to absorb it.
   </div>
@@ -752,7 +864,7 @@ footer_scripts: assets/js/hero.js
     <div class="bl-stat"><div class="bl-kick">Public wealth fund</div><div class="bl-stat-num" style="color:var(--amber);">~4×</div><div class="bl-stat-label">Norway's sovereign wealth fund (oil revenue saved for the public) is worth roughly four times the country's annual GDP. Public wealth building — not billionaire wealth building.</div></div>
   </div>
   <div class="bl-callout-blue">
-    <strong>The beneficiaries of the status quo are vanishingly few.</strong>
+    <strong>Few people would pay it; many would benefit from what it funds.</strong>
     An estate tax above $5M would affect only a small minority of the ~187,000 deaths each year.
     The beneficiaries of its revenues — better hospitals, schools, housing, research — number 27 million Australians.
     This is not a trade-off between rich and poor. It is a question of whether extreme dynastic wealth should pass between generations with no tax at the point it changes hands.
@@ -766,11 +878,12 @@ footer_scripts: assets/js/hero.js
   </div></div>
 
   <!-- Dead vs Alive section -->
-  <div class="bl-sec-title" style="margin-top:2rem;">💀 Dead or Alive? When Is a Billionaire Worth More to the Country?</div>
+  </div></details>
+  <details class="bl-sect"><summary>Taxed While Alive vs at Death — Which Raises More?</summary><div class="bl-sect-body">
   <div class="bl-callout">
     Estate tax is a one-off payment at death. But billionaires also pay tax while alive — company tax on profits, some CGT on realised gains, income tax on salaries.
     The question is: at what point does the cumulative alive-tax exceed what a single estate tax payment would yield?
-    And could they simply <em>donate the equivalent</em> now instead — making death unnecessary?
+    And how would giving the equivalent away during their lifetime compare?
   </div>
 
   <!-- Billionaire selector for this section -->
@@ -793,13 +906,65 @@ footer_scripts: assets/js/hero.js
     Simultaneous forced sale of all Australian billionaire wealth (~$172B) would be disruptive — but the realistic scenario under any estate tax is court-supervised, staged liquidation over years, not a single-day auction.
   </div>
 
-</div>
+
+  <!-- Capital flight (was its own tab) -->
+  </div></details>
+  <details class="bl-sect"><summary>Capital Flight — Does The "I'll Just Leave" Threat Actually Work?</summary><div class="bl-sect-body">
+  <div class="bl-callout">
+    <strong>The standard counter-argument:</strong> "Tax billionaires too heavily and they'll emigrate."
+    The evidence is real but context-dependent — it mostly applies to <em>annual</em> wealth taxes in small open economies.
+    An estate tax is a structurally different mechanism.
+  </div>
+  <div class="bl-g2" style="margin-bottom:1.2rem;">
+    <div class="bl-cf-card" style="border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.03);">
+      <div class="bl-cf-flag">🇫🇷</div>
+      <div class="bl-cf-title">France's ISF Annual Wealth Tax (1989–2017)</div>
+      <div class="bl-cf-body">Raised around €4–5B a year at its peak. Estimates of departures vary widely — France's official evaluation committee (France Stratégie) counted about 1,020 ISF payers leaving in 2016 against 470 returning, falling to about 220 departures in 2020 after the ISF was replaced, though it cautions the numbers are small (<a href="https://www.mysweetimmo.com/2022/10/20/immobilier-les-riches-sexpatrient-moins-depuis-la-suppression-de-lisf/" target="_blank" rel="noopener">AFP report, Oct 2022</a>); critics' estimates for 2000–2017 run to tens of thousands of people (<a href="https://fortune.com/2026/01/27/california-france-wealth-tax-inequality/" target="_blank" rel="noopener">Fortune</a>). Gérard Depardieu famously moved just over the Belgian border. Replaced in 2018 by a property-only wealth tax. This was an <em>annual</em> tax on living wealth.</div>
+      <div class="bl-cf-verdict verdict-bad">⚠ Real, documented flight — for an annual tax on existing wealth</div>
+    </div>
+    <div class="bl-cf-card" style="border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.03);">
+      <div class="bl-cf-flag">🇳🇴</div>
+      <div class="bl-cf-title">Norway's 2022 Annual Wealth Tax Hike</div>
+      <div class="bl-cf-body">Raised the top wealth-tax rate from 0.85% to 1.1%. Dozens of very wealthy Norwegians then <a href="https://imglobalwealth.com/articles/norways-tax-experiment-a-costly-exodus/" target="_blank" rel="noopener">moved to Switzerland</a>; critics claim the lost revenue exceeded the expected gain, though the Norwegian government disputes these estimates. A small, open economy next to a tax haven. Cautionary tale for annual taxes.</div>
+      <div class="bl-cf-verdict verdict-bad">⚠ Real emigration — in a small open economy with a low-tax neighbour</div>
+    </div>
+    <div class="bl-cf-card" style="border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.03);">
+      <div class="bl-cf-flag">🏛️</div>
+      <div class="bl-cf-title">Estate taxes are structurally different — and much harder to escape</div>
+      <div class="bl-cf-body">An estate tax is paid <em>once, at death</em>. To avoid it: you'd need to fully renounce Australian residency, transfer all assets abroad, and do it <em>decades</em> before death — all to avoid a one-time payment. The US has had an estate tax for over a century (top rate now 40%) without a billionaire exodus — though that's partly because the US taxes its citizens wherever they live and charges an exit tax on those who renounce. An Australian estate tax would need its own anti-avoidance rules, and Australian-based assets like these could be taxed wherever the owner lives. Gina's Pilbara iron ore cannot be moved to Switzerland. Triguboff's Meriton apartments are in Sydney.</div>
+      <div class="bl-cf-verdict verdict-good">✓ Estate tax flight risk is largely theoretical for fixed-asset billionaires</div>
+    </div>
+    <div class="bl-cf-card" style="border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.03);">
+      <div class="bl-cf-flag">🗣️</div>
+      <div class="bl-cf-title">The rhetoric vs. follow-through gap</div>
+      <div class="bl-cf-body">Every Australian resources tax proposal triggers capital flight threats. The <a href="https://michaelwest.com.au/ranking-australias-billionaires-as-taxpayers/" target="_blank" rel="noopener">mines and billionaires stay</a> (Michael West Media, 2020). Overstated as a universal lever.</div>
+      <div class="bl-cf-verdict verdict-mixed">⚡ Some mobility — heavily overstated for estate taxes specifically</div>
+    </div>
+  </div>
+  <div class="bl-callout-blue">
+    <strong>Annual wealth tax ≠ estate tax.</strong>
+    Capital flight evidence applies to taxes on living, moveable wealth — paid year after year.
+    An estate tax is a one-time event on death. The blanket claim that "all wealth taxes cause capital flight" conflates two entirely different mechanisms.
+    There are exceptions: after the UK extended inheritance tax to the worldwide assets of long-term residents in April 2025, some very wealthy, internationally mobile residents — such as steel magnate Lakshmi Mittal — reportedly left.
+    Those were people with most of their assets overseas; Australia's largest fortunes are mostly in Australian mines, property and companies, which can't move with their owners.
+  </div>
+  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
+    <a href="https://fortune.com/2026/01/27/california-france-wealth-tax-inequality/" target="_blank" rel="noopener" class="bl-sl">↗ Fortune — France ISF</a>
+    <a href="https://imglobalwealth.com/articles/norways-tax-experiment-a-costly-exodus/" target="_blank" rel="noopener" class="bl-sl">↗ Norway 2022 exodus</a>
+    <a href="https://gulfnews.com/business/arcelormittal-billionaire-lakshmi-mittal-leaves-uk-for-dubai-amid-tax-reforms-1.500357605" target="_blank" rel="noopener" class="bl-sl">↗ Gulf News — Mittal leaves UK</a>
+    <a href="https://michaelwest.com.au/ranking-australias-billionaires-as-taxpayers/" target="_blank" rel="noopener" class="bl-sl">↗ Michael West — AU billionaires</a>
+  </div></div>
+</div></details>
+  </div>
 
 <!-- ══════════════════════════════════════════════════════
-     TAB 5: HOUSING
+     TAB 6: HOUSING & PUBLIC MONEY
 ══════════════════════════════════════════════════════ -->
-<div class="bl-panel" id="panel-housing">
-  <div class="bl-sec-title">The Housing Crisis Connection</div>
+<div class="bl-panel" id="panel-context">
+  <div class="bl-sec-title">Housing &amp; Public Money — the wider context</div>
+  <div class="bl-inshort"><div class="bl-inshort-t">In short</div><ul><li>How estate-tax revenue compares with the housing shortage, public research budgets and government support for fossil fuels.</li><li>Also: what happens when governments bail out big companies — and whether taxpayers get anything back.</li></ul></div>
+  <p class="bl-expand-hint">Tap a heading to open it. <a href="#" class="bl-open-all" data-panel="panel-context">Open all</a></p>
+  <details class="bl-sect"><summary>The Housing Crisis Connection</summary><div class="bl-sect-body">
   <div class="bl-asof">📅 Median value: Cotality, September 2026 · waiting lists: AIHW (June 2025) · Housing Accord target: from July 2024</div>
   <div class="bl-callout">
     Australia has a serious housing shortage — building is running well behind the National Housing Accord target. Billionaire wealth intersects in two distinct ways: as a <strong>revenue source</strong> for housing investment, and as a <strong>market distortion</strong> through concentrated ownership of rental stock and land banking.
@@ -846,7 +1011,8 @@ footer_scripts: assets/js/hero.js
     For evidence on social housing investment, see AHURI's <a href="https://www.ahuri.edu.au/sites/default/files/migration/documents/AHURI-Final-Report-306-Social-housing-as-infrastructure-an-investment-pathway.pdf" target="_blank" rel="noopener">Social housing as infrastructure: an investment pathway</a> report (2018).
   </div>
 
-  <div class="bl-sec-title">How Does Land Tax Work?</div>
+  </div></details>
+  <details class="bl-sect"><summary>How Does Land Tax Work?</summary><div class="bl-sect-body">
   <div class="bl-callout">
     <strong>Land tax is a state tax</strong> (the NT doesn't have one), charged each year on the <em>unimproved value of the land</em> you own — not the house on it — above a tax-free threshold.
     <strong>Your own home is exempt</strong> in every state: land tax falls on investment properties, holiday homes and commercial land. Land values are reassessed regularly (usually every year), so when land values rise, investors' land tax bills rise too.
@@ -858,25 +1024,7 @@ footer_scripts: assets/js/hero.js
     Land tax is the main tax that claws back some of that gain from investors each year — though holdings spread across several states pay less, because each state applies its own threshold.
   </div>
 
-  <div class="bl-sec-title">What About Inherited Investment Properties? (ATO Clarified)</div>
-  <div class="bl-callout-green">
-    <strong>Short answer:</strong> For property the deceased bought after 20 September 1985, lifetime gains are <strong>not wiped</strong>, but they are <strong>deferred</strong>. Heirs inherit the deceased's original cost base. No CGT is paid at the time of death, but the tax liability is passed to the heirs.
-    The partial CGT exemption formula ensures that the portion of the total gain relating to the rental periods is eventually taxed when the heir sells.
-    <br><br>
-    <strong>The ATO's Vicki/Lesley example:</strong>
-    Vicki bought a rental in 1997, died 2000. Lesley inherited it, used it as her main residence, and sold it in 2024.
-    Because the property was a rental for Vicki, Lesley inherits Vicki's 1997 cost base. The total gain of $400k is calculated from 1997 to 2024.
-    Lesley pays CGT on $400k × (1,375 rental days ÷ 10,152 total days) = <strong>$54,176</strong>.
-    This $54,176 represents the exact portion of the total capital gain allocated to Vicki's rental period (1997–2000). The rest is exempt because Lesley lived in it.
-    Vicki's gains were <strong>not wiped</strong>; they were rolled over and eventually taxed when Lesley sold the property.
-    <br><br>
-    <strong>For billionaire-scale property (e.g. Meriton apartments):</strong>
-    Triguboff's portfolio of apartment buildings — bought over decades — passes to heirs at his original cost base.
-    No tax is triggered <em>at the moment of death</em>, allowing the portfolio to pass intact without liquidation.
-    If the heirs sell the properties, they must pay CGT on the appreciation since the properties were first purchased — except for anything bought before 20 September 1985, which heirs receive at market value, so that growth is never taxed.
-    However, because these portfolios are held in company and trust structures rather than personal names, the death of an individual does not require the transfer of the property itself, meaning CGT is deferred indefinitely.
-    <a href="https://www.ato.gov.au/individuals-and-families/investments-and-assets/capital-gains-tax/inherited-assets-and-capital-gains-tax/calculating-a-partial-exemption-for-inherited-property" target="_blank" rel="noopener">ATO formula ↗</a>
-  </div>
+  <div class="bl-callout-blue">How inherited property is taxed (cost bases, the 1985 cut-off and trusts) is explained on <em>The Law</em> tab.</div>
 
   <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
     <a href="https://nhsac.gov.au/reports-and-submissions/state-housing-system-2026" target="_blank" rel="noopener" class="bl-sl">↗ National Housing Supply &amp; Affordability Council — State of the Housing System 2026</a>
@@ -884,13 +1032,10 @@ footer_scripts: assets/js/hero.js
     <a href="https://www.cotality.com/au/insights/articles/australian-housing-values-down-for-sixth-straight-month-in-september" target="_blank" rel="noopener" class="bl-sl">↗ Cotality Home Value Index — September 2026</a>
     <a href="https://www.ato.gov.au/individuals-and-families/investments-and-assets/capital-gains-tax/inherited-assets-and-capital-gains-tax/calculating-a-partial-exemption-for-inherited-property" target="_blank" rel="noopener" class="bl-sl">↗ ATO — partial CGT exemption formula</a>
   </div></div>
-</div>
 
-<!-- ══════════════════════════════════════════════════════
-     TAB 6: RESEARCH & SUBSIDIES
-══════════════════════════════════════════════════════ -->
-<div class="bl-panel" id="panel-research">
-  <div class="bl-sec-title">Research Funding vs Fossil Fuel Subsidies vs Billionaire Wealth</div>
+  <!-- Research & subsidies (was its own tab) -->
+  </div></details>
+  <details class="bl-sect"><summary>Research Funding vs Fossil Fuel Subsidies vs Billionaire Wealth</summary><div class="bl-sect-body">
   <div class="bl-asof">📅 Research budgets: 2026–27 Budget (May 2026) · fossil fuel subsidies: 2025–26 (Australia Institute, March 2026) · fuel tax credits by industry: ATO 2023–24</div>
   <div class="bl-callout">
     Australia spends about <strong>1.7% of GDP on research and development</strong> (1.69% in 2023–24, business and government combined), well below the OECD average of about 2.7% (<a href="https://science.org.au/news-events/news-views/national-productivity-wont-be-boosted-flatlining-business-investment-rd" target="_blank" rel="noopener">Australian Academy of Science</a>).
@@ -913,7 +1058,8 @@ footer_scripts: assets/js/hero.js
   <div id="bl-research-bars" style="margin-bottom:1.3rem;"></div>
 
   <!-- Subsidies section -->
-  <div class="bl-sec-title">Government Support for Fossil Fuels</div>
+  </div></details>
+  <details class="bl-sect"><summary>Government Support for Fossil Fuels</summary><div class="bl-sect-body">
   <div class="bl-callout-red">
     <strong>Government support for fossil fuel production and use runs to billions a year.</strong>
     The largest single item is the Fuel Tax Credits Scheme, which refunds fuel excise to miners (of any mineral), farmers, transport and heavy industry for fuel used off public roads.
@@ -931,7 +1077,8 @@ footer_scripts: assets/js/hero.js
   <div id="bl-subsidy-bars" style="margin-bottom:1.3rem;"></div>
 
   <!-- Connection to billionaires -->
-  <div class="bl-sec-title">Who Benefits?</div>
+  </div></details>
+  <details class="bl-sect"><summary>Who Benefits?</summary><div class="bl-sect-body">
   <div class="bl-callout">
     The Fuel Tax Credits Scheme is the largest single fossil fuel subsidy: <strong>$10.8B in 2025–26</strong> (<a href="https://australiainstitute.org.au/report/fossil-fuel-subsidies-in-australia-2026/" target="_blank" rel="noopener">Australia Institute, March 2026</a>).
     Mining is by far its biggest claimant — about <strong>$4.6B, or roughly 47%</strong>, of credits in 2023–24, the latest ATO breakdown by industry (<a href="https://thepoint.com.au/off-the-charts/260623-mining-lobbys-campaign-against-fuel-tax-credit-reform-leaves-out-that-it-is-the-schemes-biggest-beneficiary" target="_blank" rel="noopener">reported June 2026</a>).
@@ -948,7 +1095,8 @@ footer_scripts: assets/js/hero.js
     <a href="https://australiainstitute.org.au/report/australias-fuel-tax-credits-and-the-debate-over-fossil-fuel-subsidies/" target="_blank" rel="noopener">The debate, explained (Australia Institute)</a>
   </div>
 
-  <div class="bl-sec-title" style="margin-top:1.5rem;">Bailouts: Handouts or Ownership Stakes?</div>
+  </div></details>
+  <details class="bl-sect"><summary>Bailouts: Handouts or Ownership Stakes?</summary><div class="bl-sect-body">
   <div class="bl-asof">📅 Events from 2008–2022; figures as reported by the sources linked</div>
   <div class="bl-callout">
     When large companies get into trouble, governments often step in. The question is whether taxpayers get something back — a fee, a loan repaid, or a share of the company — or simply hand over money.
@@ -973,58 +1121,8 @@ footer_scripts: assets/js/hero.js
     <a href="https://aamri.org.au/resources/federal-budgets/2025-26-federal-budget-recap/" target="_blank" rel="noopener" class="bl-sl">↗ AAMRI — Budget 2025–26 recap</a>
     <a href="https://australiainstitute.org.au/wp-content/uploads/2026/03/P1916-Fossil-Fuel-Subsidies-2026-Web.pdf" target="_blank" rel="noopener" class="bl-sl">↗ Australia Institute — Fossil fuel subsidies 2026</a>
   </div></div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════
-     TAB 7: CAPITAL FLIGHT
-══════════════════════════════════════════════════════ -->
-<div class="bl-panel" id="panel-flight">
-  <div class="bl-sec-title">Capital Flight — Does The "I'll Just Leave" Threat Actually Work?</div>
-  <div class="bl-callout">
-    <strong>The standard counter-argument:</strong> "Tax billionaires too heavily and they'll emigrate."
-    The evidence is real but context-dependent — it mostly applies to <em>annual</em> wealth taxes in small open economies.
-    An estate tax is a structurally different mechanism.
+</div></details>
   </div>
-  <div class="bl-g2" style="margin-bottom:1.2rem;">
-    <div class="bl-cf-card" style="border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.03);">
-      <div class="bl-cf-flag">🇫🇷</div>
-      <div class="bl-cf-title">France's ISF Annual Wealth Tax (1989–2017)</div>
-      <div class="bl-cf-body">Raised around €4–5B a year at its peak. Estimates of departures vary widely — France's official evaluation committee (France Stratégie) counted about 1,020 ISF payers leaving in 2016 against 470 returning, falling to about 220 departures in 2020 after the ISF was replaced, though it cautions the numbers are small (<a href="https://www.mysweetimmo.com/2022/10/20/immobilier-les-riches-sexpatrient-moins-depuis-la-suppression-de-lisf/" target="_blank" rel="noopener">AFP report, Oct 2022</a>); critics' estimates for 2000–2017 run to tens of thousands of people (<a href="https://fortune.com/2026/01/27/california-france-wealth-tax-inequality/" target="_blank" rel="noopener">Fortune</a>). Gérard Depardieu famously moved just over the Belgian border. Replaced in 2018 by a property-only wealth tax. This was an <em>annual</em> tax on living wealth.</div>
-      <div class="bl-cf-verdict verdict-bad">⚠ Real, documented flight — for an annual tax on existing wealth</div>
-    </div>
-    <div class="bl-cf-card" style="border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.03);">
-      <div class="bl-cf-flag">🇳🇴</div>
-      <div class="bl-cf-title">Norway's 2022 Annual Wealth Tax Hike</div>
-      <div class="bl-cf-body">Raised the top wealth-tax rate from 0.85% to 1.1%. Dozens of very wealthy Norwegians then <a href="https://imglobalwealth.com/articles/norways-tax-experiment-a-costly-exodus/" target="_blank" rel="noopener">moved to Switzerland</a>; critics claim the lost revenue exceeded the expected gain, though the Norwegian government disputes these estimates. A small, open economy next to a tax haven. Cautionary tale for annual taxes.</div>
-      <div class="bl-cf-verdict verdict-bad">⚠ Real emigration — in a small open economy with a low-tax neighbour</div>
-    </div>
-    <div class="bl-cf-card" style="border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.03);">
-      <div class="bl-cf-flag">🏛️</div>
-      <div class="bl-cf-title">Estate taxes are structurally different — and much harder to escape</div>
-      <div class="bl-cf-body">An estate tax is paid <em>once, at death</em>. To avoid it: you'd need to fully renounce Australian residency, transfer all assets abroad, and do it <em>decades</em> before death — all to avoid a one-time payment. The US has had an estate tax for over a century (top rate now 40%) without a billionaire exodus — though that's partly because the US taxes its citizens wherever they live and charges an exit tax on those who renounce. An Australian estate tax would need its own anti-avoidance rules, and Australian-based assets like these could be taxed wherever the owner lives. Gina's Pilbara iron ore cannot be moved to Switzerland. Triguboff's Meriton apartments are in Sydney.</div>
-      <div class="bl-cf-verdict verdict-good">✓ Estate tax flight risk is largely theoretical for fixed-asset billionaires</div>
-    </div>
-    <div class="bl-cf-card" style="border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.03);">
-      <div class="bl-cf-flag">🗣️</div>
-      <div class="bl-cf-title">The rhetoric vs. follow-through gap</div>
-      <div class="bl-cf-body">Every Australian resources tax proposal triggers capital flight threats. The <a href="https://michaelwest.com.au/ranking-australias-billionaires-as-taxpayers/" target="_blank" rel="noopener">mines and billionaires stay</a> (Michael West Media, 2020). Overstated as a universal lever.</div>
-      <div class="bl-cf-verdict verdict-mixed">⚡ Some mobility — heavily overstated for estate taxes specifically</div>
-    </div>
-  </div>
-  <div class="bl-callout-blue">
-    <strong>Annual wealth tax ≠ estate tax.</strong>
-    Capital flight evidence applies to taxes on living, moveable wealth — paid year after year.
-    An estate tax is a one-time event on death. The blanket claim that "all wealth taxes cause capital flight" conflates two entirely different mechanisms.
-    There are exceptions: after the UK extended inheritance tax to the worldwide assets of long-term residents in April 2025, some very wealthy, internationally mobile residents — such as steel magnate Lakshmi Mittal — reportedly left.
-    Those were people with most of their assets overseas; Australia's largest fortunes are mostly in Australian mines, property and companies, which can't move with their owners.
-  </div>
-  <div class="bl-sources"><div class="bl-stitle">Sources</div><div class="bl-slinks">
-    <a href="https://fortune.com/2026/01/27/california-france-wealth-tax-inequality/" target="_blank" rel="noopener" class="bl-sl">↗ Fortune — France ISF</a>
-    <a href="https://imglobalwealth.com/articles/norways-tax-experiment-a-costly-exodus/" target="_blank" rel="noopener" class="bl-sl">↗ Norway 2022 exodus</a>
-    <a href="https://gulfnews.com/business/arcelormittal-billionaire-lakshmi-mittal-leaves-uk-for-dubai-amid-tax-reforms-1.500357605" target="_blank" rel="noopener" class="bl-sl">↗ Gulf News — Mittal leaves UK</a>
-    <a href="https://michaelwest.com.au/ranking-australias-billionaires-as-taxpayers/" target="_blank" rel="noopener" class="bl-sl">↗ Michael West — AU billionaires</a>
-  </div></div>
-</div>
 
 <!-- ─── Disclaimer ──────────────────────────────────────── -->
 <div class="bl-disclaimer">
@@ -1239,11 +1337,54 @@ document.querySelectorAll('.bl-tab').forEach(btn=>{
     btn.classList.add('active');
     document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
     if(btn.dataset.panel==='calc'&&!document.getElementById('bl-intl-bars').children.length) renderIntlBars();
-    if(btn.dataset.panel==='research'&&!document.getElementById('bl-research-bars').children.length) renderResearchBars();
-    if(btn.dataset.panel==='scale') renderScaleViz();
-    if(btn.dataset.panel==='billion') initBillionViz();
+    if(btn.dataset.panel==='context'&&!document.getElementById('bl-research-bars').children.length) renderResearchBars();
+    if(btn.dataset.panel==='scale'){ renderScaleViz(); initBillionViz(); }
+    if(btn.dataset.panel==='made') renderMade();
   });
 });
+
+// "Open all" links toggle every collapsible section in their tab
+document.querySelectorAll('.bl-open-all').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();
+  const all=[...document.querySelectorAll('#'+a.dataset.panel+' .bl-sect')]; const open=!all.every(d=>d.open);
+  all.forEach(d=>d.open=open); a.textContent=open?'Close all':'Open all';}));
+
+// ── How It's Made: inherited vs built, and fortunes in working lives ──
+function renderMade(){
+  const grid=document.getElementById('bl-made-grid'); if(!grid||grid.children.length) return;
+  const CAREER=MEDIAN_SALARY*45;
+  const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  grid.innerHTML=BILLIONAIRES.map(b=>`<div class="bl-stat" style="text-align:left;">
+    <div class="bl-kick" style="color:${b.inherited_flag?'#fbbf24':'#86efac'};">${b.inherited_flag?'Inherited':'Founded / built'}</div>
+    <div style="font-weight:700;color:#e2e8f0;">${esc(b.name)} <span style="color:var(--gold-lt);font-weight:600;">$${b.wealth.toFixed(1)}B</span></div>
+    <div class="bl-stat-label" style="margin-top:.3rem;">${esc(b.inherited)}</div></div>`).join('');
+  const inh=BILLIONAIRES.filter(b=>b.inherited_flag), tot=BILLIONAIRES.reduce((a,b)=>a+b.wealth,0), inhW=inh.reduce((a,b)=>a+b.wealth,0);
+  grid.insertAdjacentHTML('afterend',`<div style="font-size:.75rem;color:var(--text-secondary);margin:-.4rem 0 1rem;">${inh.length} of ${BILLIONAIRES.length} inherited — together $${inhW.toFixed(0)}B, or ${Math.round(inhW/tot*100)}% of the $${tot.toFixed(0)}B profiled here.</div>`);
+  const fmt=n=>Math.round(n).toLocaleString('en-AU');
+  document.getElementById('bl-career-wage').textContent='$'+fmt(MEDIAN_SALARY);
+  document.getElementById('bl-career-total').textContent='$'+(CAREER/1e6).toFixed(1)+'M';
+  document.getElementById('bl-careers-1b').textContent=fmt(1e9/CAREER);
+  const max=Math.max(...BILLIONAIRES.map(b=>b.wealth));
+  document.getElementById('bl-careers').innerHTML=BILLIONAIRES.map(b=>{const n=b.wealth*1e9/CAREER;
+    return `<div style="display:grid;grid-template-columns:minmax(7rem,12rem) 1fr auto;gap:.6rem;align-items:center;margin:.3rem 0;font-size:.78rem;">
+      <span style="color:#e2e8f0;">${esc(b.name)}</span><div style="background:rgba(255,255,255,.05);border-radius:4px;height:.7rem;"><div style="width:${(b.wealth/max*100).toFixed(1)}%;height:100%;border-radius:4px;background:${b.inherited_flag?'#fbbf24':'#4ade80'};"></div></div>
+      <b style="color:var(--gold-lt);white-space:nowrap;">${fmt(n)} careers</b></div>`;}).join('');
+}
+document.getElementById('bl-careers-1b').textContent=Math.round(1e9/(MEDIAN_SALARY*45)).toLocaleString('en-AU');
+// Same return, different starting point (inheritance compounding)
+(function(){
+  const ids=['bl-inh-amt','bl-inh-rate','bl-inh-yrs'], out=document.getElementById('bl-inh-out'); if(!out) return;
+  const big=BILLIONAIRES[0];
+  const $m=v=>v>=1e9?'$'+(v/1e9).toFixed(v>=1e11?0:1)+'B':v>=1e6?'$'+(v/1e6).toFixed(1)+'M':'$'+Math.round(v).toLocaleString('en-AU');
+  function upd(){
+    const a=Math.max(0,+document.getElementById('bl-inh-amt').value||0), r=Math.max(0,+document.getElementById('bl-inh-rate').value||0)/100, n=Math.max(1,+document.getElementById('bl-inh-yrs').value||1);
+    const f=Math.pow(1+r,n), you=a*f, them=big.wealth*1e9*f;
+    out.innerHTML=`At ${(r*100).toFixed(1)}% a year for ${n} years, both grow <strong>${f.toFixed(1)}×</strong> — the same rate of return.<br>`+
+      `Your ${$m(a)} becomes <strong style="color:#86efac;">${$m(you)}</strong> (a first-year gain of ${$m(a*r)}).<br>`+
+      `${big.name}'s ${$m(big.wealth*1e9)} would become <strong style="color:var(--gold-lt);">${$m(them)}</strong> — its first-year gain alone (${$m(big.wealth*1e9*r)}) is ${Math.round(big.wealth*1e9*r/Math.max(a,1)).toLocaleString('en-AU')}× your whole inheritance.`+
+      `<div style="font-size:.7rem;color:#64748b;margin-top:.3rem;">Illustration only: before tax and spending; real returns vary year to year.</div>`;
+  }
+  ids.forEach(i=>document.getElementById(i).addEventListener('input',upd)); upd();
+})();
 
 // ── Interactive billion zoom ──────────────────────────────
 // Slider: 0 = zoomed IN ($1 per dot), 100 = zoomed OUT (billions per dot)
@@ -1486,7 +1627,7 @@ function updateAll(){
   updateHousing();
   // Update selected name in calc tab
   const b=selB!==null?BILLIONAIRES[selB]:null;
-  document.getElementById('bl-sel-name').textContent=b?b.name:'← Select in Scale tab';
+  document.getElementById('bl-sel-name').textContent=b?b.name:'← Select above';
   document.getElementById('bl-sel-wealth').textContent=b?`Estimated estate: $${b.wealth.toFixed(2)}B  (${b.source})`:'';
 }
 
