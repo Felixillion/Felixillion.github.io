@@ -7,7 +7,7 @@ on:
   # deliberately does NOT fire `push` workflows for those. Without this trigger
   # the live site never picks up the daily data (it was frozen at 22 Sep 2026).
   workflow_run:
-    workflows: ["Daily Data Update", "Live Fare Snapshot"]
+    workflows: ["Daily Data Update", "Live Fare Snapshot", "Weekly Price Update", "Ticker Request"]
     types: [completed]
   workflow_dispatch:
 

@@ -2,62 +2,37 @@
 layout: default
 title: AU ETF Tools | Felixillion
 permalink: /etf-tools.html
-description: "Australian ETF compounding calculator, portfolio analyser, sector overlap checker and retirement simulator. Compare active vs passive funds, model franking credits and inflation-adjusted returns."
+description: "Compare any ASX ETF, LIC or ASX 200 share with lump sums and regular contributions, backtest a portfolio with rebalancing, and track your own holdings — free, using weekly prices since each fund listed."
 footer_scripts: assets/js/etf_tools.js
 ---
 
 <div class="container" style="padding-top:8rem;padding-bottom:4rem;">
 
-  <!-- Page header -->
-  <div class="fade-in" style="margin-bottom:3rem;">
+  <div class="fade-in" style="margin-bottom:2rem;">
     <h2 style="margin-bottom:.5rem;">AU ETF Tools</h2>
     <p style="color:var(--text-secondary);font-size:.95rem;">
-      Compound, compare, overlap-check and model retirement — using real historical returns from Australian funds.
+      Compare funds, backtest a portfolio and track your own holdings — using weekly prices and distributions for every ASX ETF, the major LICs and the ASX 200.
     </p>
   </div>
 
-  <!-- Tab navigation -->
-  <div class="fade-in" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;
-    border-bottom:1px solid var(--glass-border);padding-bottom:.75rem;">
-    <button id="tab-compound"  class="etf-tab-btn" style="padding:.5rem 1.1rem;border-radius:8px;
-      border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);
-      cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s;">
-      📈 Compounding
-    </button>
-    <button id="tab-portfolio" class="etf-tab-btn" style="padding:.5rem 1.1rem;border-radius:8px;
-      border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);
-      cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s;">
-      🥧 Portfolio
-    </button>
-    <button id="tab-overlap"   class="etf-tab-btn" style="padding:.5rem 1.1rem;border-radius:8px;
-      border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);
-      cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s;">
-      🔬 Overlap
-    </button>
-    <button id="tab-retirement" class="etf-tab-btn" style="padding:.5rem 1.1rem;border-radius:8px;
-      border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);
-      cursor:pointer;font-size:.88rem;font-weight:500;transition:all .2s;">
-      🏖 Retirement
-    </button>
+  <div class="fade-in etf-tabs" role="tablist">
+    <button type="button" class="etf-tab-btn" data-tab="compare">📈 Compare</button>
+    <button type="button" class="etf-tab-btn" data-tab="backtest">📐 Backtest a portfolio</button>
+    <button type="button" class="etf-tab-btn" data-tab="portfolio">💼 My portfolio</button>
   </div>
 
-  <!-- Tool container — populated by etf_tools.js -->
   <div id="etf-tool-container" class="glass-card fade-in">
-    <div style="text-align:center;padding:4rem;color:var(--text-secondary);">
-      Loading ETF tools…
-    </div>
+    <div style="text-align:center;padding:4rem;color:var(--text-secondary);">Loading ETF tools…</div>
   </div>
 
-  <!-- Tab active style injected by etf_tools.js; mirror it here for initial paint -->
-  <style>
-    .etf-tab-active {
-      border-color: var(--dapi-blue) !important;
-      background: rgba(56,189,248,.08) !important;
-      color: var(--dapi-blue) !important;
-    }
-    @media (max-width: 480px) {
-      .etf-tab-btn { font-size: .78rem !important; padding: .4rem .7rem !important; }
-    }
-  </style>
+  <p class="etf-retire">Planning retirement withdrawals? See the
+    <a href="{{ '/au-investing.html' | relative_url }}">safe withdrawal rate tool</a> on AU Investing — it tests portfolios against every Australian market period since 1970.</p>
 
+  <style>
+    .etf-tabs { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.25rem; border-bottom:1px solid var(--glass-border); padding-bottom:.75rem; }
+    .etf-tab-btn { padding:.5rem 1.1rem; border-radius:8px; border:1px solid var(--glass-border); background:transparent; color:var(--text-secondary);
+      cursor:pointer; font-size:.88rem; font-weight:500; transition:all .2s; font-family:inherit; }
+    .etf-tab-active { border-color:#38bdf8 !important; background:rgba(56,189,248,.08) !important; color:#38bdf8 !important; }
+    @media (max-width: 480px) { .etf-tab-btn { font-size:.78rem; padding:.4rem .7rem; } #etf-tool-container { padding:1rem !important; } }
+  </style>
 </div>

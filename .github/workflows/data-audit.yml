@@ -5,11 +5,11 @@ name: Data Audit
 # and checks every auto-updating dataset is fresh. Free: runs on GitHub Actions.
 on:
   workflow_run:
-    workflows: ["Daily Data Update"]
+    workflows: ["Daily Data Update", "Weekly Price Update"]
     types: [completed]
   push:
     branches: ["main"]
-    paths-ignore: ["data/stocks/**"]
+    paths-ignore: ["data/prices/**"]
   workflow_dispatch:
 
 permissions:

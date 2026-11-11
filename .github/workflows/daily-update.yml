@@ -2,7 +2,7 @@ name: Daily Data Update
 
 on:
   schedule:
-    # ── ETF + astrology: run daily ────────────────────────────────
+    # ── Astrology, billionaires, promos: run daily ────────────────────────────────
     # 7am AEST  (UTC+10) = 9pm UTC previous day
     - cron: '0 21 * * *'
     # 7am AEDT  (UTC+11, daylight saving Oct–Apr) = 8pm UTC previous day
@@ -23,56 +23,12 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  # ── Job 1: ETF / stock data (Python + yfinance) ─────────────────────────
-  update-etf-data:
-    name: Update ETF & Stock Data
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: pip
-          # pip cache requires a requirements.txt (or pyproject.toml) in the repo root.
-          # Without this file, setup-python throws "No file matched" and the step fails.
-          # A requirements.txt containing just "yfinance>=0.2.54" is sufficient.
-          cache-dependency-path: requirements.txt
-
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run ETF data updater
-        run: python .github/workflows/scripts/update_etf_data.py
-        continue-on-error: true   # don't fail the whole workflow if Yahoo is down
-
-      - name: Commit and push
-        run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name  "github-actions[bot]"
-          git add data/
-          if ! git diff --staged --quiet; then
-            git commit -m "chore: update ETF/stock data $(date -u +%Y-%m-%d)"
-            git push
-          else
-            echo "No changes to commit"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # (ETF prices moved to weekly-prices.yml — weekly, for ~670 tickers)
 
   # ── Job 2: Astrology data (Node.js) ─────────────────────────────────────
   update-astrology:
     name: Generate Astrology Data
     runs-on: ubuntu-latest
-    # Run AFTER Job 1 so their git pushes don't race each other
-    needs: update-etf-data
-    # Continue even if Job 1 failed (e.g. Yahoo Finance was temporarily down)
-    if: always()
     permissions:
       contents: write
 

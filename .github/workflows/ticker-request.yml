@@ -1,0 +1,75 @@
+name: Ticker Request
+
+# Visitors can ask for an ASX code that isn't on the ETF Tools list by opening an issue titled
+# "Add ticker: ABC" (the page has a button that pre-fills this). This checks the code on Yahoo
+# Finance, adds it to data/universe.json, downloads its prices and replies on the issue.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: weekly-prices      # never runs at the same time as the weekly update
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  add:
+    if: startsWith(github.event.issue.title, 'Add ticker')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Read the requested codes
+        id: codes
+        env:
+          TITLE: ${{ github.event.issue.title }}
+        run: |
+          # up to 5 codes, letters/digits only, 3–6 characters (e.g. "Add ticker: VAS, ndq")
+          CODES=$(echo "$TITLE" | sed 's/^Add ticker[s]*:*//I' | tr 'a-z' 'A-Z' | grep -oE '\b[A-Z0-9]{3,6}\b' | head -5 | tr '\n' ' ')
+          echo "codes=$CODES" >> "$GITHUB_OUTPUT"
+      - name: Fetch them
+        if: steps.codes.outputs.codes != ''
+        run: python .github/workflows/scripts/fetch_prices.py --only ${{ steps.codes.outputs.codes }}
+      - name: Add the ones that worked to the list, commit, reply
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODES: ${{ steps.codes.outputs.codes }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json, os
+          codes = os.environ['CODES'].split()
+          u = json.load(open('data/universe.json'))
+          ok = [c for c in codes if os.path.exists(f'data/prices/{c}.json')]
+          for c in ok:
+              if c not in u['tickers'] and c not in u['requested']:
+                  u['requested'].append(c)
+          json.dump(u, open('data/universe.json', 'w'), indent=0, separators=(',', ':'))
+          bad = [c for c in codes if c not in ok]
+          msg = []
+          if ok:  msg.append(f"Added {', '.join(ok)} — it will be on the ETF Tools page in a few minutes, and updated weekly from now on.")
+          if bad: msg.append(f"Couldn't find {', '.join(bad)} on Yahoo Finance (as an ASX code). Please check the code.")
+          if not codes: msg.append("I couldn't read a ticker in the title — please use the form “Add ticker: ABC”.")
+          open('reply.txt', 'w').write('\n\n'.join(msg))
+          PY
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name  "github-actions[bot]"
+          git add data/universe.json data/prices
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: add requested ticker(s) $CODES"
+            git pull --rebase origin main && git push
+          fi
+          gh issue comment "$ISSUE" --body-file reply.txt
+          gh issue close "$ISSUE"

@@ -1,2429 +1,927 @@
-// ═══════════════════════════════════════════════════════════════
-//  AU ETF Tools — etf_tools.js
-//  Tabs: Compounding | Portfolio | Overlap | Retirement
-//  Version: 2026-11-04-audit   ← bump this on each deploy to bust cache
-// ═══════════════════════════════════════════════════════════════
-const ETF_TOOLS_VERSION = '2026-11-04-audit';
-console.info(`[ETF Tools] Loaded version ${ETF_TOOLS_VERSION}. Tax profiles: ATO 2026-27 resident rates (15/30/37/45%).`);
-
-let etfData = null;
-let currentTab = 'compound';
-const NOW = new Date();
-const CY = NOW.getFullYear();
+/* ETF Tools — compare funds, backtest a portfolio, track your own holdings.
+ * Data: data/prices/<CODE>.json (weekly, built by .github/workflows/scripts/fetch_prices.py from Yahoo
+ * Finance) and data/etf_data.json (hand-checked fees, sectors and top holdings for ~45 popular funds).
+ * Everything runs in the browser; "My portfolio" is saved only in this browser (localStorage).
+ */
+'use strict';
+const ETF_TOOLS_VERSION = '2026-11-11-rebuild';
+const BASE = (document.querySelector('meta[name="baseurl"]')?.content || '');
+const PRICE_URL = c => `${BASE}/data/prices/${c}.json`;
+const STORE_KEY = 'felixillion-etf-portfolio-v1';
 const MOS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const PALETTE = ['#38bdf8','#4ade80','#f59e0b','#a78bfa','#f472b6','#fb923c','#2dd4bf','#e879f9'];
+const SEC_CLR = { 'Financials':'#38bdf8','Materials':'#f59e0b','Health Care':'#4ade80','Info. Technology':'#a78bfa',
+  'Industrials':'#fb923c','Consumer Staples':'#2dd4bf','Consumer Discretionary':'#f472b6','Energy':'#ef4444',
+  'Real Estate':'#84cc16','Comm. Services':'#e879f9','Utilities':'#94a3b8','Other':'#475569','Fixed Income':'#64748b','Cash':'#334155' };
 
-// ── Debounce ─────────────────────────────────────────────────────
-function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
-const rerender = debounce(() => renderETFTools(), 60);
+// Australian CPI, annual-average % change (RBA Table G1 / ABS) — for "today's dollars"
+const AU_CPI_YR = { 1990:7.3,1991:3.2,1992:1,1993:1.8,1994:1.9,1995:4.6,1996:2.6,1997:0.3,1998:0.9,1999:1.5,2000:4.5,
+  2001:4.4,2002:3,2003:2.8,2004:2.3,2005:2.7,2006:3.5,2007:2.4,2008:4.3,2009:1.8,2010:2.9,2011:3.4,2012:1.7,2013:2.4,
+  2014:2.5,2015:1.5,2016:1.3,2017:1.9,2018:1.9,2019:1.6,2020:0.9,2021:2.9,2022:6.6,2023:5.6,2024:3.2,2025:2.8 };
 
-// ── Australian CPI by year (annual-average % change) ─────────────────────────
-// 1924–2025: RBA Statistical Table G1 (ABS CPI) — validated by tests/audit_checks.py
-// 1901–1923: rough estimates (no official CPI) — used only by the retirement simulator.
-// IMPORTANT: the retirement simulator needs CPI for EVERY year it has returns for;
-// previously only 2000–2025 existed, so 1970s withdrawals grew at a flat 2.5%
-// while returns were 1970s nominal returns — badly overstating success rates.
-const AU_CPI_YR = {
-  1901:5.0, 1902:-2.0, 1903:2.0, 1904:0.0, 1905:-1.0, 1906:2.0, 1907:5.0, 1908:2.0, 1909:1.0, 1910:3.0,
-  1911:6.0, 1912:4.0, 1913:2.0, 1914:3.0, 1915:8.0, 1916:10.0, 1917:12.0, 1918:6.0, 1919:8.0, 1920:14.0,
-  1921:-10.0, 1922:-8.0, 1923:2.0, 1924:-2, 1925:2.2, 1926:1.3, 1927:-0.9, 1928:0.9, 1929:2.4, 1930:-6,
-  1931:-10.6, 1932:-4.9, 1933:-3.1, 1934:1.7, 1935:1.7, 1936:2.1, 1937:2.7, 1938:3, 1939:2.4, 1940:4,
-  1941:5.4, 1942:8.3, 1943:3.6, 1944:-0.6, 1945:0, 1946:1.7, 1947:3.8, 1948:8.8, 1949:9, 1950:9.1,
-  1951:19.7, 1952:17.3, 1953:4.3, 1954:0.7, 1955:2.2, 1956:5.9, 1957:2.6, 1958:1.2, 1959:1.8, 1960:3.8,
-  1961:2.5, 1962:-0.2, 1963:0.4, 1964:2.5, 1965:3.8, 1966:3.1, 1967:3.2, 1968:2.7, 1969:3, 1970:3.7,
-  1971:6, 1972:6, 1973:9.3, 1974:15.2, 1975:15.2, 1976:13.3, 1977:12.3, 1978:8, 1979:9.1, 1980:10.2,
-  1981:9.6, 1982:11.2, 1983:10.1, 1984:3.9, 1985:6.8, 1986:9.1, 1987:8.5, 1988:7.3, 1989:7.5, 1990:7.3,
-  1991:3.2, 1992:1, 1993:1.8, 1994:1.9, 1995:4.6, 1996:2.6, 1997:0.3, 1998:0.9, 1999:1.5, 2000:4.5,
-  2001:4.4, 2002:3, 2003:2.8, 2004:2.3, 2005:2.7, 2006:3.5, 2007:2.4, 2008:4.3, 2009:1.8, 2010:2.9,
-  2011:3.4, 2012:1.7, 2013:2.4, 2014:2.5, 2015:1.5, 2016:1.3, 2017:1.9, 2018:1.9, 2019:1.6, 2020:0.9,
-  2021:2.9, 2022:6.6, 2023:5.6, 2024:3.2, 2025:2.8
-};
+// ── small helpers ────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const money = (v, dp = 0) => v == null || !isFinite(v) ? '—' : (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-AU', {minimumFractionDigits: dp, maximumFractionDigits: dp});
+const moneyK = v => { const a = Math.abs(v); const s = v < 0 ? '−$' : '$';
+  return a >= 1e6 ? s + (a/1e6).toFixed(a >= 1e7 ? 1 : 2) + 'M' : a >= 1e4 ? s + Math.round(a/1e3) + 'k' : a >= 1e3 ? s + (a/1e3).toFixed(1) + 'k' : s + Math.round(a); };
+const pct = (v, dp = 1) => v == null || !isFinite(v) ? '—' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(dp) + '%';
+const pctPlain = (v, dp = 1) => v == null || !isFinite(v) ? '—' : v.toFixed(dp) + '%';
+const posNeg = v => v == null ? 'var(--text-secondary)' : v >= 0 ? '#4ade80' : '#f87171';
+const iso = d => d.toISOString().slice(0, 10);
+const addDays = (s, n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return iso(d); };
+const daysBetween = (a, b) => (new Date(b + 'T00:00:00Z') - new Date(a + 'T00:00:00Z')) / 864e5;
+const fmtDate = s => { if (!s) return '—'; const [y, m, d] = s.split('-'); return `${+d} ${MOS[+m - 1]} ${y}`; };
+const fmtMonth = s => { const [y, m] = s.split('-'); return `${MOS[+m - 1]} ${y}`; };
+const friday = s => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + ((5 - d.getUTCDay() + 7) % 7)); return iso(d); };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const num = (v, dflt = 0) => { const n = parseFloat(String(v).replace(/[$,\s]/g, '')); return isFinite(n) ? n : dflt; };
 
-// ── Franking credit tax profiles ─────────────────────────────────
-// Franking credits are tax offsets attached to dividends from Australian companies.
-// The company has already paid 30% corporate tax; the credit refunds that to investors
-// whose marginal rate is below 30% — and the FULL credit is refunded to tax-exempt
-// entities (NFPs, charities, pension-phase super). This can substantially boost
-// effective returns for low-tax investors.
-// ── ATO 2026-27 resident rates ────────────────────────────────────────────────
-// Stage 3 brackets from 1 Jul 2024; the 16% rate falls to 15% from 1 Jul 2026 and
-// to 14% from 1 Jul 2027 (Treasury Laws Amendment (Cost of Living Tax Cuts) Act 2025).
-// Source: ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents
-// Note: these rates EXCLUDE the 2% Medicare levy (which is added separately).
-// Franking credit calculations use the statutory income tax rate only.
-const TAX_PROFILES = {
-  'nfp':    { label:'NFP / Charity (0%)',                  rate:0.00 },
-  'pension':{ label:'Super — Pension Phase (0%)',           rate:0.00 },
-  'super15':{ label:'Super — Accumulation (15%)',           rate:0.15 },
-  'ind_0':  { label:'Individual — 0%  (≤$18,200)',          rate:0.00 },
-  'ind_16': { label:'Individual — 15%  ($18,201–$45,000)',  rate:0.15 },
-  'ind_30': { label:'Individual — 30%  ($45,001–$135,000)', rate:0.30 },
-  'ind_37': { label:'Individual — 37%  ($135,001–$190,000)',rate:0.37 },
-  'ind_45': { label:'Individual — 45%  (>$190,000)',        rate:0.45 },
-};
-
-// Returns historical annual returns for a ticker — uses _liveCache (data/stocks/) first
-function getHistoricalReturns(ticker) {
-  const key = ticker.replace('.AX', '');
-  const cached = _liveCache[key];
-  if (cached?.historicalReturns && Object.keys(cached.historicalReturns).length > 0)
-    return cached.historicalReturns;
-  return etfData?.etfs[key]?.historicalReturns || {};
+// CPI index (1.0 at the start of 1990), interpolated weekly — good enough to express results in today's dollars
+function cpiIndex(dateStr) {
+  const y = +dateStr.slice(0, 4), frac = daysBetween(`${y}-01-01`, dateStr) / 365.25;
+  let idx = 1;
+  for (let yr = 1990; yr < y; yr++) idx *= 1 + (AU_CPI_YR[yr] ?? 2.5) / 100;
+  return idx * Math.pow(1 + (AU_CPI_YR[y] ?? 2.5) / 100, frac);
 }
 
-// Returns year-by-year dividend yields for accurate DRP-off historical mode.
-// Stored by update_etf_data.py using actual dividends / prior-year close price.
-function getHistoricalDivYields(ticker) {
-  const key = ticker.replace('.AX', '');
-  const cached = _liveCache[key];
-  if (cached?.historicalDividendYields && Object.keys(cached.historicalDividendYields).length > 0)
-    return cached.historicalDividendYields;
-  return etfData?.etfs[key]?.historicalDividendYields || {};
+// ── data layer ───────────────────────────────────────────────────────────────
+let INDEX = null, ETF_META = null, ASSET = null;
+const _series = {}, _pending = {};
+async function loadIndex() {
+  if (INDEX) return INDEX;
+  try { INDEX = await (await fetch(`${BASE}/data/prices/index.json`)).json(); }
+  catch (e) { INDEX = { tickers: [], updated: null }; }
+  INDEX.byCode = Object.fromEntries((INDEX.tickers || []).map(t => [t.c, t]));
+  return INDEX;
+}
+async function loadMeta() {
+  if (ETF_META) return ETF_META;
+  try { const d = await (await fetch(`${BASE}/data/etf_data.json`)).json(); ETF_META = d.etfs || {}; ASSET = d.assetClassReturns || {}; } catch (e) { ETF_META = {}; ASSET = {}; }
+  return ETF_META;
+}
+/** Weekly series for a code: {code, name, dates[], p[], x[], d[[date,amt]]} or null if not available. */
+async function loadSeries(code) {
+  code = String(code || '').toUpperCase().trim();
+  if (!code) return null;
+  if (code in _series) return _series[code];
+  if (_pending[code]) return _pending[code];
+  _pending[code] = fetch(PRICE_URL(code)).then(r => r.ok ? r.json() : null).then(r => {
+    if (!r) return (_series[code] = null);
+    const dates = r.p.map((_, i) => addDays(r.s, 7 * i));
+    return (_series[code] = { code, name: r.n, type: r.t, region: r.r, updated: r.u, dates, p: r.p, x: r.x, d: r.d || [],
+      start: dates[0], end: dates[dates.length - 1], pos: Object.fromEntries(dates.map((d, i) => [d, i])) });
+  }).catch(() => (_series[code] = null)).finally(() => delete _pending[code]);
+  return _pending[code];
+}
+const at = (s, date) => s.pos[date];           // week index of a Friday date in a series
+
+// Weekly Fridays from a to b inclusive
+function weeks(a, b) { const out = []; for (let d = friday(a); d <= b; d = addDays(d, 7)) out.push(d); return out; }
+
+// Contribution dates on a weekly grid
+function contribFlags(grid, freq) {
+  const f = grid.map(() => false);
+  if (freq === 'none') return f;
+  grid.forEach((d, i) => {
+    if (i === 0) return;                                   // the starting amount covers week 0
+    const prev = grid[i - 1];
+    if (freq === 'weekly') f[i] = true;
+    else if (freq === 'fortnightly') f[i] = i % 2 === 0;
+    else if (freq === 'monthly') f[i] = d.slice(5, 7) !== prev.slice(5, 7);
+    else if (freq === 'quarterly') f[i] = d.slice(5, 7) !== prev.slice(5, 7) && ['01','04','07','10'].includes(d.slice(5, 7));
+    else if (freq === 'yearly') f[i] = d.slice(0, 4) !== prev.slice(0, 4);
+  });
+  return f;
+}
+const FREQ_PER_YEAR = { none: 0, weekly: 52, fortnightly: 26, monthly: 12, quarterly: 4, yearly: 1 };
+
+// ── statistics ───────────────────────────────────────────────────────────────
+function cagr(v0, v1, years) { return v0 > 0 && years > 0 ? (Math.pow(v1 / v0, 1 / years) - 1) * 100 : null; }
+function maxDrawdown(vals, dates) {
+  let peak = vals[0], peakI = 0, worst = 0, wPeak = 0, wTrough = 0;
+  vals.forEach((v, i) => { if (v > peak) { peak = v; peakI = i; } const dd = v / peak - 1; if (dd < worst) { worst = dd; wPeak = peakI; wTrough = i; } });
+  let rec = null; for (let i = wTrough; i < vals.length; i++) if (vals[i] >= vals[wPeak]) { rec = i; break; }
+  return { pct: worst * 100, peak: dates?.[wPeak], trough: dates?.[wTrough], recovered: rec != null ? dates?.[rec] : null };
+}
+function volatility(vals) {
+  const r = []; for (let i = 1; i < vals.length; i++) if (vals[i - 1] > 0) r.push(Math.log(vals[i] / vals[i - 1]));
+  if (r.length < 10) return null;
+  const m = r.reduce((a, b) => a + b, 0) / r.length;
+  return Math.sqrt(r.reduce((a, b) => a + (b - m) ** 2, 0) / (r.length - 1) * 52) * 100;
+}
+function calendarReturns(vals, dates) {                     // full calendar years only (+ YTD flagged)
+  const ye = {}, first = dates[0].slice(0, 4);
+  dates.forEach((d, i) => { ye[d.slice(0, 4)] = vals[i]; });
+  const out = {};
+  // a year counts when the series has a value at the end of the previous year (so a part-year start is skipped)
+  Object.keys(ye).sort().forEach(y => { const p = String(+y - 1); if (ye[p] != null && p >= first) out[y] = (ye[y] / ye[p] - 1) * 100; });
+  return out;
+}
+function correl(a, b) {
+  const n = Math.min(a.length, b.length); if (n < 10) return null;
+  const ma = a.reduce((s, v) => s + v, 0) / n, mb = b.reduce((s, v) => s + v, 0) / n;
+  let c = 0, va = 0, vb = 0; for (let i = 0; i < n; i++) { c += (a[i] - ma) * (b[i] - mb); va += (a[i] - ma) ** 2; vb += (b[i] - mb) ** 2; }
+  return c / Math.sqrt(va * vb);
+}
+const weeklyRets = v => v.slice(1).map((x, i) => x / v[i] - 1);
+/** Money-weighted annual return. flows: [{date, amount}] (negative = money in), final value positive at endDate. */
+function xirr(flows) {
+  if (flows.length < 2 || !flows.some(f => f.amount < 0) || !flows.some(f => f.amount > 0)) return null;
+  const t0 = flows[0].date, t = flows.map(f => daysBetween(t0, f.date) / 365.25);
+  const npv = r => flows.reduce((s, f, i) => s + f.amount / Math.pow(1 + r, t[i]), 0);
+  let lo = -0.99, hi = 10;
+  if (npv(lo) * npv(hi) > 0) return null;
+  for (let i = 0; i < 200; i++) { const m = (lo + hi) / 2; (npv(lo) * npv(m) <= 0) ? hi = m : lo = m; }
+  return (lo + hi) / 2 * 100;
 }
 
-// ── Days in month ─────────────────────────────────────────────────
-function daysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
-function dayOpts(y, m, sel) {
-  const n = daysInMonth(y, m);
-  return Array.from({length: n}, (_,i) => i+1)
-    .map(d => `<option value="${d}" ${d===sel?'selected':''}>${d}</option>`).join('');
+// ── SVG line chart with hover ────────────────────────────────────────────────
+/** series: [{name, color, vals[], dash?, width?}], dates[] shared. Returns HTML; call wireChart(id) after insert. */
+const _charts = {};
+function lineChart(id, dates, series, opts = {}) {
+  const W = 860, H = opts.height || 300, P = { t: 14, r: 14, b: 32, l: 64 }, cw = W - P.l - P.r, ch = H - P.t - P.b;
+  const all = series.flatMap(s => s.vals.filter(v => v != null && isFinite(v)));
+  let lo = opts.min ?? Math.min(0, ...all), hi = Math.max(...all, lo + 1);
+  if (opts.log) { lo = Math.max(Math.min(...all), 1e-6); }
+  const y = v => opts.log ? ch - (Math.log(v / lo) / Math.log(hi / lo)) * ch : ch - (v - lo) / (hi - lo) * ch;
+  const x = i => dates.length > 1 ? i / (dates.length - 1) * cw : 0;
+  const fmtY = opts.fmt || moneyK;
+  let ticks;
+  if (opts.log) ticks = [lo, Math.sqrt(lo * hi), hi];
+  else { const st = niceStep((hi - lo) / 4); lo = Math.floor(lo / st) * st; hi = Math.ceil(hi / st) * st; ticks = []; for (let v = lo; v <= hi + st / 2; v += st) ticks.push(v); }
+  const years = [...new Set(dates.map(d => d.slice(0, 4)))];
+  const step = Math.max(1, Math.ceil(years.length / 10));
+  const yearTicks = years.filter((_, i) => i % step === 0).map(yr => dates.findIndex(d => d.startsWith(yr))).filter(i => i > 0);
+  const path = s => { let out = '', pen = false;
+    s.vals.forEach((v, i) => { if (v == null || !isFinite(v)) { pen = false; return; } out += (pen ? 'L' : 'M') + x(i).toFixed(1) + ',' + y(v).toFixed(1); pen = true; });
+    return out; };
+  _charts[id] = { dates, series, x, cw, P, fmt: opts.tipFmt || (v => money(v)), W };
+  return `<div class="etf-chart" style="position:relative;">
+    <svg id="${id}" viewBox="0 0 ${W} ${H}" width="100%" style="display:block;cursor:crosshair;" role="img" aria-label="${esc(opts.label || 'Chart')}">
+      <rect width="${W}" height="${H}" fill="#020818" rx="8"/>
+      <g transform="translate(${P.l},${P.t})">
+        ${ticks.map(v => `<line x1="0" x2="${cw}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="#1e293b" stroke-dasharray="3,3"/>
+          <text x="-8" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" fill="#64748b" font-size="11" font-family="monospace">${fmtY(v)}</text>`).join('')}
+        ${opts.zero && lo < 0 ? `<line x1="0" x2="${cw}" y1="${y(0)}" y2="${y(0)}" stroke="#475569"/>` : ''}
+        ${yearTicks.map(i => `<text x="${x(i).toFixed(1)}" y="${ch + 20}" text-anchor="middle" fill="#64748b" font-size="11">${dates[i].slice(0, 4)}</text>`).join('')}
+        ${series.map(s => s.area ? `<path d="${path(s)} L${x(s.vals.length - 1).toFixed(1)},${y(Math.max(lo, 0))} L0,${y(Math.max(lo, 0))} Z" fill="${s.color}" opacity=".18"/>` : '').join('')}
+        ${series.map(s => `<path d="${path(s)}" fill="none" stroke="${s.color}" stroke-width="${s.width || 2}" ${s.dash ? `stroke-dasharray="${s.dash}"` : ''} stroke-linejoin="round"/>`).join('')}
+        <line id="${id}-x" y1="0" y2="${ch}" stroke="#64748b" opacity="0"/>
+        <rect id="${id}-hit" width="${cw}" height="${ch}" fill="transparent"/>
+      </g>
+    </svg>
+    <div id="${id}-tip" class="etf-tip"></div>
+    ${opts.legend === false ? '' : `<div class="etf-legend">${series.filter(s => s.name).map(s => `<span><i style="background:${s.color};${s.dash ? 'opacity:.6' : ''}"></i>${esc(s.name)}</span>`).join('')}</div>`}
+  </div>`;
 }
-
-// ── State ─────────────────────────────────────────────────────────
-let compState = {
-  mode: 'projection', ticker: 'VAS',
-  liveTickerInput: '',
-  compareTickers: [],          // up to 4 extra tickers for comparison overlay
-  initial: 10000, monthly: 500,
-  projStartDay: 1, projStartMonth: NOW.getMonth(), projStartYear: CY, years: 20,
-  histStartDay: 1,  histStartMonth: 0,  histStartYear: 2015,
-  histEndDay: 31,   histEndMonth: 11,   histEndYear: CY - 1,
-  drip: true,
-  showInflation: false,
-  inflationRate: 2.5,
-  // Franking credits: only meaningful for AU equity ETFs (frankingPct > 0 in etf_data)
-  frankingMode: false,
-  taxProfile: 'ind_30',   // default: 30% (most common bracket, $45k–$135k)
-  custom: { name:'My ETF', annualReturn:10.0, mer:0.20, dividendYield:2.0, inceptionYear:2015,
-            frankingPct:0.0 },
-  // Custom allocation — only used when ticker==='CUSTOM' and useCustomAlloc===true
-  useCustomAlloc: false,
-  customAlloc: { AU_SHARES:50, INTL_SHARES:20, US_SHARES:20, AU_BONDS:5, GLOBAL_BONDS:5, CASH:0 },
-};
-
-let holdings = [{ ticker:'VAS', amount:5000 }, { ticker:'NDQ', amount:3000 }];
-
-let overlapState = { selected:['VGS','NDQ'], view:'sectors', drillA:'VGS', drillB:'NDQ' };
-
-let retState = {
-  preset: 'VDHG',
-  portfolioValue: 500000, annualWithdrawal: 25000,
-  retirementYears: 30, timing: 'start',
-  fromYear: 1970,
-  inflationAdjust: true, inflationRate: 2.5,
-  manualMER: null,
-  useCustomAlloc: false,
-  customAlloc: { AU_SHARES:36, INTL_SHARES:54, US_SHARES:0, AU_BONDS:3, GLOBAL_BONDS:7, CASH:0 },
-  // Franking credits on AU Shares component
-  frankingMode: false,
-  taxProfile: 'ind_30',
-  auFrankingPct: 0.75,   // fraction of AU share dividends that carry franking credits
-  auDividendYield: 4.0,  // assumed AU equity dividend yield (% p.a.) for franking calc
-  method: 'hist',        // 'hist' or 'mc'
-};
-
-// Auto-calc state: "what can I withdraw?" / "how much do I need?"
-let retAutoState = {
-  open: false,
-  mode: 'withdrawal',   // 'withdrawal' = find max safe WD | 'portfolio' = find required PV
-  portfolioInput: 500000,
-  withdrawalInput: 25000,
-  targetSuccess: 90,
-};
-
-// ── Colours ───────────────────────────────────────────────────────
-const SEC_CLR = {
-  'Financials':'#3b82f6','Materials':'#f59e0b','Health Care':'#10b981',
-  'Industrials':'#8b5cf6','Consumer Staples':'#f97316','Energy':'#ef4444',
-  'Real Estate':'#06b6d4','Consumer Discretionary':'#ec4899',
-  'Comm. Services':'#84cc16','Info. Technology':'#6366f1',
-  'Utilities':'#a78bfa','Other':'#94a3b8'
-};
-const PIE_CLR = ['#38bdf8','#4ade80','#f59e0b','#ec4899','#a78bfa','#f97316','#06b6d4','#84cc16','#ef4444','#10b981'];
-
-// ── Helpers ───────────────────────────────────────────────────────
-const fmtAUD = v => v>=1e6?`$${(v/1e6).toFixed(2)}M`:v>=1e3?`$${(v/1e3).toFixed(1)}k`:`$${Math.round(v).toLocaleString()}`;
-const fmtDate = (d,m,y) => `${d} ${MOS[m]} ${y}`;
-
-function getETF(ticker) {
-  if (ticker==='CUSTOM') {
-    // When useCustomAlloc is on, derive annualReturn from asset class weights + frankingPct from AU share weight
-    let annualReturn = compState.custom.annualReturn;
-    let frankingPct  = compState.custom.frankingPct || 0;
-    if (compState.useCustomAlloc && etfData?.assetClassReturns) {
-      const alloc = compState.customAlloc;
-      const allocLabelsRet = {'AU_SHARES':'AU Shares','INTL_SHARES':'Intl (ex-US)','US_SHARES':'US Shares',
-                               'AU_BONDS':'AU Bonds','GLOBAL_BONDS':'Global Bonds','CASH':'Cash'};
-      // Long-run averages per asset class (same as retirement model)
-      const longRunAvg = { AU_SHARES:9.5, INTL_SHARES:9.8, US_SHARES:10.8, AU_BONDS:4.0, GLOBAL_BONDS:3.5, CASH:2.5 };
-      annualReturn = Object.entries(alloc).reduce((s,[k,w])=>s+(w/100)*(longRunAvg[k]??7), 0);
-      // Franking: proportional to AU shares weight × typical 75% franked
-      frankingPct = Math.min(1, (alloc.AU_SHARES||0)/100 * 0.75 / ((compState.custom.dividendYield||2)/100||0.02));
-      frankingPct = Math.min(1, (alloc.AU_SHARES||0)/100 * 0.75);
-    }
-    return {
-      name: compState.custom.name, issuer:'Custom',
-      annualReturn, mer: compState.custom.mer,
-      dividendYield: compState.custom.dividendYield,
-      inceptionYear: compState.custom.inceptionYear,
-      frankingPct,
-      historicalReturns:{}, topHoldings:[], sectors:{'Other':100}
-    };
-  }
-  if (ticker==='LIVE') {
-    // Live ticker from _liveCache — fetched via fetchLiveTicker from data/stocks/
-    const key = compState.liveTickerInput.trim().toUpperCase().replace('.AX','');
-    const cached = _liveCache[key];
-    return {
-      name: cached?.name || key,
-      issuer: cached?.issuer || 'ASX Live',
-      annualReturn: cached?.annualReturn || 10.0,
-      mer: cached?.mer || 0.0,
-      dividendYield: cached?.dividendYield || 0.0,
-      inceptionYear: 2000,
-      historicalReturns: cached?.historicalReturns || {},
-      topHoldings: [], sectors: {'Other': 100},
-      isLive: true, liveKey: key
-    };
-  }
-  return etfData?.etfs[ticker] ?? null;
-}
-
-// ── Actual adjusted-price path (for exact historical period tracking) ──────
-// Weekly adjusted closes (dividends + splits folded in) from data/stocks/*.json.
-// When they cover the chosen dates we follow the REAL price path instead of
-// spreading calendar-year returns evenly — so e.g. 15 Mar 2021 → 10 Jun 2023
-// reflects what actually happened between those dates.
-function buildPricePath(prices) {
-  if (!prices || prices.length < 2) return null;
-  const pts = prices.map(p => [new Date(p.date + 'T00:00:00').getTime(), Math.log(p.close)])
-                    .filter(p => isFinite(p[1])).sort((a, b) => a[0] - b[0]);
-  if (pts.length < 2) return null;
-  return {
-    start: pts[0][0], end: pts[pts.length - 1][0],
-    // log-linear interpolation between weekly points
-    at(ts) {
-      if (ts <= pts[0][0]) return Math.exp(pts[0][1]);
-      if (ts >= pts[pts.length - 1][0]) return Math.exp(pts[pts.length - 1][1]);
-      let lo = 0, hi = pts.length - 1;
-      while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (pts[mid][0] <= ts) lo = mid; else hi = mid; }
-      const f = (ts - pts[lo][0]) / (pts[hi][0] - pts[lo][0]);
-      return Math.exp(pts[lo][1] + f * (pts[hi][1] - pts[lo][1]));
-    },
+function wireChart(id) {
+  const c = _charts[id], svg = $(id), hit = $(id + '-hit'), tip = $(id + '-tip'), xl = $(id + '-x');
+  if (!c || !svg || !hit) return;
+  const move = ev => {
+    const r = svg.getBoundingClientRect(), pt = (ev.touches ? ev.touches[0] : ev);
+    const sx = (pt.clientX - r.left) / r.width * c.W - c.P.l;
+    const i = clamp(Math.round(sx / c.cw * (c.dates.length - 1)), 0, c.dates.length - 1);
+    xl.setAttribute('x1', c.x(i)); xl.setAttribute('x2', c.x(i)); xl.setAttribute('opacity', '1');
+    tip.innerHTML = `<div style="color:#94a3b8;margin-bottom:.2rem;">${fmtDate(c.dates[i])}</div>` +
+      c.series.filter(s => s.name && s.vals[i] != null).map(s => `<div><span style="color:${s.color};">●</span> ${esc(s.name)}: <b>${c.fmt(s.vals[i], s)}</b></div>`).join('');
+    tip.style.display = 'block';
+    const left = (pt.clientX - r.left) > r.width * 0.6 ? (pt.clientX - r.left) - tip.offsetWidth - 12 : (pt.clientX - r.left) + 12;
+    tip.style.left = Math.max(0, left) + 'px'; tip.style.top = '10px';
   };
+  const out = () => { tip.style.display = 'none'; xl.setAttribute('opacity', '0'); };
+  hit.addEventListener('mousemove', move); hit.addEventListener('mouseleave', out);
+  hit.addEventListener('touchmove', e => { move(e); }, { passive: true }); hit.addEventListener('touchend', out);
+}
+const niceStep = r => { const p = Math.pow(10, Math.floor(Math.log10(r))), m = r / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+/** Bar chart of calendar-year returns: groups = years, bars = series. */
+function barChart(years, series) {
+  const W = 860, H = 240, P = { t: 14, r: 10, b: 28, l: 44 }, cw = W - P.l - P.r, ch = H - P.t - P.b;
+  const vals = series.flatMap(s => years.map(y => s.vals[y]).filter(v => v != null));
+  const step = niceStep(Math.max(5, ...vals.map(Math.abs)) / 2);
+  const hi = Math.ceil(Math.max(5, ...vals) / step) * step, lo = Math.floor(Math.min(-5, ...vals) / step) * step;
+  const y = v => ch - (v - lo) / (hi - lo) * ch, gw = cw / years.length, bw = Math.max(2, (gw * 0.8) / series.length);
+  const yt = []; for (let v = lo; v <= hi + 1e-9; v += step) yt.push(+v.toFixed(6));
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;"><rect width="${W}" height="${H}" fill="#020818" rx="8"/>
+    <g transform="translate(${P.l},${P.t})">
+    ${yt.map(v => `<line x1="0" x2="${cw}" y1="${y(v)}" y2="${y(v)}" stroke="${v === 0 ? '#475569' : '#1e293b'}" ${v ? 'stroke-dasharray="3,3"' : ''}/><text x="-6" y="${y(v) + 4}" text-anchor="end" fill="#64748b" font-size="11" font-family="monospace">${Math.round(v)}%</text>`).join('')}
+    ${years.map((yr, gi) => series.map((s, si) => { const v = s.vals[yr]; if (v == null) return '';
+      const x0 = gi * gw + gw * 0.1 + si * bw; return `<rect x="${x0.toFixed(1)}" width="${(bw - 1).toFixed(1)}" y="${Math.min(y(v), y(0)).toFixed(1)}" height="${Math.abs(y(v) - y(0)).toFixed(1)}" fill="${s.color}"><title>${esc(s.name)} ${yr}: ${pct(v)}</title></rect>`; }).join('')
+      + (years.length <= 25 || gi % 2 === 0 ? `<text x="${(gi * gw + gw / 2).toFixed(1)}" y="${ch + 18}" text-anchor="middle" fill="#64748b" font-size="10">${years.length > 14 ? "'" + yr.slice(2) : yr}</text>` : '')).join('')}
+    </g></svg>`;
 }
 
-// A stored return for the CURRENT year is year-to-date. Convert it to an
-// annual rate so spreading it over 365 days doesn't understate growth.
-function annualiseIfPartial(ret, year, asOf) {
-  if (ret == null || year !== CY || !asOf) return ret;
-  const d = new Date(asOf + 'T00:00:00');
-  const frac = (d - new Date(year, 0, 1)) / (365.25 * 86400000);
-  if (!(frac > 0.05 && frac < 1)) return ret;
-  return (Math.pow(1 + ret / 100, 1 / frac) - 1) * 100;
+// ── ticker picker (search the ~670 codes by code or name) ───────────────────
+function pickerHTML(id, value, placeholder = 'Code or name, e.g. VAS') {
+  return `<div class="etf-picker" data-picker="${id}">
+    <input id="${id}" class="etf-input" value="${esc(value || '')}" placeholder="${esc(placeholder)}" autocomplete="off" spellcheck="false">
+    <div class="etf-sugg" id="${id}-sugg"></div></div>`;
 }
-
-// ── Daily compounding ────────────────────────────────────────────────
-// Steps one calendar day at a time so every tooltip position snaps to an
-// exactly-calculated value — no intra-period interpolation needed.
-// Maths identical to the old monthly loop: (1+r)^(1/365.25) per day
-// compounds to exactly (1+r) over a year.
-// Monthly contributions are spread evenly across each day of the month.
-// 20-year period ≈ 7 300 points — fast to compute, fine for SVG.
-function calcMonthly() {
-  const { mode, ticker, initial, monthly,
-    projStartDay, projStartMonth, projStartYear, years,
-    histStartDay, histStartMonth, histStartYear,
-    histEndDay,   histEndMonth,   histEndYear, drip } = compState;
-  const etf = getETF(ticker);
-  if (!etf) return [];
-
-  const historicalRets = ticker === 'LIVE'
-    ? (getHistoricalReturns(compState.liveTickerInput.trim().toUpperCase()) ?? {})
-    : getHistoricalReturns(ticker);
-  const historicalDivYields = mode === 'historical' && !drip
-    ? (ticker === 'LIVE'
-        ? getHistoricalDivYields(compState.liveTickerInput.trim().toUpperCase())
-        : getHistoricalDivYields(ticker))
-    : {};
-
-  const frankingPct         = compState.frankingMode ? (etf.frankingPct || 0) : 0;
-  const margRate            = TAX_PROFILES[compState.taxProfile]?.rate ?? 0.30;
-  const CORP_TAX            = 0.30;
-  const frankingBoostAnnual = (etf.dividendYield / 100) * frankingPct
-                              * (CORP_TAX / (1 - CORP_TAX)) * (1 - margRate);
-
-  const startDate = mode === 'projection'
-    ? new Date(projStartYear,  projStartMonth,  projStartDay)
-    : new Date(histStartYear,  histStartMonth,  histStartDay);
-  const endDate   = mode === 'projection'
-    ? new Date(projStartYear + years, projStartMonth, projStartDay)
-    : new Date(histEndYear,    histEndMonth,    histEndDay);
-
-  // Real price path, if this ticker's weekly adjusted prices cover the period
-  const pKey = ticker === 'LIVE' ? compState.liveTickerInput.trim().toUpperCase().replace('.AX','') : ticker;
-  const weekly = (_priceCache[pKey]?.weeklyPrices?.length ? _priceCache[pKey].weeklyPrices : null)
-              || (_liveCache[pKey]?._weeklyPrices?.length ? _liveCache[pKey]._weeklyPrices : null);
-  const path = mode === 'historical' ? buildPricePath(weekly) : null;
-  const WEEK = 7 * 86400000;
-  const usePath = !!path && startDate.getTime() >= path.start - WEEK && endDate.getTime() <= path.end + WEEK;
-  calcMonthly.lastMethod = usePath ? 'price-path' : (mode === 'historical' ? 'calendar-year' : 'projection');
-  const retAsOf = (ticker === 'LIVE' ? _liveCache[pKey]?._lastUpdated : null)
-               || etfData?.meta?.lastUpdated;
-
-  const data = [];
-  let bal = initial, contrib = initial, divs = 0;
-  let cpiAccum = 1.0, frankingCum = 0;
-
-  // Starting snapshot
-  const s0 = startDate;
-  const startLabel = fmtDate(s0.getDate(), s0.getMonth(), s0.getFullYear());
-  data.push({ date: startLabel, label: startLabel,
-    value: Math.round(bal), contributions: Math.round(contrib),
-    dividends: 0, inflAdj: Math.round(bal),
-    frankingCum: 0, isDivPayment: false, ts: startDate.getTime() });
-
-  const MS_DAY = 86400000;
-  let ts  = startDate.getTime() + MS_DAY;
-  const endTs = endDate.getTime();
-
-  while (ts <= endTs) {
-    const cur = new Date(ts);
-    const y = cur.getFullYear(), m = cur.getMonth(), d = cur.getDate();
-
-    const rawReturn = mode === 'historical'
-      ? (annualiseIfPartial(historicalRets[y], y, retAsOf) ?? etf.annualReturn)
-      : etf.annualReturn;
-    // Historical returns (and the CAGR used as the projection default for real ETFs)
-    // come from unit prices, which are already NET of fees — so MER is only deducted
-    // for custom/assumed gross returns.
-    const merDeduction = (mode === 'historical' || etf.annualReturnBasis) ? 0 : (etf.mer / 100);
-    const divYieldForYear = mode === 'historical'
-      ? ((historicalDivYields[String(y)] ?? etf.dividendYield) || 0)
-      : etf.dividendYield;
-    const netAnnual = (rawReturn / 100) - merDeduction - (drip ? 0 : divYieldForYear / 100);
-
-    let dailyGrowth     = Math.pow(1 + netAnnual,              1 / 365.25) - 1;
-    if (usePath) {
-      // actual adjusted-price move for this day, minus cash dividends if DRP is off
-      dailyGrowth = path.at(ts) / path.at(ts - MS_DAY) - 1
-                  - (drip ? 0 : divYieldForYear / 100 / 365.25);
-    }
-    const dailyDiv      = drip ? 0 : bal * (divYieldForYear / 100) / 365.25;
-    const dailyContrib  = monthly / daysInMonth(y, m);
-    const dailyFranking = frankingPct > 0 ? bal * frankingBoostAnnual / 365.25 : 0;
-
-    bal     = bal * (1 + dailyGrowth) + dailyContrib;
-    contrib += dailyContrib;
-    divs    += dailyDiv;
-    if (frankingPct > 0) { bal += dailyFranking; frankingCum += dailyFranking; }
-
-    const yearCPI = mode === 'historical' ? (AU_CPI_YR[y] ?? 2.7) : compState.inflationRate;
-    cpiAccum *= Math.pow(1 + yearCPI / 100, 1 / 365.25);
-
-    const isLast        = ts >= endTs;
-    const isJan1        = m === 0 && d === 1;
-    const xAxisLabel    = isLast ? fmtDate(d, m, y) : (isJan1 ? `${y}` : null);
-    const isDivPayment  = !drip && [1,4,7,10].includes(m) && d === daysInMonth(y, m);
-
-    data.push({
-      date: `${d} ${MOS[m]} ${y}`,
-      label: xAxisLabel,
-      value: Math.round(bal),
-      contributions: Math.round(contrib),
-      dividends: Math.round(divs),
-      inflAdj: Math.round(bal / cpiAccum),
-      frankingCum: Math.round(frankingCum),
-      isDivPayment,
-      ts
-    });
-
-    ts += MS_DAY;
-  }
-
-  return data;
-}
-
-// ── Interactive SVG chart ──────────────────────────────────────────
-let _lastCompData = [];
-let _lastRetData  = null; // {sims, retirementYears}
-
-function buildChart(data, drip, svgId, tipId) {
-  const showInfl = compState.showInflation;
-  const P={t:12,r:12,b:40,l:68}, W=820, H=270, cw=W-P.l-P.r, ch=H-P.t-P.b;
-  const maxV = Math.max(...data.map(d=>d.value), showInfl ? Math.max(...data.map(d=>d.inflAdj||0)) : 0, 1);
-  const xs = i => (i / Math.max(data.length-1,1)) * cw;
-  const ys = v => ch - Math.min(v/maxV,1)*ch;
-
-  const line = (key,col,dash='') => {
-    const d = data.map((p,i)=>`${i===0?'M':'L'}${xs(i).toFixed(1)},${ys(p[key]).toFixed(1)}`).join(' ');
-    return `<path d="${d}" fill="none" stroke="${col}" stroke-width="${dash?1.5:2.5}" ${dash?`stroke-dasharray="${dash}"`:''}/>`;
+function wirePicker(id, onPick) {
+  const inp = $(id), box = $(id + '-sugg');
+  if (!inp) return;
+  const show = () => {
+    const q = inp.value.trim().toUpperCase();
+    if (!q || !INDEX?.tickers?.length) { box.style.display = 'none'; return; }
+    const hits = INDEX.tickers.filter(t => t.c.startsWith(q)).concat(
+      INDEX.tickers.filter(t => !t.c.startsWith(q) && (t.n || '').toUpperCase().includes(q))).slice(0, 12);
+    box.innerHTML = hits.length ? hits.map(t => `<div class="etf-sugg-row" data-c="${t.c}"><b>${t.c}</b> <span>${esc(t.n)}</span> <em>${esc(t.t)}</em></div>`).join('')
+      : `<div class="etf-sugg-row etf-sugg-none">Not on the list — ${requestLink(q)}</div>`;
+    box.style.display = 'block';
   };
+  inp.addEventListener('input', show);
+  inp.addEventListener('focus', show);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') { const c = inp.value.trim().toUpperCase(); if (c) { box.style.display = 'none'; onPick(c); } } });
+  inp.addEventListener('blur', () => setTimeout(() => box.style.display = 'none', 200));
+  box.addEventListener('mousedown', e => { const r = e.target.closest('[data-c]'); if (r) { e.preventDefault(); inp.value = r.dataset.c; box.style.display = 'none'; onPick(r.dataset.c); } });
+}
+const REPO = 'https://github.com/Felixillion/Felixillion.github.io';
+function requestLink(code) {
+  const c = encodeURIComponent(String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6));
+  return `<a href="${REPO}/issues/new?title=Add%20ticker%3A%20${c}&body=${encodeURIComponent('Please add this ASX code to the ETF Tools price list. (Leave the title as “Add ticker: CODE” — it is processed automatically.)')}" target="_blank" rel="noopener">request ${c ? decodeURIComponent(c) : 'a ticker'} ↗</a>`;
+}
 
-  const yTicks  = [0,.25,.5,.75,1].map(t=>({y:ch-t*ch, lbl:fmtAUD(t*maxV)}));
-  const labeled = data.filter(d=>d.label);
-  const step    = Math.max(1, Math.ceil(labeled.length/9));
-  const xLabels = labeled.filter((_,i)=>i%step===0||i===labeled.length-1);
+// ════════════════════════════════════════════════════════════════════════════
+// TAB 1 — COMPARE
+// ════════════════════════════════════════════════════════════════════════════
+const cmp = { codes: ['VAS', 'VGS', 'NDQ'], start: '', end: '', initial: 10000, contrib: 500, freq: 'monthly', drp: true, fee: 0, real: false };
 
-  const divDots = !drip ? data
-    .map((p,i) => ({p,i}))
-    .filter(({p}) => p.isDivPayment && p.dividends > 0)
-    .map(({p,i}) => {
-      const x = xs(i).toFixed(1), y = ys(p.dividends).toFixed(1);
-      return `<polygon points="${x},${(Number(y)-5).toFixed(1)} ${(Number(x)+4).toFixed(1)},${y} ${x},${(Number(y)+5).toFixed(1)} ${(Number(x)-4).toFixed(1)},${y}"
-        fill="#f59e0b" opacity="0.85" class="div-marker" data-idx="${i}"/>`;
-    }).join('') : '';
+/** Simulate one fund on a weekly grid. Buys happen at the Friday close; DRP reinvests at the ex-date close. */
+function simulate(s, grid, cfg) {
+  const flags = contribFlags(grid, cfg.freq);
+  const i0 = at(s, grid[0]);
+  let u = 0, cash = 0, invested = 0, income = 0;
+  const value = [], inv = [], flows = [], incomeArr = [];
+  let di = s.d.findIndex(([d]) => d > grid[0]); if (di < 0) di = s.d.length;
+  grid.forEach((date, k) => {
+    const i = i0 + k;
+    // distributions with ex-date in (previous Friday, this Friday] go to units held before this week's buy
+    if (!cfg.drp && k > 0) {
+      while (di < s.d.length && s.d[di][0] <= date) { const amt = u * s.d[di][1]; cash += amt; income += amt; di++; }
+    }
+    const buy = k === 0 ? cfg.initial : (flags[k] ? cfg.contrib : 0);
+    if (buy > 0) {
+      const net = Math.max(0, buy - cfg.fee);
+      u += net / (cfg.drp ? s.x[i] : s.p[i]);
+      invested += buy; flows.push({ date, amount: -buy });
+    }
+    value.push(u * (cfg.drp ? s.x[i] : s.p[i]) + cash); inv.push(invested); incomeArr.push(income);
+  });
+  flows.push({ date: grid[grid.length - 1], amount: value[value.length - 1] });
+  return { value, invested: inv, income: incomeArr, flows, totalIncome: income };
+}
 
-  return `<div style="position:relative;">
-  <svg id="${svgId}" width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible;display:block;cursor:crosshair;">
-    <rect width="${W}" height="${H}" fill="#020818" rx="8"/>
-    <g transform="translate(${P.l},${P.t})">
-      ${yTicks.map(t=>`
-        <line x1="0" y1="${t.y.toFixed(1)}" x2="${cw}" y2="${t.y.toFixed(1)}" stroke="#1e293b" stroke-dasharray="3,3"/>
-        <text x="-8" y="${(t.y+4).toFixed(1)}" text-anchor="end" fill="#475569" font-size="10" font-family="monospace">${t.lbl}</text>
-      `).join('')}
-      ${xLabels.map(d=>{
-        const i=data.indexOf(d); const x=xs(i).toFixed(1);
-        return `<line x1="${x}" y1="0" x2="${x}" y2="${ch}" stroke="#1e293b" stroke-dasharray="3,3"/>
-        <text x="${x}" y="${ch+22}" text-anchor="middle" fill="#475569" font-size="9">${d.label}</text>`;
-      }).join('')}
-      ${line('contributions','#38bdf8','5,4')}
-      ${line('value','#4ade80')}
-      ${showInfl ? line('inflAdj','#fb923c','4,3') : ''}
-      ${!drip ? line('dividends','#f59e0b','2,3') : ''}
-      ${divDots}
-      <line id="${svgId}-xline" x1="0" y1="0" x2="0" y2="${ch}" stroke="#475569" stroke-width="1" opacity="0" pointer-events="none"/>
-      <rect id="${svgId}-overlay" x="0" y="0" width="${cw}" height="${ch}" fill="transparent"
-        data-svg="${svgId}" data-tip="${tipId}" data-pl="${P.l}" data-cw="${cw}" data-len="${data.length}" data-type="comp"/>
-    </g>
-  </svg>
-  <div id="${tipId}" style="display:none;position:absolute;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.6rem .8rem;font-size:.75rem;pointer-events:none;z-index:100;min-width:170px;box-shadow:0 4px 20px rgba(0,0,0,.5);white-space:nowrap;"></div>
+/** Stats on the fund itself (independent of contributions) over a grid. */
+function fundStats(s, grid) {
+  const i0 = at(s, grid[0]), i1 = at(s, grid[grid.length - 1]);
+  const xs = s.x.slice(i0, i1 + 1), ps = s.p.slice(i0, i1 + 1), yrs = daysBetween(grid[0], grid[grid.length - 1]) / 365.25;
+  const cal = calendarReturns(xs, grid), years = Object.keys(cal);
+  const last12 = addDays(grid[grid.length - 1], -365);
+  const ttm = s.d.filter(([d]) => d > last12 && d <= grid[grid.length - 1]).reduce((a, [, v]) => a + v, 0);
+  return { tr: cagr(xs[0], xs[xs.length - 1], yrs), price: cagr(ps[0], ps[ps.length - 1], yrs), vol: volatility(xs),
+    dd: maxDrawdown(xs, grid), cal, best: years.length ? Math.max(...years.map(y => cal[y])) : null,
+    worst: years.length ? Math.min(...years.map(y => cal[y])) : null, yield: ps.length ? ttm / ps[ps.length - 1] * 100 : null, xs };
+}
+
+function readHash() {
+  const h = location.hash.replace(/^#/, ''); if (!h) return;
+  const [tab, q] = h.split('?'); if (tab) state.tab = tab;
+  if (!q) return;
+  const p = new URLSearchParams(q);
+  if (tab === 'compare') {
+    if (p.get('c')) cmp.codes = p.get('c').toUpperCase().split(',').filter(Boolean).slice(0, 6);
+    ['start', 'end', 'freq'].forEach(k => { if (p.get(k)) cmp[k] = p.get(k); });
+    ['initial', 'contrib', 'fee'].forEach(k => { if (p.get(k)) cmp[k] = num(p.get(k)); });
+    if (p.get('drp')) cmp.drp = p.get('drp') === '1';
+    if (p.get('real')) cmp.real = p.get('real') === '1';
+  }
+  if (tab === 'backtest' && p.get('a')) {
+    const parse = v => v.split(',').map(t => { const [c, w] = t.split(':'); return { c: c.toUpperCase(), w: num(w) }; }).filter(h => h.c);
+    bt.a = parse(p.get('a')); bt.b = p.get('b') ? parse(p.get('b')) : [];
+    ['start', 'end', 'rebal', 'freq'].forEach(k => { if (p.get(k)) bt[k] = p.get(k); });
+    ['initial', 'contrib'].forEach(k => { if (p.get(k)) bt[k] = num(p.get(k)); });
+  }
+}
+function writeHash() {
+  let q = '';
+  if (state.tab === 'compare') q = new URLSearchParams({ c: cmp.codes.join(','), start: cmp.start, end: cmp.end, initial: cmp.initial, contrib: cmp.contrib,
+    freq: cmp.freq, drp: cmp.drp ? 1 : 0, fee: cmp.fee, real: cmp.real ? 1 : 0 }).toString();
+  if (state.tab === 'backtest') q = new URLSearchParams({ a: bt.a.map(h => h.c + ':' + h.w).join(','), b: bt.b.map(h => h.c + ':' + h.w).join(','),
+    start: bt.start, end: bt.end, rebal: bt.rebal, initial: bt.initial, contrib: bt.contrib, freq: bt.freq }).toString();
+  history.replaceState(null, '', '#' + state.tab + (q ? '?' + q : ''));
+}
+
+function freqSelect(id, v) {
+  return `<select id="${id}" class="etf-input">${[['none', 'No regular amount'], ['weekly', 'Weekly'], ['fortnightly', 'Fortnightly'], ['monthly', 'Monthly'], ['quarterly', 'Quarterly'], ['yearly', 'Yearly']]
+    .map(([k, l]) => `<option value="${k}"${k === v ? ' selected' : ''}>${l}</option>`).join('')}</select>`;
+}
+
+function renderCompare(el) {
+  el.innerHTML = `
+  <div class="etf-intro">Pick up to 6 ETFs, LICs or ASX 200 shares and see what the same investments would have grown to — a starting amount plus regular contributions, with distributions reinvested or taken as cash.
+    Uses real weekly prices and distributions since each fund listed.</div>
+  <div class="etf-chips" id="cmp-chips"></div>
+  <div class="etf-grid">
+    <div><label class="etf-label">Add a fund or share</label>${pickerHTML('cmp-add', '', 'Type a code or name…')}</div>
+    <div><label class="etf-label">Starting amount</label><input id="cmp-initial" class="etf-input" inputmode="decimal" value="${cmp.initial}"></div>
+    <div><label class="etf-label">Regular amount</label><input id="cmp-contrib" class="etf-input" inputmode="decimal" value="${cmp.contrib}"></div>
+    <div><label class="etf-label">How often</label>${freqSelect('cmp-freq', cmp.freq)}</div>
+    <div><label class="etf-label">From</label><input id="cmp-start" type="date" class="etf-input" value="${cmp.start}"></div>
+    <div><label class="etf-label">To</label><input id="cmp-end" type="date" class="etf-input" value="${cmp.end}"></div>
+    <div><label class="etf-label">Brokerage per purchase</label><input id="cmp-fee" class="etf-input" inputmode="decimal" value="${cmp.fee}"></div>
+    <div><label class="etf-label">Distributions</label><select id="cmp-drp" class="etf-input"><option value="1"${cmp.drp ? ' selected' : ''}>Reinvested (DRP)</option><option value="0"${!cmp.drp ? ' selected' : ''}>Taken as cash</option></select></div>
+  </div>
+  <label class="etf-check"><input type="checkbox" id="cmp-real"${cmp.real ? ' checked' : ''}> Show in today's dollars (adjusted for inflation)</label>
+  <div id="cmp-out"><div class="etf-loading">Loading prices…</div></div>
+  <details class="etf-details" id="cmp-browse"><summary>🔎 Browse all ${INDEX?.tickers?.length || ''} funds and shares — sort by return, yield or history</summary><div id="browse-body"></div></details>`;
+  const upd = debounce(() => { readCompareInputs(); computeCompare(); }, 250);
+  ['cmp-initial', 'cmp-contrib', 'cmp-fee'].forEach(id => $(id).addEventListener('input', upd));
+  ['cmp-freq', 'cmp-start', 'cmp-end', 'cmp-drp', 'cmp-real'].forEach(id => $(id).addEventListener('change', upd));
+  wirePicker('cmp-add', c => { if (!cmp.codes.includes(c) && cmp.codes.length < 6) cmp.codes.push(c); $('cmp-add').value = ''; drawChips(); computeCompare(); });
+  $('cmp-browse').addEventListener('toggle', e => { if (e.target.open) renderBrowser(); });
+  drawChips(); computeCompare();
+}
+function readCompareInputs() {
+  cmp.initial = Math.max(0, num($('cmp-initial').value)); cmp.contrib = Math.max(0, num($('cmp-contrib').value));
+  cmp.fee = Math.max(0, num($('cmp-fee').value)); cmp.freq = $('cmp-freq').value; cmp.start = $('cmp-start').value; cmp.end = $('cmp-end').value;
+  cmp.drp = $('cmp-drp').value === '1'; cmp.real = $('cmp-real').checked;
+}
+function drawChips() {
+  $('cmp-chips').innerHTML = cmp.codes.map((c, i) => `<span class="etf-chip" style="border-color:${PALETTE[i]};"><i style="background:${PALETTE[i]}"></i>${esc(c)}
+    <button type="button" data-rm="${esc(c)}" aria-label="Remove ${esc(c)}">✕</button></span>`).join('') +
+    (cmp.codes.length ? '' : '<span style="color:var(--text-secondary);font-size:.85rem;">Add a fund to start.</span>');
+  $('cmp-chips').querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => { cmp.codes = cmp.codes.filter(c => c !== b.dataset.rm); drawChips(); computeCompare(); }));
+}
+
+async function computeCompare() {
+  writeHash();
+  const out = $('cmp-out'); if (!out) return;
+  if (!cmp.codes.length) { out.innerHTML = ''; return; }
+  const loaded = await Promise.all(cmp.codes.map(loadSeries));
+  const missing = cmp.codes.filter((c, i) => !loaded[i]);
+  const ss = loaded.filter(Boolean);
+  let note = missing.length ? `<div class="etf-warn">No price data for ${missing.map(esc).join(', ')} — ${missing.map(requestLink).join(' · ')} (added automatically, usually within minutes).</div>` : '';
+  if (!ss.length) { out.innerHTML = note || '<div class="etf-warn">Price data not available yet.</div>'; return; }
+  // common period: the latest listing date of the chosen funds to the earliest last price
+  const first = ss.reduce((a, s) => s.start > a.start ? s : a);
+  let a = first.start, b = ss.map(s => s.end).sort()[0];
+  if (cmp.start && friday(cmp.start) > a) a = friday(cmp.start);
+  if (cmp.end && cmp.end < b) b = cmp.end;
+  const grid = weeks(a, b).filter(d => ss.every(s => at(s, d) != null));
+  if (grid.length < 5) { out.innerHTML = note + '<div class="etf-warn">Pick a longer period (these funds don\'t share at least a few weeks of history in the dates chosen).</div>'; return; }
+  if (!cmp.start && ss.length > 1) note += `<div class="etf-note">Compared over the period all of them have traded: from <b>${fmtDate(grid[0])}</b> (when ${esc(first.code)} listed) to ${fmtDate(grid[grid.length - 1])}. Set “From” to change it.</div>`;
+  const cfg = { ...cmp };
+  const sims = ss.map(s => simulate(s, grid, cfg)), stats = ss.map(s => fundStats(s, grid));
+  const end = grid[grid.length - 1];
+  const realF = cmp.real ? grid.map(d => cpiIndex(end) / cpiIndex(d)) : grid.map(() => 1);
+  const realInv = (() => { let tot = 0; const fl = contribFlags(grid, cmp.freq); return grid.map((d, k) => { const add = k === 0 ? cmp.initial : fl[k] ? cmp.contrib : 0; tot += add * (cpiIndex(end) / cpiIndex(d)); return tot; }); })();
+  const series = ss.map((s, i) => ({ name: s.code, color: PALETTE[cmp.codes.indexOf(s.code)], vals: sims[i].value.map((v, k) => v * realF[k]) }));
+  const invVals = cmp.real ? realInv : sims[0].invested;
+  const chart = lineChart('cmp-chart', grid, [...series, { name: cmp.real ? 'Total put in (today\'s $)' : 'Total put in', color: '#94a3b8', dash: '5,4', width: 1.5, vals: invVals }],
+    { label: 'Value over time' });
+  const yearsAll = [...new Set(stats.flatMap(st => Object.keys(st.cal)))].sort();
+  const ytdYear = end.slice(0, 4), ytdShown = !end.endsWith('-12-31') && end < `${ytdYear}-12-24`;
+  const rows = [
+    ['Total put in', (s, i) => money(cmp.real ? realInv[realInv.length - 1] : sims[i].invested.at(-1))],
+    ['Value at ' + fmtDate(end), (s, i) => `<b>${money(sims[i].value.at(-1))}</b>`],
+    ['Gain', (s, i) => { const g = sims[i].value.at(-1) - (cmp.real ? realInv.at(-1) : sims[i].invested.at(-1)); return `<span style="color:${posNeg(g)}">${money(g)}</span>`; }],
+    ...(!cmp.drp ? [['Distributions received (cash)', (s, i) => money(sims[i].totalIncome)]] : []),
+    ['Your annual return <span class="etf-q" title="Money-weighted (like an IRR): accounts for when each contribution went in. Before tax; after the fund\'s fees; brokerage included.">?</span>', (s, i) => { const r = xirr(sims[i].flows); return `<span style="color:${posNeg(r)}">${pct(r)}</span>`; }],
+    ['Fund total return p.a. <span class="etf-q" title="Time-weighted return of the fund itself with distributions reinvested, after its fees.">?</span>', (s, i) => pct(stats[i].tr)],
+    ['Price-only growth p.a.', (s, i) => pct(stats[i].price)],
+    ['Distribution yield (last 12 months)', (s, i) => pctPlain(stats[i].yield)],
+    ['Worst fall (peak to bottom)', (s, i) => `<span style="color:#f87171">${pct(stats[i].dd.pct)}</span><div class="etf-sub">${stats[i].dd.peak ? fmtMonth(stats[i].dd.peak) + ' → ' + fmtMonth(stats[i].dd.trough) + (stats[i].dd.recovered ? ', recovered ' + fmtMonth(stats[i].dd.recovered) : ', not yet recovered') : ''}</div>`],
+    ['Volatility <span class="etf-q" title="Annualised standard deviation of weekly returns.">?</span>', (s, i) => pctPlain(stats[i].vol)],
+    ['Best / worst calendar year', (s, i) => stats[i].best == null ? '—' : `${pct(stats[i].best, 0)} / ${pct(stats[i].worst, 0)}`],
+    ['Listed', s => fmtDate(s.start)],
+  ];
+  out.innerHTML = note + chart + `
+    <div style="overflow-x:auto;margin-top:1rem;"><table class="etf-table">
+      <thead><tr><th></th>${ss.map(s => `<th style="color:${PALETTE[cmp.codes.indexOf(s.code)]}">${esc(s.code)}<div class="etf-sub">${esc(s.name)}</div></th>`).join('')}</tr></thead>
+      <tbody>${rows.map(([l, f]) => `<tr><td>${l}</td>${ss.map((s, i) => `<td>${f(s, i)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <h4 class="etf-h4">Calendar-year total returns</h4>
+    ${yearsAll.length ? barChart(yearsAll, ss.map((s, i) => ({ name: s.code, color: PALETTE[cmp.codes.indexOf(s.code)], vals: stats[i].cal }))) : ''}
+    <div style="overflow-x:auto;"><table class="etf-table etf-table-num">
+      <thead><tr><th>Year</th>${ss.map(s => `<th>${esc(s.code)}</th>`).join('')}</tr></thead>
+      <tbody>${yearsAll.slice().reverse().map(y => `<tr><td>${y}${y === ytdYear && ytdShown ? ' <span class="etf-sub">to ' + fmtDate(end).slice(0, -5) + '</span>' : ''}</td>${stats.map(st => `<td style="color:${posNeg(st.cal[y])}">${pct(st.cal[y])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <div class="etf-actions"><button type="button" class="dl-btn" id="cmp-csv">⬇ Weekly values (CSV)</button>
+      <button type="button" class="dl-btn" id="cmp-share">🔗 Copy link to this comparison</button>
+      <button type="button" class="dl-btn" id="cmp-to-bt">📐 Backtest these as a portfolio →</button></div>
+    <div class="etf-fine">Before tax and franking credits; after each fund's fees (they're taken out of the unit price). ${cmp.drp ? 'Distributions are reinvested at the price on the ex-date (a close approximation of DRP).' : 'Distributions are kept as cash, without interest.'}
+      Prices are weekly closes from Yahoo Finance, updated weekly${INDEX?.updated ? ' (last update ' + fmtDate(INDEX.updated) + ')' : ''}. Past performance is not a reliable indicator of future performance.</div>`;
+  wireChart('cmp-chart');
+  $('cmp-csv').onclick = () => csv([['Date', 'Total put in', ...ss.map(s => s.code + ' value')], ...grid.map((d, k) => [d, invVals[k].toFixed(2), ...sims.map(sm => sm.value[k].toFixed(2))])], 'etf-comparison.csv');
+  $('cmp-share').onclick = () => { navigator.clipboard?.writeText(location.href); $('cmp-share').textContent = '✓ Link copied'; };
+  $('cmp-to-bt').onclick = () => { bt.a = ss.map(s => ({ c: s.code, w: +(100 / ss.length).toFixed(1) })); bt.b = []; setTab('backtest'); };
+}
+function csv(rows, name) {
+  const blob = new Blob([rows.map(r => r.map(v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v).join(',')).join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// ── fund browser ─────────────────────────────────────────────────────────────
+const brw = { q: '', type: 'all', region: 'all', sort: 'r5', dir: -1, limit: 60 };
+function renderBrowser() {
+  const body = $('browse-body'); if (!body || !INDEX?.tickers) return;
+  const regions = [...new Set(INDEX.tickers.map(t => t.r).filter(Boolean))].sort();
+  body.innerHTML = `<div class="etf-grid" style="margin:.6rem 0;">
+      <div><label class="etf-label">Search</label><input id="brw-q" class="etf-input" value="${esc(brw.q)}" placeholder="e.g. nasdaq, bond, VAS"></div>
+      <div><label class="etf-label">Type</label><select id="brw-type" class="etf-input">${['all', 'ETF', 'LIC', 'Share'].map(t => `<option${brw.type === t ? ' selected' : ''}>${t}</option>`).join('')}</select></div>
+      <div><label class="etf-label">Region</label><select id="brw-region" class="etf-input"><option value="all">All</option>${regions.map(r => `<option${brw.region === r ? ' selected' : ''}>${esc(r)}</option>`).join('')}</select></div>
+    </div><div id="brw-table"></div>`;
+  const draw = () => {
+    const q = brw.q.toUpperCase();
+    let rows = INDEX.tickers.filter(t => (brw.type === 'all' || t.t === brw.type) && (brw.region === 'all' || t.r === brw.region)
+      && (!q || t.c.includes(q) || (t.n || '').toUpperCase().includes(q)));
+    const k = brw.sort;
+    rows.sort((a, b) => { const va = a[k], vb = b[k]; if (va == null) return 1; if (vb == null) return -1; return (va > vb ? 1 : va < vb ? -1 : 0) * brw.dir; });
+    const cols = [['c', 'Code'], ['n', 'Name'], ['r1', '1 yr'], ['r3', '3 yr p.a.'], ['r5', '5 yr p.a.'], ['r10', '10 yr p.a.'], ['y', 'Yield'], ['s', 'Since']];
+    $('brw-table').innerHTML = `<div style="overflow-x:auto;"><table class="etf-table etf-table-num etf-sortable"><thead><tr>${cols.map(([k, l]) => `<th data-k="${k}">${l}${brw.sort === k ? (brw.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('')}<th></th></tr></thead><tbody>
+      ${rows.slice(0, brw.limit).map(t => `<tr><td><b>${t.c}</b></td><td class="etf-name">${esc(t.n)}<div class="etf-sub">${esc(t.t)}${t.r ? ' · ' + esc(t.r) : ''}</div></td>
+        ${['r1', 'r3', 'r5', 'r10'].map(k => `<td style="color:${posNeg(t[k])}">${pct(t[k])}</td>`).join('')}<td>${pctPlain(t.y)}</td><td>${t.s?.slice(0, 4) || ''}</td>
+        <td><button type="button" class="dl-btn" data-add="${t.c}">+ compare</button></td></tr>`).join('')}</tbody></table></div>
+      <div class="etf-fine">${rows.length} match${rows.length === 1 ? '' : 'es'}${rows.length > brw.limit ? ` — showing ${brw.limit}. <a href="#" id="brw-more">Show more</a>` : ''}. Total returns (distributions reinvested) to ${fmtDate(INDEX.updated)}; yield = distributions in the last 12 months ÷ price.
+      Not there? ${requestLink('')}.</div>`;
+    $('brw-table').querySelectorAll('th[data-k]').forEach(th => th.onclick = () => { if (brw.sort === th.dataset.k) brw.dir *= -1; else { brw.sort = th.dataset.k; brw.dir = ['c', 'n', 's'].includes(th.dataset.k) ? 1 : -1; } draw(); });
+    $('brw-table').querySelectorAll('[data-add]').forEach(b => b.onclick = () => { const c = b.dataset.add; if (!cmp.codes.includes(c)) { if (cmp.codes.length >= 6) cmp.codes.shift(); cmp.codes.push(c); } drawChips(); computeCompare(); b.textContent = '✓ added'; });
+    $('brw-more')?.addEventListener('click', e => { e.preventDefault(); brw.limit += 100; draw(); });
+  };
+  $('brw-q').addEventListener('input', debounce(e => { brw.q = $('brw-q').value; brw.limit = 60; draw(); }, 200));
+  $('brw-type').onchange = e => { brw.type = e.target.value; draw(); };
+  $('brw-region').onchange = e => { brw.region = e.target.value; draw(); };
+  draw();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB 2 — BACKTEST A PORTFOLIO
+// ════════════════════════════════════════════════════════════════════════════
+const bt = { a: [{ c: 'VAS', w: 40 }, { c: 'VGS', w: 50 }, { c: 'VGE', w: 10 }], b: [{ c: 'VDHG', w: 100 }],
+  rebal: 'yearly', initial: 10000, contrib: 0, freq: 'monthly', start: '', end: '' };
+const BT_PRESETS = [
+  ['DIY high growth (VAS / VGS / VGE)', [['VAS', 40], ['VGS', 50], ['VGE', 10]]],
+  ['DIY balanced (VAS / VGS / VAF / VIF)', [['VAS', 30], ['VGS', 30], ['VAF', 20], ['VIF', 20]]],
+  ['Vanguard High Growth (VDHG)', [['VDHG', 100]]],
+  ['Betashares All Growth (DHHF)', [['DHHF', 100]]],
+  ['Australian shares only (A200)', [['A200', 100]]],
+  ['US tech tilt (VAS / IVV / NDQ)', [['VAS', 40], ['IVV', 40], ['NDQ', 20]]],
+];
+
+function portfolioEditor(key, title, color) {
+  const rows = bt[key];
+  const tot = rows.reduce((a, h) => a + (+h.w || 0), 0);
+  return `<div class="etf-port" style="border-color:${color}55;">
+    <div class="etf-port-head"><b style="color:${color}">${title}</b>
+      <select class="etf-input etf-preset" data-key="${key}" style="max-width:260px;"><option value="">Load an example…</option>${BT_PRESETS.map((p, i) => `<option value="${i}">${esc(p[0])}</option>`).join('')}${key === 'b' ? '<option value="clear">— none (no comparison)</option>' : ''}</select></div>
+    ${rows.map((h, i) => `<div class="etf-port-row">${pickerHTML(`bt-${key}-c${i}`, h.c)}
+      <div class="etf-w"><input class="etf-input" id="bt-${key}-w${i}" inputmode="decimal" value="${h.w}"><span>%</span></div>
+      <button type="button" class="etf-x" data-rm="${key}:${i}" aria-label="Remove">✕</button></div>`).join('')}
+    <div class="etf-port-foot"><button type="button" class="dl-btn" data-addrow="${key}">+ Add holding</button>
+      <span style="color:${Math.abs(tot - 100) < 0.05 ? 'var(--text-secondary)' : '#fbbf24'};font-size:.8rem;">Total ${+tot.toFixed(2)}%${Math.abs(tot - 100) >= 0.05 && rows.length ? ' — scaled to 100%' : ''}</span></div>
   </div>`;
 }
 
-// Run calcMonthly for a specific ticker without mutating compState permanently
-function calcMonthlyFor(ticker) {
-  const prev = compState.ticker;
-  compState.ticker = ticker;
-  const data = calcMonthly();
-  compState.ticker = prev;
-  return data;
+function renderBacktest(el) {
+  el.innerHTML = `<div class="etf-intro">Build a portfolio from any of the funds and shares, choose how often it's rebalanced, and see how it would have done — growth, worst falls, year-by-year returns and how the holdings move together.
+    Optionally compare it with a second portfolio or a single fund (like Portfolio Visualizer, but with Australian prices).</div>
+    <div class="etf-port-wrap"><div id="bt-ed-a"></div><div id="bt-ed-b"></div></div>
+    <div class="etf-grid">
+      <div><label class="etf-label">Rebalance</label><select id="bt-rebal" class="etf-input">${[['none', 'Never (buy and hold)'], ['yearly', 'Every year'], ['quarterly', 'Every quarter'], ['monthly', 'Every month']].map(([k, l]) => `<option value="${k}"${bt.rebal === k ? ' selected' : ''}>${l}</option>`).join('')}</select></div>
+      <div><label class="etf-label">Starting amount</label><input id="bt-initial" class="etf-input" inputmode="decimal" value="${bt.initial}"></div>
+      <div><label class="etf-label">Regular amount</label><input id="bt-contrib" class="etf-input" inputmode="decimal" value="${bt.contrib}"></div>
+      <div><label class="etf-label">How often</label>${freqSelect('bt-freq', bt.freq)}</div>
+      <div><label class="etf-label">From</label><input id="bt-start" type="date" class="etf-input" value="${bt.start}"></div>
+      <div><label class="etf-label">To</label><input id="bt-end" type="date" class="etf-input" value="${bt.end}"></div>
+    </div>
+    <div id="bt-out"><div class="etf-loading">Loading prices…</div></div>`;
+  drawEditors();
+  const upd = debounce(() => { readBtInputs(); computeBacktest(); }, 300);
+  ['bt-initial', 'bt-contrib'].forEach(id => $(id).addEventListener('input', upd));
+  ['bt-rebal', 'bt-freq', 'bt-start', 'bt-end'].forEach(id => $(id).addEventListener('change', upd));
+  computeBacktest();
 }
-
-const COMPARE_PALETTE = ['#38bdf8','#f59e0b','#a78bfa','#fb923c','#84cc16'];
-
-function buildComparisonChart(seriesMap) {
-  // seriesMap: { ticker: { data, label, color } }
-  // Store globally so the tooltip handler can access live data
-  window._lastCmpSeries = seriesMap;
-
-  const entries = Object.entries(seriesMap);
-  const P={t:28,r:12,b:40,l:68}, W=820, H=270, cw=W-P.l-P.r, ch=H-P.t-P.b;
-
-  const allVals = entries.flatMap(([,s])=>s.data.map(d=>d.value));
-  const maxV    = Math.max(...allVals, 1);
-
-  const xs = (i, len) => (i / Math.max(len-1,1)) * cw;
-  const ys = v => ch - Math.min(v/maxV,1)*ch;
-  const yTicks = [0,.25,.5,.75,1].map(t=>({ y:ch-t*ch, lbl:fmtAUD(t*maxV) }));
-
-  // X-axis labels from the primary series
-  const primary = entries[0]?.[1];
-  const labeled = primary?.data.filter(d=>d.label) ?? [];
-  const step    = Math.max(1, Math.ceil(labeled.length/9));
-  const xLabels = labeled.filter((_,i)=>i%step===0||i===labeled.length-1);
-
-  const paths = entries.map(([tk,s])=>{
-    const d = s.data.map((p,i)=>`${i===0?'M':'L'}${xs(i,s.data.length).toFixed(1)},${ys(p.value).toFixed(1)}`).join(' ');
-    return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.5" opacity="0.9"/>`;
-  }).join('');
-
-  // Legend items — spaced across the top, show final values
-  const legendItems = entries.map(([tk,s],i)=>{
-    const last = s.data[s.data.length-1];
-    const lx = (i * (cw / entries.length)).toFixed(1);
-    return `<text x="${lx}" y="-10" font-size="9" font-family="sans-serif" fill="${s.color}">■ ${s.label}  ${fmtAUD(last?.value??0)}</text>`;
-  }).join('');
-
-  return `<div style="position:relative;margin-bottom:1.5rem;">
-  <div style="font-size:.78rem;color:#94a3b8;font-weight:600;margin-bottom:.5rem;">Portfolio Value — Comparison</div>
-  <svg id="comp-cmp-svg" width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible;display:block;cursor:crosshair;">
-    <rect width="${W}" height="${H}" fill="#020818" rx="8"/>
-    <g transform="translate(${P.l},${P.t})">
-      ${yTicks.map(t=>`
-        <line x1="0" y1="${t.y.toFixed(1)}" x2="${cw}" y2="${t.y.toFixed(1)}" stroke="#1e293b" stroke-dasharray="3,3"/>
-        <text x="-8" y="${(t.y+4).toFixed(1)}" text-anchor="end" fill="#475569" font-size="10" font-family="monospace">${t.lbl}</text>
-      `).join('')}
-      ${xLabels.map(d=>{
-        const i = primary.data.indexOf(d);
-        const x = xs(i, primary.data.length).toFixed(1);
-        return `<line x1="${x}" y1="0" x2="${x}" y2="${ch}" stroke="#1e293b" stroke-dasharray="3,3"/>
-          <text x="${x}" y="${ch+22}" text-anchor="middle" fill="#475569" font-size="9">${d.label}</text>`;
-      }).join('')}
-      ${paths}
-      ${legendItems}
-      <line id="comp-cmp-svg-xline" x1="0" y1="0" x2="0" y2="${ch}" stroke="#475569" stroke-width="1" opacity="0" pointer-events="none"/>
-      <rect id="comp-cmp-svg-overlay" x="0" y="0" width="${cw}" height="${ch}" fill="transparent"
-        data-svg="comp-cmp-svg" data-tip="comp-cmp-tip" data-pl="${P.l}" data-cw="${cw}" data-len="${primary.data.length}" data-type="comparison"/>
-    </g>
-  </svg>
-  <div id="comp-cmp-tip" style="display:none;position:absolute;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.6rem .8rem;font-size:.75rem;pointer-events:none;z-index:100;min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,.5);white-space:nowrap;"></div>
-  </div>`;
-}
-
-
-function buildRetChart(sims, retirementYears) {
-  const P={t:12,r:12,b:40,l:68}, W=820,H=270, cw=W-P.l-P.r, ch=H-P.t-P.b;
-  const pv = retState.portfolioValue;
-  const maxV = Math.max(...sims.flatMap(s=>s.path.map(p=>p.v)), pv, 1);
-  const xs=(i,len)=>(i/Math.max(len-1,1))*cw, ys=v=>ch-Math.min(v/maxV,1)*ch;
-  const yTicks=[0,.25,.5,.75,1].map(t=>({y:ch-t*ch,lbl:fmtAUD(t*maxV)}));
-  const xLabels=Array.from({length:retirementYears+1},(_,i)=>i)
-    .filter((_,i,a)=>i%Math.max(1,Math.ceil(a.length/8))===0||i===retirementYears);
-
-  return `<div style="position:relative;">
-  <svg id="ret-svg" width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible;display:block;cursor:crosshair;">
-    <rect width="${W}" height="${H}" fill="#020818" rx="8"/>
-    <g transform="translate(${P.l},${P.t})">
-      ${yTicks.map(t=>`<line x1="0" y1="${t.y.toFixed(1)}" x2="${cw}" y2="${t.y.toFixed(1)}" stroke="#1e293b" stroke-dasharray="3,3"/>
-        <text x="-8" y="${(t.y+4).toFixed(1)}" text-anchor="end" fill="#475569" font-size="10" font-family="monospace">${t.lbl}</text>`).join('')}
-      ${xLabels.map(yr=>{const x=(yr/retirementYears*cw).toFixed(1);return `<line x1="${x}" y1="0" x2="${x}" y2="${ch}" stroke="#1e293b" stroke-dasharray="3,3"/>
-        <text x="${x}" y="${ch+22}" text-anchor="middle" fill="#475569" font-size="9">Yr ${yr}</text>`;}).join('')}
-      ${sims.map(s=>{const d=s.path.map((p,i)=>`${i===0?'M':'L'}${xs(i,s.path.length).toFixed(1)},${ys(p.v).toFixed(1)}`).join(' ');
-        return `<path d="${d}" fill="none" stroke="${s.survived?'rgba(74,222,128,.28)':'rgba(239,68,68,.22)'}" stroke-width="1"/>`;}).join('')}
-      <line x1="0" y1="${ys(pv).toFixed(1)}" x2="${cw}" y2="${ys(pv).toFixed(1)}" stroke="#334155" stroke-width="1" stroke-dasharray="6,3"/>
-      <line id="ret-svg-xline" x1="0" y1="0" x2="0" y2="${ch}" stroke="#475569" stroke-width="1" opacity="0" pointer-events="none"/>
-      <rect id="ret-svg-overlay" x="0" y="0" width="${cw}" height="${ch}" fill="transparent"
-        data-svg="ret-svg" data-tip="ret-tip" data-pl="${P.l}" data-cw="${cw}" data-len="${sims[0]?.path.length||0}" data-type="ret"/>
-    </g>
-  </svg>
-  <div id="ret-tip" style="display:none;position:absolute;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.6rem .8rem;font-size:.75rem;pointer-events:none;z-index:100;min-width:180px;box-shadow:0 4px 20px rgba(0,0,0,.5);white-space:nowrap;"></div>
-  </div>`;
-}
-
-function attachChartListeners() {
-  document.querySelectorAll('[id$="-overlay"]').forEach(overlay => {
-    const svgId = overlay.dataset.svg;
-    const tipId = overlay.dataset.tip;
-    const padL  = parseFloat(overlay.dataset.pl);
-    const cw    = parseFloat(overlay.dataset.cw);
-    const type  = overlay.dataset.type;
-    const xline = document.getElementById(`${svgId}-xline`);
-    const tip   = document.getElementById(tipId);
-    const svgEl = document.getElementById(svgId);
-    if (!tip || !svgEl) return;
-
-    overlay.addEventListener('mousemove', e => {
-      const rect  = svgEl.getBoundingClientRect();
-      const scX   = 820 / rect.width;
-      const rawX  = (e.clientX - rect.left) * scX - padL;
-      const frac  = Math.max(0, Math.min(1, rawX / cw));
-
-      if (type === 'comp') {
-        // Daily data — snap directly to nearest calculated point, no interpolation needed
-        const idx = Math.round(frac * (_lastCompData.length - 1));
-        const p   = _lastCompData[idx];
-        if (!p) return;
-
-        if (xline) { xline.setAttribute('x1',(frac*cw).toFixed(1)); xline.setAttribute('x2',(frac*cw).toFixed(1)); xline.setAttribute('opacity','0.5'); }
-        let h = `<div style="color:#94a3b8;margin-bottom:.3rem;font-weight:600;">${p.date}</div>`;
-        h += `<div style="color:#4ade80;">Value: <strong>${fmtAUD(p.value)}</strong></div>`;
-        if (compState.showInflation) h += `<div style="color:#fb923c;">Real (${compState.mode==='historical'?'ABS CPI':compState.inflationRate+'%'}): <strong>${fmtAUD(p.inflAdj||p.value)}</strong></div>`;
-        h += `<div style="color:#38bdf8;">Contributed: ${fmtAUD(p.contributions)}</div>`;
-        h += `<div style="color:#f59e0b;">Gains: ${fmtAUD(p.value - p.contributions)}</div>`;
-        if (compState.frankingMode && p.frankingCum > 0) h += `<div style="color:#fbbf24;">Franking received: ${fmtAUD(p.frankingCum)}</div>`;
-        if (!compState.drip && p.dividends) {
-          h += `<div style="color:#a78bfa;">Cumulative Dividends: ${fmtAUD(p.dividends)}</div>`;
-          if (p.isDivPayment) h += `<div style="color:#f59e0b;font-size:.68rem;">◆ Dividend payment month</div>`;
-        }
-        tip.innerHTML = h;
-      } else if (type === 'ret' && _lastRetData) {
-        const { sims } = _lastRetData;
-        const pathLen = sims[0]?.path.length || 0;
-        const idx = Math.round(frac * (pathLen - 1));
-        if (xline) { xline.setAttribute('x1',(frac*cw).toFixed(1)); xline.setAttribute('x2',(frac*cw).toFixed(1)); xline.setAttribute('opacity','0.5'); }
-        const yr = idx;
-        const vals = sims.map(s=>s.path[idx]?.v||0).filter(v=>v>0);
-        if (!vals.length) { tip.style.display='none'; return; }
-        vals.sort((a,b)=>a-b);
-        const median = vals[Math.floor(vals.length/2)];
-        const p10    = vals[Math.floor(vals.length*.1)];
-        const p90    = vals[Math.floor(vals.length*.9)];
-        const aliveN = vals.length;
-        let h = `<div style="color:#94a3b8;margin-bottom:.3rem;font-weight:600;">Year ${yr} of retirement</div>`;
-        h += `<div style="color:#4ade80;">Median: <strong>${fmtAUD(median)}</strong></div>`;
-        h += `<div style="color:#94a3b8;font-size:.7rem;">10th pct: ${fmtAUD(p10)} · 90th pct: ${fmtAUD(p90)}</div>`;
-        h += `<div style="color:${aliveN===sims.length?'#4ade80':'#f59e0b'};">Still surviving: ${aliveN}/${sims.length}</div>`;
-        tip.innerHTML = h;
-      } else if (type === 'comparison' && window._lastCmpSeries) {
-        // Daily data — snap directly to nearest point, no interpolation
-        const seriesEntries = Object.values(window._lastCmpSeries);
-        const primaryData   = seriesEntries[0]?.data || [];
-        const idx  = Math.round(frac * (primaryData.length - 1));
-        const refP = primaryData[idx];
-        if (!refP) return;
-
-        if (xline) { xline.setAttribute('x1',(frac*cw).toFixed(1)); xline.setAttribute('x2',(frac*cw).toFixed(1)); xline.setAttribute('opacity','0.5'); }
-
-        let h = `<div style="color:#94a3b8;margin-bottom:.4rem;font-weight:600;">${refP.date}</div>`;
-        for (const s of seriesEntries) {
-          const p = s.data[Math.min(idx, s.data.length - 1)];
-          if (!p) continue;
-          h += `<div style="color:${s.color};margin-bottom:.15rem;"><strong>${s.label}:</strong> ${fmtAUD(p.value)}`;
-          h += ` <span style="color:#64748b;font-size:.68rem;">(+${fmtAUD(p.value - p.contributions)} gains)</span></div>`;
-        }
-        if (seriesEntries.length === 2) {
-          const p0 = seriesEntries[0].data[Math.min(idx, seriesEntries[0].data.length-1)];
-          const p1 = seriesEntries[1].data[Math.min(idx, seriesEntries[1].data.length-1)];
-          if (p0 && p1) {
-            const diff = p0.value - p1.value;
-            h += `<div style="border-top:1px solid #1e293b;margin-top:.3rem;padding-top:.3rem;color:${diff>=0?'#4ade80':'#ef4444'};font-size:.7rem;">`;
-            h += `Δ ${diff>=0?'+':''}${fmtAUD(diff)} (${seriesEntries[0].label} vs ${seriesEntries[1].label})</div>`;
-          }
-        }
-        tip.innerHTML = h;
-      }
-
-      const lx = e.clientX - rect.left + 14;
-      const tipW = 200;
-      tip.style.left  = (lx + tipW > rect.width) ? `${lx - tipW - 20}px` : `${lx}px`;
-      tip.style.top   = `${Math.max(0, e.clientY - rect.top - 30)}px`;
-      tip.style.display = 'block';
-    });
-    overlay.addEventListener('mouseleave', () => {
-      if (tip) tip.style.display = 'none';
-      if (xline) xline.setAttribute('opacity', '0');
+function drawEditors() {
+  $('bt-ed-a').innerHTML = portfolioEditor('a', 'Portfolio', PALETTE[0]);
+  $('bt-ed-b').innerHTML = portfolioEditor('b', 'Compare with (optional)', PALETTE[2]);
+  ['a', 'b'].forEach(key => {
+    bt[key].forEach((h, i) => {
+      wirePicker(`bt-${key}-c${i}`, c => { bt[key][i].c = c; computeBacktest(); });
+      $(`bt-${key}-c${i}`).addEventListener('change', e => { bt[key][i].c = e.target.value.trim().toUpperCase(); computeBacktest(); });
+      $(`bt-${key}-w${i}`).addEventListener('input', debounce(e => { bt[key][i].w = num(e.target.value); drawEditorsTotals(); computeBacktest(); }, 300));
     });
   });
+  document.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { const [k, i] = b.dataset.rm.split(':'); bt[k].splice(+i, 1); drawEditors(); computeBacktest(); });
+  document.querySelectorAll('[data-addrow]').forEach(b => b.onclick = () => { bt[b.dataset.addrow].push({ c: '', w: 0 }); drawEditors(); });
+  document.querySelectorAll('.etf-preset').forEach(sel => sel.onchange = () => {
+    const k = sel.dataset.key;
+    bt[k] = sel.value === 'clear' ? [] : sel.value === '' ? bt[k] : BT_PRESETS[+sel.value][1].map(([c, w]) => ({ c, w }));
+    drawEditors(); computeBacktest(); });
+}
+function drawEditorsTotals() { /* totals refresh on next full draw; keep inputs focused while typing */ }
+function readBtInputs() {
+  bt.initial = Math.max(0, num($('bt-initial').value)); bt.contrib = Math.max(0, num($('bt-contrib').value));
+  bt.rebal = $('bt-rebal').value; bt.freq = $('bt-freq').value; bt.start = $('bt-start').value; bt.end = $('bt-end').value;
+}
+const isRebal = (prev, d, how) => how === 'none' ? false : how === 'yearly' ? d.slice(0, 4) !== prev.slice(0, 4)
+  : how === 'quarterly' ? d.slice(5, 7) !== prev.slice(5, 7) && ['01', '04', '07', '10'].includes(d.slice(5, 7))
+  : d.slice(5, 7) !== prev.slice(5, 7);
+
+/** Simulate a weighted portfolio (distributions reinvested). Returns value, invested, an index (growth of $1, no contributions), flows. */
+function simPortfolio(hold, grid, cfg) {
+  const tot = hold.reduce((a, h) => a + h.w, 0) || 1, w = hold.map(h => h.w / tot);
+  const flags = contribFlags(grid, cfg.freq);
+  const run = (initial, contrib) => {
+    let u = hold.map(() => 0); const value = [], invested = [], flows = []; let inv = 0;
+    grid.forEach((d, k) => {
+      const px = hold.map(h => h.s.x[at(h.s, d)]);
+      let val = u.reduce((a, uu, j) => a + uu * px[j], 0);
+      if (k > 0 && isRebal(grid[k - 1], d, cfg.rebal)) u = w.map((wj, j) => val * wj / px[j]);
+      const buy = k === 0 ? initial : flags[k] ? contrib : 0;
+      if (buy > 0) { u = u.map((uu, j) => uu + buy * w[j] / px[j]); inv += buy; flows.push({ date: d, amount: -buy }); }
+      val = u.reduce((a, uu, j) => a + uu * px[j], 0);
+      value.push(val); invested.push(inv);
+    });
+    flows.push({ date: grid[grid.length - 1], amount: value[value.length - 1] });
+    return { value, invested, flows };
+  };
+  const main = run(cfg.initial, cfg.contrib), idx = run(1, 0).value;
+  return { ...main, idx };
+}
+function cashReturn(a, b) {                       // average RBA cash rate over the period (for the Sharpe ratio)
+  const c = ASSET?.CASH || {}; const ys = []; for (let y = +a.slice(0, 4); y <= +b.slice(0, 4); y++) if (c[y] != null) ys.push(c[y]);
+  return ys.length ? ys.reduce((x, y) => x + y, 0) / ys.length : 3;
 }
 
-// ── SVG donut ──────────────────────────────────────────────────────
-function donut(slices, colors, sz) {
-  const cx=sz/2, cy=sz/2, r=sz*.38, tot=slices.reduce((s,v)=>s+v,0);
-  if (!tot) return '';
-  let a=-Math.PI/2;
-  return `<svg width="100%" viewBox="0 0 ${sz} ${sz}">${slices.map((v,i)=>{
-    const sw=(v/tot)*2*Math.PI;
-    const x1=(cx+r*Math.cos(a)).toFixed(2), y1=(cy+r*Math.sin(a)).toFixed(2);
-    a+=sw;
-    const x2=(cx+r*Math.cos(a)).toFixed(2), y2=(cy+r*Math.sin(a)).toFixed(2);
-    return `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${sw>Math.PI?1:0},1 ${x2},${y2} Z" fill="${colors[i%colors.length]}" opacity=".9"/>`;
-  }).join('')}</svg>`;
+async function computeBacktest() {
+  writeHash();
+  const out = $('bt-out'); if (!out) return;
+  const ports = [['a', 'Portfolio', PALETTE[0]], ['b', 'Comparison', PALETTE[2]]].filter(([k]) => bt[k].some(h => h.c && h.w > 0));
+  if (!ports.length) { out.innerHTML = '<div class="etf-note">Add at least one holding with a weight.</div>'; return; }
+  const codes = [...new Set(ports.flatMap(([k]) => bt[k].filter(h => h.c && h.w > 0).map(h => h.c)))];
+  const loaded = Object.fromEntries(await Promise.all(codes.map(async c => [c, await loadSeries(c)])));
+  const missing = codes.filter(c => !loaded[c]);
+  if (missing.length) { out.innerHTML = `<div class="etf-warn">No price data for ${missing.map(esc).join(', ')} — check the code or ${missing.map(requestLink).join(' · ')}.</div>`; return; }
+  const ss = codes.map(c => loaded[c]);
+  const latest = ss.reduce((a, s) => s.start > a.start ? s : a);
+  let a = latest.start, b = ss.map(s => s.end).sort()[0];
+  if (bt.start && friday(bt.start) > a) a = friday(bt.start);
+  if (bt.end && bt.end < b) b = bt.end;
+  const grid = weeks(a, b).filter(d => ss.every(s => at(s, d) != null));
+  if (grid.length < 26) { out.innerHTML = '<div class="etf-warn">Less than six months of shared history for these holdings — choose a longer period or older funds.</div>'; return; }
+  const res = ports.map(([k, label, color]) => {
+    const hold = bt[k].filter(h => h.c && h.w > 0).map(h => ({ ...h, s: loaded[h.c] }));
+    const sim = simPortfolio(hold, grid, bt);
+    const yrs = daysBetween(grid[0], grid.at(-1)) / 365.25, cal = calendarReturns(sim.idx, grid), cy = Object.values(cal);
+    const ret = cagr(sim.idx[0], sim.idx.at(-1), yrs), vol = volatility(sim.idx), cash = cashReturn(grid[0], grid.at(-1));
+    // worst 12-month stretch
+    let w12 = null; for (let i = 52; i < sim.idx.length; i++) { const r = (sim.idx[i] / sim.idx[i - 52] - 1) * 100; if (w12 == null || r < w12) w12 = r; }
+    return { k, label: k === 'b' && hold.length === 1 ? hold[0].c : label, color, hold, sim, cal, ret, vol, dd: maxDrawdown(sim.idx, grid),
+      best: cy.length ? Math.max(...cy) : null, worst: cy.length ? Math.min(...cy) : null, w12, sharpe: ret != null && vol ? (ret - cash) / vol : null, irr: xirr(sim.flows) };
+  });
+  const limitNote = !bt.start ? `<div class="etf-note">From <b>${fmtDate(grid[0])}</b>, the first week every holding was trading (${esc(latest.code)} listed ${fmtDate(latest.start)}). Older history isn't simulated with stand-ins.</div>` : '';
+  const growth = lineChart('bt-growth', grid, [...res.map(r => ({ name: r.label, color: r.color, vals: r.sim.value })),
+    ...(bt.contrib > 0 || bt.initial > 0 ? [{ name: 'Total put in', color: '#94a3b8', dash: '5,4', width: 1.5, vals: res[0].sim.invested }] : [])], { label: 'Portfolio value' });
+  const dd = lineChart('bt-dd', grid, res.map(r => { let pk = 0; return { name: r.label, color: r.color, area: true, vals: r.sim.idx.map(v => { pk = Math.max(pk, v); return (v / pk - 1) * 100; }) }; }),
+    { height: 200, fmt: v => Math.round(v) + '%', tipFmt: v => pct(v), zero: true, label: 'Drawdowns' });
+  const years = [...new Set(res.flatMap(r => Object.keys(r.cal)))].sort();
+  const metric = [['Final value', r => `<b>${money(r.sim.value.at(-1))}</b>`], ['Total put in', r => money(r.sim.invested.at(-1))],
+    ['Annual return (time-weighted)', r => pct(r.ret)], ['Your annual return (money-weighted)', r => pct(r.irr)],
+    ['Volatility (std. dev.)', r => pctPlain(r.vol)], ['Worst fall', r => `<span style="color:#f87171">${pct(r.dd.pct)}</span><div class="etf-sub">${fmtMonth(r.dd.peak)} → ${fmtMonth(r.dd.trough)}${r.dd.recovered ? '' : ' (not recovered)'}</div>`],
+    ['Best year / worst year', r => r.best == null ? '—' : `${pct(r.best, 0)} / ${pct(r.worst, 0)}`], ['Worst 12 months', r => pct(r.w12)],
+    ['Sharpe ratio <span class="etf-q" title="Return above the average RBA cash rate, divided by volatility. Higher = more return per unit of risk.">?</span>', r => r.sharpe == null ? '—' : r.sharpe.toFixed(2)]];
+  // correlations between holdings (weekly total returns)
+  const corrCodes = codes.slice(0, 10), rets = Object.fromEntries(corrCodes.map(c => [c, weeklyRets(grid.map(d => loaded[c].x[at(loaded[c], d)]))]));
+  const corrTbl = corrCodes.length > 1 ? `<h4 class="etf-h4">How the holdings move together <span class="etf-q" title="Correlation of weekly returns: 1 = move in lockstep, 0 = unrelated, negative = tend to move opposite ways. Lower correlation = more diversification.">?</span></h4>
+    <div style="overflow-x:auto;"><table class="etf-table etf-table-num"><thead><tr><th></th>${corrCodes.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>
+    ${corrCodes.map(r => `<tr><td><b>${r}</b></td>${corrCodes.map(c => { const v = r === c ? 1 : correl(rets[r], rets[c]); const h = v == null ? 0 : Math.max(0, v);
+      return `<td style="background:rgba(56,189,248,${(h * 0.35).toFixed(2)})">${v == null ? '—' : v.toFixed(2)}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div>` : '';
+  out.innerHTML = limitNote + growth + `
+    <div style="overflow-x:auto;margin-top:1rem;"><table class="etf-table"><thead><tr><th></th>${res.map(r => `<th style="color:${r.color}">${esc(r.label)}<div class="etf-sub">${r.hold.map(h => `${h.c} ${+(h.w / r.hold.reduce((a, x) => a + x.w, 0) * 100).toFixed(1)}%`).join(' · ')}</div></th>`).join('')}</tr></thead>
+    <tbody>${metric.map(([l, f]) => `<tr><td>${l}</td>${res.map(r => `<td>${f(r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <h4 class="etf-h4">Falls from the previous peak</h4>${dd}
+    <h4 class="etf-h4">Calendar-year returns</h4>${barChart(years, res.map(r => ({ name: r.label, color: r.color, vals: r.cal })))}
+    ${corrTbl}
+    <div id="bt-inside"></div>
+    <div class="etf-actions"><button type="button" class="dl-btn" id="bt-csv">⬇ Weekly values (CSV)</button><button type="button" class="dl-btn" id="bt-share">🔗 Copy link to this backtest</button></div>
+    <div class="etf-fine">Distributions reinvested; after each fund's fees; before tax, franking credits and trading costs. Rebalancing happens in the first week of each ${bt.rebal === 'yearly' ? 'year' : bt.rebal === 'quarterly' ? 'quarter' : 'month'}${bt.rebal === 'none' ? ' — never (weights drift)' : ''}; regular amounts are split by the target weights.
+      Time-weighted return measures the portfolio; money-weighted measures your dollars (it depends on when you added money).</div>`;
+  wireChart('bt-growth'); wireChart('bt-dd');
+  $('bt-csv').onclick = () => csv([['Date', ...res.map(r => r.label + ' value'), 'Total put in'], ...grid.map((d, k) => [d, ...res.map(r => r.sim.value[k].toFixed(2)), res[0].sim.invested[k].toFixed(2)])], 'portfolio-backtest.csv');
+  $('bt-share').onclick = () => { navigator.clipboard?.writeText(location.href); $('bt-share').textContent = '✓ Link copied'; };
+  renderInside(res[0].hold);
 }
 
-// ── Shared UI primitives ───────────────────────────────────────────
-// Live lookup cache: stores ETF-like objects fetched from /data/stocks/
-const _liveCache = {};
-let _stockIndex = null;  // populated on first lookup
-
-// ── Per-ticker price cache (weekly prices for start/end sanity cards) ──────
-// Populated lazily when historical mode is active. Keyed by short ticker (no .AX).
-const _priceCache = {};
-const _pricePending = {};
-
-/** Find the weekly price entry closest to a given calendar date. */
-function priceNearDate(weeklyPrices, y, m, d) {
-  if (!weeklyPrices || weeklyPrices.length === 0) return null;
-  const target = new Date(y, m, d).getTime();
-  let best = null, bestDiff = Infinity;
-  for (const p of weeklyPrices) {
-    const diff = Math.abs(new Date(p.date).getTime() - target);
-    if (diff < bestDiff) { bestDiff = diff; best = p; }
-  }
-  return best; // { date: 'YYYY-MM-DD', close: number }
+/** Look-through: sectors and biggest underlying companies, for funds with hand-checked data. */
+async function renderInside(hold) {
+  await loadMeta();
+  const el = $('bt-inside'); if (!el) return;
+  const tot = hold.reduce((a, h) => a + h.w, 0) || 1;
+  const sectors = {}, comp = {}; let covered = 0;
+  hold.forEach(h => {
+    const w = h.w / tot, m = ETF_META[h.c];
+    if (m?.sectors) { covered += w; Object.entries(m.sectors).forEach(([s, v]) => sectors[s] = (sectors[s] || 0) + w * v);
+      (m.topHoldings || []).forEach(t => { const k = t.ticker || t.name; comp[k] = comp[k] || { name: t.name, w: 0, via: [] }; comp[k].w += w * t.weight; comp[k].via.push(h.c); }); }
+    else if (h.s?.type === 'Share') { covered += w; sectors['Single shares'] = (sectors['Single shares'] || 0) + w * 100;
+      comp[h.c] = comp[h.c] || { name: h.s.name, w: 0, via: [] }; comp[h.c].w += w * 100; comp[h.c].via.push('direct'); }
+  });
+  if (covered < 0.01) { el.innerHTML = ''; return; }
+  const secs = Object.entries(sectors).map(([k, v]) => [k, v / covered]).sort((a, b) => b[1] - a[1]);
+  const tops = Object.values(comp).map(c => ({ ...c, w: c.w / covered })).sort((a, b) => b.w - a.w).slice(0, 12);
+  el.innerHTML = `<h4 class="etf-h4">What's inside the portfolio</h4>
+    <div class="etf-two"><div><div class="etf-label">Sectors</div>${secs.map(([k, v]) => `<div class="etf-bar"><span>${esc(k)}</span><div><i style="width:${Math.min(100, v)}%;background:${SEC_CLR[k] || '#64748b'}"></i></div><b>${v.toFixed(1)}%</b></div>`).join('')}</div>
+    <div><div class="etf-label">Biggest underlying companies</div><table class="etf-table etf-table-num">${tops.map(t => `<tr><td style="text-align:left">${esc(t.name)}${t.via.length > 1 ? ` <span class="etf-sub">via ${t.via.join(', ')}</span>` : ''}</td><td>${t.w.toFixed(1)}%</td></tr>`).join('')}</table></div></div>
+    <div class="etf-fine">Based on hand-checked snapshots of each fund's sectors and top holdings (in data/etf_data.json) — covers ${Math.round(covered * 100)}% of this portfolio${covered < 0.99 ? '; funds without that data are left out' : ''}. Companies held through more than one fund are added together (the overlap).</div>`;
 }
 
-/** Return the Yahoo Finance history URL for a ticker (ASX assumed). */
-function yahooUrl(ticker) {
-  const key = ticker?.replace('.AX','') || '';
-  return `https://finance.yahoo.com/quote/${key}.AX/history/`;
+// ════════════════════════════════════════════════════════════════════════════
+// TAB 3 — MY PORTFOLIO (saved only in this browser)
+// ════════════════════════════════════════════════════════════════════════════
+const pf = { trades: [], targets: {}, benchmark: 'VDHG', next: 1000, confirmClear: false };
+function pfLoad() { try { const d = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (d) Object.assign(pf, { trades: d.trades || [], targets: d.targets || {}, benchmark: d.benchmark || 'VDHG' }); } catch (e) {} }
+function pfSave() { try { localStorage.setItem(STORE_KEY, JSON.stringify({ v: 1, trades: pf.trades, targets: pf.targets, benchmark: pf.benchmark })); } catch (e) {} }
+const newId = () => Math.random().toString(36).slice(2, 10);
+const EXAMPLE_TRADES = [['2019-03-12', 'VAS', 'buy', 120, 81.5, 9.5], ['2019-03-12', 'VGS', 'buy', 110, 74.2, 9.5], ['2020-04-02', 'VAS', 'buy', 80, 64.0, 9.5],
+  ['2021-08-17', 'NDQ', 'buy', 150, 33.9, 9.5], ['2022-10-04', 'VGS', 'buy', 60, 92.0, 9.5], ['2024-02-20', 'VAS', 'sell', 50, 96.5, 9.5], ['2024-06-11', 'VAF', 'buy', 100, 45.3, 9.5]];
+
+function renderPortfolio(el) {
+  pfLoad();
+  el.innerHTML = `<div class="etf-intro">Track what you actually own: enter your buys and sells (or import a CSV from your broker) and see today's value, gains, distributions received and your real annual return — compared with putting the same money into a single benchmark fund.
+    <b>Your trades are saved only in this browser</b> — nothing is uploaded. Use Export to back them up or move them to another device.</div>
+    <div class="etf-actions" style="margin-top:0;">
+      <button type="button" class="dl-btn" id="pf-export">⬇ Export (backup file)</button>
+      <label class="dl-btn" style="cursor:pointer;">⬆ Import file or broker CSV<input type="file" id="pf-import" accept=".json,.csv,.txt" style="display:none"></label>
+      ${pf.trades.length ? '' : '<button type="button" class="dl-btn" id="pf-example">Try an example portfolio</button>'}
+      ${pf.trades.length ? `<button type="button" class="dl-btn" id="pf-clear" style="margin-left:auto;">${pf.confirmClear ? '⚠ Click again to delete all trades' : '🗑 Clear all'}</button>` : ''}
+    </div>
+    <div id="pf-msg"></div>
+    <div id="pf-out"></div>
+    <h4 class="etf-h4">Add a trade</h4>
+    <div class="etf-grid etf-trade-form">
+      <div><label class="etf-label">Date</label><input id="pf-date" type="date" class="etf-input" value="${iso(new Date())}"></div>
+      <div><label class="etf-label">Code</label>${pickerHTML('pf-code', '', 'e.g. VAS')}</div>
+      <div><label class="etf-label">Buy or sell</label><select id="pf-side" class="etf-input"><option value="buy">Buy</option><option value="sell">Sell</option></select></div>
+      <div><label class="etf-label">Units</label><input id="pf-units" class="etf-input" inputmode="decimal"></div>
+      <div><label class="etf-label">Price per unit</label><input id="pf-price" class="etf-input" inputmode="decimal"><a href="#" id="pf-fillpx" class="etf-mini">use that week's closing price</a></div>
+      <div><label class="etf-label">Brokerage</label><input id="pf-fee" class="etf-input" inputmode="decimal" value="0"></div>
+    </div>
+    <button type="button" class="etf-btn" id="pf-add">Add trade</button>
+    <div class="etf-fine">Reinvested distributions (DRP): add each allotment as a buy at the DRP price — the distribution is counted as income and the allotment as money in, so they cancel out in your return.
+      CSV import understands most broker exports with columns like Date, Code, Buy/Sell, Quantity, Price, Brokerage, and CommSec's transaction export (“B 100 VAS @ 91.23”).</div>
+    <div id="pf-trades"></div>`;
+  wirePicker('pf-code', () => {});
+  $('pf-add').onclick = addTradeFromForm;
+  $('pf-fillpx').onclick = async e => { e.preventDefault(); const s = await loadSeries($('pf-code').value); const d = $('pf-date').value;
+    if (!s || !d) { pfMsg('Enter a code and date first.', true); return; }
+    const i = s.pos[friday(d)] ?? (friday(d) > s.end ? s.p.length - 1 : null); if (i == null) { pfMsg(`No ${s.code} price for that week.`, true); return; }
+    $('pf-price').value = s.p[i]; };
+  $('pf-export').onclick = () => { const blob = new Blob([JSON.stringify({ v: 1, exported: iso(new Date()), trades: pf.trades, targets: pf.targets, benchmark: pf.benchmark }, null, 1)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `my-portfolio-${iso(new Date())}.json`; a.click(); };
+  $('pf-import').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => importText(r.result, f.name); r.readAsText(f); };
+  $('pf-example')?.addEventListener('click', () => { pf.trades = EXAMPLE_TRADES.map(([date, code, side, units, price, fee]) => ({ id: newId(), date, code, side, units, price, fee }));
+    pf.targets = { VAS: 35, VGS: 40, NDQ: 15, VAF: 10 }; pfSave(); renderPortfolio(el); });
+  $('pf-clear')?.addEventListener('click', () => { if (!pf.confirmClear) { pf.confirmClear = true; renderPortfolio(el); return; }
+    pf.trades = []; pf.targets = {}; pf.confirmClear = false; pfSave(); renderPortfolio(el); });
+  computePortfolio();
+}
+function pfMsg(t, bad) { const m = $('pf-msg'); if (m) m.innerHTML = t ? `<div class="${bad ? 'etf-warn' : 'etf-note'}">${t}</div>` : ''; }
+async function addTradeFromForm() {
+  const t = { id: newId(), date: $('pf-date').value, code: $('pf-code').value.trim().toUpperCase().replace(/\.AX$/, ''), side: $('pf-side').value,
+    units: num($('pf-units').value), price: num($('pf-price').value), fee: num($('pf-fee').value) };
+  if (!t.date || !t.code || !(t.units > 0) || !(t.price > 0)) { pfMsg('Please fill in the date, code, units and price.', true); return; }
+  if (!(await loadSeries(t.code))) pfMsg(`Added — but there's no price data for ${esc(t.code)} yet, so it can't be valued. ${requestLink(t.code)}.`, true); else pfMsg('');
+  pf.trades.push(t); pfSave(); $('pf-units').value = ''; $('pf-price').value = ''; computePortfolio();
 }
 
-/**
- * Load weekly prices for a preset ticker into _priceCache.
- * Fires rerender() once when data arrives so the cards update.
- * Idempotent — safe to call on every render.
- */
-function ensurePriceData(ticker) {
-  const key = (ticker === 'LIVE')
-    ? compState.liveTickerInput.trim().toUpperCase().replace('.AX','')
-    : ticker;
-  if (!key || key === 'CUSTOM' || _priceCache[key] !== undefined || _pricePending[key]) return;
-  _pricePending[key] = true;
-  const axKey = key.endsWith('.AX') ? key : `${key}.AX`;
-  fetch(`/data/stocks/${axKey}.json`)
-    .then(r => r.ok ? r.json() : null)
-    .then(d => {
-      _priceCache[key] = d ? { weeklyPrices: d.weeklyPrices || [], currentPrice: d.currentPrice } : null;
-    })
-    .catch(() => { _priceCache[key] = null; })
-    .finally(() => { delete _pricePending[key]; rerender(); });
-}
-
-async function fetchStockIndex() {
-  if (_stockIndex) return _stockIndex;
-  try {
-    const r = await fetch('/data/stocks/index.json');
-    if (r.ok) { _stockIndex = await r.json(); return _stockIndex; }
-  } catch(e) {}
-  _stockIndex = { stocks: [] };
-  return _stockIndex;
-}
-
-async function fetchLiveTicker(rawTicker) {
-  // Normalise: "CBA" → "CBA.AX", "CBA.AX" → "CBA.AX"
-  const key = rawTicker.trim().toUpperCase();
-  const axKey = key.endsWith('.AX') ? key : `${key}.AX`;
-  const shortKey = axKey.replace('.AX', '');
-
-  if (_liveCache[shortKey]) return _liveCache[shortKey];
-
-  // Try to load from pre-generated stock file
-  const el = document.getElementById('live-ticker-status');
-  if (el) el.textContent = `Fetching ${shortKey}…`;
-  try {
-    const r = await fetch(`/data/stocks/${axKey}.json`);
-    if (r.ok) {
-      const d = await r.json();
-      // Convert to our internal ETF format
-      const etf = {
-        name: d.name,
-        issuer: d.sector || 'ASX',
-        annualReturn: d.annualReturn || 0,
-        mer: d.mer || 0,
-        dividendYield: d.dividendYield || 0,
-        inceptionYear: 2000,
-        historicalReturns: d.historicalReturns || {},
-        topHoldings: [],
-        sectors: { [d.sector||'Other']: 100 },
-        _weeklyPrices: d.weeklyPrices || [],
-        _isLive: true,
-        _lastUpdated: d.lastUpdated,
-      };
-      _liveCache[shortKey] = etf;
-      if (el) el.textContent = `✓ ${d.name.slice(0,30)} (updated ${d.lastUpdated})`;
-      return etf;
-    } else {
-      if (el) el.textContent = `⚠ ${shortKey} not in pre-fetched list. Run the daily update script to add it.`;
-    }
-  } catch(e) {
-    if (el) el.textContent = `✗ Could not load ${shortKey}`;
-  }
+// ── import (backup JSON, generic broker CSV, CommSec CSV) ───────────────────
+function parseDate(s) {
+  s = String(s || '').trim().replace(/^"|"$/g, '');
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+  m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/);                // Australian day/month/year
+  if (m) { const y = m[3].length === 2 ? '20' + m[3] : m[3]; return `${y}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`; }
+  m = s.match(/^(\d{1,2}) (\w{3})\w* (\d{4})/);
+  if (m) { const mi = MOS.findIndex(x => x.toLowerCase() === m[2].toLowerCase()); if (mi >= 0) return `${m[3]}-${String(mi + 1).padStart(2, '0')}-${m[1].padStart(2, '0')}`; }
   return null;
 }
-
-function tickerOpts(sel, custom=false) {
-  const G = {
-    'AU Shares':['VAS','A200','IOZ','STW','VHY','MVW','VAP','MVA','ATEC'],
-    'International':['VGS','BGBL','IVV','VTS','NDQ','QUAL','MOAT','VESG',
-                     'VGAD','IHVV','HNDQ','ASIA','DJRE','IEM','F100'],
-    'Diversified':['VDHG','DHHF','VDGR','VDBA','VDCO'],
-    'Thematic':['HACK','ETHI','SEMI','CLNE','RBTZ','URNM','GEAR'],
-    'Fixed Income / Other':['VAF','QAU','QPON'],
-    'Actively Managed / LICs':['AFI','ARG','WAM','WGB','MFF','PMC'],
-  };
-  let h='';
-  for(const[g,ts] of Object.entries(G)){
-    const v=ts.filter(t=>etfData.etfs[t]); if(!v.length) continue;
-    h+=`<optgroup label="${g}">${v.map(t=>`<option value="${t}" ${t===sel?'selected':''}>${t} — ${etfData.etfs[t].name}</option>`).join('')}</optgroup>`;
-  }
-  if(custom) h+=`<option value="CUSTOM" ${'CUSTOM'===sel?'selected':''}>✏ Custom / Unlisted</option>`;
-  return h;
-}
-const yrOpts=(f,t,s)=>Array.from({length:t-f+1},(_,i)=>f+i).map(y=>`<option value="${y}" ${y===s?'selected':''}>${y}</option>`).join('');
-const moOpts=s=>MOS.map((m,i)=>`<option value="${i}" ${i===s?'selected':''}>${m}</option>`).join('');
-const sc=(l,v,c,sz='1.4rem')=>`<div class="etf-stat-card"><div class="etf-stat-label">${l}</div><div class="etf-stat-value" style="color:${c};font-size:${sz};">${v}</div></div>`;
-// scSub: stat card with a small subtitle line below the value
-const scSub=(l,v,c,sub,sz='1.4rem')=>`<div class="etf-stat-card"><div class="etf-stat-label">${l}</div><div class="etf-stat-value" style="color:${c};font-size:${sz};">${v}</div>${sub?`<div style="font-size:.62rem;color:#475569;margin-top:.25rem;line-height:1.3;">${sub}</div>`:''}</div>`;
-const dlRow=(...bs)=>`<div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;flex-wrap:wrap;">${bs.map(([id,l])=>`<button id="${id}" class="dl-btn">${l}</button>`).join('')}</div>`;
-
-// ══════════════════════════════════════════════════════════════════
-//  TAB 1 — COMPOUNDING
-// ══════════════════════════════════════════════════════════════════
-function renderCompounding() {
-  const { mode, ticker, initial, monthly,
-    projStartDay, projStartMonth, projStartYear, years,
-    histStartDay, histStartMonth, histStartYear,
-    histEndDay,   histEndMonth,   histEndYear, drip, custom, liveTickerInput,
-    showInflation, inflationRate, frankingMode, taxProfile, useCustomAlloc, customAlloc,
-    compareTickers } = compState;
-  const etf = getETF(ticker);
-  if (!etf) return `<p style="color:#ef4444;padding:2rem;">ETF data unavailable.</p>`;
-  _lastCompData = calcMonthly();
-
-  // Build comparison series (portfolio value only — same date range/params, different ticker)
-  const hasComparison = compareTickers && compareTickers.length > 0;
-  const comparisonSeries = {};
-  if (hasComparison) {
-    const primaryColor = '#4ade80';
-    comparisonSeries[ticker] = { data: _lastCompData, label: ticker, color: primaryColor };
-    compareTickers.forEach((ct, i) => {
-      const ctEtf = getETF(ct);
-      if (ctEtf) {
-        comparisonSeries[ct] = {
-          data: calcMonthlyFor(ct),
-          label: ct,
-          color: COMPARE_PALETTE[i % COMPARE_PALETTE.length]
-        };
-      }
-    });
-  }
-  const final = _lastCompData[_lastCompData.length - 1] ?? {value:0,contributions:0,dividends:0,frankingCum:0};
-  const durMo = mode==='projection' ? years*12
-    : (() => {
-        const a = new Date(histStartYear, histStartMonth, histStartDay);
-        const b = new Date(histEndYear,   histEndMonth,   histEndDay);
-        return (b - a) / (1000 * 60 * 60 * 24 * 30.44);
-      })();
-  const totalC = initial + monthly * durMo;
-  const gains  = final.value - totalC;
-  const incept = ticker==='CUSTOM' ? custom.inceptionYear : ticker==='LIVE' ? 2000 : (etf.inceptionYear||2000);
-  const histRets = ticker==='LIVE'
-    ? getHistoricalReturns(liveTickerInput.trim().toUpperCase())
-    : getHistoricalReturns(ticker);
-  const hasHist = ticker!=='CUSTOM' && Object.keys(histRets).length > 0;
-  const liveTicker = liveTickerInput.trim().toUpperCase();
-  const liveKey = liveTicker.replace('.AX', '');
-  const liveLoaded = ticker==='LIVE' && !!_liveCache[liveKey];
-  const livePending = ticker==='LIVE' && !_liveCache[liveKey] && !!liveTicker;
-
-  // ── Price-per-unit lookup for Start/End Value sanity cards ────────────────
-  // Load stock file lazily (fires rerender when data arrives).
-  const priceKey = ticker === 'LIVE' ? liveKey : ticker;
-  if (mode === 'historical' && priceKey && priceKey !== 'CUSTOM') ensurePriceData(ticker);
-  const priceData = _priceCache[priceKey];
-  const wp = priceData?.weeklyPrices || [];
-  // Live tickers already have prices in _liveCache
-  const livePrices = ticker === 'LIVE' ? (_liveCache[liveKey]?._weeklyPrices || []) : [];
-  const allPrices = wp.length ? wp : livePrices;
-
-  // Format: "~$12.34 (nearest weekly: 3 Jan 2020)"
-  // Note: Yahoo weekly data uses the first trading day of each week as the row date,
-  // so the price may differ by 1–2 days from the exact calendar date chosen, and will
-  // also reflect the adjusted close (dividends+splits folded in) rather than raw price.
-  function priceSubtitle(y, m, d) {
-    const p = priceNearDate(allPrices, y, m, d);
-    if (!p) return '';
-    const dt = new Date(p.date + 'T00:00:00');
-    const dStr = dt.toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'});
-    return `~$${p.close.toFixed(2)}/unit (${dStr})*`;
-  }
-
-  const yUrl = (ticker !== 'CUSTOM')
-    ? `<a href="${yahooUrl(ticker === 'LIVE' ? liveTicker : ticker)}" target="_blank" rel="noopener"
-         style="color:#38bdf8;font-size:.65rem;text-decoration:none;" title="View on Yahoo Finance">
-         ↗ Yahoo Finance</a>`
-    : '';
-
-  // Subtitle for End Value card — include real value if inflation is on
-  function endValueSub(y, m, d) {
-    const price = priceSubtitle(y, m, d);
-    const realPart = showInflation && final.inflAdj
-      ? `Real: <span style="color:#fb923c;">${fmtAUD(final.inflAdj)}</span>`
-      : '';
-    return [price, realPart, yUrl].filter(Boolean).join('<br>');
-  }
-
-  // Franking: show button only for AU equity ETFs
-  const frankingPct = etf.frankingPct || 0;
-  const hasFranking  = frankingPct > 0;
-  const margRate     = TAX_PROFILES[taxProfile]?.rate ?? 0.30;
-  const CORP_TAX     = 0.30;
-  // Annual effective boost per $1 for the chosen tax profile
-  const frankingBoostAnnualPct = (etf.dividendYield / 100) * frankingPct * (CORP_TAX / (1 - CORP_TAX)) * (1 - margRate) * 100;
-
-  // CPI description: project uses flat rate; historical uses real ABS data
-  const cpiDesc = mode === 'historical'
-    ? `Real ABS CPI (RBA Table G1) used year-by-year (e.g. 6.6% in 2022, 0.9% in 2020)`
-    : `2.5% = RBA mid-band target (2–3%). Australian CPI averaged ≈ 2.9% p.a. over 2000–2025 (RBA G1).`;
-
-  return `<div>
-  <!-- Mode / DRP / Inflation / Franking row -->
-  <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.2rem;align-items:center;">
-    <div style="display:flex;gap:.5rem;">
-      <button class="mode-btn ${mode==='projection'?'mode-active':''}" data-mode="projection">📈 Projection</button>
-      <button class="mode-btn ${mode==='historical'?'mode-active':''}" data-mode="historical"
-        ${!hasHist?'title="No year-by-year data — average return used throughout"':''}>📅 Historical</button>
-    </div>
-    <div style="display:flex;gap:.5rem;margin-left:auto;flex-wrap:wrap;">
-      <button class="mode-btn ${drip?'mode-active':''}"  id="drip-on">DRP On ♻</button>
-      <button class="mode-btn ${!drip?'mode-active':''}" id="drip-off">DRP Off 💸</button>
-      <button class="mode-btn ${showInflation?'mode-active infl-active':''}" id="infl-toggle"
-        title="${cpiDesc}">🏷 Real Value</button>
-      ${showInflation?`<div style="display:flex;align-items:center;gap:.3rem;" title="${cpiDesc}">
-        ${mode==='historical'
-          ?`<span style="font-size:.75rem;color:#fb923c;">ABS CPI</span>`
-          :`<input id="infl-rate" type="number" class="etf-input" style="width:56px;padding:.3rem .5rem;"
-              value="${inflationRate}" min="0" max="20" step=".5"/>
-            <span style="color:var(--text-secondary);font-size:.8rem;">% CPI</span>`}
-      </div>`:''}
-      ${hasFranking?`<button class="mode-btn ${frankingMode?'mode-active frank-active':''}" id="frank-toggle"
-        title="Model Australian dividend imputation (franking credits). The company has already paid 30% corporate tax; credits below that rate are refunded to you."
-        >🏦 Franking</button>`:''}
-    </div>
-  </div>
-  ${showInflation?`<div style="font-size:.7rem;color:#94a3b8;background:rgba(251,146,60,.05);border:1px solid rgba(251,146,60,.15);border-radius:6px;padding:.45rem .8rem;margin-bottom:.75rem;">
-    <strong style="color:#fb923c;">Real Value</strong> deflates by CPI so you see purchasing power in today's dollars.
-    ${mode==='historical'
-      ?`Uses <strong>real ABS CPI year-by-year</strong> (e.g. 6.6% in 2022, 0.9% in 2020, 3.2% in 2024 — annual averages, RBA Table G1). No user assumption needed.
-        Source: <a href="https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia" target="_blank" rel="noopener" style="color:#fb923c;text-decoration:none;">ABS Consumer Price Index ↗</a>`
-      :`<strong>2.5%</strong> = RBA's mid-band target (2–3%). Long-run Aus avg since 2000 ≈ 2.7% p.a.
-        Other scenarios: 2.0% (low inflation era), 3.5% (late 1990s), 6–8% (1970s–80s).`}
-  </div>`:''}  ${frankingMode && hasFranking ? `<div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;">
-    <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;">
-      <div style="font-size:.78rem;color:var(--text-secondary);">Tax profile:</div>
-      <select id="tax-profile" class="etf-select" style="flex:1;min-width:180px;">
-        ${Object.entries(TAX_PROFILES).map(([k,v])=>`<option value="${k}" ${k===taxProfile?'selected':''}>${v.label}</option>`).join('')}
-      </select>
-      <div style="font-size:.78rem;color:#fbbf24;">
-        Franking: <strong>${(frankingPct*100).toFixed(0)}%</strong> franked
-        &nbsp;→&nbsp; +<strong>${frankingBoostAnnualPct.toFixed(2)}%</strong> p.a. boost
-      </div>
-    </div>
-    <div style="font-size:.7rem;color:#94a3b8;line-height:1.6;">
-      <strong>How calculated:</strong>
-      Boost = dividend yield × franked% × (30 ÷ 70) × (1 − marginal rate)<br>
-      Companies pay 30% corporate tax before distributing dividends.
-      The ATO returns this as a "franking credit" to investors.
-      If your marginal rate is <em>below</em> 30%, the surplus is refunded in cash at tax time.
-      At 0% (NFP, pension super, below threshold), the <em>entire</em> credit is returned — making
-      franking worth roughly +1–1.5% p.a. for Australian shares at typical dividend yields (≈3.5–4%, ~75% franked).
-      This adds the after-tax value of the credit only — tax on the dividends themselves isn't modelled.
-      ${TAX_PROFILES[taxProfile]?.rate >= 0.30
-        ? `At ${(TAX_PROFILES[taxProfile].rate*100).toFixed(0)}%, your rate equals or exceeds 30% — credits offset tax but generate no cash refund.`
-        : `At ${(TAX_PROFILES[taxProfile]?.rate*100).toFixed(0)}%, a significant portion of the credit is refunded.`}
-    </div>
-  </div>` : ''}
-  ${mode==='historical'&&!hasHist?`<div style="font-size:.75rem;color:#f59e0b;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:.5rem .8rem;margin-bottom:1rem;">
-    ⚠ No year-by-year data for <strong>${ticker==='LIVE'?liveTicker:ticker}</strong>. ${ticker==='LIVE'&&!liveLoaded&&liveTicker?'Stock file not yet fetched — run the GitHub Action to populate data/stocks/.':'All periods use the average return ('+etf.annualReturn+'%).'}
-  </div>`:''}
-
-  <!-- ETF selector + info box -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;" class="resp-grid-1">
-    <div>
-      <label class="etf-label">ETF / Share</label>
-      <select id="comp-ticker" class="etf-select"><option value="">— Select —</option>${tickerOpts(ticker,true)}</select>
-      <!-- Live ticker search -->
-      <div style="margin-top:.5rem;display:flex;gap:.4rem;align-items:center;">
-        <input id="live-ticker-input" class="etf-input" type="text" style="flex:1;font-family:monospace;text-transform:uppercase;"
-          placeholder="Any ASX ticker, e.g. CBA, BHP…" value="${liveTickerInput}"
-          title="Type any ASX ticker (or US ticker without .AX) and press Load"/>
-        <button id="live-ticker-load" style="padding:.5rem .9rem;background:rgba(56,189,248,.1);border:1px solid #38bdf8;color:#38bdf8;border-radius:8px;cursor:pointer;font-size:.8rem;white-space:nowrap;">Load ↗</button>
-      </div>
-      <div style="font-size:.68rem;color:#334155;margin-top:.25rem;">
-        Requires daily price files from GitHub Action. <span style="color:#475569;">Data from Yahoo Finance via yfinance.</span>
-      </div>
-    </div>
-    <div class="etf-info-box">
-      <div style="color:var(--dapi-blue);font-weight:600;font-size:.85rem;">
-        ${etf.issuer}${ticker==='LIVE'?` <span style="color:#38bdf8;">${liveTicker}${liveLoaded?` · CAGR ${etf.annualReturn?.toFixed(1)}%`:''}</span>`
-          :ticker!=='CUSTOM'?` <span style="color:#475569;font-weight:400;">· est. ${etf.inceptionYear}</span>`:''}
-      </div>
-      <div style="font-size:.8rem;color:var(--text-secondary);margin-top:.25rem;">
-        ${ticker==='LIVE'&&liveLoaded
-          ? `CAGR: <span style="color:var(--fitc-green);">${_liveCache[liveKey]?.annualReturn?.toFixed(1) ?? '—'}%</span> &nbsp;·&nbsp; MER: <span style="color:#ef4444;">not in dataset</span> &nbsp;·&nbsp; <span style="color:#f59e0b;">${Object.keys(_liveCache[liveKey]?.historicalReturns||{}).length} years of data</span>`
-          : `Return used for projections: <span style="color:var(--fitc-green);" title="${etf.annualReturnBasis ? 'Historical ' + etf.annualReturnBasis + ', after fees. Past returns are not a forecast.' : 'Assumed return'}">${etf.annualReturn}%</span>${etf.annualReturnBasis ? ` <span style="font-size:.7rem;opacity:.7;">(${etf.annualReturnBasis}; not a forecast)</span>` : ''} &nbsp;·&nbsp; MER: <span style="color:#ef4444;">${etf.mer}%</span> &nbsp;·&nbsp; Yield: <span style="color:#f59e0b;">${etf.dividendYield}%</span>`
-        }
-      </div>
-      <div style="font-size:.72rem;color:#334155;margin-top:.2rem;">DRP ${drip?'On — dividends reinvested':'Off — dividends paid out'}</div>
-      ${mode==='historical'?`<div style="font-size:.68rem;color:#475569;margin-top:.3rem;line-height:1.5;">
-        Historical returns are <strong style="color:#94a3b8;">net of MER</strong> (already embedded in fund prices).<br>
-        <span style="color:#f59e0b;">⚡ Run the GitHub Action</span> to replace estimates with real Yahoo Finance prices for maximum accuracy.
-      </div>`:''}
-      ${livePending?`<div style="font-size:.7rem;color:#f59e0b;margin-top:.3rem;">⚠ ${liveTicker} not loaded — press Load or run GitHub Action first.</div>`:''}
-    </div>
-  </div>
-
-  <!-- Compare with selector -->
-  <div style="background:#0a0f1e;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.2rem;">
-    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.5rem;">
-      <span class="etf-label" style="margin-bottom:0;color:#38bdf8;">📊 Compare with other ETFs</span>
-      <span style="font-size:.7rem;color:#475569;">Add up to 4 ETFs — same investment amount &amp; date range, overlaid on a single chart</span>
-      ${compareTickers.length>0?`<button id="comp-clear-cmp" style="margin-left:auto;font-size:.72rem;color:#ef4444;background:transparent;border:1px solid rgba(239,68,68,.3);border-radius:4px;padding:.2rem .5rem;cursor:pointer;">✕ Clear all</button>`:''}
-    </div>
-    <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
-      ${['VAS','A200','DHHF','VDHG','VGS','BGBL','NDQ','IVV','VTS','VHY','AFI','ARG','ETHI','SEMI','URNM'].filter(t=>t!==ticker).map(t=>{
-        const on = compareTickers.includes(t);
-        const etfT = getETF(t);
-        return `<button class="comp-cmp-btn ${on?'comp-cmp-on':''}" data-cmp="${t}"
-          style="font-size:.72rem;padding:.25rem .55rem;border-radius:5px;border:1px solid ${on?'rgba(56,189,248,.5)':'var(--glass-border)'};
-          background:${on?'rgba(56,189,248,.1)':'transparent'};color:${on?'#38bdf8':'#64748b'};cursor:pointer;transition:all .2s;"
-          title="${etfT?.name??t}">${t}</button>`;
-      }).join('')}
-      <select id="comp-cmp-extra" class="etf-select" style="font-size:.72rem;padding:.2rem .5rem;max-width:180px;" title="Add any ETF to comparison">
-        <option value="">+ more…</option>
-        ${tickerOpts('',false)}
-      </select>
-    </div>
-    ${compareTickers.length>0?`<div style="margin-top:.5rem;font-size:.7rem;color:#38bdf8;">
-      Comparing: ${compareTickers.map((t,i)=>`<span style="background:rgba(56,189,248,.08);padding:.1rem .35rem;border-radius:3px;margin-right:.3rem;">${t}</span>`).join('')}
-      <span style="color:#475569;margin-left:.5rem;">— comparison chart appears below the main chart</span>
-    </div>`:
-    `<div style="margin-top:.4rem;font-size:.68rem;color:#334155;">
-      Click any ticker above to add it to the comparison. The comparison chart (portfolio value only) will appear below the main chart.
-      Each ticker uses the same initial/monthly/date-range settings.
-    </div>`}
-  </div>
-
-  <!-- Custom ETF panel -->
-  ${ticker==='CUSTOM'?`<div style="background:#0a0f1e;border:1px dashed #334155;border-radius:8px;padding:1rem;margin-bottom:1.2rem;">
-    <div class="etf-label" style="margin-bottom:.5rem;">Custom ETF / Portfolio parameters</div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin-bottom:.75rem;">
-      <div><label class="etf-label">Name</label><input id="cust-name" class="etf-input" type="text" value="${custom.name}"/></div>
-      <div><label class="etf-label">MER %</label><input id="cust-mer" class="etf-input" type="number" step=".01" value="${custom.mer}"/></div>
-      <div><label class="etf-label">Yield %</label><input id="cust-yield" class="etf-input" type="number" step=".1" value="${custom.dividendYield}"/></div>
-      <div><label class="etf-label">Inception Year</label><input id="cust-inception" class="etf-input" type="number" step="1" value="${custom.inceptionYear}"/></div>
-      <div><label class="etf-label">Franking %</label><input id="cust-franking" class="etf-input" type="number" step="5" min="0" max="100" value="${((custom.frankingPct||0)*100).toFixed(0)}"
-        title="What % of dividends carry franking credits? 0% = international/bonds. 75–100% = AU equity."/></div>
-    </div>
-    <!-- Return source: manual or allocation-derived -->
-    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;">
-      <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;font-size:.78rem;color:var(--text-secondary);">
-        <input type="checkbox" id="cust-use-alloc" ${useCustomAlloc?'checked':''} style="accent-color:var(--dapi-blue);"/>
-        Derive return from asset class allocation
-      </label>
-      <span style="font-size:.7rem;color:#475569;">
-        (uses assumed forward-looking returns — not historical averages: AU eq 9.5%, Intl (ex-US) 9.8%, US 10.8%, AU bonds 4.0%, Global bonds 3.5%, Cash 2.5% p.a.)
-      </span>
-    </div>
-    ${useCustomAlloc?`
-    <!-- Allocation presets -->
-    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;flex-wrap:wrap;">
-      <label class="etf-label" style="margin-bottom:0;white-space:nowrap;">Load preset:</label>
-      <select id="ca-preset" class="etf-select" style="max-width:260px;font-size:.78rem;">
-        <option value="">— select to load —</option>
-        <option value="VDHG">VDHG-like (36% AU / 54% Intl / 3% AUB / 7% GB)</option>
-        <option value="DHHF">DHHF-like (37% AU / 26% Intl / 37% US)</option>
-        <option value="VDGR">VDGR-like (28% AU / 42% Intl / 9% AUB / 21% GB)</option>
-        <option value="VDBA">VDBA-like (20% AU / 30% Intl / 15% AUB / 35% GB)</option>
-        <option value="60_40">60/40 Classic (30% AU / 30% Intl / 20% AUB / 20% GB)</option>
-        <option value="100AU">100% AU Shares</option>
-        <option value="100GL">100% International (ex-US)</option>
-        <option value="100US">100% US Shares (S&amp;P 500 / CRSP)</option>
-        <option value="AU50_US50">50% AU / 50% US</option>
-      </select>
-      <span style="font-size:.68rem;color:#475569;">Presets unlock data back to 1901 for longer historical runs</span>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:.5rem;margin-bottom:.4rem;" class="resp-grid-2">
-      ${['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'].map(k=>{
-        const labels={AU_SHARES:'AU Shares',INTL_SHARES:'Intl (ex-US)',US_SHARES:'US Shares',AU_BONDS:'AU Bonds',GLOBAL_BONDS:'Global Bonds',CASH:'Cash'};
-        return `<div>
-          <label class="etf-label">${labels[k]} <span id="lv-ca-${k}" style="color:var(--fitc-green);">${customAlloc[k]??0}%</span></label>
-          <input type="number" id="ca-${k}" class="etf-input" value="${customAlloc[k]??0}" min="0" max="100" step="1"/>
-          <input type="range" id="ca-${k}-r" class="etf-range" value="${customAlloc[k]??0}" min="0" max="100" step="1"/>
-        </div>`;
-      }).join('')}
-    </div>
-    <div style="font-size:.72rem;margin-top:.3rem;">
-      Total: <span style="color:${Math.abs(Object.values(customAlloc).reduce((s,v)=>s+v,0)-100)<0.5?'#4ade80':'#ef4444'};">
-        ${Object.values(customAlloc).reduce((s,v)=>s+v,0)}%
-      </span>
-      &nbsp;→&nbsp; Blended return: <span style="color:var(--fitc-green);">
-        ${(['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'].reduce((s,k)=>
-          s+((customAlloc[k]??0)/100)*({AU_SHARES:9.5,INTL_SHARES:9.8,US_SHARES:10.8,AU_BONDS:4.0,GLOBAL_BONDS:3.5,CASH:2.5}[k]??7),0
-        )).toFixed(2)}% p.a.
-      </span>
-    </div>`:`
-    <div>
-      <label class="etf-label">Return % <span style="font-size:.68rem;color:#475569;text-transform:none;">(manual override)</span></label>
-      <input id="cust-return" class="etf-input" type="number" step=".1" value="${custom.annualReturn}" style="width:120px;"/>
-    </div>`}
-  </div>`:''}
-
-  <!-- Input grid -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.2rem;" class="resp-grid-1">
-    <div>
-      <label class="etf-label">Initial ($AUD) <span id="lv-initial" style="color:var(--fitc-green);float:right;">${fmtAUD(initial)}</span></label>
-      <input type="number" id="comp-initial" class="etf-input" value="${initial}" min="0" step="500"/>
-      <input type="range" id="comp-initial-r" class="etf-range" value="${initial}" min="0" max="1000000" step="500"/>
-    </div>
-    <div>
-      <label class="etf-label">Monthly ($AUD) <span id="lv-monthly" style="color:var(--fitc-green);float:right;">${fmtAUD(monthly)}</span></label>
-      <input type="number" id="comp-monthly" class="etf-input" value="${monthly}" min="0" step="100"/>
-      <input type="range" id="comp-monthly-r" class="etf-range" value="${monthly}" min="0" max="10000" step="100"/>
-    </div>
-    ${mode==='projection'?`
-    <div>
-      <label class="etf-label">Years <span id="lv-years" style="color:var(--fitc-green);float:right;">${years} yrs</span></label>
-      <input type="number" id="comp-years" class="etf-input" value="${years}" min="1" max="60" step="1"/>
-      <input type="range" id="comp-years-r" class="etf-range" value="${years}" min="1" max="60" step="1"/>
-      <div style="margin-top:.6rem;">
-        <label class="etf-label" style="margin-bottom:.3rem;">Start Date</label>
-        <div style="display:flex;gap:.3rem;">
-          <select id="proj-sd" class="etf-select" style="flex:1;">${dayOpts(projStartYear, projStartMonth, projStartDay)}</select>
-          <select id="proj-sm" class="etf-select" style="flex:2;">${moOpts(projStartMonth)}</select>
-          <select id="proj-sy" class="etf-select" style="flex:2;">${yrOpts(1990, CY+5, projStartYear)}</select>
-        </div>
-      </div>
-    </div>`:`
-    <div>
-      <label class="etf-label">Date Range
-        <span style="color:#475569;font-size:.65rem;text-transform:none;float:right;">day-level precision (annual data interpolated)</span>
-      </label>
-      <div style="font-size:.7rem;color:var(--text-secondary);margin-bottom:.4rem;">From:</div>
-      <div style="display:flex;gap:.3rem;margin-bottom:.4rem;">
-        <select id="hist-sd" class="etf-select" style="flex:1;">${dayOpts(histStartYear, histStartMonth, histStartDay)}</select>
-        <select id="hist-sm" class="etf-select" style="flex:2;">${moOpts(histStartMonth)}</select>
-        <select id="hist-sy" class="etf-select" style="flex:2;">${yrOpts(incept, CY-1, histStartYear)}</select>
-      </div>
-      <div style="font-size:.7rem;color:var(--text-secondary);margin-bottom:.4rem;">To:</div>
-      <div style="display:flex;gap:.3rem;">
-        <select id="hist-ed" class="etf-select" style="flex:1;">${dayOpts(histEndYear, histEndMonth, histEndDay)}</select>
-        <select id="hist-em" class="etf-select" style="flex:2;">${moOpts(histEndMonth)}</select>
-        <select id="hist-ey" class="etf-select" style="flex:2;">${yrOpts(incept, CY-1, histEndYear)}</select>
-      </div>
-    </div>`}
-  </div>
-
-  <!-- Summary cards -->
-  <div style="display:grid;grid-template-columns:repeat(${frankingMode&&hasFranking ? (drip?5:6) : (drip?4:5)},1fr);gap:1rem;margin-bottom:1.2rem;" class="resp-grid-2">
-    ${scSub('Start Value', fmtAUD(initial), '#94a3b8',
-        mode==='historical' ? priceSubtitle(histStartYear, histStartMonth, histStartDay) : '')}
-    ${scSub('End Value',   fmtAUD(final.value), 'var(--fitc-green)',
-        mode==='historical' ? endValueSub(histEndYear, histEndMonth, histEndDay) : (yUrl || ''))}
-    ${sc('Contributed',   fmtAUD(totalC),            'var(--dapi-blue)')}
-    ${sc('Gains',         fmtAUD(gains),              '#f59e0b')}
-    ${!drip ? sc('Dividends Paid', fmtAUD(final.dividends), '#a78bfa') : ''}
-    ${frankingMode&&hasFranking ? sc('Franking Credits', fmtAUD(final.frankingCum||0), '#fbbf24') : ''}
-  </div>
-  <!-- Historical data note -->
-  ${mode==='historical' ? `<div style="font-size:.67rem;color:#334155;margin-bottom:.75rem;line-height:1.5;">
-    ℹ Returns are based on <strong style="color:#475569;">annual total returns</strong> (last trading day of each calendar year).
-    Prices shown are the nearest available weekly data point — Yahoo may not have data for weekends/holidays.
-    ${ticker!=='CUSTOM' ? `Source: <a href="${yahooUrl(ticker==='LIVE'?liveTicker:ticker)}" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;">${ticker==='LIVE'?liveTicker:ticker}.AX on Yahoo Finance ↗</a>` : ''}
-    ${allPrices.length ? `<br>* Prices are <strong style="color:#475569;">adjusted close</strong> (dividends &amp; splits folded in) from weekly data.
-    The date shown is the first trading day of that week, which may be 1–3 days from your chosen date — this is normal and expected.` : ''}
-  </div>` : ''}
-
-  ${hasComparison ? buildComparisonChart(comparisonSeries) : ''}
-  ${hasComparison ? dlRow(['dl-csv-cmp','⬇ Comparison (CSV)'],['dl-png-cmp','⬇ Comparison (PNG)']) : ''}
-  ${buildChart(_lastCompData, drip, 'comp-svg', 'comp-tip')}
-  <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem;font-size:.75rem;color:var(--text-secondary);">
-    <span><span style="color:#4ade80;">——</span> Portfolio Value (nominal)</span>
-    <span><span style="color:#38bdf8;">- -</span> Contributed</span>
-    ${showInflation?`<span><span style="color:#fb923c;">--</span> Real Value (${mode==='historical'?'ABS CPI':inflationRate+'%'} adj.)</span>`:''}
-    ${!drip?`<span><span style="color:#f59e0b;">··</span> Dividends paid out &nbsp; <span style="color:#f59e0b;">◆</span> = quarterly payment</span>`:''}
-  </div>
-  ${dlRow(['dl-csv-comp','⬇ Data (CSV)'],['dl-png-comp','⬇ Chart (PNG)'])}
-  <p style="font-size:.7rem;color:#475569;margin-top:.75rem;text-align:center;">
-    ${mode==='historical'
-      ?`Returns are approximate annual figures; intra-year returns linearly interpolated per day. Excludes tax, CGT, brokerage.
-        ${showInflation?' Real Value uses actual ABS CPI by year.':''}
-        ${frankingMode&&hasFranking?` Franking: ${TAX_PROFILES[taxProfile].label} profile applied.`:''}`
-      :`Projected from historical average return. Past performance not indicative. Excludes tax, CGT.
-        ${showInflation?` Real Value uses ${inflationRate}% p.a. CPI (RBA target: 2–3%).`:''}`}
-  </p>
-  </div>`;
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  TAB 2 — PORTFOLIO
-// ══════════════════════════════════════════════════════════════════
-function calcSectorTotals() {
-  const tot=holdings.reduce((s,h)=>s+h.amount,0), acc={};
-  holdings.forEach(h=>{ const e=etfData.etfs[h.ticker]; if(!e) return;
-    Object.entries(e.sectors).forEach(([s,p])=>{ acc[s]=(acc[s]||0)+h.amount*p/100; }); });
-  return Object.entries(acc).sort((a,b)=>b[1]-a[1])
-    .map(([sector,value])=>({sector,value,pct:tot>0?((value/tot)*100).toFixed(1):'0.0'}));
-}
-
-function renderPortfolio() {
-  const tot=holdings.reduce((s,h)=>s+h.amount,0), secs=calcSectorTotals();
-  const wY=tot>0?(holdings.reduce((s,h)=>s+h.amount*(etfData.etfs[h.ticker]?.dividendYield||0),0)/tot).toFixed(2):'0.00';
-  const wM=tot>0?(holdings.reduce((s,h)=>s+h.amount*(etfData.etfs[h.ticker]?.mer||0),0)/tot).toFixed(3):'0.000';
-  const rows=holdings.map((h,i)=>{
-    const e=etfData.etfs[h.ticker];
-    return `<div style="display:flex;gap:.75rem;align-items:center;margin-bottom:.6rem;">
-      <select class="holding-ticker etf-select" style="flex:2;" data-idx="${i}">${tickerOpts(h.ticker)}</select>
-      <div style="flex:1;position:relative;">
-        <span style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:.85rem;">$</span>
-        <input type="number" class="holding-amount etf-input" style="padding-left:1.5rem;" data-idx="${i}" value="${h.amount}" min="0" step="100"/>
-      </div>
-      <div style="flex:1;font-size:.78rem;color:var(--text-secondary);white-space:nowrap;">
-        ${tot>0?`${((h.amount/tot)*100).toFixed(1)}%`:'—'}${e?` <span style="color:#334155;">· ${e.dividendYield}% yield</span>`:''}
-      </div>
-      <button class="holding-remove" data-idx="${i}" style="background:transparent;border:1px solid #ef4444;color:#ef4444;border-radius:6px;padding:.3rem .6rem;cursor:pointer;font-size:.8rem;">✕</button>
-    </div>`;
-  }).join('');
-
-  return `<div>
-    <div id="holdings-list">${rows}</div>
-    <button id="add-holding" style="background:transparent;border:1px dashed #334155;color:var(--text-secondary);border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-size:.85rem;width:100%;margin-bottom:1.5rem;">+ Add ETF</button>
-    ${tot>0?`
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;" class="resp-grid-2">
-      ${sc('Total',fmtAUD(tot),'var(--fitc-green)','1.2rem')}
-      ${sc('Holdings',`${holdings.length} ETFs`,'var(--dapi-blue)','1.2rem')}
-      ${sc('Wtd Yield',`${wY}%`,'#f59e0b','1.2rem')}
-      ${sc('Wtd MER',`${wM}%`,'#a78bfa','1.2rem')}
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
-      <div>
-        <div class="etf-label" style="margin-bottom:.5rem;">ETF Allocation</div>
-        ${donut(holdings.map(h=>h.amount),PIE_CLR,200)}
-        <div style="margin-top:.5rem;">${holdings.map((h,i)=>`
-          <div style="display:flex;align-items:center;gap:.5rem;font-size:.75rem;margin-bottom:.3rem;">
-            <span style="width:9px;height:9px;border-radius:50%;background:${PIE_CLR[i%PIE_CLR.length]};display:inline-block;flex-shrink:0;"></span>
-            <span style="color:#e2e8f0;">${h.ticker}</span>
-            <span style="color:#475569;">${fmtAUD(h.amount)} · ${((h.amount/tot)*100).toFixed(1)}%</span>
-          </div>`).join('')}</div>
-      </div>
-      <div>
-        <div class="etf-label" style="margin-bottom:.5rem;">Sector Breakdown</div>
-        <div style="max-height:320px;overflow-y:auto;">${secs.map(({sector,value,pct})=>`
-          <div style="margin-bottom:.5rem;">
-            <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.2rem;">
-              <span style="color:#e2e8f0;">${sector}</span>
-              <span style="color:var(--text-secondary);">${pct}% · ${fmtAUD(value)}</span>
-            </div>
-            <div style="background:#1e293b;border-radius:4px;height:6px;overflow:hidden;">
-              <div style="width:${pct}%;height:100%;background:${SEC_CLR[sector]||'#94a3b8'};border-radius:4px;transition:width .4s ease;"></div>
-            </div>
-          </div>`).join('')}</div>
-      </div>
-    </div>
-    ${dlRow(['dl-csv-port','⬇ Breakdown (CSV)'])}`:''}
-  </div>`;
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  TAB 3 — OVERLAP
-// ══════════════════════════════════════════════════════════════════
-function secOverlap(a, b) {
-  const sA=etfData.etfs[a]?.sectors||{}, sB=etfData.etfs[b]?.sectors||{};
-  const all=new Set([...Object.keys(sA),...Object.keys(sB)]);
-  return parseFloat([...all].reduce((s,k)=>s+Math.min(sA[k]||0,sB[k]||0),0).toFixed(1));
-}
-
-function holdOverlap(a, b) {
-  const eA = etfData.etfs[a], eB = etfData.etfs[b];
-  const hA = Object.fromEntries((eA?.topHoldings||[]).map(h=>[h.ticker, h.weight]));
-  const hB = Object.fromEntries((eB?.topHoldings||[]).map(h=>[h.ticker, h.weight]));
-  const allKeys = new Set([...Object.keys(hA), ...Object.keys(hB)]);
-  const score   = [...allKeys].reduce((s,k)=>s + Math.min(hA[k]||0, hB[k]||0), 0);
-  const shared  = [...allKeys]
-    .filter(t => hA[t] && hB[t])
-    .sort((x,y) => Math.min(hA[y],hB[y]) - Math.min(hA[x],hB[x]));
-  return { score: parseFloat(score.toFixed(1)), shared, hA, hB,
-    hasDataA: (eA?.topHoldings||[]).length > 0,
-    hasDataB: (eB?.topHoldings||[]).length > 0 };
-}
-
-function renderOverlap() {
-  const { selected, view, drillA, drillB } = overlapState;
-  const allT = Object.keys(etfData.etfs);
-  const allSectors = [...new Set(selected.flatMap(t=>Object.keys(etfData.etfs[t]?.sectors||{})))].sort();
-
-  const heatBg = v => v>=70?'rgba(239,68,68,.3)':v>=50?'rgba(245,158,11,.2)':v>=25?'rgba(56,189,248,.15)':'transparent';
-  const heatFg = v => v>=70?'#fca5a5':v>=50?'#fcd34d':v>=25?'#7dd3fc':'#94a3b8';
-
-  const pairMatrix = (scoreFn, label) => {
-    if (selected.length < 2) return '';
-    return `<div class="etf-label" style="margin:1.2rem 0 .6rem;">${label}</div>
-    <div style="overflow-x:auto;">
-    <table style="border-collapse:collapse;font-size:.8rem;">
-      <thead><tr>
-        <th style="padding:.5rem;text-align:left;color:var(--text-secondary);min-width:55px;"></th>
-        ${selected.map(t=>`<th style="padding:.5rem;color:#e2e8f0;text-align:center;min-width:70px;">${t}</th>`).join('')}
-      </tr></thead>
-      <tbody>${selected.map(tA=>`<tr>
-        <td style="padding:.5rem;color:#e2e8f0;font-weight:600;">${tA}</td>
-        ${selected.map(tB=>{
-          if(tA===tB) return `<td style="padding:.5rem;text-align:center;color:#334155;">—</td>`;
-          const s=scoreFn(tA,tB);
-          const noData = view==='holdings' && (!etfData.etfs[tA]?.topHoldings?.length || !etfData.etfs[tB]?.topHoldings?.length);
-          if(noData) return `<td style="padding:.5rem;text-align:center;color:#475569;font-size:.72rem;">no data</td>`;
-          return `<td style="padding:.5rem;text-align:center;background:${heatBg(s)};border-radius:4px;color:${heatFg(s)};font-weight:600;cursor:pointer;"
-            class="pair-cell" data-a="${tA}" data-b="${tB}">${s}%</td>`;
-        }).join('')}
-      </tr>`).join('')}</tbody>
-    </table></div>
-    <div style="font-size:.72rem;color:#334155;margin-top:.4rem;">
-      🔴 >70% high &nbsp; 🟡 50-70% moderate &nbsp; 🔵 25-50% low &nbsp; No colour: minimal.
-      ${view==='holdings'?' Click a cell to drill into shared holdings.':''}
-    </div>`;
-  };
-
-  const sectorGrid = selected.length>0 ? `
-    <div class="etf-label" style="margin:1.2rem 0 .6rem;">Sector Allocation (%)</div>
-    <div style="overflow-x:auto;"><table style="border-collapse:collapse;font-size:.78rem;width:100%;">
-      <thead><tr>
-        <th style="padding:.5rem .75rem;color:var(--text-secondary);text-align:left;min-width:160px;">Sector</th>
-        ${selected.map(t=>`<th style="padding:.5rem;color:#e2e8f0;text-align:center;min-width:75px;">${t}</th>`).join('')}
-      </tr></thead>
-      <tbody>${allSectors.map(sec=>{
-        const vals=selected.map(t=>etfData.etfs[t]?.sectors?.[sec]||0);
-        if(!vals.some(v=>v>0)) return '';
-        return `<tr style="border-top:1px solid #0f172a;">
-          <td style="padding:.5rem .75rem;color:#94a3b8;">${sec}</td>
-          ${vals.map(v=>`<td style="padding:.5rem;text-align:center;background:${v>=20?`rgba(99,102,241,${(v/100).toFixed(2)})`:'transparent'};border-radius:3px;">
-            ${v>0?`<span style="color:${v>=20?'#e2e8f0':'#94a3b8'};font-weight:${v>=20?'600':'400'};">${v}%</span>`:`<span style="color:#1e293b;">—</span>`}
-          </td>`).join('')}
-        </tr>`;
-      }).join('')}</tbody>
-    </table></div>` : '';
-
-  // Holdings drill-down: shows for any selected pair
-  const validPairs = [];
-  for(let i=0;i<selected.length;i++) for(let j=i+1;j<selected.length;j++) {
-    if(etfData.etfs[selected[i]]?.topHoldings?.length && etfData.etfs[selected[j]]?.topHoldings?.length)
-      validPairs.push([selected[i],selected[j]]);
-  }
-
-  const pairSelectorHtml = validPairs.length>1 ? `
-    <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;">
-      <span class="etf-label" style="margin:0;">Drill into pair:</span>
-      ${validPairs.map(([a,b])=>`<button class="mode-btn ${a===drillA&&b===drillB?'mode-active':''} drill-pair"
-        data-a="${a}" data-b="${b}">${a} × ${b}</button>`).join('')}
-    </div>` : '';
-
-  const activeDrillA = validPairs.some(([a,b])=>a===drillA&&b===drillB) ? drillA : validPairs[0]?.[0];
-  const activeDrillB = validPairs.some(([a,b])=>a===drillA&&b===drillB) ? drillB : validPairs[0]?.[1];
-
-  let holdDrillHtml = '';
-  if(view==='holdings' && activeDrillA && activeDrillB) {
-    const ov = holdOverlap(activeDrillA, activeDrillB);
-    if(!ov.hasDataA || !ov.hasDataB) {
-      holdDrillHtml = `<p style="color:#f59e0b;font-size:.82rem;margin-top:.5rem;">
-        ⚠ Holdings data not available for ${!ov.hasDataA?activeDrillA:activeDrillB}. This ETF does not publish individual position-level data in our dataset.
-      </p>`;
-    } else if(ov.shared.length===0) {
-      holdDrillHtml = `<p style="color:var(--text-secondary);font-size:.82rem;margin-top:.5rem;">
-        No shared individual holdings found between <strong>${activeDrillA}</strong> and <strong>${activeDrillB}</strong>.
-        This is expected when comparing Australian-only vs international funds (different underlying stocks).
-      </p>`;
+function splitCSV(line) { const out = []; let cur = '', q = false;
+  for (const ch of line) { if (ch === '"') q = !q; else if (ch === ',' && !q) { out.push(cur); cur = ''; } else cur += ch; }
+  out.push(cur); return out.map(s => s.trim()); }
+function importText(text, name) {
+  let trades = [], skipped = 0;
+  try {
+    if (/\.json$/i.test(name) || text.trim().startsWith('{')) {
+      const d = JSON.parse(text); trades = (d.trades || []).map(t => ({ ...t, id: newId() }));
+      if (d.targets) pf.targets = d.targets; if (d.benchmark) pf.benchmark = d.benchmark;
     } else {
-      holdDrillHtml = `
-        <div class="etf-label" style="margin:.75rem 0 .5rem;">Shared Holdings: ${activeDrillA} × ${activeDrillB} — overlap score <span style="color:#f59e0b;">${ov.score}%</span></div>
-        <div style="overflow-x:auto;"><table style="border-collapse:collapse;font-size:.78rem;width:100%;">
-          <thead><tr style="border-bottom:1px solid #1e293b;">
-            <th style="padding:.4rem .75rem;text-align:left;color:var(--text-secondary);">Holding</th>
-            <th style="padding:.4rem .6rem;text-align:center;color:#38bdf8;">${activeDrillA}</th>
-            <th style="padding:.4rem .6rem;text-align:center;color:#4ade80;">${activeDrillB}</th>
-            <th style="padding:.4rem .6rem;text-align:center;color:#f59e0b;">Overlap</th>
-          </tr></thead>
-          <tbody>${ov.shared.map(t=>`<tr style="border-bottom:1px solid #0f172a;">
-            <td style="padding:.4rem .75rem;color:#e2e8f0;font-weight:600;">${t}</td>
-            <td style="padding:.4rem .6rem;text-align:center;color:#38bdf8;">${ov.hA[t].toFixed(1)}%</td>
-            <td style="padding:.4rem .6rem;text-align:center;color:#4ade80;">${ov.hB[t].toFixed(1)}%</td>
-            <td style="padding:.4rem .6rem;text-align:center;color:#f59e0b;">${Math.min(ov.hA[t],ov.hB[t]).toFixed(1)}%</td>
-          </tr>`).join('')}</tbody>
-        </table></div>
-        <p style="font-size:.7rem;color:#475569;margin-top:.4rem;">
-          Holdings reflect approximate top positions only. Score = sum of min(weightA, weightB) for shared names.
-          Note: 0% is correct and expected when comparing AU-only vs international funds — they hold entirely different companies.
-        </p>`;
-    }
-  }
-
-  return `<div>
-    <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:1rem;">Select 2–6 ETFs to compare. <strong>Sector view</strong> measures weighted sector allocation overlap. <strong>Holdings view</strong> checks individual stock overlap (only meaningful for funds with shared universe, e.g. two global ETFs).</p>
-    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
-      ${allT.map(t=>`<button class="overlap-toggle ${selected.includes(t)?'overlap-active':''}" data-ticker="${t}" title="${etfData.etfs[t].name}">${t}</button>`).join('')}
-    </div>
-    <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
-      <button class="mode-btn ${view==='sectors'?'mode-active':''}" id="ov-sectors">Sector View</button>
-      <button class="mode-btn ${view==='holdings'?'mode-active':''}" id="ov-holdings">Holdings View</button>
-    </div>
-    ${selected.length<2?`<p style="color:var(--text-secondary);text-align:center;padding:2rem;">Select at least 2 ETFs above.</p>`:''}
-    ${view==='sectors' ? pairMatrix(secOverlap, 'Pairwise Sector Overlap Score (%)') + sectorGrid : ''}
-    ${view==='holdings' && selected.length>=2 ? pairMatrix((a,b)=>holdOverlap(a,b).score, 'Pairwise Holdings Overlap Score (%)') : ''}
-    ${view==='holdings' && selected.length>=2 ? pairSelectorHtml + holdDrillHtml : ''}
-  </div>`;
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  TAB 4 — RETIREMENT
-// ══════════════════════════════════════════════════════════════════
-function getEffectiveAlloc() {
-  if (retState.useCustomAlloc) return retState.customAlloc;
-  return etfData.portfolioPresets[retState.preset]?.allocation || { AU_SHARES:100 };
-}
-function getEffectiveMER() {
-  if (retState.manualMER !== null) return retState.manualMER;
-  return etfData.portfolioPresets[retState.preset]?.mer ?? 0.27;
-}
-
-// Which historical years the simulator draws on. Default 1970+: before 1970 only the
-// Australian-share and CPI series are well documented; the international-share and
-// bond series are rough reconstructions, which makes pre-1970 results for diversified
-// portfolios unreliable (they look much worse than 100% AU shares mainly because of
-// that data, not because diversification failed).
-function retYears() {
-  const from = retState.fromYear || 1901;
-  return Object.keys(etfData.assetClassReturns['AU_SHARES']).map(Number).filter(y => y >= from).sort((a,b)=>a-b);
-}
-
-// ── Retirement solver helpers ──────────────────────────────────────
-// Run a quick sim without mutating retState — used by binary search
-function simSuccessRate(portfolioValue, annualWithdrawal) {
-  const {retirementYears, timing, inflationAdjust, inflationRate} = retState;
-  const frankBoost = frankingBoostRet() / 100;
-  const yrNums = retYears();
-  const maxStart = yrNums[yrNums.length-1] - retirementYears;
-  let succN=0, total=0;
-  for (const startYear of yrNums.filter(y=>y<=maxStart)) {
-    let bal=portfolioValue, wd=annualWithdrawal, ok=true;
-    for (let y=0; y<retirementYears; y++) {
-      const ret = (compositeReturn(startYear+y)/100) + frankBoost;
-      if (timing==='start') { bal-=wd; if(bal<=0){ok=false;break;} bal*=(1+ret); }
-      else { bal*=(1+ret); bal-=wd; if(bal<=0){ok=false;break;} }
-      if (inflationAdjust) wd*=(1+(AU_CPI_YR[startYear+y] ?? inflationRate)/100);
-    }
-    if(ok) succN++; total++;
-  }
-  return total>0 ? (succN/total)*100 : 0;
-}
-
-function simSuccessRateMC(portfolioValue, annualWithdrawal) {
-  const {retirementYears, timing, inflationAdjust, inflationRate} = retState;
-  const frankBoost = frankingBoostRet() / 100;
-  const yrNums = retYears();
-  let succN=0;
-  const PATHS = 5000;
-  for (let i = 0; i < PATHS; i++) {
-    let bal=portfolioValue, wd=annualWithdrawal, ok=true;
-    for (let y=0; y<retirementYears; y++) {
-      const randYr = yrNums[Math.floor(Math.random() * yrNums.length)];
-      const ret = (compositeReturn(randYr)/100) + frankBoost;
-      if (timing==='start') { bal-=wd; if(bal<=0){ok=false;break;} bal*=(1+ret); }
-      else { bal*=(1+ret); bal-=wd; if(bal<=0){ok=false;break;} }
-      if (inflationAdjust) wd*=(1+(AU_CPI_YR[randYr] ?? inflationRate)/100);
-    }
-    if(ok) succN++;
-  }
-  return (succN/PATHS)*100;
-}
-
-// Binary search: max annual withdrawal achieving >= targetRate %
-function solveWithdrawal(targetRate, portfolioVal) {
-  let lo=1000, hi=portfolioVal*0.25, best=0;
-  for (let i=0; i<44; i++) {
-    const mid=(lo+hi)/2;
-    const rate = retState.method === 'mc' ? simSuccessRateMC(portfolioVal, mid) : simSuccessRate(portfolioVal, mid);
-    if (rate >= targetRate) { best=mid; lo=mid; } else hi=mid;
-  }
-  return Math.round(best/100)*100;  // round to nearest $100
-}
-
-// Binary search: min portfolio achieving >= targetRate % for given annual withdrawal
-function solvePortfolio(targetRate, annualWd) {
-  let lo=10000, hi=20000000, best=hi;
-  for (let i=0; i<44; i++) {
-    const mid=(lo+hi)/2;
-    const rate = retState.method === 'mc' ? simSuccessRateMC(mid, annualWd) : simSuccessRate(mid, annualWd);
-    if (rate >= targetRate) { best=mid; hi=mid; } else lo=mid;
-  }
-  return Math.round(best/1000)*1000;  // round to nearest $1k
-}
-
-function compositeReturn(year) {
-  const alloc = getEffectiveAlloc();
-  const gross = Object.entries(alloc).reduce((s,[k,w]) => {
-    const ret = etfData.assetClassReturns[k]?.[year];
-    return s + (w/100) * (ret ?? 7.0);
-  }, 0);
-  return gross - getEffectiveMER();
-}
-
-// Returns annual % franking boost based on AU Shares allocation weight
-function frankingBoostRet() {
-  if (!retState.frankingMode) return 0;
-  const alloc = getEffectiveAlloc();
-  const auWt   = (alloc.AU_SHARES || 0) / 100;
-  const CORP   = 0.30;
-  const marg   = TAX_PROFILES[retState.taxProfile]?.rate ?? 0.30;
-  // Effective boost = AU weight × dividendYield × frankingPct × grossUpFactor × (1-margRate)
-  return auWt * (retState.auDividendYield / 100) * retState.auFrankingPct * (CORP / (1 - CORP)) * (1 - marg) * 100;
-}
-
-function runSims() {
-  const {portfolioValue,annualWithdrawal,retirementYears,timing,inflationAdjust,inflationRate,method} = retState;
-  const yrNums = retYears();
-  const maxStart = yrNums[yrNums.length-1] - retirementYears;
-  const frankBoost = frankingBoostRet() / 100;   // add to annual return
-
-  if (method === 'mc') {
-    const PATHS = 5000;
-    const results = [];
-    for (let i = 0; i < PATHS; i++) {
-      let bal=portfolioValue, wd=annualWithdrawal, survived=true, depletedYear=null;
-      const path=[{yr:0, v:bal}];
-      for(let y=0;y<retirementYears;y++){
-        const randYr = yrNums[Math.floor(Math.random() * yrNums.length)];
-        const ret   = (compositeReturn(randYr) / 100) + frankBoost;
-        if(timing==='start'){
-          bal -= wd;
-          if(bal<=0){ survived=false; depletedYear=y+1; bal=0; }
-          else bal *= (1+ret);
-        } else {
-          bal *= (1+ret);
-          bal -= wd;
-          if(bal<=0){ survived=false; depletedYear=y+1; bal=0; }
-        }
-        if(inflationAdjust) wd *= (1+(AU_CPI_YR[randYr] ?? inflationRate)/100);
-        path.push({yr:y+1, v:Math.max(0,Math.round(bal)), calYr:randYr});
-        if(!survived){
-          for(let r=y+2;r<=retirementYears;r++) path.push({yr:r,v:0,calYr:randYr});
-          break;
-        }
-      }
-      results.push({startYear:'MC', survived, depletedYear, finalValue:Math.round(bal), path, wd0:annualWithdrawal, earlyEst:false});
-    }
-    return results;
-  }
-
-  return yrNums.filter(y=>y<=maxStart).map(startYear => {
-    let bal=portfolioValue, wd=annualWithdrawal, survived=true, depletedYear=null;
-    const path=[{yr:0, v:bal}];
-    for(let y=0;y<retirementYears;y++){
-      const calYr = startYear+y;
-      const ret   = (compositeReturn(calYr) / 100) + frankBoost;
-      if(timing==='start'){
-        bal -= wd;
-        if(bal<=0){ survived=false; depletedYear=calYr; bal=0; }
-        else bal *= (1+ret);
+      const lines = text.split(/\r?\n/).filter(l => l.trim()); const head = splitCSV(lines[0]).map(h => h.toLowerCase());
+      const col = re => head.findIndex(h => re.test(h));
+      const details = col(/^details$/);
+      if (details >= 0) {                                   // CommSec: "B 100 VAS @ 91.230000"
+        const di = col(/^date/), deb = col(/debit/), cre = col(/credit/);
+        lines.slice(1).forEach(l => { const c = splitCSV(l); const m = (c[details] || '').match(/^([BS])\s+([\d,.]+)\s+([A-Z0-9]+)\s+@\s+([\d.]+)/i);
+          if (!m) return; const units = num(m[2]), price = num(m[4]), gross = units * price, cash = num(m[1].toUpperCase() === 'B' ? c[deb] : c[cre]);
+          trades.push({ id: newId(), date: parseDate(c[di]), code: m[3].toUpperCase(), side: m[1].toUpperCase() === 'B' ? 'buy' : 'sell', units, price,
+            fee: cash ? +Math.abs(m[1].toUpperCase() === 'B' ? cash - gross : gross - cash).toFixed(2) : 0 }); });
       } else {
-        bal *= (1+ret);
-        bal -= wd;
-        if(bal<=0){ survived=false; depletedYear=calYr; bal=0; }
-      }
-      if(inflationAdjust) wd *= (1+(AU_CPI_YR[calYr] ?? inflationRate)/100);
-      path.push({yr:y+1, v:Math.max(0,Math.round(bal)), calYr:calYr+1});
-      if(!survived){
-        for(let r=y+2;r<=retirementYears;r++) path.push({yr:r,v:0,calYr:startYear+r});
-        break;
+        const di = col(/date/), ci = col(/^(code|ticker|symbol|security|asx code|instrument|stock)/), si = col(/(type|action|side|buy|transaction)/),
+          ui = col(/(quantity|units|qty|shares|volume)/), pi = col(/(price)/), fi = col(/(brokerage|fee|commission)/);
+        if (di < 0 || ci < 0 || ui < 0 || pi < 0) throw new Error('Could not find Date, Code, Quantity and Price columns');
+        lines.slice(1).forEach(l => { const c = splitCSV(l); const units = Math.abs(num(c[ui])), price = num(c[pi]);
+          if (!(units > 0) || !(price > 0)) { skipped++; return; }
+          const sideTxt = si >= 0 ? c[si] : ''; const sell = /sell|^s$|disposal/i.test(sideTxt) || num(c[ui]) < 0;
+          if (si >= 0 && /div|drp|distribution|split|transfer/i.test(sideTxt) && !/buy|sell/i.test(sideTxt)) { skipped++; return; }
+          trades.push({ id: newId(), date: parseDate(c[di]), code: c[ci].toUpperCase().replace(/^ASX:/, '').replace(/\.AX$/, '').trim(), side: sell ? 'sell' : 'buy', units, price, fee: fi >= 0 ? Math.abs(num(c[fi])) : 0 }); });
       }
     }
-    return {startYear, survived, depletedYear, finalValue:Math.round(bal), path, wd0:annualWithdrawal,
-      earlyEst: startYear < 1970};
+    const good = trades.filter(t => t.date && t.code && t.units > 0 && t.price > 0);
+    skipped += trades.length - good.length;
+    const key = t => [t.date, t.code, t.side, t.units, t.price].join('|'), have = new Set(pf.trades.map(key));
+    const fresh = good.filter(t => !have.has(key(t)));
+    pf.trades.push(...fresh); pfSave();
+    renderPortfolio($('etf-tool-container'));
+    pfMsg(`Imported ${fresh.length} trade${fresh.length === 1 ? '' : 's'}${good.length - fresh.length ? `, skipped ${good.length - fresh.length} already there` : ''}${skipped ? `, ignored ${skipped} row(s) that weren't buys or sells` : ''}.`);
+  } catch (e) { pfMsg('Couldn\'t read that file: ' + esc(e.message), true); }
+}
+
+async function computePortfolio() {
+  const out = $('pf-out'), tl = $('pf-trades'); if (!out) return;
+  const trades = pf.trades.slice().sort((a, b) => a.date.localeCompare(b.date));
+  tl.innerHTML = trades.length ? `<h4 class="etf-h4">Your trades (${trades.length})</h4><div style="overflow-x:auto;"><table class="etf-table etf-table-num"><thead><tr><th>Date</th><th>Code</th><th></th><th>Units</th><th>Price</th><th>Brokerage</th><th>Total</th><th></th></tr></thead><tbody>
+    ${trades.slice().reverse().map(t => `<tr><td>${fmtDate(t.date)}</td><td><b>${esc(t.code)}</b></td><td>${t.side === 'sell' ? '<span style="color:#f87171">Sell</span>' : 'Buy'}</td><td>${(+t.units).toLocaleString('en-AU')}</td><td>${money(t.price, 2)}</td><td>${money(t.fee, 2)}</td>
+      <td>${money(t.units * t.price + (t.side === 'sell' ? -t.fee : t.fee), 2)}</td><td><button type="button" class="etf-x" data-del="${t.id}" aria-label="Delete trade">✕</button></td></tr>`).join('')}</tbody></table></div>` : '';
+  tl.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { pf.trades = pf.trades.filter(t => t.id !== b.dataset.del); pfSave(); computePortfolio(); });
+  if (!trades.length) { out.innerHTML = ''; return; }
+  const codes = [...new Set(trades.map(t => t.code))];
+  const S = Object.fromEntries(await Promise.all(codes.map(async c => [c, await loadSeries(c)])));
+  const bench = await loadSeries(pf.benchmark);
+  const priced = codes.filter(c => S[c]);
+  const lastDate = priced.map(c => S[c].end).sort().at(-1) || iso(new Date());
+  const grid = weeks(trades[0].date, lastDate);
+  const priceAt = (c, d) => { const s = S[c]; if (!s) return null; if (d < s.start) return null; const i = s.pos[d]; return i != null ? s.p[i] : s.p[s.p.length - 1]; };
+  // per-holding positions, average cost, realised gains and distributions (units held the day before each ex-date)
+  const pos = {}, flows = [];
+  codes.forEach(c => pos[c] = { units: 0, cost: 0, realised: 0, income: 0, fees: 0 });
+  trades.forEach(t => {
+    const p = pos[t.code], gross = t.units * t.price;
+    if (t.side === 'buy') { p.cost += gross + t.fee; p.units += t.units; flows.push({ date: t.date, amount: -(gross + t.fee) }); }
+    else { const avg = p.units ? p.cost / p.units : 0, u = Math.min(t.units, p.units); p.realised += gross - t.fee - avg * u; p.cost -= avg * u; p.units -= u; flows.push({ date: t.date, amount: gross - t.fee }); }
+    p.fees += t.fee;
   });
+  const unitsOn = (c, d) => trades.filter(t => t.code === c && t.date < d).reduce((a, t) => a + (t.side === 'buy' ? t.units : -t.units), 0);
+  const incomeByWeek = grid.map(() => 0);
+  codes.forEach(c => { const s = S[c]; if (!s) return;
+    s.d.forEach(([d, amt]) => { if (d < trades[0].date || d > lastDate) return; const u = unitsOn(c, d); if (u <= 0) return;
+      const inc = u * amt; pos[c].income += inc; flows.push({ date: d, amount: inc }); const k = grid.findIndex(g => g >= d); if (k >= 0) incomeByWeek[k] += inc; }); });
+  // weekly holdings value, net money in, and the benchmark fed the same money
+  const valueW = [], netIn = [], incCum = [], benchW = [];
+  let bu = 0, net = 0, inc = 0, ti = 0;
+  grid.forEach((d, k) => {
+    while (ti < trades.length && friday(trades[ti].date) <= d) { const t = trades[ti++], amt = t.units * t.price + (t.side === 'buy' ? t.fee : -t.fee);
+      net += t.side === 'buy' ? amt : -amt;
+      if (bench) { const bi = bench.pos[d] ?? (d > bench.end ? bench.x.length - 1 : null); if (bi != null && d >= bench.start) bu += (t.side === 'buy' ? amt : -amt) / bench.x[bi]; } }
+    inc += incomeByWeek[k];
+    let v = 0; codes.forEach(c => { const px = priceAt(c, d); if (px != null) v += unitsOn(c, addDays(d, 1)) * px; });
+    valueW.push(v); netIn.push(net); incCum.push(v + inc);
+    if (bench) { const bi = bench.pos[d] ?? (d > bench.end ? bench.x.length - 1 : null); benchW.push(bi != null && d >= bench.start ? bu * bench.x[bi] : null); }
+  });
+  const value = codes.reduce((a, c) => a + (S[c] ? pos[c].units * priceAt(c, lastDate) : 0), 0);
+  const costNow = codes.reduce((a, c) => a + pos[c].cost, 0), unreal = value - costNow;
+  const realised = codes.reduce((a, c) => a + pos[c].realised, 0), income = codes.reduce((a, c) => a + pos[c].income, 0);
+  flows.sort((a, b) => a.date.localeCompare(b.date)); const irr = xirr([...flows, { date: lastDate, amount: value }]);
+  const benchFlows = trades.map(t => ({ date: t.date, amount: (t.side === 'buy' ? -1 : 1) * (t.units * t.price + (t.side === 'buy' ? t.fee : -t.fee)) }));
+  const benchIrr = bench && benchW.at(-1) != null ? xirr([...benchFlows, { date: lastDate, amount: benchW.at(-1) }]) : null;
+  const unpriced = codes.filter(c => !S[c]);
+  // allocation vs targets + where to put the next contribution
+  const held = codes.filter(c => pos[c].units > 1e-9);
+  const tgtTot = held.reduce((a, c) => a + (num(pf.targets[c]) || 0), 0);
+  const nextBuys = (() => { if (!tgtTot) return null; const total = value + pf.next; const gaps = held.map(c => ({ c, gap: Math.max(0, total * (num(pf.targets[c]) || 0) / tgtTot - pos[c].units * (priceAt(c, lastDate) || 0)) }));
+    const g = gaps.reduce((a, x) => a + x.gap, 0); return gaps.filter(x => x.gap > 0).map(x => ({ c: x.c, amt: g ? pf.next * x.gap / g : 0 })); })();
+  const card = (l, v, sub, col) => `<div class="etf-stat"><div class="etf-stat-l">${l}</div><div class="etf-stat-v" style="${col ? 'color:' + col : ''}">${v}</div>${sub ? `<div class="etf-sub">${sub}</div>` : ''}</div>`;
+  out.innerHTML = (unpriced.length ? `<div class="etf-warn">No prices for ${unpriced.map(esc).join(', ')} — these aren't valued. ${unpriced.map(requestLink).join(' · ')}.</div>` : '') + `
+    <div class="etf-stats">
+      ${card('Value', money(value), 'at ' + fmtDate(lastDate) + ' close')}
+      ${card('Unrealised gain', money(unreal), costNow ? pct(unreal / costNow * 100) + ' on cost' : '', posNeg(unreal))}
+      ${card('Realised gain', money(realised), 'from sales (average cost)', posNeg(realised))}
+      ${card('Distributions received', money(income), 'estimated from ex-dates')}
+      ${card('Your annual return', pct(irr), 'money-weighted, incl. distributions', posNeg(irr))}
+      ${card('Same money in ' + esc(pf.benchmark), pct(benchIrr), bench ? 'with distributions reinvested' : 'no data for that code', posNeg(benchIrr))}
+    </div>
+    ${lineChart('pf-chart', grid, [{ name: 'Holdings value', color: PALETTE[0], vals: valueW }, { name: 'Value + distributions received', color: PALETTE[1], vals: incCum, width: 1.5 },
+      ...(bench ? [{ name: `Same money in ${pf.benchmark}`, color: PALETTE[2], vals: benchW, width: 1.5 }] : []), { name: 'Net money put in', color: '#94a3b8', dash: '5,4', width: 1.5, vals: netIn }], { label: 'Portfolio value over time' })}
+    <div style="max-width:16rem;margin-top:.6rem;"><label class="etf-label">Compare with (benchmark)</label>${pickerHTML('pf-bench', pf.benchmark)}</div>
+    <h4 class="etf-h4">Holdings</h4>
+    <div style="overflow-x:auto;"><table class="etf-table etf-table-num"><thead><tr><th>Code</th><th>Units</th><th>Avg cost</th><th>Price</th><th>Value</th><th>Gain</th><th>Distributions</th><th>Weight</th><th>Target %</th></tr></thead><tbody>
+    ${held.map(c => { const px = priceAt(c, lastDate), v = px != null ? pos[c].units * px : null, g = v != null ? v - pos[c].cost : null;
+      return `<tr><td style="text-align:left"><b>${c}</b><div class="etf-sub">${esc(S[c]?.name || '')}</div></td><td>${(+pos[c].units.toFixed(4)).toLocaleString('en-AU')}</td><td>${money(pos[c].cost / pos[c].units, 2)}</td>
+        <td>${money(px, 2)}</td><td><b>${money(v)}</b></td><td style="color:${posNeg(g)}">${money(g)}<div class="etf-sub">${g != null && pos[c].cost ? pct(g / pos[c].cost * 100) : ''}</div></td>
+        <td>${money(pos[c].income)}</td><td>${v != null && value ? (v / value * 100).toFixed(1) + '%' : '—'}</td>
+        <td><input class="etf-input etf-tgt" data-tgt="${c}" inputmode="decimal" value="${pf.targets[c] ?? ''}" placeholder="—" style="width:4.5rem;padding:.3rem .4rem;"></td></tr>`; }).join('')}
+    </tbody></table></div>
+    ${tgtTot ? `<div class="etf-next"><label class="etf-label">Next contribution</label><input id="pf-next" class="etf-input" inputmode="decimal" value="${pf.next}" style="max-width:9rem;">
+      <div>${nextBuys?.length ? 'To move towards your targets without selling, buy: ' + nextBuys.map(b => `<b>${b.c}</b> ${money(b.amt)}${priceAt(b.c, lastDate) ? (b.amt >= priceAt(b.c, lastDate) ? ` (≈${Math.floor(b.amt / priceAt(b.c, lastDate))} units)` : ' (less than 1 unit)') : ''}`).join(' · ') : 'You are at (or above) your targets.'}</div></div>`
+      : '<div class="etf-fine">Enter target percentages in the table to see how to split your next contribution to get back on target.</div>'}
+    <div class="etf-fine">Values use the latest weekly closing prices (updated weekly). Gains use the average-cost method; your tax return may need specific parcels and the CGT discount — this isn't tax advice.
+      Distributions are estimated from units held before each ex-date; check your statements for exact amounts and franking.</div>`;
+  wireChart('pf-chart');
+  wirePicker('pf-bench', c => { pf.benchmark = c; pfSave(); computePortfolio(); });
+  out.querySelectorAll('.etf-tgt').forEach(i => i.addEventListener('change', () => { const v = i.value.trim(); if (v === '') delete pf.targets[i.dataset.tgt]; else pf.targets[i.dataset.tgt] = num(v); pfSave(); computePortfolio(); }));
+  $('pf-next')?.addEventListener('change', e => { pf.next = Math.max(0, num(e.target.value)); computePortfolio(); });
 }
 
-function renderRetirement() {
-  const {preset,portfolioValue,annualWithdrawal,retirementYears,timing,
-    inflationAdjust,inflationRate,manualMER,useCustomAlloc,customAlloc,
-    frankingMode,taxProfile,auFrankingPct,auDividendYield,method} = retState;
-  const sims    = runSims();
-  const succN   = sims.filter(s=>s.survived).length;
-  const rate    = sims.length>0 ? ((succN/sims.length)*100).toFixed(0) : 'N/A';
-  const wr      = (annualWithdrawal/portfolioValue*100).toFixed(2);
-  const srC     = rate>=90?'#4ade80':rate>=70?'#f59e0b':'#ef4444';
-  const failedYrs = sims.filter(s=>!s.survived).map(s=>s.startYear);
-  const earlyN  = sims.filter(s=>s.earlyEst).length;
-  const effectiveMER = getEffectiveMER();
-  const frankBoostPct = frankingBoostRet();
-
-  _lastRetData = { sims, retirementYears };
-
-  const presetOpts = Object.entries(etfData.portfolioPresets)
-    .filter(([k])=>k!=='CUSTOM')
-    .map(([k,v])=>`<option value="${k}" ${k===preset?'selected':''}>${k} — ${v.label}</option>`).join('');
-
-  const allocKeys = ['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'];
-  const allocLabels = {'AU_SHARES':'AU Shares','INTL_SHARES':'Intl (ex-US)','US_SHARES':'US Shares','AU_BONDS':'AU Bonds','GLOBAL_BONDS':'Global Bonds','CASH':'Cash'};
-  // Normalise allocation: fill missing keys with 0 so sliders work for all presets
-  const normAlloc = Object.fromEntries(allocKeys.map(k=>[k, customAlloc[k]??0]));
-  const allocSum = Object.values(normAlloc).reduce((s,v)=>s+v,0);
-
-  const customAllocPanel = useCustomAlloc ? `
-    <div style="background:#0a0f1e;border:1px dashed #334155;border-radius:8px;padding:1rem;margin-bottom:1rem;">
-      <div class="etf-label" style="margin-bottom:.5rem;">Custom Allocation <span style="color:${Math.abs(allocSum-100)<0.5?'#4ade80':'#ef4444'};float:right;">Total: ${allocSum}%</span></div>
-      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem;" class="resp-grid-2">
-        ${allocKeys.map(k=>`<div>
-          <label class="etf-label">${allocLabels[k]} <span id="lv-alloc-${k}" style="color:var(--fitc-green);">${customAlloc[k]??0}%</span></label>
-          <input type="number" id="alloc-${k}" class="etf-input" value="${customAlloc[k]??0}" min="0" max="100" step="1"/>
-          <input type="range" id="alloc-${k}-r" class="etf-range" value="${customAlloc[k]??0}" min="0" max="100" step="1"/>
-        </div>`).join('')}
-      </div>
-      ${Math.abs(allocSum-100)>0.5?`<div style="font-size:.72rem;color:#ef4444;margin-top:.4rem;">⚠ Allocation does not sum to 100% — results may be misleading.</div>`:''}
-    </div>` : '';
-
-  const methodologyHtml = `<details style="margin-bottom:1rem;background:#0a0f1e;border:1px solid var(--glass-border);border-radius:8px;">
-    <summary style="padding:.7rem 1rem;cursor:pointer;font-size:.82rem;color:#94a3b8;font-weight:600;">ℹ How the simulation works — methodology &amp; sources</summary>
-    <div style="padding:.5rem 1rem 1rem;font-size:.78rem;color:#64748b;line-height:1.8;">
-
-      <p><strong style="color:#94a3b8;">Method: Historical Sequence-of-Returns Simulation</strong><br>
-      This is the same approach used by Bengen (1994) when he first proposed the 4% rule, and later formalised by the
-      <a href="https://www.aaii.com/journal/article/retirement-savings-choosing-a-withdrawal-rate-that-is-sustainable" target="_blank" style="color:#38bdf8;">Trinity Study (Cooley, Hubbard &amp; Walz, 1998)</a>.
-      The method runs every historical retirement window — for a 30-year simulation it tests
-      "what if you retired in 1901?", "1902?" and so on — and counts how many succeeded.
-      Interactive US-market versions of this same approach:
-      <a href="https://engaging-data.com/visualizing-4-rule/" target="_blank" style="color:#38bdf8;">Engaging Data 4% rule</a> ·
-      <a href="https://cfiresim.com/" target="_blank" style="color:#38bdf8;">cFireSim</a> ·
-      <a href="https://ficalc.app/" target="_blank" style="color:#38bdf8;">FICalc</a>.</p>
-
-      <p><strong style="color:#94a3b8;">How each year is calculated</strong><br>
-      Each year, the portfolio return is the weighted average of asset class returns for that calendar year (e.g. VDHG ≈ 36% AU Shares + 54% Intl Shares + 3% AU Bonds + 7% Global Bonds), minus the fund MER.
-      If inflation-adjustment is on, the withdrawal grows each year by the inflation rate. "Start of year" timing withdraws <em>before</em> returns apply (more conservative); "End of year" applies returns first (more optimistic).</p>
-
-      <p><strong style="color:#94a3b8;">Success vs failure</strong><br>
-      A scenario is a <span style="color:#4ade80;">Success</span> if the balance stays above zero for the full retirement duration.
-      It becomes a <span style="color:#ef4444;">Failure</span> the year the balance hits zero — that calendar year is noted in the heatmap tooltip.</p>
-
-      <p><strong style="color:#94a3b8;">Data sources — and how much to trust them</strong><br>
-      <span style="color:#4ade80;">Checked against independent references (see data/ground_truth):</span>
-      AU Shares — All Ordinaries Accumulation Index calendar-year returns, 1901–2024 (Market Index), 2025 from VAS;
-      CPI — RBA Table G1 (ABS CPI), 1924–2025; Cash — RBA Table F1 cash rate, 1977–2025.<br>
-      <span style="color:#f59e0b;">Approximate (not yet checked against an index provider):</span>
-      Intl Shares (ex-US, AUD) — VGS from 2015, rough estimates before; AU Bonds — VAF from 2015, estimates before;
-      Global Bonds and US Shares (in USD, not AUD) — estimates throughout.
-      Full RBA tables: <a href="https://www.rba.gov.au/statistics/tables/" target="_blank" style="color:#38bdf8;">RBA Statistical Tables</a>.</p>
-
-      <p><strong style="color:#f59e0b;">Why the simulator defaults to 1970 onwards</strong><br>
-      Before 1970 only the Australian-share and CPI series are well documented; the international-share and bond series are
-      rough reconstructions (their pre-1970 averages look implausibly low). Including those years makes diversified portfolios
-      like VDHG look much riskier than 100% Australian shares, mostly because of the data rather than the investments.
-      You can switch to 1901 onwards to see the longer (partly reconstructed) history. Even the All Ords figures before 1980
-      are reconstructions, which Market Index itself notes are less reliable.</p>
-
-      <p><strong style="color:#94a3b8;">Key caveats</strong><br>
-      This tool uses <em>Australian</em> data — the US-derived 4% rule may not transfer directly to Australian investors.
-      Australian shares have historically paid a higher dividend yield (with franking credits) than US shares.
-      What is <em>not</em> modelled: capital gains tax, income tax on distributions, brokerage, or movements within a year.</p>
-
-      <p><strong style="color:#94a3b8;">Which starting years fail?</strong><br>
-      With 100% Australian shares, the worst starting years are 1969–1973: shares fell in the early 1970s while CPI inflation ran at
-      roughly 9–15% a year (1973–77), rapidly raising the cost of inflation-adjusted withdrawals. If you include pre-1970 years, the
-      late 1920s (Great Depression) and late 1930s also stand out. Sequence-of-returns risk is worst when big losses land early in retirement.</p>
-
-      <p><strong style="color:#94a3b8;">Real retirement spending declines with age — a note</strong><br>
-      This simulator assumes constant inflation-adjusted withdrawals throughout retirement, which is the conservative standard approach.
-      In practice, research by Blanchett (Morningstar, 2013) found that real spending follows a
-      <strong>"retirement spending smile"</strong>: higher in the active early years (travel, activities),
-      lower in the quieter middle years, and potentially rising again late in life due to healthcare costs.
-      This means that scenarios the simulator marks as <span style="color:#ef4444;">Failures</span> — where the portfolio runs out in later years —
-      would often be <span style="color:#4ade80;">Successes</span> if actual spending had naturally declined.
-      The simulator is therefore conservative relative to most people's lived experience.
-      For personalised advice consult a licensed financial adviser.</p>
-    </div>
-  </details>`;
-
-  return `<div>
-    ${methodologyHtml}
-    <div style="font-size:.82rem;color:var(--text-secondary);margin-bottom:1rem;background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.1);border-radius:6px;padding:.6rem .9rem;">
-      Simulates every historical window using blended asset class returns, <strong>net of MER (${effectiveMER.toFixed(2)}%)</strong>.
-      ${frankingMode?`<strong style="color:#fbbf24;">Franking boost: +${frankBoostPct.toFixed(2)}% p.a.</strong> applied to AU Shares component (${TAX_PROFILES[taxProfile].label}).`:''}
-      Data covers ${sims[0]?.startYear}–${sims[sims.length-1]?.startYear} retirement start years.
-      ${earlyN>0?`<span style="color:#f59e0b;">${earlyN} periods use pre-1970 data (high uncertainty — see methodology above).</span>`:''}
-    </div>
-
-    <!-- Controls row 1 -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
-      <div>
-        <label class="etf-label">Portfolio Preset</label>
-        <select id="ret-preset" class="etf-select">${presetOpts}</select>
-        <div style="font-size:.7rem;color:#334155;margin-top:.25rem;">
-          ${Object.entries(getEffectiveAlloc()).map(([k,v])=>`${allocLabels[k]||k}: ${v}%`).join(' | ')}
-        </div>
-        <label style="display:flex;align-items:center;gap:.4rem;margin-top:.4rem;cursor:pointer;font-size:.78rem;color:var(--text-secondary);">
-          <input type="checkbox" id="ret-custom-alloc" ${useCustomAlloc?'checked':''} style="accent-color:var(--dapi-blue);"/> Use custom allocation
-        </label>
-      </div>
-      <div>
-        <label class="etf-label">Starting Portfolio <span id="lv-retpv" style="color:var(--fitc-green);float:right;">${fmtAUD(portfolioValue)}</span></label>
-        <input type="number" id="ret-pv" class="etf-input" value="${portfolioValue}" min="10000" step="10000"/>
-        <input type="range" id="ret-pv-r" class="etf-range" value="${portfolioValue}" min="100000" max="5000000" step="10000"/>
-      </div>
-      <div>
-        <label class="etf-label">Annual Withdrawal <span id="lv-retwd" style="color:var(--fitc-green);float:right;">${fmtAUD(annualWithdrawal)}</span></label>
-        <input type="number" id="ret-wd" class="etf-input" value="${annualWithdrawal}" min="1000" step="1000"/>
-        <input type="range" id="ret-wd-r" class="etf-range" value="${annualWithdrawal}" min="5000" max="200000" step="1000"/>
-        <div style="font-size:.72rem;color:#94a3b8;margin-top:.25rem;">= ${wr}% withdrawal rate</div>
-      </div>
-    </div>
-
-    ${customAllocPanel}
-
-    <!-- Controls row 2 -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:.75rem;" class="resp-grid-2">
-      <div><label class="etf-label">Methodology</label>
-        <select id="ret-method" class="etf-select">
-          <option value="hist" ${method==='hist'?'selected':''}>Historical Sequences</option>
-          <option value="mc" ${method==='mc'?'selected':''}>Monte Carlo (5,000 paths)</option>
-        </select>
-        <div style="font-size:.65rem;color:#475569;margin-top:.2rem;">MC randomizes sequence of returns risk.</div>
-      </div>
-      <div><label class="etf-label">Duration</label>
-        <select id="ret-yrs" class="etf-select">${[10,15,20,25,30,35,40].map(y=>`<option value="${y}" ${y===retirementYears?'selected':''}>${y} years</option>`).join('')}</select></div>
-      <div><label class="etf-label">Historical data from</label>
-        <select id="ret-from" class="etf-select" title="Before 1970 only Australian shares and CPI are well documented; international share and bond returns are rough reconstructions.">
-          <option value="1970" ${retState.fromYear===1970?'selected':''}>1970 onwards (recommended)</option>
-          <option value="1901" ${retState.fromYear===1901?'selected':''}>1901 onwards (pre-1970 partly reconstructed)</option>
-        </select></div>
-      <div><label class="etf-label">Withdrawal Timing</label>
-        <select id="ret-timing" class="etf-select">
-          <option value="start" ${timing==='start'?'selected':''}>Start of year</option>
-          <option value="end" ${timing==='end'?'selected':''}>End of year</option>
-        </select></div>
-      <div>
-        <label class="etf-label">Investment Fees (MER %)</label>
-        <input type="number" id="ret-mer" class="etf-input" value="${effectiveMER}" min="0" max="5" step=".01"
-          placeholder="${etfData.portfolioPresets[preset]?.mer||0.27}"/>
-        <div style="font-size:.65rem;color:#334155;margin-top:.2rem;">Default: ${etfData.portfolioPresets[useCustomAlloc?'CUSTOM':preset]?.mer??0.27}% (preset MER). Override to compare scenarios.</div>
-      </div>
-      <div>
-        <label class="etf-label">Inflation Adjust
-          <span style="font-weight:400;text-transform:none;font-size:.65rem;color:#475569;"> (RBA target: 2–3%)</span>
-        </label>
-        <div style="display:flex;gap:.3rem;align-items:center;">
-          <select id="ret-inf-on" class="etf-select" style="flex:1;">
-            <option value="1" ${inflationAdjust?'selected':''}>Grow by</option>
-            <option value="0" ${!inflationAdjust?'selected':''}>Fixed</option>
-          </select>
-          <input type="number" id="ret-inf-rate" class="etf-input" style="width:60px;flex-shrink:0;" value="${inflationRate}" min="0" max="15" step=".5" ${!inflationAdjust?'disabled':''}/>
-          <span style="color:var(--text-secondary);">%</span>
-        </div>
-        <div style="font-size:.65rem;color:#475569;margin-top:.2rem;">
-          Uses real historical ABS CPI per year. The rate above is used as a fallback.
-        </div>
-      </div>
-    </div>
-
-    <!-- Franking credits row -->
-    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.2rem;
-                background:rgba(251,191,36,.04);border:1px solid rgba(251,191,36,${frankingMode?.2:.1});
-                border-radius:8px;padding:.6rem 1rem;">
-      <button id="ret-frank-toggle" class="mode-btn ${frankingMode?'mode-active frank-active':''}"
-        title="Add the tax refund from Australian dividend franking credits to the AU Shares portion of the portfolio">
-        🏦 Franking Credits
-      </button>
-      ${frankingMode?`
-      <select id="ret-tax-profile" class="etf-select" style="flex:1;min-width:200px;">
-        ${Object.entries(TAX_PROFILES).map(([k,v])=>`<option value="${k}" ${k===taxProfile?'selected':''}>${v.label}</option>`).join('')}
-      </select>
-      <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;font-size:.8rem;">
-        <span style="color:var(--text-secondary);">AU yield</span>
-        <input id="ret-au-yield" type="number" class="etf-input" style="width:60px;padding:.3rem .5rem;"
-          value="${auDividendYield}" min="0" max="15" step=".5"/>
-        <span style="color:var(--text-secondary);">% &nbsp; franked</span>
-        <input id="ret-au-franked" type="number" class="etf-input" style="width:60px;padding:.3rem .5rem;"
-          value="${(auFrankingPct*100).toFixed(0)}" min="0" max="100" step="5"/>
-        <span style="color:var(--text-secondary);">%</span>
-        <span style="color:#fbbf24;font-weight:600;">→ +${frankBoostPct.toFixed(2)}% p.a. boost</span>
-      </div>
-      <div style="width:100%;font-size:.7rem;color:#94a3b8;line-height:1.5;">
-        The boost = <em>AU weight × dividend yield × franked% × (30/70) × (1 − marginal rate)</em>.
-        The 30% corporate tax has already been paid; the credit offsets your tax, and any excess is refunded. Only the credit's after-tax value is added — tax on the dividends themselves isn't modelled.
-        ${taxProfile==='nfp'||taxProfile==='pension'?`<strong style="color:#4ade80;">Full refund</strong> — your entity pays no tax, so the entire credit is returned.`
-          :taxProfile==='ind_0'?`<strong style="color:#4ade80;">Full refund</strong> — below tax-free threshold.`
-          :taxProfile==='super15'||taxProfile==='ind_16'?`<strong style="color:#4ade80;">Partial refund</strong> — your rate is below 30%, so most of the credit comes back.`
-          :taxProfile==='ind_30'?`At 30% your rate <em>exactly</em> matches the corporate tax already paid — credits offset your tax liability dollar for dollar, but you receive no additional cash refund.`
-          :`At rates above 30%, the franking credit offsets part of your tax bill but generates no additional cash. The effective boost shown above reflects this.`}
-      </div>`
-      :`<span style="font-size:.78rem;color:var(--text-secondary);">
-        Model the ATO refund of 30% corporate tax paid on Australian dividends.
-        Especially significant for NFPs and pension-phase super (full refund).
-      </span>`}
-    </div>
-
-    <!-- ── Auto-Calculate ──────────────────────────────────────── -->
-    <div style="margin-bottom:1.2rem;border:1px solid rgba(56,189,248,.2);border-radius:10px;overflow:hidden;">
-      <button id="ret-auto-toggle"
-        style="width:100%;text-align:left;padding:.65rem 1rem;background:rgba(56,189,248,.05);
-               border:none;color:${retAutoState.open?'var(--dapi-blue)':'var(--text-secondary)'};
-               cursor:pointer;font-size:.82rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
-        🔢 Auto-Calculate — Solve for withdrawal or portfolio size
-        <span>${retAutoState.open?'▲':'▼'}</span>
-      </button>
-      ${retAutoState.open?`
-      <div style="padding:1rem;background:#0a0f1e;">
-        <!-- Mode selector -->
-        <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
-          <button class="mode-btn ${retAutoState.mode==='withdrawal'?'mode-active':''}" id="ra-mode-wd"
-            style="flex:1;">💸 What can I withdraw?</button>
-          <button class="mode-btn ${retAutoState.mode==='portfolio'?'mode-active':''}" id="ra-mode-pv"
-            style="flex:1;">🎯 How much do I need?</button>
-        </div>
-
-        ${retAutoState.mode==='withdrawal'?`
-        <!-- Mode 1: solve max withdrawal -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;align-items:end;" class="resp-grid-1">
-          <div>
-            <label class="etf-label">My Portfolio Value</label>
-            <input id="ra-pv" type="number" class="etf-input" value="${retAutoState.portfolioInput}" min="10000" step="10000"/>
-          </div>
-          <div>
-            <label class="etf-label">Target Success Rate</label>
-            <div style="display:flex;align-items:center;gap:.3rem;">
-              <input id="ra-success" type="number" class="etf-input" value="${retAutoState.targetSuccess}" min="50" max="100" step="5"/>
-              <span style="color:var(--text-secondary);">%</span>
-            </div>
-          </div>
-          <button id="ra-solve" class="mode-btn mode-active" style="height:2.4rem;">Calculate ↗</button>
-        </div>
-        <div style="font-size:.7rem;color:#475569;margin-top:.4rem;">
-          Uses your current preset/allocation/MER/timing/inflation settings above.
-          90% is a common target. (Bengen's 1994 "4% rule" survived every 30-year US period he tested; the Trinity Study reported ~95% success for a 50/50 portfolio.)
-        </div>
-        `:`
-        <!-- Mode 2: solve required portfolio -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;align-items:end;" class="resp-grid-1">
-          <div>
-            <label class="etf-label">Desired Annual Withdrawal</label>
-            <input id="ra-wd" type="number" class="etf-input" value="${retAutoState.withdrawalInput}" min="1000" step="1000"/>
-          </div>
-          <div>
-            <label class="etf-label">Target Success Rate</label>
-            <div style="display:flex;align-items:center;gap:.3rem;">
-              <input id="ra-success" type="number" class="etf-input" value="${retAutoState.targetSuccess}" min="50" max="100" step="5"/>
-              <span style="color:var(--text-secondary);">%</span>
-            </div>
-          </div>
-          <button id="ra-solve" class="mode-btn mode-active" style="height:2.4rem;">Calculate ↗</button>
-        </div>
-        <div style="font-size:.7rem;color:#475569;margin-top:.4rem;">
-          Finds the minimum starting portfolio that achieves your target success rate over ${retirementYears} years.
-          Uses your current preset, MER, and inflation settings.
-        </div>
-        `}
-
-        <!-- Result display -->
-        <div id="ra-result" style="margin-top:1rem;${retAutoState.result?'':'display:none;'}">
-          ${retAutoState.result?`
-          <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);border-radius:8px;
-                      padding:.9rem 1.2rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:center;">
-            ${retAutoState.mode==='withdrawal'?`
-            <div>
-              <div style="font-size:.72rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;">
-                Max Safe Withdrawal
-              </div>
-              <div style="font-size:1.8rem;font-weight:700;color:var(--fitc-green);">${fmtAUD(retAutoState.result.value)}/yr</div>
-              <div style="font-size:.8rem;color:#94a3b8;">
-                = <strong>${((retAutoState.result.value/retAutoState.portfolioInput)*100).toFixed(2)}%</strong> withdrawal rate
-              </div>
-            </div>
-            <div style="font-size:.8rem;color:var(--text-secondary);">
-              <div>Portfolio: <strong style="color:white;">${fmtAUD(retAutoState.portfolioInput)}</strong></div>
-              <div>Success: <strong style="color:#4ade80;">${retAutoState.targetSuccess}%</strong> over ${retirementYears} yrs</div>
-              <div>Actual achieved: <strong style="color:#4ade80;">${simSuccessRate(retAutoState.portfolioInput, retAutoState.result.value).toFixed(1)}%</strong></div>
-            </div>`:`
-            <div>
-              <div style="font-size:.72rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;">
-                Required Portfolio
-              </div>
-              <div style="font-size:1.8rem;font-weight:700;color:var(--fitc-green);">${fmtAUD(retAutoState.result.value)}</div>
-              <div style="font-size:.8rem;color:#94a3b8;">
-                = <strong>${((retAutoState.withdrawalInput/retAutoState.result.value)*100).toFixed(2)}%</strong> implied withdrawal rate
-              </div>
-            </div>
-            <div style="font-size:.8rem;color:var(--text-secondary);">
-              <div>Withdrawal: <strong style="color:white;">${fmtAUD(retAutoState.withdrawalInput)}/yr</strong></div>
-              <div>Success: <strong style="color:#4ade80;">${retAutoState.targetSuccess}%</strong> over ${retirementYears} yrs</div>
-              <div>Actual achieved: <strong style="color:#4ade80;">${simSuccessRate(retAutoState.result.value, retAutoState.withdrawalInput).toFixed(1)}%</strong></div>
-            </div>`}
-            <div style="font-size:.7rem;color:#475569;border-left:1px solid rgba(255,255,255,.08);padding-left:1.2rem;flex:1;min-width:180px;">
-              ${method==='mc' ? 'Based on 5,000 randomized Monte Carlo paths (bootstrapped from 1901–2024 returns).' : `Based on ${sims.length} historical windows (${sims[0]?.startYear}–${sims[sims.length-1]?.startYear}).`}
-              Uses current preset: <strong style="color:#94a3b8;">${retAutoState.useCustomAlloc?'Custom':preset}</strong>,
-              MER <strong style="color:#94a3b8;">${effectiveMER.toFixed(2)}%</strong>,
-              ${inflationAdjust?`inflation-adj (historical CPI, fallback ${inflationRate}%)`:'fixed withdrawal'}.
-              ${frankingMode?`Franking +${frankBoostPct.toFixed(2)}% p.a.`:''}
-            </div>
-          </div>`:''}
-        </div>
-      </div>`:''}
-    </div>
-
-    <!-- KPI cards -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.2rem;" class="resp-grid-2">
-      ${sc('Historical Success Rate',`${rate}%`,srC,'1.6rem')}
-      ${sc('Periods Tested',`${sims.length}`,`var(--dapi-blue)`,'1.2rem')}
-      ${sc('Withdrawal Rate',`${wr}%`,'#f59e0b','1.2rem')}
-      ${sc('Effective MER',`${effectiveMER.toFixed(2)}%`,'#a78bfa','1.2rem')}
-    </div>
-
-    ${buildRetChart(sims, retirementYears)}
-    <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem;font-size:.75rem;color:var(--text-secondary);">
-      <span><span style="color:rgba(74,222,128,.8);">——</span> Survived</span>
-      <span><span style="color:rgba(239,68,68,.7);">——</span> Depleted</span>
-      <span><span style="color:#334155;">- -</span> Starting value</span>
-      <span style="color:#475569;font-size:.7rem;">Hover chart for median / percentiles</span>
-    </div>
-
-    <!-- Outcome heatmap -->
-    <div class="etf-label" style="margin:1.5rem 0 .5rem;">Outcome by Retirement Start Year <span style="color:#475569;text-transform:none;font-size:.7rem;">(hover cells for details)</span></div>
-    ${earlyN>0?`<details style="font-size:.72rem;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:.5rem .8rem;margin-bottom:.5rem;line-height:1.6;">
-      <summary style="cursor:pointer;font-weight:600;color:#f59e0b;list-style:none;display:flex;align-items:center;gap:.4rem;">
-        <span style="font-size:.8rem;">▶</span> Why do some early start years fail?
-        <span style="color:#94a3b8;font-weight:400;"> — click to expand</span>
-      </summary>
-      <div style="margin-top:.5rem;color:#94a3b8;">
-        Pre-1970 cells use the longer data range. Before 1970 the international-share and bond returns are rough reconstructions,
-        so failures for diversified portfolios in those years partly reflect weak data. Those starting in the late 1920s hit the Great Depression early;
-        those starting around 1969–73 faced falling shares plus high inflation. Dashed borders mark pre-1970 start years.
-      </div>
-    </details>`:''}
-    <!-- Spending smile note -->
-    <div style="font-size:.7rem;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.12);border-radius:6px;padding:.4rem .75rem;margin-bottom:.5rem;line-height:1.5;color:#64748b;">
-      <strong style="color:#86efac;">Note on spending:</strong> This assumes constant inflation-adjusted withdrawals.
-      In reality, most people spend less in mid-retirement (the "spending smile" — Blanchett, 2013).
-      Some simulated <span style="color:#ef4444;">failures</span> would succeed with naturally declining spending. The tool is therefore conservative.
-      See methodology above for full details.
-    </div>
-    <div style="display:${method==='mc'?'none':'grid'};grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:3px;">
-      ${method==='mc'?'':sims.map(s=>{
-        const surviveYrs = s.survived ? retirementYears : (s.depletedYear - s.startYear);
-        const bg = s.survived
-          ? (s.earlyEst ? 'rgba(22,101,52,.7)' : '#166534')
-          : `hsl(${Math.max(0,20-(retirementYears-surviveYrs))}deg,75%,${s.earlyEst?25:33}%)`;
-        const bord = s.earlyEst ? '1px dashed rgba(245,158,11,.5)' : 'none';
-        return `<div title="Start ${s.startYear}: ${s.survived?'Survived → final '+fmtAUD(s.finalValue):`Depleted yr ${s.depletedYear} (${surviveYrs}/${retirementYears} yrs)`}${s.earlyEst?' [pre-1970 estimate]':''}"
-          style="background:${bg};border:${bord};border-radius:3px;height:28px;font-size:.6rem;color:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;cursor:default;">${s.startYear}</div>`;
-      }).join('')}
-    </div>
-    <div style="display:${method==='mc'?'none':'flex'};gap:1.5rem;font-size:.72rem;color:#475569;margin-top:.4rem;flex-wrap:wrap;">
-      <span>🟢 Survived ${retirementYears} years</span>
-      <span>🟡→🔴 Partially survived → early depletion</span>
-      ${earlyN>0?'<span>Dashed border = pre-1970 (estimated)</span>':''}
-    </div>
-    ${method==='mc'?'':(failedYrs.length>0?`<div style="margin-top:.75rem;padding:.6rem .9rem;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:6px;font-size:.78rem;color:#fca5a5;">
-      <strong>Failed start years (${failedYrs.length}):</strong> ${failedYrs.join(', ')}
-    </div>`:'')}
-
-    ${dlRow(['dl-csv-ret','⬇ Results (CSV)'],['dl-png-ret','⬇ Chart (PNG)'])}
-    <p style="font-size:.7rem;color:#475569;margin-top:.75rem;text-align:center;">
-      Returns net of MER. Pre-1970 international-share and bond data are rough reconstructions — treat those years as indicative only.
-      Does not account for CGT, income tax or brokerage; franking credits only if you switch them on.
-    </p>
-  </div>`;
-}
-
-// ── Source footer ──────────────────────────────────────────────────
-function sourceFooter() {
-  if(!etfData) return '';
-  // Filter out developer-only notes (these are internal calculation notes, not user info)
-  const userSources = (etfData.meta.sources || []).filter(s =>
-    !s.startsWith('CALCULATION NOTE:') && !s.startsWith('IMPORTANT DATA NOTE')
-  );
-  return `<div style="margin-top:2rem;padding:1rem 1.2rem;background:#0a0f1e;border:1px solid var(--glass-border);border-radius:10px;font-size:.75rem;color:#475569;line-height:1.8;overflow-wrap:break-word;word-break:break-word;">
-    <div style="color:#94a3b8;font-weight:600;margin-bottom:.4rem;">About this data</div>
-    ${userSources.map(s=>`<div style="overflow-wrap:break-word;">· ${s}</div>`).join('')}
-    <div style="margin-top:.6rem;padding-top:.6rem;border-top:1px solid #1e293b;">
-      <span style="font-family:monospace;font-size:.7rem;color:#334155;display:block;margin-bottom:.2rem;">
-        etf_tools.js ${ETF_TOOLS_VERSION}
-      </span>
-      <span style="font-size:.7rem;color:#334155;display:block;overflow-wrap:break-word;word-break:break-word;">
-        Tax rates: NFP 0% · Super Acc 15% · Ind <strong style="color:#4ade80;">15%</strong>/$18k–$45k ·
-        <strong style="color:#4ade80;">30%</strong>/$45k–$135k · <strong style="color:#4ade80;">37%</strong>/$135k–$190k ·
-        <strong style="color:#4ade80;">45%</strong>/$190k+ (ATO 2026-27 resident rates)
-      </span>
-    </div>
-  </div>`;
-}
-
-
-// ══════════════════════════════════════════════════════════════════
-//  DOWNLOADS
-// ══════════════════════════════════════════════════════════════════
-function csvDL(rows, fn) {
-  // UTF-8 BOM ensures correct encoding in Excel / Numbers
-  const csv = '\uFEFF' + rows.map(r => Array.isArray(r)
-    ? r.map(v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`).join(',')
-    : String(r)
-  ).join('\r\n');
-  Object.assign(document.createElement('a'), {
-    href: URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})), download: fn
-  }).click();
-}
-
-function pngDL(svgId, fn) {
-  const svg = document.getElementById(svgId);
-  if(!svg) return alert('Chart not found.');
-  const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml;charset=utf-8'}));
-  const img = new Image(); img.crossOrigin='anonymous';
-  img.onload = () => {
-    const c=document.createElement('canvas'); c.width=820; c.height=270;
-    const ctx=c.getContext('2d'); ctx.fillStyle='#020818'; ctx.fillRect(0,0,820,270); ctx.drawImage(img,0,0,820,270);
-    URL.revokeObjectURL(url);
-    Object.assign(document.createElement('a'),{href:c.toDataURL('image/png'),download:fn}).click();
-  };
-  img.onerror=()=>{ URL.revokeObjectURL(url); alert('PNG export failed — try a screenshot.'); };
-  img.src=url;
-}
-
-function dlCompCSV() {
-  const etf = getETF(compState.ticker);
-  const isHist = compState.mode === 'historical';
-  const frankOn = compState.frankingMode && (etf.frankingPct||0) > 0;
-  const inflOn  = compState.showInflation;
-  const taxLabel = TAX_PROFILES[compState.taxProfile]?.label ?? compState.taxProfile;
-  const frankBoostPct = frankOn
-    ? ((etf.dividendYield/100)*(etf.frankingPct)*(0.30/0.70)*(1-(TAX_PROFILES[compState.taxProfile]?.rate??0.30))*100).toFixed(2)
-    : '0';
-
-  // Column list — build first so we know the width for padding meta rows
-  const cols = [
-    'Date',
-    'Portfolio Value ($)',
-    'Total Contributed ($)',
-    'Gains ($)',
-    ...(!compState.drip ? ['Dividends Paid ($)'] : []),
-    ...(inflOn  ? ['Real Value CPI-adj ($)'] : []),
-    ...(frankOn ? ['Cumulative Franking Credits ($)'] : []),
-  ];
-  const ncols = cols.length;
-  const pad = (arr) => [...arr, ...Array(Math.max(0, ncols - arr.length)).fill('')];
-
-  // Meta block — all rows padded to ncols so Excel aligns them with the data
-  const meta = [
-    pad(['ETF', `${compState.ticker} - ${etf.name}`]),
-    pad(['Mode', isHist ? 'Historical' : 'Projection']),
-    pad(['DRP', compState.drip ? 'On (reinvested)' : 'Off (paid out)']),
-    pad(['Initial', `$${compState.initial.toLocaleString()}`]),
-    pad(['Monthly', `$${compState.monthly.toLocaleString()}`]),
-    pad(['Return p.a.', `${etf.annualReturn?.toFixed?.(1) ?? '-'}%`]),
-    pad(['MER', `${etf.mer}%`]),
-    pad(['Dividend Yield', `${etf.dividendYield}%`]),
-    pad(['Inflation', inflOn
-      ? (isHist ? 'ABS CPI year-by-year' : `${compState.inflationRate}% p.a. (assumed)`)
-      : 'Off']),
-    pad(['Franking Credits', frankOn
-      ? `On - ${(etf.frankingPct*100).toFixed(0)}% franked - ${frankBoostPct}% p.a. boost (${taxLabel})`
-      : 'Off']),
-    pad(Array(ncols).fill('')), // blank separator
-  ];
-
-  const rows = isHist ? _lastCompData : _lastCompData.filter(d => d.label);
-
-  csvDL([
-    ...meta,
-    cols,
-    ...rows.map(d => [
-      d.date,
-      Math.round(d.value   || 0),
-      Math.round(d.contributions || 0),
-      Math.round((d.value || 0) - (d.contributions || 0)),
-      ...(!compState.drip ? [Math.round(d.dividends || 0)] : []),
-      ...(inflOn  ? [Math.round(d.inflAdj    ?? d.value ?? 0)] : []),
-      ...(frankOn ? [Math.round(d.frankingCum ?? 0)]           : []),
-    ])
-  ], `${compState.ticker}_compounding_${compState.mode}.csv`);
-}
-function dlCmpCSV() {
-  // Export all comparison series side-by-side (portfolio value per month/year)
-  const primary = { ticker: compState.ticker, data: _lastCompData };
-  const all = [primary, ...compState.compareTickers.map(t => ({ ticker: t, data: calcMonthlyFor(t) }))];
-  const isHist = compState.mode === 'historical';
-
-  // Use the primary series dates as the index
-  const dateRows = (isHist ? primary.data : primary.data.filter(d=>d.label)).map(d => d.date);
-
-  const header = ['Date', ...all.map(s => `${s.ticker} Portfolio Value ($)`)];
-  const pad = n => n == null || isNaN(n) ? '' : Math.round(n);
-
-  csvDL([
-    [`Comparison: ${all.map(s=>s.ticker).join(' vs ')} | Mode: ${isHist?'Historical':'Projection'} | Initial: $${compState.initial.toLocaleString()} | Monthly: $${compState.monthly.toLocaleString()}`],
-    [],
-    header,
-    ...dateRows.map((date, i) => [
-      date,
-      ...all.map(s => {
-        const filtered = isHist ? s.data : s.data.filter(d => d.label);
-        return pad(filtered[i]?.value);
-      })
-    ])
-  ], `comparison_${all.map(s=>s.ticker).join('_')}.csv`);
-}
-function dlPortCSV() {
-  const tot=holdings.reduce((s,h)=>s+h.amount,0), secs=calcSectorTotals();
-  csvDL([
-    ['ETF','Name','Amount (AUD)','% Portfolio','Issuer','Yield %','MER %'],
-    ...holdings.map(h=>{ const e=etfData.etfs[h.ticker]||{}; return [h.ticker,e.name||'',h.amount,((h.amount/tot)*100).toFixed(2),e.issuer||'',e.dividendYield??'',e.mer??'']; }),
-    [],['Sector','Value (AUD)','% Portfolio'],...secs.map(s=>[s.sector,Number(s.value).toFixed(0),s.pct])
-  ], 'portfolio_breakdown.csv');
-}
-function dlRetCSV() {
-  const sims=runSims();
-  csvDL([
-    `Preset: ${retState.useCustomAlloc?'Custom':retState.preset} | MER: ${getEffectiveMER().toFixed(2)}% | Withdrawal: $${retState.annualWithdrawal} (${(retState.annualWithdrawal/retState.portfolioValue*100).toFixed(2)}%) | Duration: ${retState.retirementYears}yr | Inflation adj: ${retState.inflationAdjust?'Historical CPI (fallback '+retState.inflationRate+'%)':'No'}`,
-    '',
-    ['Start Year','Survived','Depleted Year','Final Value (AUD)','Initial Withdrawal (AUD)','Pre-1970 estimate'],
-    ...sims.map(s=>[s.startYear, s.survived?'Yes':'No', s.depletedYear||'N/A', s.finalValue, s.wd0, s.earlyEst?'Yes':'No'])
-  ], `retirement_${retState.useCustomAlloc?'custom':retState.preset}.csv`);
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  MAIN RENDER
-// ══════════════════════════════════════════════════════════════════
-function renderETFTools() {
-  const c = document.getElementById('etf-tool-container');
-  if(!c||!etfData) return;
-  const fns = {compound:renderCompounding,portfolio:renderPortfolio,overlap:renderOverlap,retirement:renderRetirement};
-  c.innerHTML = (fns[currentTab]?.() || '') + sourceFooter();
-  attachListeners();
-  attachChartListeners();
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  EVENT LISTENERS
-// ══════════════════════════════════════════════════════════════════
-function attachListeners() {
-  // liveSlider: range fires 'input' → update display only; 'change' → update state + rerender
-  // number input fires 'change' → update state + rerender
-  function liveSlider(numId, rangeId, stObj, key, lvId, fmt) {
-    const num=document.getElementById(numId), rng=document.getElementById(rangeId), lv=lvId?document.getElementById(lvId):null;
-    const upd=v=>{ if(lv) lv.textContent=fmt?fmt(v):v; };
-    rng?.addEventListener('input',  ()=>{ if(num) num.value=rng.value; upd(rng.value); });
-    rng?.addEventListener('change', ()=>{ stObj[key]=Number(rng.value); rerender(); });
-    num?.addEventListener('change', ()=>{ stObj[key]=Number(num.value); if(rng) rng.value=num.value; upd(num.value); rerender(); });
+// ════════════════════════════════════════════════════════════════════════════
+// Tabs, styles, start-up
+// ════════════════════════════════════════════════════════════════════════════
+const state = { tab: 'compare' };
+const TABS = { compare: renderCompare, backtest: renderBacktest, portfolio: renderPortfolio };
+function setTab(tab) {
+  if (!TABS[tab]) tab = 'compare';
+  state.tab = tab;
+  document.querySelectorAll('.etf-tab-btn').forEach(b => b.classList.toggle('etf-tab-active', b.dataset.tab === tab));
+  const el = $('etf-tool-container');
+  if (!INDEX?.tickers?.length) {
+    el.innerHTML = `<div class="etf-warn" style="margin:1rem 0;">Price data isn't available yet. It's downloaded weekly by the “Weekly Price Update” GitHub Action — once it has run, refresh this page.</div>`;
+    if (tab !== 'portfolio') return;
   }
-
-  if(currentTab==='compound') {
-    document.getElementById('comp-ticker')?.addEventListener('change',e=>{
-      compState.ticker=e.target.value||'VAS';
-      // Clear live ticker when selecting from the dropdown
-      if(e.target.value !== 'LIVE') compState.liveTickerInput='';
-      // In historical mode: clamp start date to the ETF's inception year so we
-      // don't show data before the fund existed (e.g. VDHG only started 2017)
-      if(compState.mode === 'historical'){
-        const newEtf = getETF(compState.ticker);
-        const inception = newEtf?.inceptionYear ?? 2009;
-        if(compState.histStartYear < inception){
-          compState.histStartYear = inception;
-          compState.histStartMonth = 0;
-          compState.histStartDay = 1;
-          // Also push end date forward if it's now before start
-          if(compState.histEndYear <= inception){
-            compState.histEndYear = Math.min(inception + 3, new Date().getFullYear() - 1);
-            compState.histEndMonth = 11;
-            compState.histEndDay = 31;
-          }
-        }
-      }
-      rerender();
-    });
-    document.querySelectorAll('.mode-btn[data-mode]').forEach(b=>b.addEventListener('click',()=>{ compState.mode=b.dataset.mode; rerender(); }));
-    document.getElementById('drip-on')?.addEventListener('click', ()=>{ compState.drip=true;  rerender(); });
-    document.getElementById('drip-off')?.addEventListener('click',()=>{ compState.drip=false; rerender(); });
-    document.getElementById('infl-toggle')?.addEventListener('click', ()=>{ compState.showInflation=!compState.showInflation; rerender(); });
-    document.getElementById('infl-rate')?.addEventListener('change', e=>{ compState.inflationRate=Number(e.target.value)||2.5; rerender(); });
-    document.getElementById('frank-toggle')?.addEventListener('click', ()=>{ compState.frankingMode=!compState.frankingMode; rerender(); });
-    document.getElementById('tax-profile')?.addEventListener('change', e=>{ compState.taxProfile=e.target.value; rerender(); });
-
-    // Live ticker: sync input field value; Load button fetches price file
-    document.getElementById('live-ticker-input')?.addEventListener('input', e=>{
-      compState.liveTickerInput = e.target.value.toUpperCase();
-    });
-    document.getElementById('live-ticker-load')?.addEventListener('click', async () => {
-      const raw = compState.liveTickerInput.trim().toUpperCase();
-      if(!raw){ alert('Enter a ticker symbol first.'); return; }
-      const btn = document.getElementById('live-ticker-load');
-      if(btn){ btn.textContent='Loading…'; btn.disabled=true; }
-      // fetchLiveTicker reads from data/stocks/ (written by the GitHub Action)
-      const loaded = await fetchLiveTicker(raw);
-      if(btn){ btn.textContent='Load ↗'; btn.disabled=false; }
-      if(loaded){
-        compState.ticker='LIVE';
-        compState.mode='historical';
-        // Auto-set historical range from available annual returns
-        const rets = loaded.historicalReturns || {};
-        const yrs = Object.keys(rets).map(Number).sort((a,b)=>a-b);
-        if(yrs.length > 0){
-          compState.histStartDay=1; compState.histStartMonth=0; compState.histStartYear=yrs[0];
-          compState.histEndDay=31;  compState.histEndMonth=11;  compState.histEndYear=yrs[yrs.length-1];
-        }
-        rerender();
-      } else {
-        alert(`Could not load data for "${raw}".\n\n` +
-          `1. Make sure the GitHub Action has run — it writes individual stock files to data/stocks/.\n` +
-          `2. The ticker must be a valid ASX ticker (e.g. "CBA" or "CBA.AX").\n` +
-          `3. Only ~60 ETFs and ~50 top ASX stocks are pre-fetched; add more in update_etf_data.py.\n\n` +
-          `Alternatively use ✏ Custom mode to enter manual return assumptions.`);
-      }
-    });
-    // Also allow pressing Enter in the input
-    document.getElementById('live-ticker-input')?.addEventListener('keydown', e=>{
-      if(e.key==='Enter') document.getElementById('live-ticker-load')?.click();
-    });
-
-    liveSlider('comp-initial','comp-initial-r',compState,'initial','lv-initial',v=>fmtAUD(Number(v)));
-    liveSlider('comp-monthly','comp-monthly-r',compState,'monthly','lv-monthly',v=>fmtAUD(Number(v)));
-    liveSlider('comp-years',  'comp-years-r',  compState,'years',  'lv-years',  v=>`${v} yrs`);
-
-    // Projection date pickers
-    document.getElementById('proj-sd')?.addEventListener('change',e=>{ compState.projStartDay=Number(e.target.value); rerender(); });
-    document.getElementById('proj-sm')?.addEventListener('change',e=>{ compState.projStartMonth=Number(e.target.value); rerender(); });
-    document.getElementById('proj-sy')?.addEventListener('change',e=>{ compState.projStartYear=Number(e.target.value); rerender(); });
-
-    // Historical date pickers — update the day dropdowns when month/year changes
-    const refreshDayDrop = (dayId, yrKey, moKey) => {
-      const d=document.getElementById(dayId); if(!d) return;
-      const cur=Number(d.value), max=daysInMonth(compState[yrKey],compState[moKey]);
-      d.innerHTML = dayOpts(compState[yrKey], compState[moKey], Math.min(cur,max));
-      compState[dayId==='hist-sd'?'histStartDay':'histEndDay'] = Math.min(cur,max);
-    };
-    document.getElementById('hist-sd')?.addEventListener('change',e=>{ compState.histStartDay=Number(e.target.value); rerender(); });
-    document.getElementById('hist-sm')?.addEventListener('change',e=>{ compState.histStartMonth=Number(e.target.value); refreshDayDrop('hist-sd','histStartYear','histStartMonth'); rerender(); });
-    document.getElementById('hist-sy')?.addEventListener('change',e=>{ compState.histStartYear=Number(e.target.value); refreshDayDrop('hist-sd','histStartYear','histStartMonth'); rerender(); });
-    document.getElementById('hist-ed')?.addEventListener('change',e=>{ compState.histEndDay=Number(e.target.value); rerender(); });
-    document.getElementById('hist-em')?.addEventListener('change',e=>{ compState.histEndMonth=Number(e.target.value); refreshDayDrop('hist-ed','histEndYear','histEndMonth'); rerender(); });
-    document.getElementById('hist-ey')?.addEventListener('change',e=>{ compState.histEndYear=Number(e.target.value); refreshDayDrop('hist-ed','histEndYear','histEndMonth'); rerender(); });
-
-    const cm={'cust-name':'name','cust-return':'annualReturn','cust-mer':'mer','cust-yield':'dividendYield','cust-inception':'inceptionYear'};
-    Object.entries(cm).forEach(([id,k])=>document.getElementById(id)?.addEventListener('change',e=>{
-      compState.custom[k]=id==='cust-name'?e.target.value:Number(e.target.value); rerender();
-    }));
-    document.getElementById('cust-franking')?.addEventListener('change',e=>{
-      compState.custom.frankingPct=Number(e.target.value)/100; rerender();
-    });
-    document.getElementById('cust-use-alloc')?.addEventListener('change',e=>{
-      compState.useCustomAlloc=e.target.checked; rerender();
-    });
-    // Preset loader for custom allocation
-    document.getElementById('ca-preset')?.addEventListener('change',e=>{
-      const key = e.target.value;
-      if (!key || !etfData?.portfolioPresets[key]) return;
-      const presetAlloc = etfData.portfolioPresets[key]?.allocation || {};
-      const allKeys = ['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'];
-      allKeys.forEach(k=>{ compState.customAlloc[k] = presetAlloc[k] ?? 0; });
-      rerender();
-    });
-    // Custom allocation sliders/inputs
-    const caKeys=['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'];
-    caKeys.forEach(k=>{
-      const inp=document.getElementById(`ca-${k}`);
-      const rng=document.getElementById(`ca-${k}-r`);
-      const lbl=document.getElementById(`lv-ca-${k}`);
-      const set=v=>{ compState.customAlloc[k]=Number(v); if(inp)inp.value=v; if(rng)rng.value=v; if(lbl)lbl.textContent=v+'%'; rerender(); };
-      inp?.addEventListener('change',e=>set(e.target.value));
-      rng?.addEventListener('input', e=>set(e.target.value));
-    });
-
-    // Comparison ETF toggle buttons
-    document.querySelectorAll('.comp-cmp-btn').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        const t = btn.dataset.cmp;
-        const idx = compState.compareTickers.indexOf(t);
-        if (idx>=0) compState.compareTickers.splice(idx,1);
-        else if (compState.compareTickers.length < 4) compState.compareTickers.push(t);
-        rerender();
-      });
-    });
-    document.getElementById('comp-cmp-extra')?.addEventListener('change',e=>{
-      const t = e.target.value;
-      if (t && t!==compState.ticker && !compState.compareTickers.includes(t) && compState.compareTickers.length<4) {
-        compState.compareTickers.push(t);
-        rerender();
-      }
-      e.target.value='';
-    });
-    document.getElementById('comp-clear-cmp')?.addEventListener('click',()=>{
-      compState.compareTickers=[]; rerender();
-    });
-
-    document.getElementById('dl-csv-comp')?.addEventListener('click',dlCompCSV);
-    document.getElementById('dl-csv-cmp')?.addEventListener('click',dlCmpCSV);
-    document.getElementById('dl-png-cmp')?.addEventListener('click',()=>pngDL('comp-cmp-svg','comparison_chart.png'));
-    document.getElementById('dl-png-comp')?.addEventListener('click',()=>pngDL('comp-svg',`${compState.ticker}_chart.png`));
-  }
-
-  if(currentTab==='portfolio') {
-    document.getElementById('add-holding')?.addEventListener('click',()=>{ holdings.push({ticker:'VAS',amount:1000}); rerender(); });
-    document.querySelectorAll('.holding-remove').forEach(b=>b.addEventListener('click',()=>{ holdings.splice(Number(b.dataset.idx),1); rerender(); }));
-    document.querySelectorAll('.holding-ticker').forEach(s=>s.addEventListener('change',()=>{ holdings[Number(s.dataset.idx)].ticker=s.value; rerender(); }));
-    document.querySelectorAll('.holding-amount').forEach(i=>i.addEventListener('change',()=>{ holdings[Number(i.dataset.idx)].amount=Number(i.value); rerender(); }));
-    document.getElementById('dl-csv-port')?.addEventListener('click',dlPortCSV);
-  }
-
-  if(currentTab==='overlap') {
-    document.querySelectorAll('.overlap-toggle').forEach(b=>b.addEventListener('click',()=>{
-      const t=b.dataset.ticker, idx=overlapState.selected.indexOf(t);
-      if(idx>=0){ if(overlapState.selected.length>1) overlapState.selected.splice(idx,1); }
-      else if(overlapState.selected.length<6) overlapState.selected.push(t);
-      // Reset drill to first valid pair
-      const s=overlapState.selected;
-      if(s.length>=2){ overlapState.drillA=s[0]; overlapState.drillB=s[1]; }
-      rerender();
-    }));
-    document.getElementById('ov-sectors')?.addEventListener('click',  ()=>{ overlapState.view='sectors';  rerender(); });
-    document.getElementById('ov-holdings')?.addEventListener('click', ()=>{ overlapState.view='holdings'; rerender(); });
-    document.querySelectorAll('.drill-pair').forEach(b=>b.addEventListener('click',()=>{
-      overlapState.drillA=b.dataset.a; overlapState.drillB=b.dataset.b; rerender();
-    }));
-    document.querySelectorAll('.pair-cell').forEach(c=>c.addEventListener('click',()=>{
-      overlapState.view='holdings'; overlapState.drillA=c.dataset.a; overlapState.drillB=c.dataset.b; rerender();
-    }));
-  }
-
-  if(currentTab==='retirement') {
-    document.getElementById('ret-preset')?.addEventListener('change',e=>{
-      retState.preset=e.target.value;
-      // Merge preset allocation; fill any missing keys with 0
-      const presetAlloc = etfData.portfolioPresets[e.target.value]?.allocation || {};
-      const fullAlloc = Object.fromEntries(['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'].map(k=>[k, presetAlloc[k]??0]));
-      retState.customAlloc = fullAlloc;
-      retState.manualMER = null;
-      rerender();
-    });
-    document.getElementById('ret-custom-alloc')?.addEventListener('change',e=>{
-      retState.useCustomAlloc=e.target.checked; rerender();
-    });
-    document.getElementById('ret-yrs')?.addEventListener('change',e=>{ retState.retirementYears=Number(e.target.value); rerender(); });
-    document.getElementById('ret-from')?.addEventListener('change',e=>{ retState.fromYear=Number(e.target.value); rerender(); });
-    document.getElementById('ret-timing')?.addEventListener('change',e=>{ retState.timing=e.target.value; rerender(); });
-    document.getElementById('ret-mer')?.addEventListener('change',e=>{
-      const v=Number(e.target.value);
-      retState.manualMER = v === (etfData.portfolioPresets[retState.preset]?.mer??0.27) ? null : v;
-      rerender();
-    });
-    document.getElementById('ret-inf-on')?.addEventListener('change',e=>{ retState.inflationAdjust=e.target.value==='1'; rerender(); });
-    document.getElementById('ret-inf-rate')?.addEventListener('change',e=>{ retState.inflationRate=Number(e.target.value); rerender(); });
-    document.getElementById('ret-frank-toggle')?.addEventListener('click',()=>{ retState.frankingMode=!retState.frankingMode; rerender(); });
-    document.getElementById('ret-tax-profile')?.addEventListener('change',e=>{ retState.taxProfile=e.target.value; rerender(); });
-    document.getElementById('ret-au-yield')?.addEventListener('change',e=>{ retState.auDividendYield=Number(e.target.value); rerender(); });
-    document.getElementById('ret-au-franked')?.addEventListener('change',e=>{ retState.auFrankingPct=Number(e.target.value)/100; rerender(); });
-
-    liveSlider('ret-pv','ret-pv-r',retState,'portfolioValue','lv-retpv',v=>fmtAUD(Number(v)));
-    liveSlider('ret-wd','ret-wd-r',retState,'annualWithdrawal','lv-retwd',v=>fmtAUD(Number(v)));
-
-    // Custom allocation sliders
-    const ak=['AU_SHARES','INTL_SHARES','US_SHARES','AU_BONDS','GLOBAL_BONDS','CASH'];
-    ak.forEach(k=>{
-      const numEl=document.getElementById(`alloc-${k}`);
-      const rngEl=document.getElementById(`alloc-${k}-r`);
-      const lvEl =document.getElementById(`lv-alloc-${k}`);
-      rngEl?.addEventListener('input',  ()=>{ if(numEl)numEl.value=rngEl.value; if(lvEl)lvEl.textContent=rngEl.value+'%'; });
-      rngEl?.addEventListener('change', ()=>{ retState.customAlloc[k]=Number(rngEl.value); rerender(); });
-      numEl?.addEventListener('change', ()=>{ retState.customAlloc[k]=Number(numEl.value); if(rngEl)rngEl.value=numEl.value; if(lvEl)lvEl.textContent=numEl.value+'%'; rerender(); });
-    });
-
-    document.getElementById('dl-csv-ret')?.addEventListener('click',dlRetCSV);
-    document.getElementById('dl-png-ret')?.addEventListener('click',()=>pngDL('ret-svg','retirement_chart.png'));
-
-    // ── Auto-calc panel ──────────────────────────────────────────────
-    document.getElementById('ret-auto-toggle')?.addEventListener('click',()=>{
-      retAutoState.open = !retAutoState.open;
-      retAutoState.result = null;
-      rerender();
-    });
-    document.getElementById('ra-mode-wd')?.addEventListener('click',()=>{
-      retAutoState.mode='withdrawal'; retAutoState.result=null; rerender();
-    });
-    document.getElementById('ra-mode-pv')?.addEventListener('click',()=>{
-      retAutoState.mode='portfolio'; retAutoState.result=null; rerender();
-    });
-    document.getElementById('ra-pv')?.addEventListener('change',e=>{
-      retAutoState.portfolioInput=Number(e.target.value); retAutoState.result=null;
-    });
-    document.getElementById('ra-wd')?.addEventListener('change',e=>{
-      retAutoState.withdrawalInput=Number(e.target.value); retAutoState.result=null;
-    });
-    document.getElementById('ra-success')?.addEventListener('change',e=>{
-      retAutoState.targetSuccess=Number(e.target.value); retAutoState.result=null;
-    });
-    document.getElementById('ra-solve')?.addEventListener('click',()=>{
-      const btn = document.getElementById('ra-solve');
-      if(btn){ btn.textContent='Calculating…'; btn.disabled=true; }
-      // Use setTimeout so UI can repaint before the binary search blocks
-      setTimeout(()=>{
-        const tgt = retAutoState.targetSuccess;
-        if(retAutoState.mode==='withdrawal'){
-          const pv = retAutoState.portfolioInput;
-          retAutoState.result = { value: solveWithdrawal(tgt, pv) };
-        } else {
-          const wd = retAutoState.withdrawalInput;
-          retAutoState.result = { value: solvePortfolio(tgt, wd) };
-        }
-        retAutoState.useCustomAlloc = retState.useCustomAlloc;
-        rerender();
-      }, 30);
-    });
-  }
+  TABS[tab](el);
+  writeHash();
 }
 
-// ── Tab switching ──────────────────────────────────────────────────
-function setTab(tab,btn){
-  currentTab=tab;
-  document.querySelectorAll('.etf-tab-btn').forEach(b=>{ b.classList.remove('etf-tab-active'); b.style.opacity='.5'; });
-  btn.classList.add('etf-tab-active'); btn.style.opacity='1';
-  renderETFTools();
-}
-['compound','portfolio','overlap','retirement'].forEach(tab=>{
-  const b=document.getElementById(`tab-${tab}`);
-  b?.addEventListener('click',e=>setTab(tab,e.currentTarget));
-  if(tab==='compound'&&b){ b.classList.add('etf-tab-active'); b.style.opacity='1'; }
-  else if(b) b.style.opacity='.5';
-});
-
-// ── Shared CSS ─────────────────────────────────────────────────────
-const _css=document.createElement('style');
-_css.textContent=`
-  .etf-label    { display:block;font-size:.75rem;color:var(--text-secondary);margin-bottom:.4rem;letter-spacing:.05em;text-transform:uppercase; }
-  .etf-select   { width:100%;background:#0a0f1e;border:1px solid var(--glass-border);border-radius:8px;color:white;padding:.55rem .75rem;font-size:.85rem; }
-  .etf-input    { width:100%;background:#0a0f1e;border:1px solid var(--glass-border);border-radius:8px;color:white;padding:.55rem .75rem;font-size:.85rem;box-sizing:border-box; }
-  .etf-input:disabled { opacity:.4;cursor:not-allowed; }
-  .etf-range    { width:100%;margin-top:.4rem;accent-color:var(--dapi-blue);cursor:pointer; }
-  .etf-info-box { background:#0a0f1e;border-radius:8px;border:1px solid var(--glass-border);padding:.7rem 1rem; }
-  .etf-stat-card  { background:#0a0f1e;border-radius:10px;border:1px solid var(--glass-border);padding:1rem;text-align:center; }
-  .etf-stat-label { font-size:.7rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em; }
-  .etf-stat-value { font-size:1.4rem;font-weight:700;margin-top:.3rem; }
-  .mode-btn     { padding:.4rem .9rem;border-radius:6px;border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:.8rem;transition:all .2s; }
-  .mode-active  { border-color:var(--dapi-blue)!important;background:rgba(56,189,248,.08)!important;color:var(--dapi-blue)!important; }
-  .dl-btn       { padding:.4rem .9rem;border-radius:6px;border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:.78rem;transition:all .2s; }
-  .dl-btn:hover { border-color:var(--fitc-green);color:var(--fitc-green); }
-  .overlap-toggle       { padding:.3rem .6rem;border-radius:5px;border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:.75rem;font-family:monospace;transition:all .15s; }
-  .overlap-toggle:hover { border-color:var(--dapi-blue);color:var(--dapi-blue); }
-  .overlap-active       { border-color:var(--fitc-green)!important;background:rgba(74,222,128,.08)!important;color:var(--fitc-green)!important; }
-  .pair-cell:hover { opacity:.75; }
-  .infl-active  { border-color:#fb923c!important;background:rgba(251,146,60,.08)!important;color:#fb923c!important; }
-  .frank-active { border-color:#fbbf24!important;background:rgba(251,191,36,.08)!important;color:#fbbf24!important; }
-  optgroup { color:var(--text-secondary);font-size:.75rem; }
-
-  /* ── Responsive / mobile ────────────────────────────────────────── */
+const _css = document.createElement('style');
+_css.textContent = `
+  .etf-intro{color:var(--text-secondary);font-size:.9rem;line-height:1.6;margin-bottom:1rem;}
+  .etf-label{display:block;font-size:.7rem;color:var(--text-secondary);margin-bottom:.35rem;letter-spacing:.05em;text-transform:uppercase;}
+  .etf-input{width:100%;box-sizing:border-box;background:#0a0f1e;border:1px solid var(--glass-border);border-radius:8px;color:#f0f0f0;padding:.55rem .7rem;font-size:.88rem;font-family:inherit;}
+  .etf-input:focus{outline:none;border-color:#38bdf8;}
+  input[type=date].etf-input{color-scheme:dark;}
+  .etf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;margin:.75rem 0;}
+  .etf-check{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);margin:.25rem 0 1rem;cursor:pointer;}
+  .etf-chips{display:flex;flex-wrap:wrap;gap:.45rem;}
+  .etf-chip{display:inline-flex;align-items:center;gap:.4rem;border:1px solid;border-radius:999px;padding:.25rem .3rem .25rem .7rem;font-size:.85rem;font-weight:600;}
+  .etf-chip i{width:.55rem;height:.55rem;border-radius:50%;display:inline-block;}
+  .etf-chip button,.etf-x{background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:.85rem;padding:.15rem .4rem;border-radius:6px;}
+  .etf-chip button:hover,.etf-x:hover{color:#f87171;}
+  .etf-picker{position:relative;}
+  .etf-sugg{display:none;position:absolute;z-index:50;left:0;right:0;top:100%;margin-top:2px;background:#0b1224;border:1px solid #334155;border-radius:8px;max-height:300px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+  .etf-sugg-row{padding:.45rem .65rem;font-size:.82rem;cursor:pointer;display:flex;gap:.5rem;align-items:baseline;}
+  .etf-sugg-row:hover{background:rgba(56,189,248,.1);}
+  .etf-sugg-row span{color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+  .etf-sugg-row em{color:#64748b;font-style:normal;font-size:.7rem;}
+  .etf-sugg-none{cursor:default;color:var(--text-secondary);}
+  .etf-sugg a,.etf-warn a,.etf-fine a,.etf-note a{color:#38bdf8;}
+  .etf-loading{color:var(--text-secondary);padding:2rem;text-align:center;}
+  .etf-note{background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.25);border-radius:8px;padding:.6rem .85rem;font-size:.82rem;color:#cbd5e1;margin:.6rem 0;}
+  .etf-warn{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.35);border-radius:8px;padding:.6rem .85rem;font-size:.82rem;color:#fde68a;margin:.6rem 0;}
+  .etf-fine{font-size:.74rem;color:#64748b;line-height:1.55;margin-top:.6rem;}
+  .etf-sub{font-size:.7rem;color:#64748b;font-weight:400;margin-top:.1rem;}
+  .etf-q{display:inline-block;width:1rem;height:1rem;line-height:1rem;text-align:center;border-radius:50%;border:1px solid #475569;color:#94a3b8;font-size:.62rem;cursor:help;}
+  .etf-h4{font-size:.95rem;margin:1.4rem 0 .5rem;color:#e2e8f0;}
+  .etf-table{width:100%;border-collapse:collapse;font-size:.84rem;}
+  .etf-table th{text-align:left;font-size:.75rem;color:#94a3b8;font-weight:600;padding:.45rem .55rem;border-bottom:1px solid #1e293b;vertical-align:bottom;}
+  .etf-table td{padding:.45rem .55rem;border-bottom:1px solid #111827;vertical-align:top;}
+  .etf-table-num td,.etf-table-num th{text-align:right;}
+  .etf-table-num td:first-child,.etf-table-num th:first-child{text-align:left;}
+  .etf-table .etf-name{text-align:left;max-width:280px;}
+  .etf-sortable th{cursor:pointer;white-space:nowrap;}
+  .etf-chart{margin-top:.75rem;}
+  .etf-tip{display:none;position:absolute;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.5rem .7rem;font-size:.75rem;pointer-events:none;z-index:20;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+  .etf-legend{display:flex;flex-wrap:wrap;gap:.9rem;font-size:.75rem;color:var(--text-secondary);margin-top:.4rem;}
+  .etf-legend i{display:inline-block;width:.9rem;height:3px;margin-right:.35rem;vertical-align:middle;border-radius:2px;}
+  .etf-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;}
+  .dl-btn{padding:.4rem .85rem;border-radius:6px;border:1px solid var(--glass-border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:.78rem;font-family:inherit;}
+  .dl-btn:hover{border-color:#4ade80;color:#4ade80;}
+  .etf-btn{padding:.55rem 1.2rem;border-radius:8px;border:1px solid #38bdf8;background:rgba(56,189,248,.1);color:#38bdf8;cursor:pointer;font-weight:600;font-family:inherit;}
+  .etf-mini{display:inline-block;font-size:.7rem;color:#38bdf8;margin-top:.3rem;}
+  .etf-details{margin-top:1.5rem;border:1px solid var(--glass-border);border-radius:10px;padding:.7rem .9rem;}
+  .etf-details summary{cursor:pointer;font-weight:600;font-size:.9rem;}
+  .etf-port-wrap{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+  .etf-port{border:1px solid;border-radius:10px;padding:.75rem;}
+  .etf-port-head{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap;}
+  .etf-port-row{display:grid;grid-template-columns:1fr 6.5rem auto;gap:.4rem;margin-bottom:.4rem;align-items:center;}
+  .etf-w{display:flex;align-items:center;gap:.25rem;color:var(--text-secondary);}
+  .etf-port-foot{display:flex;justify-content:space-between;align-items:center;gap:.5rem;}
+  .etf-two{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+  .etf-bar{display:grid;grid-template-columns:10rem 1fr 3.2rem;gap:.5rem;align-items:center;font-size:.8rem;margin:.25rem 0;}
+  .etf-bar div{background:#0a0f1e;border-radius:4px;height:.6rem;overflow:hidden;}
+  .etf-bar i{display:block;height:100%;border-radius:4px;}
+  .etf-bar b{text-align:right;font-weight:500;}
+  .etf-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem;}
+  .etf-stat{background:#0a0f1e;border:1px solid var(--glass-border);border-radius:10px;padding:.75rem;}
+  .etf-stat-l{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);}
+  .etf-stat-v{font-size:1.25rem;font-weight:700;margin-top:.25rem;}
+  .etf-next{display:flex;flex-wrap:wrap;gap:.8rem;align-items:end;margin-top:.8rem;font-size:.85rem;}
+  .etf-retire{margin-top:1.5rem;font-size:.85rem;color:var(--text-secondary);}
+  .etf-retire a{color:#38bdf8;}
   @media(max-width:700px){
-    /* Stat cards: 2 columns on narrow screens */
-    .etf-stat-card  { padding:.65rem .5rem; }
-    .etf-stat-value { font-size:1rem!important; }
-    .etf-stat-label { font-size:.62rem; }
-
-    /* Mode/DRP buttons: allow wrapping and shrink text */
-    .mode-btn { padding:.35rem .6rem;font-size:.75rem; }
-
-    /* Charts: ensure they don't overflow on narrow viewports */
-    svg[viewBox] { max-width:100%; }
-
-    /* Overlap toggles: wrap tightly */
-    .overlap-toggle { padding:.25rem .45rem;font-size:.7rem; }
-  }
-
-  @media(max-width:480px){
-    .etf-stat-value { font-size:.85rem!important; }
-    .mode-btn { padding:.3rem .5rem;font-size:.7rem; }
-    .etf-select,.etf-input { font-size:.8rem;padding:.45rem .55rem; }
-  }
-
-  /* Force inline grid layouts to collapse on mobile.
-     These are applied to elements using inline style="display:grid;grid-template-columns:..."
-     We override with a utility class attached via JS. */
-  @media(max-width:600px){
-    .resp-grid-2  { grid-template-columns:1fr 1fr!important; }
-    .resp-grid-1  { grid-template-columns:1fr!important; }
-  }
-  @media(max-width:420px){
-    .resp-grid-2  { grid-template-columns:1fr!important; }
-  }
-`;
+    .etf-port-wrap,.etf-two{grid-template-columns:1fr;}
+    .etf-bar{grid-template-columns:7rem 1fr 3rem;}
+    .etf-table{font-size:.78rem;}
+    .etf-stat-v{font-size:1.05rem;}
+  }`;
 document.head.appendChild(_css);
 
-// ── Init ───────────────────────────────────────────────────────────
 async function initETF() {
-  try {
-    etfData = await (await fetch('/data/etf_data.json')).json();
-    // Seed retState.customAlloc from default preset
-    retState.customAlloc = {...etfData.portfolioPresets[retState.preset].allocation};
-    renderETFTools();
-  } catch(e) {
-    console.error(e);
-    const c=document.getElementById('etf-tool-container');
-    if(c) c.innerHTML='<p style="color:var(--tritc-red);padding:2rem;text-align:center;">ETF data unavailable. Please try again later.</p>';
-  }
+  document.querySelectorAll('.etf-tab-btn').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  await Promise.all([loadIndex(), loadMeta()]);
+  readHash();
+  setTab(state.tab);
 }
 initETF();

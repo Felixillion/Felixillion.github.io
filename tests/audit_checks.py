@@ -38,9 +38,18 @@ a = age_days(astro['lastUpdated'])
 etf = json.load(open(P('data', 'etf_data.json')))
 a = age_days(etf['meta']['lastUpdated'])
 (ok if a <= 8 else fail)(f"ETF data is {a} day(s) old (meta.lastUpdated {etf['meta']['lastUpdated']})")
-idx = json.load(open(P('data', 'stocks', 'index.json')))
-a = age_days(idx['lastUpdated'])
-(ok if a <= 8 else fail)(f"Stock index is {a} day(s) old")
+pidx_path = P('data', 'prices', 'index.json')
+if os.path.exists(pidx_path):
+    pidx = json.load(open(pidx_path))
+    a = age_days(pidx['updated'])
+    (ok if a <= 9 else fail)(f"Weekly prices are {a} day(s) old ({pidx['count']} tickers)")
+    q = json.load(open(P('data', 'prices', '_quality.json')))
+    missing = [c for c, v in q.items() if v and v[0].startswith('no data')]
+    if missing: warn(f"Prices: no Yahoo data for {len(missing)} code(s): {', '.join(missing[:15])}")
+    noted = [c for c, v in q.items() if v and not v[0].startswith('no data')]
+    if noted: warn(f"Prices: data-quality notes for {len(noted)} code(s) (see data/prices/_quality.json): {', '.join(noted[:15])}")
+else:
+    fail("data/prices/index.json missing — run the Weekly Price Update workflow")
 ff = json.load(open(P('_data', 'ff_weekly.json')))
 for scheme in ('qantas', 'velocity'):
     for c in ff[scheme]:
@@ -100,23 +109,24 @@ diffs = [(y, ac['CASH'].get(str(y)), v) for y, v in cash.items() if str(y) in ac
 last_full = TODAY.year - 1
 for k in ('AU_SHARES', 'INTL_SHARES', 'AU_BONDS'):
     if str(last_full) not in ac[k]: warn(f"assetClassReturns.{k} has no {last_full} value yet")
-for k, e in etf['etfs'].items():
-    pth = P('data', 'stocks', f'{k}.AX.json')
-    if not os.path.exists(pth) or k in ('AFI', 'ARG', 'WAM', 'WGB', 'MFF'):
-        continue
-    st = json.load(open(pth)).get('historicalReturns', {})
-    off = [(y, e['historicalReturns'].get(y), v) for y, v in st.items()
-           if int(y) < TODAY.year and e.get('historicalReturns', {}).get(y) is not None and abs(e['historicalReturns'][y] - v) > 1.0]
-    if off: fail(f"ETF {k}: stored annual returns disagree with adjusted-price data {off[:3]}")
+# VAS total returns built by fetch_prices.py should track the All Ords Accumulation index (ASX 300 vs All Ords, minus 0.07% fee)
+vas_p = P('data', 'prices', 'VAS.json')
+if os.path.exists(vas_p):
+    from datetime import date as _d, timedelta as _td
+    r = json.load(open(vas_p)); st = _d.fromisoformat(r['s']); ye = {}
+    for i, x in enumerate(r['x']): ye[(st + _td(days=7 * i)).year] = x
+    xao = {int(k): v for k, v in GT['au_shares_xaoa']['values'].items()}
+    off = [(y, round((ye[y] / ye[y - 1] - 1) * 100, 1), xao[y]) for y in ye if y - 1 in ye and y - 1 > st.year and y in xao and abs((ye[y] / ye[y - 1] - 1) * 100 - xao[y]) > 2.5]
+    (fail if off else ok)(f"VAS weekly total returns vs All Ords Accumulation: {len(off)} year(s) off by >2.5 pts {off[:4] if off else ''}")
 
 # ── 4. Tax rates ────────────────────────────────────────────────────────────
 fy = f"{TODAY.year}-{str(TODAY.year + 1)[2:]}" if TODAY.month >= 7 else f"{TODAY.year - 1}-{str(TODAY.year)[2:]}"
 rates = GT['au_resident_tax_rates'].get(fy)
-src = open(P('assets/js/etf_tools.js')).read()
-m = re.search(r"'ind_16':\s*\{[^}]*rate:\s*([\d.]+)", src)
+src = open(P('pages/au-investing.html')).read()
+m = re.search(r"ind_16:\s*\{\s*rate:\s*([\d.]+)", src)
 if rates and m:
     want = rates['18201-45000']
-    (ok if abs(float(m.group(1)) - want) < 1e-9 else fail)(f"Tax: second bracket in ETF tools = {m.group(1)}, ATO {fy} = {want}")
+    (ok if abs(float(m.group(1)) - want) < 1e-9 else fail)(f"Tax: second bracket in AU Investing = {m.group(1)}, ATO {fy} = {want}")
 elif not rates:
     warn(f"No reference tax rates for FY {fy} — add them to reference_series.json")
 
