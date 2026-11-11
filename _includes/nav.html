@@ -12,6 +12,7 @@
       <a href="{{ '/etf-tools.html' | relative_url }}" class="nav-link nav-link-cta">📊 ETF Tools</a>
       <a href="{{ '/au-investing.html' | relative_url }}" class="nav-link nav-link-cta">📈 AU Investing</a>
       <a href="{{ '/billionaire-legacy.html' | relative_url }}" class="nav-link nav-link-cta">🐷 Legacy</a>
+      <a href="https://felixillion.github.io/UnumLocalia-Viewer/" class="nav-link nav-unum" title="UnumLocalia Viewer" aria-label="UnumLocalia Viewer"><img src="{{ '/assets/images/unum-icon.png' | relative_url }}" alt="" class="nav-ico"><span class="nav-lbl"> UnumLocalia</span></a>
     </div>
 
     <button id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false">☰</button>
@@ -28,6 +29,7 @@
     <a href="{{ '/etf-tools.html' | relative_url }}" class="nav-mobile-link">📊 ETF Tools</a>
     <a href="{{ '/au-investing.html' | relative_url }}" class="nav-mobile-link">📈 AU Investing</a>
     <a href="{{ '/billionaire-legacy.html' | relative_url }}" class="nav-mobile-link">🐷 Billionaire Legacy</a>
+    <a href="https://felixillion.github.io/UnumLocalia-Viewer/" class="nav-mobile-link"><img src="{{ '/assets/images/unum-icon.png' | relative_url }}" alt="" class="nav-ico"> UnumLocalia Viewer</a>
   </div>
 </nav>
 
@@ -59,6 +61,8 @@
   transition: color .2s, background .2s, border-color .2s; white-space: nowrap;
   border: 1px solid transparent;
 }
+.nav-ico { width:1.05em; height:1.05em; vertical-align:-.17em; border-radius:50%; }
+@media (max-width: 1240px) { .nav-unum .nav-lbl { display:none; } }
 .nav-link:hover { color: white; background: rgba(255,255,255,.07); }
 
 /* Active state: each page gets a distinct accent matching site palette */
@@ -106,7 +110,7 @@
 }
 .nav-mobile-link:hover, .nav-mobile-link.active { background: rgba(255,255,255,.05); color: white; }
 /* Responsive */
-@media (max-width: 640px) {
+@media (max-width: 1080px) {
   .nav-desktop  { display: none; }
   #nav-hamburger { display: block; }
 

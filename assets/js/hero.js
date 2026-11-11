@@ -1327,22 +1327,31 @@
       p.x+=Math.cos(p.ang)*p.spd; p.y+=Math.sin(p.ang)*p.spd*.4;
       if(p.x>W+60){p.x=-60; p.y=.1*H+Math.random()*.8*H; p.trail=[];}
       p.trail.push({x:p.x,y:p.y});
-      if(p.trail.length>90)p.trail.shift();
-      // Contrail
-      ctx.setLineDash([5,5]);
-      for(let i=1;i<p.trail.length;i++){
-        const f=i/p.trail.length;
-        ctx.globalAlpha=f*.28; ctx.strokeStyle=p.col;
-        ctx.lineWidth=Math.max(.3,1.8-f*1.4);
-        ctx.beginPath(); ctx.moveTo(p.trail[i-1].x,p.trail[i-1].y);
-        ctx.lineTo(p.trail[i].x,p.trail[i].y); ctx.stroke();
+      if(p.trail.length>200)p.trail.shift();
+      // Twin contrails — smooth, widening and fading behind the engines
+      const sn=Math.sin(p.ang), cs=Math.cos(p.ang);
+      for(const off of [-4,4]){
+        ctx.lineCap='round';
+        for(let i=1;i<p.trail.length;i++){
+          const f=i/p.trail.length;
+          ctx.globalAlpha=f*f*.32; ctx.strokeStyle='#e2e8f0';
+          ctx.lineWidth=1+(1-f)*2.5;
+          ctx.beginPath();
+          ctx.moveTo(p.trail[i-1].x-sn*off-cs*6,p.trail[i-1].y+cs*off-sn*6);
+          ctx.lineTo(p.trail[i].x-sn*off-cs*6,p.trail[i].y+cs*off-sn*6); ctx.stroke();
+        }
       }
-      ctx.setLineDash([]);
-      // Plane body (small delta wing silhouette)
-      ctx.globalAlpha=.88; ctx.fillStyle=p.col;
+      // Airliner silhouette (top view): fuselage, swept wings, tailplane
+      ctx.globalAlpha=.92; ctx.fillStyle=p.col;
       ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.ang);
-      ctx.beginPath(); ctx.moveTo(10,0); ctx.lineTo(-6,-4); ctx.lineTo(-3,0); ctx.lineTo(-6,4); ctx.closePath();
-      ctx.fill(); ctx.restore();
+      ctx.beginPath(); ctx.ellipse(0,0,13,2.2,0,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(3,0); ctx.lineTo(-4,-11); ctx.lineTo(-7,-11); ctx.lineTo(-3,0); ctx.lineTo(-7,11); ctx.lineTo(-4,11); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-9,0); ctx.lineTo(-13,-5); ctx.lineTo(-14.5,-5); ctx.lineTo(-12,0); ctx.lineTo(-14.5,5); ctx.lineTo(-13,5); ctx.closePath(); ctx.fill();
+      // blinking wingtip lights (red port / green starboard)
+      const blink=(Math.sin(ffTime*9+p.x*.01)>0.6)?1:.25;
+      ctx.globalAlpha=blink; ctx.fillStyle='#f87171'; ctx.beginPath(); ctx.arc(-6,-11,1.4,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#4ade80'; ctx.beginPath(); ctx.arc(-6,11,1.4,0,Math.PI*2); ctx.fill();
+      ctx.restore();
     }
     ctx.globalAlpha=1;
   }
@@ -1350,16 +1359,19 @@
   // ══════════════════════════════════════════════════════════════════════════
   //  THEME 7 — ETF Tools  (candlesticks + flying cash + creature forever chasing)
   // ══════════════════════════════════════════════════════════════════════════
-  let etfBars=[], etfBills=[], etfCreature={}, etfTime=0;
+  let etfBars=[], etfBills=[], etfCreature={}, etfTime=0, etfScroll=0, etfLo=null, etfHi=null;
+  function etfCandle(o){
+    const c=o+0.12+(Math.random()-.47)*1.3;           // small upward drift + noise
+    return {o, c, hi:Math.max(o,c)+Math.random()*.45, lo:Math.min(o,c)-Math.random()*.45};
+  }
 
   function initETF() {
     etfTime=0;
-    const n=Math.max(12, Math.floor(W/24));
-    etfBars=Array.from({length:n},(_,i)=>{
-      const h=40+Math.random()*H*.38;
-      return {x:(i+.5)*(W/n), h, th:40+Math.random()*H*.38,
-              spd:.012+Math.random()*.018, col:Math.random()<.68?'#39ff14':'#ef4444'};
-    });
+    // Candles from a random walk with a gentle upward drift — markets wobble but tend to rise
+    const n=Math.max(16, Math.floor(W/22));
+    etfBars=[]; let v=0;
+    for(let i=0;i<n+2;i++){ etfBars.push(etfCandle(v)); v=etfBars[etfBars.length-1].c; }
+    etfScroll=0; etfLo=null; etfHi=null;
     etfBills=Array.from({length:8},(_,bi)=>({
       x:Math.random()*W, y:H*.18+Math.random()*H*.6,
       vx:0.5+Math.random()*0.55, vy:(Math.random()-.5)*.2,
@@ -1439,17 +1451,22 @@
     const rg=ctx.createRadialGradient(W*.5,H,0,W*.5,H,H);
     rg.addColorStop(0,'rgba(57,255,20,0.05)'); rg.addColorStop(.6,'transparent');
     ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
-    // Candlestick bars
-    const bw=Math.max(6,(W/etfBars.length)*.62);
-    for(const b of etfBars){
-      b.h+=(b.th-b.h)*b.spd;
-      if(Math.abs(b.h-b.th)<1){b.th=40+Math.random()*H*.42; b.col=b.th>b.h?'#39ff14':'#ef4444';}
-      const by=H-b.h;
-      ctx.globalAlpha=.13; ctx.fillStyle=b.col; ctx.fillRect(b.x-bw/2,by,bw,b.h);
-      ctx.globalAlpha=.4;  ctx.fillRect(b.x-bw/2,by,bw,2);
-      ctx.globalAlpha=.18; ctx.strokeStyle=b.col; ctx.lineWidth=1;
-      ctx.beginPath(); ctx.moveTo(b.x,by-8); ctx.lineTo(b.x,by); ctx.stroke();
-    }
+    // Candlestick chart, scrolling left; the vertical scale eases to fit what's on screen
+    const n=etfBars.length-2, cw=W/n, bw=Math.max(5,cw*.6);
+    etfScroll+=0.35;
+    if(etfScroll>=cw){ etfScroll-=cw; etfBars.shift(); etfBars.push(etfCandle(etfBars[etfBars.length-1].c)); }
+    let lo=Infinity, hi=-Infinity; etfBars.forEach(k=>{lo=Math.min(lo,k.lo); hi=Math.max(hi,k.hi);});
+    if(etfLo===null){etfLo=lo; etfHi=hi;}
+    etfLo+=(lo-etfLo)*.02; etfHi+=(hi-etfHi)*.02;
+    const yOf=v=>H*.95-(v-etfLo)/Math.max(1e-6,etfHi-etfLo)*H*.5;
+    etfBars.forEach((k,i)=>{
+      const x=(i+.5)*cw-etfScroll, up=k.c>=k.o, col=up?'#39ff14':'#ef4444';
+      const y1=yOf(Math.max(k.o,k.c)), y2=yOf(Math.min(k.o,k.c));
+      ctx.globalAlpha=.3; ctx.strokeStyle=col; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(x,yOf(k.hi)); ctx.lineTo(x,yOf(k.lo)); ctx.stroke();
+      ctx.globalAlpha=up?.22:.28; ctx.fillStyle=col; ctx.fillRect(x-bw/2,y1,bw,Math.max(2,y2-y1));
+      ctx.globalAlpha=.5; ctx.fillRect(x-bw/2,up?y1:y2-2,bw,2);
+    });
     // Bills
     for(let bi=0;bi<etfBills.length;bi++){
       const b=etfBills[bi];
@@ -1689,531 +1706,408 @@
   }
 
   // ══════════════════════════════════════════════════════════════════════════
-  //  THEME 9 — Legacy  (cash falls → pigs inhale & fatten → spit coins → stick figures fight in dust clouds)
+  //  THEME 9 — Legacy
+  //  Cash drifts down from the top → pigs sitting on gold mounds gulp it and swell
+  //  → every few notes a pig spits out a couple of coins → people below scramble
+  //  and scuffle over them. Time-based (dt) so it runs at the same speed on 60/120 Hz screens.
   // ══════════════════════════════════════════════════════════════════════════
-  let lgPigs=[], lgNotes=[], lgCoins=[], lgPeople=[], lgDusts=[], lgT=0;
-  const LG_PINK='#fda4af', LG_DPINK='#e11d48', LG_GOLD='#f0c040', LG_BILL='#4ade80';
+  let lgPigs=[], lgNotes=[], lgCoins=[], lgPeople=[], lgDusts=[], lgT=0, lgLast=0, lgSpawn=0;
+  const LG_PINK='#fda4af', LG_DPINK='#e11d48';
+  const LG_S0=24, LG_SMAX=50;                       // pig size: start / cap
+  const lgClamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function lgGeom(){
+    const floorY=H*0.84;
+    const moundBase=H*0.68;
+    const moundH0=lgClamp(H*0.10,44,100);
+    return {floorY,moundBase,moundH0};
+  }
 
   function initLegacy(){
-    lgPigs=[]; lgNotes=[]; lgCoins=[]; lgPeople=[]; lgDusts=[]; lgT=0;
-    const pigY=H*0.52, floorY=H*0.74;
-    const n=Math.min(4,Math.max(2,Math.floor(W/200)));
-    const sp=W/(n+1);
+    lgPigs=[]; lgNotes=[]; lgCoins=[]; lgPeople=[]; lgDusts=[]; lgT=0; lgSpawn=0.2;
+    lgLast=performance.now();
+    const n=lgClamp(Math.floor(W/330),2,4), sp=W/(n+1);
     for(let i=0;i<n;i++){
       lgPigs.push({
-        x:sp*(i+1), pigY, floorY,
-        baseFat:28, fat:28, maxFat:80,
-        // Inhale state
-        inhaling:0,      // 0=idle, >0=inhaling (countdown)
-        inhalePow:0,     // 0..1 suction strength
-        // Belch state
-        belchCD:240+Math.floor(Math.random()*400),
-        belchAnim:0,
-        // Visual
-        wiggle:0, angle:0,
-        // Absorbed sparkles
-        sparks:[],
+        x:sp*(i+1), face:i<n/2?1:-1,
+        mw:Math.min(sp*0.78,280),           // mound width
+        s0:Math.min(LG_S0,sp*0.15), size:0, sizeT:0,            // drawn size eases toward target
+        gulp:0, open:0, eaten:0, spit:0, shake:0,
+        sparks:[], seed:Math.random()*1000,
       });
     }
-    // Stick people in lower tier
-    const m=Math.min(10,Math.max(4,Math.floor(W/120)));
-    const sp2=W/(m+1);
+    lgPigs.forEach(p=>{ p.smax=p.s0*LG_SMAX/LG_S0; p.size=p.sizeT=p.s0; });
+    const m=lgClamp(Math.floor(W/75),6,18), sp2=W/(m+1);
     for(let i=0;i<m;i++){
-      lgPeople.push({
-        bx:sp2*(i+1), x:sp2*(i+1), y:floorY+38,
-        ph:Math.random()*Math.PI*2,
-        scramble:0, target:null,
-        dustCD:0,
-      });
+      const bx=sp2*(i+1)+(Math.random()-.5)*sp2*.4;
+      lgPeople.push({bx,x:bx,ph:Math.random()*6.28,state:'idle',coin:null,t:0,dir:1,step:0,
+        hue:['148,163,184','203,213,225','125,211,252','253,186,116','196,181,253'][i%5]});
     }
+    // a few notes already on their way so the scene isn't empty
+    for(let i=0;i<6;i++){ const nt=lgNewNote(); nt.y=Math.random()*H*0.35; lgNotes.push(nt); }
   }
 
-  /* ─── Cash note (rectangle with $ sign) ─── */
-  function newNote(){
-    const pw=(Math.random()>.5)?22:18;
-    const ph=pw*0.6;
-    return {
-      x:Math.random()*W*0.9+W*0.05,
-      y:-30-Math.random()*100,
-      vx:(Math.random()-.5)*.18,       // gentle horizontal drift
-      vy:0.08+Math.random()*0.14,      // very slow initial fall (was 0.5–1.4)
-      rot:(Math.random()-.5)*.6,
-      spin:(Math.random()-.5)*.012,    // slow, lazy spin
-      w:pw, h:ph,
-      al:0.85+Math.random()*0.14,
-      dead:false,
-      suckTarget:null, suckSpeed:0,
-    };
+  /* ─── geometry helpers ─── */
+  function lgMoundH(p){ const {moundH0}=lgGeom(); return Math.min(moundH0,p.mw*0.36)*(1+0.35*(p.size-p.s0)/(p.smax-p.s0)); }
+  function lgPigBody(p){
+    const {moundBase}=lgGeom();
+    const f=p.size*(1+0.10*Math.sin(p.gulp*Math.PI));       // gulp = quick bulge
+    const bw=f*1.35, bh=f*0.95;
+    const top=moundBase-lgMoundH(p);
+    return {f,bw,bh,cx:p.x,cy:top-bh*0.62};
+  }
+  function lgMouth(p){
+    const b=lgPigBody(p);
+    return {x:b.cx+p.face*b.bw*1.02, y:b.cy+b.bh*0.10};
   }
 
-  function drawNote(n){
-    ctx.save();
-    ctx.translate(n.x,n.y);
-    ctx.rotate(n.rot);
-    ctx.globalAlpha=n.al;
-    // Bill body
-    ctx.fillStyle='#166534';
-    ctx.strokeStyle='#4ade80';
-    ctx.lineWidth=.8;
-    ctx.beginPath();
-    ctx.roundRect?ctx.roundRect(-n.w/2,-n.h/2,n.w,n.h,2):ctx.rect(-n.w/2,-n.h/2,n.w,n.h);
-    ctx.fill(); ctx.stroke();
-    // $ sign
-    ctx.fillStyle='#86efac';
-    ctx.font=`bold ${n.h*0.7}px monospace`;
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('$',0,0);
+  /* ─── spawning ─── */
+  function lgNewNote(){
+    const x=Math.random()*W;
+    let best=lgPigs[0], bd=1e9;
+    lgPigs.forEach(p=>{const d=Math.abs(p.x-x); if(d<bd){bd=d;best=p;}});
+    return {x0:x, x, y:-24-Math.random()*40, vy:32+Math.random()*22,     // px per second — slow drift
+      ph:Math.random()*6.28, sw:0.9+Math.random()*0.7, amp:10+Math.random()*12,
+      rot:0, w:Math.random()<.5?22:18, pig:best, suck:0, sx:0, sy:0, dead:false};
+  }
+
+  /* ─── drawing ─── */
+  function lgDrawNote(n,scale){
+    ctx.save(); ctx.translate(n.x,n.y); ctx.rotate(n.rot); ctx.scale(scale,scale);
+    const w=n.w, h=w*0.55;
+    ctx.fillStyle='#166534'; ctx.strokeStyle='#4ade80'; ctx.lineWidth=.9;
+    ctx.beginPath(); ctx.roundRect?ctx.roundRect(-w/2,-h/2,w,h,2):ctx.rect(-w/2,-h/2,w,h); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='rgba(134,239,172,.35)'; ctx.beginPath(); ctx.ellipse(0,0,h*.42,h*.36,0,0,6.283); ctx.stroke();
+    ctx.fillStyle='#bbf7d0'; ctx.font=`bold ${h*.66}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('$',0,.5);
     ctx.restore();
   }
 
-  /* ─── Coin (small silver/gold disc) ─── */
-  function drawCoin(c){
-    ctx.save();
-    ctx.translate(c.x,c.y);
-    ctx.globalAlpha=c.al;
-    ctx.fillStyle='#d1d5db';
-    ctx.strokeStyle='#9ca3af';
-    ctx.lineWidth=1;
-    ctx.beginPath(); ctx.arc(0,0,c.r,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    ctx.fillStyle='#6b7280';
-    ctx.font=`bold ${c.r*1.2}px monospace`;
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('¢',0,0);
+  function lgDrawCoin(x,y,r,spin){
+    const sx=Math.max(.25,Math.abs(Math.cos(spin)));
+    ctx.save(); ctx.translate(x,y); ctx.scale(sx,1);
+    const g=ctx.createRadialGradient(-r*.3,-r*.3,0,0,0,r);
+    g.addColorStop(0,'#fef9c3'); g.addColorStop(.55,'#fbbf24'); g.addColorStop(1,'#b45309');
+    ctx.fillStyle=g; ctx.strokeStyle='#92400e'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(0,0,r,0,6.283); ctx.fill(); ctx.stroke();
+    if(sx>.6){ ctx.fillStyle='#92400e'; ctx.font=`bold ${r*1.2}px monospace`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('$',0,.5); }
     ctx.restore();
   }
 
-  /* ─── Table ─── */
-  function lgGoldPileDraw(x,pigY,fat){
-    // Gold coin pile under pig — grows with fat
-    const baseW=Math.max(fat*2.2,70);
-    const pileH=Math.max(fat*0.55,18);
-    const cy=pigY+6; // top of pile (pig sits on it)
-
-    // Pile shadow
+  function lgDrawMound(p){
+    const {moundBase}=lgGeom();
+    const mh=lgMoundH(p), hw=p.mw/2, x=p.x, top=moundBase-mh;
     ctx.save();
-    ctx.globalAlpha=0.35;
-    ctx.fillStyle='#000';
-    ctx.beginPath(); ctx.ellipse(x,cy+pileH*0.6,baseW*0.52,pileH*0.22,0,0,Math.PI*2); ctx.fill();
-    ctx.globalAlpha=1;
-
-    // Main pile gradient — gold mound
-    const g=ctx.createRadialGradient(x,cy,0,x,cy+pileH*0.4,baseW*0.65);
-    g.addColorStop(0,'#fef08a'); g.addColorStop(0.35,'#fbbf24'); g.addColorStop(0.75,'#d97706'); g.addColorStop(1,'#92400e');
+    // glow + shadow
+    const glow=ctx.createRadialGradient(x,moundBase-mh*.4,0,x,moundBase-mh*.4,hw*1.3);
+    glow.addColorStop(0,'rgba(251,191,36,.18)'); glow.addColorStop(1,'rgba(251,191,36,0)');
+    ctx.fillStyle=glow; ctx.fillRect(x-hw*1.4,top-hw*.6,hw*2.8,mh+hw);
+    ctx.fillStyle='rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(x,moundBase+3,hw*1.05,7,0,0,6.283); ctx.fill();
+    // dome
+    const g=ctx.createLinearGradient(0,top,0,moundBase);
+    g.addColorStop(0,'#fde68a'); g.addColorStop(.4,'#f59e0b'); g.addColorStop(1,'#92400e');
     ctx.fillStyle=g;
-    ctx.beginPath();
-    ctx.moveTo(x-baseW*0.5,cy+pileH);
-    ctx.bezierCurveTo(x-baseW*0.55,cy+pileH*0.3, x-baseW*0.25,cy-pileH*0.25, x,cy-pileH*0.1);
-    ctx.bezierCurveTo(x+baseW*0.25,cy-pileH*0.25, x+baseW*0.55,cy+pileH*0.3, x+baseW*0.5,cy+pileH);
+    ctx.beginPath(); ctx.moveTo(x-hw,moundBase);
+    ctx.bezierCurveTo(x-hw*.85,top+mh*.15, x-hw*.45,top, x,top);
+    ctx.bezierCurveTo(x+hw*.45,top, x+hw*.85,top+mh*.15, x+hw,moundBase);
     ctx.closePath(); ctx.fill();
-
-    // Coin highlights — small ellipses scattered on pile
-    const nCoins=Math.floor(fat/9)+3;
-    const coinSeed=Math.floor(fat*7); // stable within fat level
-    for(let i=0;i<nCoins;i++){
-      const t=(i/nCoins);
-      const cx2=x+(t*2-1)*baseW*0.38;
-      const cy2=cy+pileH*(0.15+t*0.55);
-      const cr=fat*0.11+2;
-      ctx.save();
-      ctx.globalAlpha=0.55+0.2*(i%2);
-      const cg=ctx.createRadialGradient(cx2-cr*0.3,cy2-cr*0.3,0,cx2,cy2,cr);
-      cg.addColorStop(0,'#fef9c3'); cg.addColorStop(0.5,'#fbbf24'); cg.addColorStop(1,'#b45309');
-      ctx.fillStyle=cg;
-      ctx.beginPath(); ctx.ellipse(cx2,cy2,cr,cr*0.45,0,0,Math.PI*2); ctx.fill();
-      // Coin edge glint
-      ctx.strokeStyle='rgba(254,240,138,0.5)'; ctx.lineWidth=0.7;
-      ctx.beginPath(); ctx.ellipse(cx2,cy2,cr,cr*0.45,0,Math.PI*1.1,Math.PI*1.9); ctx.stroke();
-      ctx.restore();
+    ctx.save(); ctx.clip();
+    // stacked coin rows (deterministic)
+    const cr=lgClamp(mh*.11,5,9), rowH=cr*1.05;
+    let k=0;
+    for(let yy=moundBase-cr*.4; yy>top-cr; yy-=rowH){
+      const h=(moundBase-yy)/mh, half=hw*Math.sqrt(Math.max(0,1-h*h))*0.98;
+      const off=(Math.round((moundBase-yy)/rowH)%2)*cr;
+      for(let xx=x-half+off; xx<x+half; xx+=cr*2){
+        k++;
+        const sh=0.75+0.25*Math.sin(k*12.9898+p.seed);
+        ctx.fillStyle=`rgba(${Math.round(250*sh)},${Math.round(200*sh)},${Math.round(60*sh)},1)`;
+        ctx.strokeStyle='rgba(120,53,15,.75)'; ctx.lineWidth=.8;
+        ctx.beginPath(); ctx.ellipse(xx,yy,cr,cr*.5,0,0,6.283); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle='rgba(254,249,195,.55)';
+        ctx.beginPath(); ctx.ellipse(xx,yy,cr*.8,cr*.35,0,3.6,5.8); ctx.stroke();
+      }
     }
-
-    // Scattered gold bars behind pile
-    const barW=fat*0.38, barH=fat*0.14;
-    [[x-baseW*0.32,cy+pileH*0.25],[x+baseW*0.28,cy+pileH*0.3]].forEach(([bx,by],bi)=>{
-      ctx.save(); ctx.rotate(bi===0?-0.18:0.22);
-      const bg2=ctx.createLinearGradient(bx-barW/2,by,bx+barW/2,by);
-      bg2.addColorStop(0,'#b45309'); bg2.addColorStop(0.3,'#fef08a'); bg2.addColorStop(0.7,'#fbbf24'); bg2.addColorStop(1,'#92400e');
-      ctx.fillStyle=bg2;
-      ctx.translate(bx,by);
-      ctx.beginPath();
-      if(ctx.roundRect) ctx.roundRect(-barW/2,-barH/2,barW,barH,2);
-      else ctx.rect(-barW/2,-barH/2,barW,barH);
-      ctx.fill();
-      ctx.strokeStyle='rgba(254,240,138,0.4)'; ctx.lineWidth=0.6; ctx.stroke();
-      ctx.restore();
+    ctx.restore();
+    ctx.strokeStyle='rgba(120,53,15,.9)'; ctx.lineWidth=1.2; ctx.stroke();
+    // gold bars leaning at the base
+    [[-.72,-.12],[.7,.16]].forEach(([fx,rot])=>{
+      const bw=lgClamp(hw*.3,18,34), bh=bw*.36;
+      ctx.save(); ctx.translate(x+hw*fx,moundBase-bh*.55); ctx.rotate(rot);
+      const bg=ctx.createLinearGradient(0,-bh/2,0,bh/2);
+      bg.addColorStop(0,'#fef08a'); bg.addColorStop(1,'#b45309');
+      ctx.fillStyle=bg; ctx.strokeStyle='#78350f'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(-bw/2,bh/2); ctx.lineTo(-bw/2+bh*.4,-bh/2); ctx.lineTo(bw/2-bh*.4,-bh/2); ctx.lineTo(bw/2,bh/2); ctx.closePath();
+      ctx.fill(); ctx.stroke(); ctx.restore();
     });
-
+    // twinkles
+    for(let i=0;i<3;i++){
+      const ph=(lgT*0.6+i/3+p.seed)%1;
+      if(ph>.35) continue;
+      const a=Math.sin(ph/.35*Math.PI);
+      const tx=x+Math.sin(p.seed+i*2.1+Math.floor(lgT*0.6+i/3)*1.7)*hw*.6;
+      const tyh=Math.abs(Math.cos(p.seed*3+i+Math.floor(lgT*0.6+i/3)))*0.7;
+      const ty=moundBase-mh*tyh-4;
+      ctx.strokeStyle=`rgba(255,255,240,${a*.9})`; ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(tx-5*a,ty); ctx.lineTo(tx+5*a,ty); ctx.moveTo(tx,ty-5*a); ctx.lineTo(tx,ty+5*a); ctx.stroke();
+    }
     ctx.restore();
   }
 
-  /* ─── Pig ─── */
-  function drawPig(pig,t){
-    const {x,pigY,fat,belchAnim,wiggle,angle,inhaling,inhalePow,sparks}=pig;
-    const bw=fat*1.4, bh=fat*0.88;
-    const py=pigY-bh*0.35;
-    const wA=wiggle>0?Math.sin(t*0.3)*0.07*(wiggle/12):0;
-
-    ctx.save(); ctx.translate(x,py); ctx.rotate(wA+angle*.04);
-
-    // Drop shadow
-    ctx.globalAlpha=0.18;
-    ctx.fillStyle='#000';
-    ctx.beginPath(); ctx.ellipse(0,bh*0.8,bw*0.7,bh*0.22,0,0,Math.PI*2); ctx.fill();
-    ctx.globalAlpha=1;
-
-    // Body (ellipse with slight pear shape via scale)
-    const bodyScale=1+inhalePow*0.18; // swell during inhale
-    ctx.save(); ctx.scale(bodyScale,1+inhalePow*0.12);
-    // Main body gradient
-    const bodyG=ctx.createRadialGradient(-bw*.25,-bh*.25,bh*.1,0,0,bw);
-    bodyG.addColorStop(0,'#fecdd3'); bodyG.addColorStop(0.6,LG_PINK); bodyG.addColorStop(1,'#e11d48');
-    ctx.fillStyle=bodyG;
-    ctx.strokeStyle=LG_DPINK; ctx.lineWidth=1.2;
-    ctx.beginPath(); ctx.ellipse(0,0,bw,bh,0,0,Math.PI*2);
-    ctx.fill(); ctx.stroke();
-    // Belly highlight
-    ctx.fillStyle='rgba(255,255,255,0.18)';
-    ctx.beginPath(); ctx.ellipse(-bw*.1,bh*.15,bw*.45,bh*.28,-.15,0,Math.PI*2); ctx.fill();
-    ctx.restore();
-
-    // Ears (rounded triangles)
-    const earCol=LG_DPINK;
-    ctx.fillStyle=earCol; ctx.strokeStyle='#9f1239'; ctx.lineWidth=1;
-    [[-bw*.58,-bh*.72,-.35],[bw*.58,-bh*.72,.35]].forEach(([ex,ey,ea])=>{
-      ctx.save(); ctx.translate(ex,ey); ctx.rotate(ea);
-      ctx.beginPath();
-      ctx.moveTo(0,-fat*.32); ctx.lineTo(-fat*.16,fat*.08); ctx.lineTo(fat*.16,fat*.08); ctx.closePath();
-      ctx.fill(); ctx.stroke();
-      // Inner ear
-      ctx.fillStyle='#fda4af'; ctx.lineWidth=.5;
-      ctx.beginPath();
-      ctx.moveTo(0,-fat*.2); ctx.lineTo(-fat*.09,fat*.03); ctx.lineTo(fat*.09,fat*.03); ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-    });
-
-    // Snout (oval with nostrils)
-    ctx.save(); ctx.translate(bw*.48, bh*.08);
-    ctx.fillStyle=LG_DPINK; ctx.strokeStyle='#9f1239'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.ellipse(0,0,fat*.3,fat*.22,0.08,0,Math.PI*2); ctx.fill(); ctx.stroke();
-    // Nostrils
-    ctx.fillStyle='#881337';
-    [[-fat*.12,0],[fat*.12,0]].forEach(([nx,ny])=>{
-      ctx.beginPath(); ctx.ellipse(nx,ny,fat*.065,fat*.075,0,0,Math.PI*2); ctx.fill();
-    });
-    ctx.restore();
-
-    // Eyes (with reflection)
-    ctx.fillStyle='#1e1b4b';
-    ctx.beginPath(); ctx.ellipse(-bw*.18,-bh*.28,fat*.1,fat*.11,0,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='white';
-    ctx.beginPath(); ctx.arc(-bw*.14,-bh*.32,fat*.04,0,Math.PI*2); ctx.fill();
-
-    // Mouth - if belching show open maw
-    if(belchAnim>0){
-      const mAl=Math.min(1,belchAnim/8);
-      ctx.globalAlpha=mAl;
-      ctx.fillStyle='#881337';
-      ctx.beginPath(); ctx.ellipse(bw*.44,bh*.25,fat*.13,fat*.1,0.15,0,Math.PI*2); ctx.fill();
-      ctx.globalAlpha=1;
-      // Belch puff
-      if(belchAnim>6){
-        ctx.globalAlpha=(belchAnim-6)/20;
-        ctx.font=`${fat*.6}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText('💨',bw*.92,bh*.15);
-        ctx.globalAlpha=1;
-      }
-    } else {
-      // Inhale: open mouth toward sky to suck in notes
-      if(inhalePow>0.2){
-        ctx.fillStyle='#881337'; ctx.globalAlpha=inhalePow*.9;
-        ctx.beginPath(); ctx.ellipse(bw*.42,-bh*.48,fat*.12*inhalePow,fat*.1*inhalePow,-.3,0,Math.PI*2); ctx.fill();
-        ctx.globalAlpha=1;
-      }
-    }
-
-    // Curly tail
+  function lgDrawPig(p){
+    const {f,bw,bh,cx,cy}=lgPigBody(p);
+    const shake=p.shake>0?Math.sin(lgT*55)*2.5*p.shake:0;
+    ctx.save(); ctx.translate(cx+shake,cy); ctx.scale(p.face,1);
+    // stubby legs tucked onto the mound
+    ctx.fillStyle='#fb7185';
+    [[-.55,0],[-.2,.05],[.3,.05],[.62,0]].forEach(([lx])=>{ ctx.beginPath(); ctx.ellipse(bw*lx,bh*.82,f*.16,f*.22,0,0,6.283); ctx.fill(); });
+    // tail
     ctx.strokeStyle=LG_DPINK; ctx.lineWidth=2; ctx.lineCap='round';
-    ctx.beginPath(); ctx.moveTo(-bw*.9,0);
-    ctx.bezierCurveTo(-bw*1.3,-fat*.5,-bw*1.38,fat*.45,-bw*1.1,fat*.3);
-    ctx.stroke();
-
-    // Spots
-    ctx.fillStyle='rgba(225,29,72,0.22)';
-    ctx.beginPath(); ctx.ellipse(bw*.15,bh*.45,fat*.18,fat*.1,0.3,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(-bw*.35,bh*.25,fat*.12,fat*.08,-.2,0,Math.PI*2); ctx.fill();
-
-    ctx.restore();
-
-    // Inhale suction visual: arc of particles
-    if(inhalePow>0.1){
-      for(let a=0;a<3;a++){
-        const ang=-Math.PI*.5+((a/3)-.5)*0.8;
-        const rad=bw*.9+Math.sin(t*.15+a)*bw*.3;
-        const sx=x+Math.cos(ang)*rad, sy=py+Math.sin(ang)*rad;
-        ctx.globalAlpha=inhalePow*0.35*(0.5+0.5*Math.sin(t*.3+a));
-        ctx.fillStyle=LG_BILL;
-        ctx.beginPath(); ctx.arc(sx,sy,2,0,Math.PI*2); ctx.fill();
-        ctx.globalAlpha=1;
-      }
-    }
-
-    // Gold sparks
-    sparks.forEach(s=>{
-      ctx.globalAlpha=s.al; ctx.fillStyle=LG_GOLD;
-      ctx.font=`${s.sz}px sans-serif`; ctx.textAlign='center';
-      ctx.fillText('✦',x+s.x,py+s.y); ctx.globalAlpha=1;
+    ctx.beginPath(); ctx.moveTo(-bw*.95,-bh*.1);
+    ctx.bezierCurveTo(-bw*1.3,-bh*.6,-bw*1.4,bh*.2,-bw*1.12,-bh*.05); ctx.stroke();
+    // body
+    const g=ctx.createRadialGradient(-bw*.25,-bh*.35,bh*.1,0,0,bw*1.05);
+    g.addColorStop(0,'#ffe4e6'); g.addColorStop(.55,LG_PINK); g.addColorStop(1,'#e11d48');
+    ctx.fillStyle=g; ctx.strokeStyle='#be123c'; ctx.lineWidth=1.3;
+    ctx.beginPath(); ctx.ellipse(0,0,bw,bh,0,0,6.283); ctx.fill(); ctx.stroke();
+    // belly sheen (stretches as the pig grows)
+    ctx.fillStyle='rgba(255,255,255,.2)';
+    ctx.beginPath(); ctx.ellipse(-bw*.05,bh*.3,bw*.55,bh*.3,0,0,6.283); ctx.fill();
+    // ears
+    [[.28,-.85,.2],[.58,-.72,.6]].forEach(([ex,ey,ea])=>{
+      ctx.save(); ctx.translate(bw*ex,bh*ey); ctx.rotate(ea);
+      ctx.fillStyle='#e11d48'; ctx.beginPath(); ctx.moveTo(0,-f*.38); ctx.lineTo(-f*.2,f*.08); ctx.lineTo(f*.2,f*.08); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#fda4af'; ctx.beginPath(); ctx.moveTo(0,-f*.24); ctx.lineTo(-f*.1,f*.03); ctx.lineTo(f*.1,f*.03); ctx.closePath(); ctx.fill();
+      ctx.restore();
     });
+    // eye (squints with pleasure while gulping)
+    ctx.fillStyle='#1e1b4b';
+    if(p.gulp>0.05){ ctx.strokeStyle='#1e1b4b'; ctx.lineWidth=1.6; ctx.beginPath(); ctx.arc(bw*.5,-bh*.32,f*.1,Math.PI*1.1,Math.PI*1.9); ctx.stroke(); }
+    else { ctx.beginPath(); ctx.ellipse(bw*.5,-bh*.32,f*.08,f*.1,0,0,6.283); ctx.fill();
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(bw*.52,-bh*.36,f*.03,0,6.283); ctx.fill(); }
+    // mouth — opens toward incoming cash or when spitting
+    const open=Math.max(p.open,p.spit>0?1:0);
+    ctx.fillStyle='#881337';
+    ctx.beginPath(); ctx.ellipse(bw*.86,bh*.32,f*.14,f*(.03+.13*open),0,0,6.283); ctx.fill();
+    // snout
+    ctx.fillStyle='#f43f5e'; ctx.strokeStyle='#9f1239'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.ellipse(bw*.98,bh*.02,f*.2,f*.27,0,0,6.283); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#881337';
+    ctx.beginPath(); ctx.ellipse(bw*.98,-bh*.06,f*.05,f*.07,0,0,6.283); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(bw*.98,bh*.12,f*.05,f*.07,0,0,6.283); ctx.fill();
+    ctx.restore();
+    // sparkles when it swallows
+    p.sparks.forEach(s=>{
+      ctx.globalAlpha=Math.max(0,s.al); ctx.fillStyle='#fde047';
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,6.283); ctx.fill();
+    });
+    ctx.globalAlpha=1;
   }
 
-  /* ─── Stick person ─── */
-  function drawPerson(p,t){
-    const {x,y,ph,scramble}=p;
-    const hd=6.5;
-    ctx.save(); ctx.translate(x,y);
-    ctx.strokeStyle='rgba(148,163,184,.8)'; ctx.fillStyle='rgba(148,163,184,.8)';
-    ctx.lineWidth=2; ctx.lineCap='round';
-    // Head
-    ctx.beginPath(); ctx.arc(0,-hd*5.2,hd,0,Math.PI*2); ctx.fill();
-    // Body
+  function lgDrawPerson(p,floorY){
+    const hd=5.5, col=`rgba(${p.hue},.85)`;
+    const run=p.state==='run'||p.state==='home';
+    const sw=run?Math.sin(p.step)*0.9:0.38+Math.sin(lgT*1.5+p.ph)*0.04;   // standing: feet apart
+    ctx.save(); ctx.translate(p.x,floorY-hd*2.4+(run?-Math.abs(Math.sin(p.step))*2:0));
+    ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=2; ctx.lineCap='round';
+    const lean=run?p.dir*.25:0;
+    ctx.rotate(lean);
+    ctx.beginPath(); ctx.arc(0,-hd*5.2,hd,0,6.283); ctx.fill();
     ctx.beginPath(); ctx.moveTo(0,-hd*4.2); ctx.lineTo(0,0); ctx.stroke();
-    // Legs
-    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-hd*1.2,hd*2.4); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo( hd*1.2,hd*2.4); ctx.stroke();
-    // Arms — raised toward coin when scrambling
-    const wave=Math.sin(t*0.04+ph)*0.3;
-    if(scramble>0){
-      // Reaching up
-      ctx.beginPath(); ctx.moveTo(0,-hd*3); ctx.lineTo(-hd*2.2,-hd*4.5+wave*hd); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0,-hd*3); ctx.lineTo( hd*2.2,-hd*4.5-wave*hd); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.sin(sw)*hd*2.4,Math.cos(sw)*hd*2.4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-Math.sin(sw)*hd*2.4,Math.cos(sw)*hd*2.4); ctx.stroke();
+    if(p.state==='win'){
+      ctx.beginPath(); ctx.moveTo(0,-hd*3.4); ctx.lineTo(-hd*.6,-hd*7); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,-hd*3.4); ctx.lineTo(hd*1.6,-hd*2.2); ctx.stroke();
+      ctx.restore(); lgDrawCoin(p.x-hd*.6+Math.sin(lean),floorY-hd*2.4-hd*7.6,5,lgT*4); return;
+    }
+    if(p.state==='sulk'){
+      ctx.beginPath(); ctx.moveTo(0,-hd*3.4); ctx.lineTo(-hd*1.2,-hd*1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,-hd*3.4); ctx.lineTo(hd*1.2,-hd*1); ctx.stroke();
     } else {
-      ctx.beginPath(); ctx.moveTo(0,-hd*3); ctx.lineTo(-hd*2.2,-hd*2.5+wave*hd); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0,-hd*3); ctx.lineTo( hd*2.2,-hd*2.5-wave*hd); ctx.stroke();
+      const a=run?-sw:Math.sin(lgT*1.2+p.ph)*.15;
+      ctx.beginPath(); ctx.moveTo(0,-hd*3.4); ctx.lineTo(Math.sin(a+.9)*hd*2.2,-hd*3.4+Math.cos(a+.9)*hd*2.2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,-hd*3.4); ctx.lineTo(Math.sin(-a-.9)*hd*2.2,-hd*3.4+Math.cos(-a-.9)*hd*2.2); ctx.stroke();
     }
     ctx.restore();
   }
 
-  /* ─── Dust cloud (for fighting) ─── */
-  function drawDust(d){
+  function lgDrawDust(d){
+    const a=Math.min(1,d.t/0.25, d.left/0.3);
     ctx.save(); ctx.translate(d.x,d.y);
-    ctx.globalAlpha=d.al*.55;
-    // Cloud of puffs
-    for(let i=0;i<d.puffs.length;i++){
-      const pf=d.puffs[i];
-      ctx.fillStyle='rgba(203,213,225,0.7)';
-      ctx.beginPath(); ctx.arc(pf.x,pf.y,pf.r,0,Math.PI*2); ctx.fill();
+    // flailing arms/legs poking out of the cloud
+    ctx.strokeStyle=`rgba(203,213,225,${.7*a})`; ctx.lineWidth=2; ctx.lineCap='round';
+    for(let i=0;i<5;i++){
+      const ang=lgT*7*(i%2?1:-1)+i*1.3, r0=d.r*.6, r1=d.r*1.05;
+      ctx.beginPath(); ctx.moveTo(Math.cos(ang)*r0,Math.sin(ang)*r0*.6); ctx.lineTo(Math.cos(ang)*r1,Math.sin(ang)*r1*.6); ctx.stroke();
     }
-    // Stars/exclamation inside
-    ctx.globalAlpha=d.al*0.9;
-    const icons=['★','💥','!','?'];
-    icons.forEach((ic,i)=>{
-      const angle=d.spin*lgT+i*Math.PI/2;
-      const r=d.radius*.55;
-      ctx.font=`bold ${d.radius*.28}px sans-serif`;
-      ctx.fillStyle=['#fbbf24','#f87171','#60a5fa','#4ade80'][i];
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(ic, Math.cos(angle)*r, Math.sin(angle)*r);
+    d.puffs.forEach((pf,i)=>{
+      const wob=Math.sin(lgT*9+i)*2;
+      ctx.fillStyle=`rgba(${i%2?'148,163,184':'203,213,225'},${.55*a})`;
+      ctx.beginPath(); ctx.arc(pf.x+wob,pf.y-wob*.5,pf.r,0,6.283); ctx.fill();
     });
-    ctx.restore();
+    // little drawn stars
+    for(let i=0;i<3;i++){
+      const ang=lgT*3+i*2.09, sx=Math.cos(ang)*d.r*.5, sy=Math.sin(ang)*d.r*.3-d.r*.15;
+      ctx.fillStyle=['#fbbf24','#f87171','#fde047'][i]; ctx.globalAlpha=a;
+      ctx.beginPath();
+      for(let k=0;k<10;k++){ const rr=k%2?2:5, aa=k*Math.PI/5; ctx.lineTo(sx+Math.cos(aa)*rr,sy+Math.sin(aa)*rr); }
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore(); ctx.globalAlpha=1;
   }
 
-  /* ─── Note batch spawner ─── */
-  let lgBatchCD=80, lgBatchSize=0, lgBatchLeft=0;
-
-  function spawnBatch(){
-    lgBatchSize=5+Math.floor(Math.random()*7);
-    lgBatchLeft=lgBatchSize;
-    lgBatchCD=Math.max(50,lgBatchSize*12);
+  /* ─── coin → crowd logic ─── */
+  function lgCallCrowd(c){
+    const idle=lgPeople.filter(p=>p.state==='idle'||p.state==='home')
+      .map(p=>({p,d:Math.abs(p.x-c.x)})).filter(o=>o.d<W*.4).sort((a,b)=>a.d-b.d).slice(0,2+Math.floor(Math.random()*3));
+    idle.forEach(({p})=>{ p.state='run'; p.coin=c; p.speed=95+Math.random()*45; });
   }
 
-  /* ─── Main step ─── */
+  /* ─── main step ─── */
   function stepLegacy(){
-    lgT++;
-    ctx.clearRect(0,0,W,H);
     if(!lgPigs.length) return;
-    const {pigY,floorY}=lgPigs[0];
+    const now=performance.now(); let dt=(now-lgLast)/1000; lgLast=now;
+    if(!(dt>0)||dt>0.05) dt=1/60;
+    lgT+=dt;
+    const {floorY,moundBase}=lgGeom();
 
-    // Sky gradient
+    // background
     const sky=ctx.createLinearGradient(0,0,0,H);
-    sky.addColorStop(0,'#020818'); sky.addColorStop(0.5,'#050f20'); sky.addColorStop(1,'#080510');
+    sky.addColorStop(0,'#020818'); sky.addColorStop(.6,'#060f22'); sky.addColorStop(1,'#0b0712');
     ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
-    // Floor line
-    ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
+    ctx.fillStyle='rgba(15,23,42,.65)'; ctx.fillRect(0,floorY,W,H-floorY);
+    ctx.strokeStyle='rgba(148,163,184,.18)'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(0,floorY); ctx.lineTo(W,floorY); ctx.stroke();
-    ctx.fillStyle='rgba(0,0,0,.2)'; ctx.fillRect(0,floorY,W,H-floorY);
 
-    // Batch spawner
-    lgBatchCD--;
-    if(lgBatchCD<=0&&lgBatchLeft>0){ lgNotes.push(newNote()); lgBatchLeft--; if(lgBatchLeft===0) lgBatchCD=120+Math.floor(Math.random()*180); }
-    if(lgBatchCD<=0&&lgBatchLeft===0) spawnBatch();
+    // spawn notes — a steady trickle (~2.2 per second)
+    lgSpawn-=dt;
+    if(lgSpawn<=0 && lgNotes.length<40){ lgNotes.push(lgNewNote()); lgSpawn=0.3+Math.random()*0.35; }
 
-    // Update pig states
-    lgPigs.forEach(pig=>{
-      // Belch timer
-      pig.belchCD--;
-      if(pig.belchCD<=0){
-        pig.belchCD=200+Math.floor(Math.random()*350);
-        pig.belchAnim=30;
-        // Spit a few coins
-        const numCoins=2+Math.floor(Math.random()*3);
-        for(let i=0;i<numCoins;i++){
-          lgCoins.push({
-            x:pig.x+pig.fat*.5+(Math.random()-.5)*pig.fat*.4,
-            y:pigY-pig.fat*.6,
-            vx:(1.2+Math.random()*1.8)*(Math.random()>.5?1:-1),
-            vy:-1.5-Math.random()*.8,
-            r:4+Math.random()*2.5,
-            al:1, ang:0, dead:false, landed:false, landT:0,
-          });
+    // pigs: ease size, decay gulp/open, maybe spit
+    lgPigs.forEach(p=>{
+      p.size+=(p.sizeT-p.size)*Math.min(1,dt*4);
+      p.gulp=Math.max(0,p.gulp-dt*3);
+      p.open=Math.max(0,p.open-dt*2.5);
+      p.shake=Math.max(0,p.shake-dt*2);
+      p.sparks.forEach(s=>{s.x+=s.vx*dt; s.y+=s.vy*dt; s.vy+=120*dt; s.al-=dt*1.6;});
+      p.sparks=p.sparks.filter(s=>s.al>0);
+      if(p.eaten>=5 && p.spit<=0 && p.gulp<=0){ p.spit=0.7; p.shake=1; }
+      if(p.spit>0){
+        const before=p.spit; p.spit-=dt;
+        if(before>0.25 && p.spit<=0.25){                 // the actual spit, after a short shudder
+          const m=lgMouth(p), k=2+Math.floor(Math.random()*2);   // 2–3 coins out for ~5 notes in
+          for(let i=0;i<k;i++) lgCoins.push({x:m.x,y:m.y,vx:p.face*(70+Math.random()*110)+(Math.random()-.5)*60,
+            vy:-150-Math.random()*90,r:4.5,spin:Math.random()*6,state:'air',bounced:false,t:0});
+          p.eaten=0;
+          p.sizeT=Math.max(p.s0,p.sizeT-p.s0*0.05);            // shrinks a little — but keeps most of it
         }
-        // Shrink a little after spitting
-        pig.fat=Math.max(pig.baseFat, pig.fat*0.88);
-      }
-      if(pig.belchAnim>0) pig.belchAnim--;
-      if(pig.wiggle>0) pig.wiggle=Math.max(0,pig.wiggle-.15);
-      pig.sparks=pig.sparks.filter(s=>s.al>.04);
-      pig.sparks.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.vy+=0.05;s.al-=.02;});
-    });
-
-    // Check if any note is in pig suction zone and assign targets
-    // Zone is wide (W/nPigs × 0.72) but only extends H*0.42 above pigY — notes above that fall freely
-    const nLgPigs=lgPigs.length||1;
-    const suckHalfW=pig=>Math.max(W/(nLgPigs*2)*0.72, pig.fat*2.8, 120);
-    lgNotes.forEach(note=>{
-      if(note.dead||note.suckTarget) return;
-      // Find nearest pig in whose zone this note falls
-      let best=null, bestDist=Infinity;
-      lgPigs.forEach(pig=>{
-        const hw=suckHalfW(pig);
-        const suckTop=pigY-H*0.42;  // zone ceiling — notes above this fall freely
-        if(note.x>pig.x-hw&&note.x<pig.x+hw&&note.y>suckTop&&note.y<pigY+12){
-          const d=Math.abs(note.x-pig.x);
-          if(d<bestDist){ bestDist=d; best=pig; }
-        }
-      });
-      if(best){
-        note.suckTarget=best;
-        note.suckSpeed=0.06;
-        best.inhaling=45;
-        best.inhalePow=Math.min(1,best.inhalePow+0.25);
       }
     });
 
-    // Update pig inhale state
-    lgPigs.forEach(pig=>{
-      if(pig.inhaling>0){ pig.inhaling--; }
-      else { pig.inhalePow=Math.max(0,pig.inhalePow-0.04); }
-    });
+    // mounds then pigs (notes drawn over pigs so they visibly go into the mouth)
+    lgPigs.forEach(lgDrawMound);
+    lgPigs.forEach(lgDrawPig);
 
-    // Tables
-    lgPigs.forEach(p=>{ lgGoldPileDraw(p.x,pigY,p.fat); });
-
-    // Notes
-    lgNotes=lgNotes.filter(n=>!n.dead);
-    for(const note of lgNotes){
-      if(note.suckTarget){
-        // Fly toward pig's mouth
-        const pig=note.suckTarget;
-        const tx=pig.x, ty=pigY-pig.fat*1.1;
-        const dx=tx-note.x, dy=ty-note.y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        // Accelerate quickly once captured — slow approach then fast snap
-        const pullStrength = dist > 80 ? 0.022 : dist > 30 ? 0.035 : 0.06;
-        note.suckSpeed=Math.min(0.45, note.suckSpeed + pullStrength);
-        note.x+=dx*note.suckSpeed; note.y+=dy*note.suckSpeed;
-        note.rot+=0.12;   // bill spins faster as it's pulled in
-        if(dist<10){
-          // Absorbed!
-          pig.fat=Math.min(pig.maxFat, pig.fat+0.7+Math.random()*0.5);
-          pig.wiggle=Math.min(pig.wiggle+5,15);
-          pig.sparks.push({x:(Math.random()-.5)*pig.fat,y:-pig.fat*.6,al:.9,sz:7+Math.random()*5,vx:(Math.random()-.5)*2,vy:-1.2-Math.random()*.8});
-          note.dead=true;
-        }
+    // notes
+    for(const n of lgNotes){
+      const p=n.pig, m=lgMouth(p);
+      if(!n.suck){
+        n.y+=n.vy*dt;
+        n.x0+=(m.x-n.x0)*Math.min(1,dt*0.45*(n.y>0?1:0)); // drift toward its pig as it falls
+        n.x=n.x0+Math.sin(lgT*n.sw+n.ph)*n.amp;
+        n.rot=Math.sin(lgT*n.sw+n.ph+1)*0.45;
+        const d=Math.hypot(m.x-n.x,m.y-n.y);
+        if(d<150) p.open=Math.max(p.open,1-d/150);
+        if(d<70||n.y>m.y){ n.suck=1e-6; n.sx=n.x; n.sy=n.y; }
+        lgDrawNote(n,1);
       } else {
-        // Gentle gravity — slowly accelerates but caps at a soft terminal velocity
-        note.vy = Math.min(note.vy + 0.012, 0.9);   // gravity accel, cap at 0.9px/frame
-        note.vx *= 0.998;                             // very slight air resistance on horizontal
-        note.y+=note.vy; note.x+=note.vx; note.rot+=note.spin;
-        if(note.y>floorY){
-          note.y=-20; note.x=Math.random()*W*.9+W*.05;
-          note.vy=0.08+Math.random()*0.14;            // reset to slow on respawn
+        n.suck=Math.min(1,n.suck+dt/0.45);
+        const e=n.suck*n.suck*(3-2*n.suck);
+        n.x=n.sx+(m.x-n.sx)*e; n.y=n.sy+(m.y-n.sy)*e; n.rot+=dt*8;
+        p.open=1;
+        lgDrawNote(n,1-0.6*e);
+        if(n.suck>=1){
+          n.dead=true; p.eaten++; p.gulp=1;
+          p.sizeT=Math.min(p.smax,p.sizeT+p.s0*0.067);
+          for(let i=0;i<4;i++) p.sparks.push({x:m.x,y:m.y,vx:(Math.random()-.5)*80,vy:-60-Math.random()*60,r:1.5+Math.random()*1.5,al:1});
         }
       }
-      drawNote(note);
     }
+    lgNotes=lgNotes.filter(n=>!n.dead && n.y<H+40);
 
-    // Pigs
-    lgPigs.forEach(pig=>drawPig(pig,lgT));
-
-    // Coins (spit out by pigs)
-    lgCoins=lgCoins.filter(c=>!c.dead);
+    // coins
     for(const c of lgCoins){
-      if(!c.landed){
-        c.vy+=0.1; c.x+=c.vx; c.y+=c.vy;
-        if(c.y>=floorY){
-          c.y=floorY; c.landed=true; c.landT=lgT;
-          // Alert nearby people
-          lgPeople.forEach(p=>{
-            if(Math.abs(p.bx-c.x)<W*.45){
-              p.target=c.x+(Math.random()-.5)*30;
-              p.scramble=100;
-            }
-          });
-          // Spawn a dust cloud at the coin
-          lgDusts.push({
-            x:c.x, y:floorY-10, radius:30+Math.random()*20,
-            al:0.7, life:80, spin:(Math.random()-.5)*.06,
-            puffs:Array.from({length:8},()=>({x:(Math.random()-.5)*50,y:(Math.random()-.5)*30,r:8+Math.random()*12})),
-          });
+      if(c.state==='air'){
+        c.vy+=420*dt; c.x+=c.vx*dt; c.y+=c.vy*dt; c.spin+=dt*10;
+        if(c.x<8||c.x>W-8){ c.vx*=-.6; c.x=lgClamp(c.x,8,W-8); }
+        if(c.y>=floorY-c.r){
+          c.y=floorY-c.r;
+          if(!c.bounced && c.vy>80){ c.vy*=-.35; c.vx*=.5; c.bounced=true; }
+          else { c.state='ground'; c.vy=0; lgCallCrowd(c); }
         }
-      } else {
-        const age=lgT-c.landT; c.al=Math.max(0,1-age/50);
-        if(age>50) c.dead=true;
+      } else if(c.state==='ground'){
+        c.x+=c.vx*dt; c.vx*=Math.pow(0.05,dt); c.spin+=c.vx*dt*.2;
+        c.t+=dt;
+        const near=lgPeople.filter(p=>p.coin===c && Math.abs(p.x-c.x)<14);
+        if(near.length){
+          const crowd=lgPeople.filter(p=>p.coin===c && Math.abs(p.x-c.x)<70);
+          if(crowd.length>=2){
+            c.state='brawl'; c.t=0;
+            lgDusts.push({x:c.x,y:floorY-18,r:30,t:0,left:1.4+Math.random()*.6,coin:c,
+              puffs:Array.from({length:9},()=>({x:(Math.random()-.5)*44,y:(Math.random()-.5)*24,r:9+Math.random()*9}))});
+          } else { c.state='taken'; lgWin(near[0],c); }
+        } else if(c.t>4){ c.state='taken'; }   // nobody came
       }
-      if(!c.dead) drawCoin(c);
+      if(c.state==='air'||c.state==='ground') lgDrawCoin(c.x,c.y,c.r,c.spin);
     }
+    lgCoins=lgCoins.filter(c=>c.state!=='taken');
 
-    // Dust clouds
-    lgDusts=lgDusts.filter(d=>d.al>0.02);
-    lgDusts.forEach(d=>{
-      d.life--; d.al=Math.max(0,d.al-0.008);
-      // Expand slightly
-      d.radius=Math.min(d.radius+0.15,60);
-      // Shuffle puffs a tiny bit
-      d.puffs.forEach(pf=>{pf.x+=(Math.random()-.5)*.8;pf.y+=(Math.random()-.5)*.8;});
-      drawDust(d);
-    });
-
-    // People
+    // people
     for(const p of lgPeople){
-      if(p.scramble>0){
-        p.scramble--;
-        if(p.target!==null) p.x+=(p.target-p.x)*.12;
-      } else {
-        p.x+=(p.bx-p.x)*.04; p.target=null;
+      if(p.state==='run'){
+        const c=p.coin;
+        if(!c || c.state==='taken'){ p.state='home'; p.coin=null; }
+        else {
+          const dx=c.x-p.x; p.dir=Math.sign(dx)||1;
+          const inBrawl=c.state==='brawl' && Math.abs(dx)<26;
+          if(!inBrawl && Math.abs(dx)>2){ p.x+=p.dir*Math.min(Math.abs(dx),p.speed*dt); p.step+=dt*14; }
+          else if(c.state==='brawl') p.x+=(Math.random()-.5)*60*dt;
+        }
+      } else if(p.state==='win'||p.state==='sulk'){
+        p.t-=dt; if(p.t<=0){ p.state='home'; }
+      } else if(p.state==='home'){
+        const dx=p.bx-p.x; p.dir=Math.sign(dx)||1;
+        if(Math.abs(dx)>2){ p.x+=p.dir*Math.min(Math.abs(dx),45*dt); p.step+=dt*8; } else p.state='idle';
       }
-      drawPerson(p,lgT);
     }
+    // dust clouds resolve into one winner
+    for(const d of lgDusts){
+      d.t+=dt; d.left-=dt;
+      if(d.left<=0 && d.coin){
+        const fighters=lgPeople.filter(p=>p.coin===d.coin && p.state==='run');
+        const w=fighters[Math.floor(Math.random()*fighters.length)];
+        fighters.forEach(f=>{ if(f!==w){ f.state='sulk'; f.t=1.2; f.coin=null; } });
+        if(w) lgWin(w,d.coin);
+        d.coin.state='taken'; d.coin=null;
+      }
+    }
+    lgDusts=lgDusts.filter(d=>d.left>-0.3);
+    lgPeople.forEach(p=>{ if(!(p.state==='run' && p.coin && p.coin.state==='brawl' && Math.abs(p.coin.x-p.x)<26)) lgDrawPerson(p,floorY); });
+    lgDusts.forEach(lgDrawDust);
 
-    // Zone labels — opaque with backdrop to stay readable
-    ctx.save();
-    ctx.textAlign='center';
-    const maxFat=Math.max(...lgPigs.map(p=>p.fat));
-    const lblY1=pigY-maxFat*2.8;
-    const lblY2=floorY+18;
-    // Label backdrop
-    ctx.font='bold 10px Outfit,sans-serif';
-    const lbl1='B I L L I O N A I R E S', lbl2='E V E R Y O N E   E L S E';
-    const w1=ctx.measureText(lbl1).width+16, w2=ctx.measureText(lbl2).width+16;
-    ctx.fillStyle='rgba(2,8,24,.72)';
-    ctx.fillRect(W/2-w1/2,lblY1-11,w1,14);
-    ctx.fillRect(W/2-w2/2,lblY2-11,w2,14);
-    ctx.fillStyle='rgba(212,160,23,.75)';
-    ctx.fillText(lbl1,W/2,lblY1);
-    ctx.fillStyle='rgba(148,163,184,.55)';
-    ctx.fillText(lbl2,W/2,lblY2);
+    // labels
+    ctx.save(); ctx.textAlign='center'; ctx.font='bold 10px Outfit,sans-serif';
+    const maxMH=Math.max(...lgPigs.map(lgMoundH)), maxS=Math.max(...lgPigs.map(p=>p.size));
+    const y1=moundBase-maxMH-maxS*2.4-12, y2=Math.min(H-6,floorY+22);
+    [['B I L L I O N A I R E S',y1,'rgba(212,160,23,.8)'],['E V E R Y O N E   E L S E',y2,'rgba(148,163,184,.6)']].forEach(([t,y,c])=>{
+      const w=ctx.measureText(t).width+16;
+      ctx.fillStyle='rgba(2,8,24,.72)'; ctx.fillRect(W/2-w/2,y-11,w,14);
+      ctx.fillStyle=c; ctx.fillText(t,W/2,y);
+    });
     ctx.restore();
-
   }
+  function lgWin(p,c){ p.state='win'; p.t=1.3; p.coin=null; p.x=c.x; }
   // ══════════════════════════════════════════════════════════════════════════
   //  THEME — UnumLocalia Viewer: H&E tissue with a wandering "fluorescence lens"
   //  Each hover randomises the tissue, the protein channel shown in the lens,

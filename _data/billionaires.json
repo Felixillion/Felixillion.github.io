@@ -72,7 +72,8 @@
       ],
       "assetNote": "Wealth is mostly in Hancock Prospecting Pty Ltd \u2014 a private, unlisted company built on Pilbara iron ore.",
       "inherited": "Inherited Hancock Prospecting and its iron-ore royalty interests from her father Lang Hancock in 1992; has since expanded it greatly (notably the Roy Hill mine).",
-      "wealth_year": 2026
+      "wealth_year": 2026,
+      "inherited_flag": true
     },
     {
       "rank": 2,
@@ -106,7 +107,8 @@
       ],
       "assetNote": "Meriton holds a vast rental apartment portfolio in addition to development pipeline. Sydney-centric with QLD presence.",
       "inherited": "Self-made. Born in China; came to Australia as a teenager and founded Meriton in 1963.",
-      "wealth_year": 2026
+      "wealth_year": 2026,
+      "inherited_flag": false
     },
     {
       "rank": 3,
@@ -139,8 +141,9 @@
         }
       ],
       "assetNote": "Visy (AU/NZ) and Pratt Industries (USA) are both private packaging and recycling empires.",
-      "inherited": "Significant. Richard Pratt founded Visy; Anthony inherited as executive chair in 2009.",
-      "wealth_year": 2026
+      "inherited": "Inherited. Visy was started in Melbourne in 1948 by partners including Richard Pratt's father, Leon; Richard ran it from 1969 and built it into a global group, and Anthony took over as executive chairman after Richard's death in 2009.",
+      "wealth_year": 2026,
+      "inherited_flag": true
     },
     {
       "rank": 4,
@@ -174,7 +177,8 @@
       ],
       "assetNote": "Mineralogy controls iron ore royalties in the Pilbara. Palmer also holds significant hotel and property assets.",
       "inherited": "Self-made: early wealth from Gold Coast property in the 1980s, then mining royalties (Mineralogy) and long legal battles.",
-      "wealth_year": 2026
+      "wealth_year": 2026,
+      "inherited_flag": false
     },
     {
       "rank": 5,
@@ -208,7 +212,8 @@
       ],
       "assetNote": "Canva remains private, so its value comes from private funding rounds and share sales. An IPO or sale of shares would crystallise gains.",
       "inherited": "Self-made. Started Fusion Books in Perth, then co-founded Canva in Sydney in 2012 with Cliff Obrecht and Cameron Adams.",
-      "wealth_year": 2026
+      "wealth_year": 2026,
+      "inherited_flag": false
     },
     {
       "rank": 6,
@@ -242,7 +247,8 @@
       ],
       "assetNote": "Stonepeak is a global alternative investment firm focused on infrastructure assets. Dorrell is founding partner.",
       "inherited": "Self-made. Co-founded Stonepeak in 2011 after a career at Blackstone.",
-      "wealth_year": 2026
+      "wealth_year": 2026,
+      "inherited_flag": false
     },
     {
       "rank": 7,
@@ -279,7 +285,8 @@
       ],
       "assetNote": "Seven Group Holdings (SVW) is publicly listed. Stokes also holds direct property, art, and media assets.",
       "inherited": "Self-made. Born in Melbourne in 1940 and raised in poverty; built a media and industrial group in Western Australia.",
-      "wealth_year": 2025
+      "wealth_year": 2025,
+      "inherited_flag": false
     },
     {
       "rank": 8,
@@ -316,7 +323,8 @@
       ],
       "assetNote": "Wealth is almost entirely in publicly listed Atlassian Corporation. High volatility with stock price.",
       "inherited": "Self-made. Co-founded Atlassian in 2002 with Mike Cannon-Brookes.",
-      "wealth_year": 2026
+      "wealth_year": 2026,
+      "inherited_flag": false
     }
   ]
 }
