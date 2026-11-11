@@ -37,6 +37,10 @@ footer_scripts: assets/js/frequent_flyer.js
       <select id="ff-horizon"><option value="y1">Year 1 bonus and fee</option><option value="y2">Years 1–2 (incl. year-2 bonus and second fee)</option></select></label>
     <label class="ff-check"><input type="checkbox" id="ff-credits" checked> Count travel credits as savings <span id="ff-credits-note" class="ff-muted"></span></label>
   </div>
+  <div class="ff-had-row fade-in">
+    <span>I've had a card from these banks in the last 2–3 years <span class="ff-q" title="Most banks don't pay the sign-up bonus if you've held one of their cards recently (usually 24 months; NAB Qantas cards 36 months; Amex 18 months). Tap a bank to grey out its cards. The exact rules are in the Bonus eligibility column.">?</span></span>
+    <div id="ff-had"></div>
+  </div>
 
   <div class="ff-check-note fade-in">
     <b>Always check the offer on the bank's page before applying.</b> Figures here are checked by hand, and a weekly automatic check looks for changes —
@@ -107,8 +111,15 @@ footer_scripts: assets/js/frequent_flyer.js
   .ff-table th { text-align:left; font-size:.72rem; color:#94a3b8; font-weight:600; padding:.7rem .6rem; border-bottom:1px solid var(--glass-border); vertical-align:bottom; }
   .ff-table td { padding:.75rem .6rem; border-bottom:1px solid rgba(255,255,255,.06); vertical-align:top; }
   .ff-sort { cursor:pointer; white-space:nowrap; }
+  .ff-table td:first-child { min-width:9.5rem; } .ff-table td:nth-child(2) { min-width:7.5rem; }
   .ff-pts { color:var(--fitc-green); font-size:.95rem; }
   .ff-dim { opacity:.45; }
+  .ff-elig { display:inline-block; font-size:.72rem; color:#fbbf24; background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.3); border-radius:999px; padding:.1rem .5rem; white-space:nowrap; }
+  .ff-elig-new { color:#93c5fd; background:rgba(56,189,248,.08); border-color:rgba(56,189,248,.3); }
+  .ff-had-row { display:flex; flex-wrap:wrap; gap:.5rem .8rem; align-items:center; font-size:.8rem; color:var(--text-secondary); margin:-.2rem 0 1rem; }
+  #ff-had { display:flex; flex-wrap:wrap; gap:.35rem; }
+  .ff-chip { padding:.25rem .65rem; border-radius:999px; border:1px solid var(--glass-border); background:transparent; color:var(--text-secondary); font-size:.75rem; cursor:pointer; font-family:inherit; }
+  .ff-chip-on { border-color:#fbbf24; color:#fbbf24; background:rgba(251,191,36,.1); text-decoration:line-through; }
   .ff-apply { display:inline-block; white-space:nowrap; padding:.4rem .85rem; border-radius:999px; border:1px solid var(--glass-border); background:rgba(255,255,255,.08); color:#fff; font-size:.78rem; font-weight:600; text-decoration:none; }
   .ff-apply:hover { border-color:var(--fitc-green); background:rgba(0,255,102,.15); }
   .ff-hist td { padding:.4rem .6rem; } .ff-hist-last td { border-bottom:1px solid var(--glass-border); }

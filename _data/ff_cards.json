@@ -1,5 +1,5 @@
 {
- "_readme": "Credit card sign-up offers shown on the FF Points page. Edited by hand: when you re-check a card, update its figures and 'verified' date. stages: bonus points by year (year 2 usually needs the second annual fee). fees.y1 / fees.ongoing include any rewards-program fee. credits = $ value of travel credits you'd need to use; cashback = $ back in year 1. affiliateLink: optional referral URL (used instead of link). The weekly check (.github/workflows/scripts/ff_check.py) tests every link and compares the bonus numbers with the bank's page.",
+ "_readme": "Credit card sign-up offers shown on the FF Points page. Edited by hand: when you re-check a card, update its figures and 'verified' date. stages: bonus points by year (year 2 usually needs the second annual fee). fees.y1 / fees.ongoing include any rewards-program fee. credits = $ value of travel credits you'd need to use; cashback = $ back in year 1. affiliateLink: optional referral URL (used instead of link). The weekly check (.github/workflows/scripts/ff_check.py) tests every link and compares the bonus numbers with the bank's page. eligibility.months: how long since you last held a card from that bank/program (null = no fixed period stated); eligibility.rule: the bank's wording, simplified.",
  "verified": "2026-11-11",
  "cards": [
   {
@@ -35,7 +35,10 @@
    "affiliateLink": "",
    "source": "westpac.com.au product page",
    "verified": "2026-11-11",
-   "notes": "Not available if you have held a Westpac credit card recently (see terms)."
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you've held any Westpac credit card in the last 24 months."
+   }
   },
   {
    "id": "westpac-altitude-qantas-platinum",
@@ -69,7 +72,11 @@
    "link": "https://www.westpac.com.au/credit-cards/reward/altitude-qantas-platinum",
    "affiliateLink": "",
    "source": "westpac.com.au product page",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you've held an Altitude Platinum or Black card (Rewards, Qantas or Velocity) in the last 24 months."
+   }
   },
   {
    "id": "amex-qantas-ultimate",
@@ -105,7 +112,10 @@
    "affiliateLink": "",
    "source": "americanexpress.com (offer shown on Amex pages); Point Hacks",
    "verified": "2026-11-11",
-   "notes": "New Amex Card Members only."
+   "eligibility": {
+    "months": 18,
+    "rule": "New Amex Card Members only — Amex treats you as new if you haven't held an Amex card in the last 18 months."
+   }
   },
   {
    "id": "amex-qantas-premium",
@@ -134,7 +144,11 @@
    "affiliateLink": "",
    "source": "americanexpress.com; Point Hacks",
    "verified": "2026-11-11",
-   "notes": "Amex pages disagree on whether this bonus is currently offered — check before applying."
+   "notes": "Amex pages disagree on whether this bonus is currently offered — check before applying.",
+   "eligibility": {
+    "months": 18,
+    "rule": "New Amex Card Members only — Amex treats you as new if you haven't held an Amex card in the last 18 months."
+   }
   },
   {
    "id": "anz-ff-black",
@@ -170,7 +184,10 @@
    "affiliateLink": "",
    "source": "anz.com.au product page",
    "verified": "2026-11-11",
-   "notes": "Not if you hold or held an ANZ Rewards or Frequent Flyer card in the last 24 months."
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you hold, or held in the last 24 months, any ANZ Rewards or ANZ Frequent Flyer card."
+   }
   },
   {
    "id": "anz-ff-platinum",
@@ -205,7 +222,10 @@
    "affiliateLink": "",
    "source": "anz.com.au product page",
    "verified": "2026-11-11",
-   "notes": "Not if you hold or held an ANZ Rewards or Frequent Flyer card in the last 24 months."
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you hold, or held in the last 24 months, any ANZ Rewards or ANZ Frequent Flyer card."
+   }
   },
   {
    "id": "nab-qantas-signature",
@@ -239,7 +259,11 @@
    "affiliateLink": "",
    "source": "nab.com.au product page",
    "verified": "2026-11-11",
-   "notes": "Existing NAB customers: 50,000 + 20,000 points instead."
+   "notes": "Existing NAB customers: 50,000 + 20,000 points instead.",
+   "eligibility": {
+    "months": 36,
+    "rule": "Not if you hold, held, or are switching from any personal NAB Qantas Rewards card in the last 36 months."
+   }
   },
   {
    "id": "nab-qantas-premium",
@@ -272,7 +296,11 @@
    "affiliateLink": "",
    "source": "nab.com.au product page",
    "verified": "2026-11-11",
-   "notes": "Existing NAB customers: 40,000 + 20,000 points and $195 card fee in year 1."
+   "notes": "Existing NAB customers: 40,000 + 20,000 points and $195 card fee in year 1.",
+   "eligibility": {
+    "months": 36,
+    "rule": "Not if you hold, held, or are switching from any personal NAB Qantas Rewards card in the last 36 months."
+   }
   },
   {
    "id": "qantas-money-titanium",
@@ -299,7 +327,11 @@
    "link": "https://www.qantasmoney.com/credit-cards/titanium",
    "affiliateLink": "",
    "source": "qantasmoney.com",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": null,
+    "rule": "New primary cardholders. Qantas limits members to one first-time credit card bonus every 24 months."
+   }
   },
   {
    "id": "qantas-money-platinum",
@@ -334,7 +366,10 @@
    "affiliateLink": "",
    "source": "qantasmoney.com",
    "verified": "2026-11-11",
-   "notes": "The second 40,000 is only for people who haven’t earned Qantas Points on a credit card in 24 months."
+   "eligibility": {
+    "months": 24,
+    "rule": "New primary cardholders; one first-time credit card bonus per member in 24 months. The extra 40,000 needs no Qantas Points earned on any credit or charge card in the last 24 months."
+   }
   },
   {
    "id": "qantas-money-everyday",
@@ -361,7 +396,11 @@
    "link": "https://www.qantasmoney.com/credit-cards/everyday",
    "affiliateLink": "",
    "source": "qantasmoney.com",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": null,
+    "rule": "New cardholders; can't be combined with another Qantas-branded card offer or used when closing or switching from one."
+   }
   },
   {
    "id": "mycard-premier-qantas",
@@ -395,7 +434,11 @@
    "link": "https://www.mycard.com.au/credit-cards/premier-card-qantas",
    "affiliateLink": "",
    "source": "mycard.com.au",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": null,
+    "rule": "New MyCard Premier Qantas cards — check the full terms for exclusions."
+   }
   },
   {
    "id": "stgeorge-amplify-qantas-signature",
@@ -425,7 +468,11 @@
    "link": "https://www.stgeorge.com.au/personal/credit-cards/frequent-flyer/amplify-signature",
    "affiliateLink": "",
    "source": "stgeorge.com.au",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you've held a St.George, Bank of Melbourne or BankSA rewards card in the last 24 months; not for card switches or upgrades."
+   }
   },
   {
    "id": "stgeorge-amplify-qantas-platinum",
@@ -454,7 +501,11 @@
    "link": "https://www.stgeorge.com.au/personal/credit-cards/frequent-flyer/amplify-platinum",
    "affiliateLink": "",
    "source": "stgeorge.com.au",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you've held a St.George, Bank of Melbourne or BankSA rewards card in the last 24 months; not for card switches or upgrades."
+   }
   },
   {
    "id": "westpac-altitude-velocity-black",
@@ -488,7 +539,11 @@
    "link": "https://www.westpac.com.au/credit-cards/reward/altitude-velocity-black",
    "affiliateLink": "",
    "source": "westpac.com.au product page",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you've held any Westpac credit card in the last 24 months."
+   }
   },
   {
    "id": "westpac-altitude-velocity-platinum",
@@ -522,7 +577,11 @@
    "link": "https://www.westpac.com.au/credit-cards/reward/altitude-velocity-platinum",
    "affiliateLink": "",
    "source": "westpac.com.au product page",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you've held an Altitude Platinum or Black card (Rewards, Qantas or Velocity) in the last 24 months."
+   }
   },
   {
    "id": "virgin-money-high-flyer",
@@ -555,7 +614,11 @@
    "affiliateLink": "",
    "source": "virginmoney.com.au; Velocity newsroom (26 Oct 2026)",
    "verified": "2026-11-11",
-   "notes": "100 Status Credits once the 80,000 points are earned (they expire after 12 months). Not for existing Virgin Money cardholders."
+   "notes": "100 Status Credits once the 80,000 points are earned (they expire after 12 months).",
+   "eligibility": {
+    "months": null,
+    "rule": "Not for existing Virgin Money credit card holders (including upgrades)."
+   }
   },
   {
    "id": "virgin-money-flyer",
@@ -588,7 +651,11 @@
    "affiliateLink": "",
    "source": "virginmoney.com.au; Velocity newsroom (26 Oct 2026)",
    "verified": "2026-11-11",
-   "notes": "50 Status Credits once the 50,000 points are earned. Not for existing Virgin Money cardholders."
+   "notes": "50 Status Credits once the 50,000 points are earned.",
+   "eligibility": {
+    "months": null,
+    "rule": "Not for existing Virgin Money credit card holders (including upgrades)."
+   }
   },
   {
    "id": "amex-velocity-platinum",
@@ -617,7 +684,11 @@
    "affiliateLink": "",
    "source": "americanexpress.com; Velocity newsroom (26 Oct 2026)",
    "verified": "2026-11-11",
-   "notes": "Also up to 100 Status Credits a year: 50 after $25,000 spend and 50 more after another $25,000. New Amex Card Members only."
+   "notes": "Also up to 100 Status Credits a year: 50 after $25,000 spend and 50 more after another $25,000.",
+   "eligibility": {
+    "months": 18,
+    "rule": "New Amex Card Members only — Amex treats you as new if you haven't held an Amex card in the last 18 months."
+   }
   },
   {
    "id": "amex-velocity-escape-plus",
@@ -645,7 +716,10 @@
    "affiliateLink": "",
    "source": "americanexpress.com (Velocity Platinum page); Point Hacks",
    "verified": "2026-11-11",
-   "notes": "New Amex Card Members only."
+   "eligibility": {
+    "months": 18,
+    "rule": "New Amex Card Members only — Amex treats you as new if you haven't held an Amex card in the last 18 months."
+   }
   },
   {
    "id": "nab-rewards-velocity",
@@ -678,7 +752,11 @@
    "link": "https://www.nab.com.au/personal/credit-cards/nab-rewards-cards/velocity-points",
    "affiliateLink": "",
    "source": "nab.com.au product page",
-   "verified": "2026-11-11"
+   "verified": "2026-11-11",
+   "eligibility": {
+    "months": 24,
+    "rule": "New cardholders only; NAB's Rewards-card bonuses exclude anyone who held a personal NAB Rewards card in the last 24 months."
+   }
   },
   {
    "id": "nab-rewards-travel-velocity",
@@ -712,7 +790,11 @@
    "affiliateLink": "",
    "source": "nab.com.au product page",
    "verified": "2026-11-11",
-   "notes": "No international transaction fees. Online applications only for this offer."
+   "notes": "No international transaction fees. Online applications only for this offer.",
+   "eligibility": {
+    "months": 24,
+    "rule": "New cardholders only (online applications); not if you held a personal NAB Rewards card in the last 24 months."
+   }
   },
   {
    "id": "anz-rewards-platinum-velocity",
@@ -747,7 +829,11 @@
    "affiliateLink": "",
    "source": "anz.com.au product page",
    "verified": "2026-11-11",
-   "notes": "Choose the Velocity offer when applying. Not if you hold or held an ANZ Rewards or Frequent Flyer card in the last 24 months."
+   "notes": "Choose the Velocity offer when applying.",
+   "eligibility": {
+    "months": 24,
+    "rule": "Not if you hold, or held in the last 24 months, any ANZ Rewards or ANZ Frequent Flyer card."
+   }
   }
  ]
 }

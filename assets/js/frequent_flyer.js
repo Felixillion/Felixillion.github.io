@@ -10,7 +10,7 @@
 (function () {
   const D = window.FF_DATA || { cards: [] }, H = (window.FF_HISTORY || {}).entries || [], C = (window.FF_CHECKS || {}).results || {};
   const NEWS = window.FF_PROMOS || {};
-  const st = { program: 'qantas', cents: 1.5, spend: '', horizon: 'y1', credits: true, sort: 'net', dir: -1 };
+  const st = { program: 'qantas', cents: 1.5, spend: '', horizon: 'y1', credits: true, sort: 'net', dir: -1, had: new Set() };
   const hf = { program: 'tab', bank: 'all', q: '', changedOnly: false };      // past-offers filters
   const REPO = 'https://github.com/Felixillion/Felixillion.github.io';
   /** A pre-filled GitHub issue for reporting wrong details (one card, or the page in general). */
@@ -39,11 +39,12 @@
     const cost = c.fees.y1 + (two ? c.fees.ongoing : 0) - (c.cashback || 0) - credits;
     const net = points * st.cents / 100 - cost;
     const cpp = points ? cost / points * 100 : null;
-    const reach = !st.spend || c.minSpend <= +st.spend;
+    const blocked = st.had.has(c.issuer) && c.eligibility?.months;     // had a card from this bank recently
+    const reach = (!st.spend || c.minSpend <= +st.spend) && !blocked;
     // history: best and previous offers recorded for this card (excluding the current one)
     const past = H.filter(e => e.id === c.id && !(e.total === total && e.y1 === y1 && e.fee === c.fees.y1)).sort((a, b) => b.from.localeCompare(a.from));
     const best = past.reduce((m, e) => Math.max(m, e.total), 0);
-    return { ...c, y1, total, points, cost, net, cpp, reach, past, best };
+    return { ...c, y1, total, points, cost, net, cpp, reach, blocked, past, best };
   }
 
   function vsPast(r) {
@@ -64,6 +65,9 @@
     const news = flag ? `<div><a href="${esc(flag.link)}" target="_blank" rel="noopener" class="ff-warn">📰 In the news ${esc(flag.date)} — may have changed</a></div>` : '';
     return hand + auto + ended + news + `<div><a class="ff-report" href="${reportUrl(r)}" target="_blank" rel="noopener">Report wrong details ↗</a></div>`;
   }
+  const elig = r => { const e = r.eligibility || {};
+    return `${e.months ? `<b class="ff-elig">⏱ ${e.months} months</b>` : '<b class="ff-elig ff-elig-new">New customers</b>'}<div class="ff-small" style="margin-top:.2rem;">${esc(e.rule || '')}</div>`
+      + (r.blocked ? '<div class="ff-warn" style="font-size:.72rem;">You said you\'ve had a card from this bank recently — you may not get the bonus.</div>' : ''); };
   const apply = r => `<a class="ff-apply" href="${esc(r.affiliateLink || r.link)}" target="_blank" rel="noopener">Apply&nbsp;↗</a>`;
   const bonusCell = r => `<b class="ff-pts">${pts(r.total)}</b>${r.stages.length > 1 || r.statusCredits ? `<div class="ff-muted">${r.stages.map(s => `<span title="${esc(s.need)}">${pts(s.pts)} ${s.cond ? 'if eligible' : 'yr ' + s.year}</span>`).join(' + ')}${r.statusCredits ? ` · +${r.statusCredits} Status Credits` : ''}</div>` : ''}`;
   const feeCell = r => `${money(r.fees.y1)}${r.fees.ongoing !== r.fees.y1 ? `<div class="ff-muted">then ${money(r.fees.ongoing)}</div>` : ''}${r.feeNote ? ` <span class="ff-q" title="${esc(r.feeNote)}">?</span>` : ''}`;
@@ -79,7 +83,7 @@
     const th = (k, l) => `<th${k ? ` data-sort="${k}" class="ff-sort"` : ''}>${l}${st.sort === k ? (st.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`;
     const yrs = st.horizon === 'y2' ? 'years 1–2' : 'year 1';
     $('ff-table').innerHTML = `<table class="ff-table"><thead><tr>${th('', 'Card')}${th('total', 'Bonus points')}${th('spend', 'Spend needed')}${th('fee', 'Annual fee')}
-        ${th('net', `Net value (${yrs})`)}${th('cpp', 'Cost per point')}${th('', 'Extras')}${th('', 'Compared with past offers')}${th('', 'Checked')}${th('', '')}</tr></thead><tbody>
+        ${th('net', `Net value (${yrs})`)}${th('cpp', 'Cost per point')}${th('', 'Bonus eligibility')}${th('', 'Extras')}${th('', 'Compared with past offers')}${th('', 'Checked')}${th('', '')}</tr></thead><tbody>
       ${rows.map(r => `<tr class="${r.reach ? '' : 'ff-dim'}">
         <td><b>${esc(r.issuer)}</b><div>${esc(r.name)}</div>${r.notes ? `<div class="ff-note">${esc(r.notes)}</div>` : ''}${r.offerEnds ? `<div class="ff-warn">Apply by ${fmtD(r.offerEnds)}</div>` : ''}</td>
         <td>${bonusCell(r)}</td>
@@ -87,6 +91,7 @@
         <td>${feeCell(r)}</td>
         <td class="${r.net >= 0 ? 'ff-good' : 'ff-bad'}"><b>${money(r.net)}</b></td>
         <td>${r.cpp == null ? '—' : r.cpp <= 0 ? 'free' : r.cpp.toFixed(2) + '¢'}</td>
+        <td class="ff-small" style="min-width:11rem;">${elig(r)}</td>
         <td class="ff-small">${extras(r) || '—'}</td>
         <td class="ff-small">${vsPast(r)}</td>
         <td class="ff-small">${checkBadge(r)}</td>
@@ -100,9 +105,17 @@
         <div><span>Bonus</span>${bonusCell(r)}</div><div><span>Net value (${yrs})</span><b class="${r.net >= 0 ? 'ff-good' : 'ff-bad'}">${money(r.net)}</b></div>
         <div><span>Spend needed</span>${money(r.minSpend)} in ${r.spendDays} days</div><div><span>Annual fee</span>${feeCell(r)}</div>
         <div><span>Cost per point</span>${r.cpp == null ? '—' : r.cpp <= 0 ? 'free' : r.cpp.toFixed(2) + '¢'}</div><div><span>vs past offers</span>${vsPast(r)}</div>
+        <div style="grid-column:1/-1;"><span>Bonus eligibility</span>${elig(r)}</div>
       </div>${extras(r) ? `<div class="ff-small" style="margin-top:.5rem;">${extras(r)}</div>` : ''}
       ${r.notes ? `<div class="ff-note">${esc(r.notes)}</div>` : ''}<div class="ff-small" style="margin-top:.4rem;">${checkBadge(r)}</div></div>`).join('');
+    renderHad();
     renderHistory();
+  }
+  function renderHad() {
+    const box = $('ff-had'); if (!box) return;
+    const banks = [...new Set(D.cards.filter(c => c.program === st.program && c.eligibility?.months).map(c => c.issuer))].sort();
+    box.innerHTML = banks.map(b => `<button type="button" class="ff-chip${st.had.has(b) ? ' ff-chip-on' : ''}" data-bank="${esc(b)}">${esc(b)}</button>`).join('');
+    box.querySelectorAll('[data-bank]').forEach(x => x.onclick = () => { const b = x.dataset.bank; st.had.has(b) ? st.had.delete(b) : st.had.add(b); render(); });
   }
 
   function renderHistory() {
