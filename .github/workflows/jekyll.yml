@@ -66,3 +66,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # The site is ~150 MB (mostly the UnumLocalia demo data), and GitHub's processing of that
+          # sometimes takes longer than the default 10-minute limit. Allow 30 minutes.
+          timeout: 1800000
