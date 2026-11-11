@@ -666,6 +666,22 @@
  "MCY": [
   "differs from Yahoo adjusted close by >1.5 pts in 1 year(s): {2014: -1.5}"
  ],
+ "MEM": [
+  "bad tick 2008-01-21 16.09 (prev 11.42) replaced",
+  "bad tick 2017-05-15 0.008995 (prev 0.01799) replaced",
+  "bad tick 2017-06-13 0.01799 (prev 0.008995) replaced",
+  "bad tick 2017-11-09 0.02699 (prev 0.01799) replaced",
+  "bad tick 2017-11-10 0.02699 (prev 0.01799) replaced",
+  "bad tick 2017-11-13 0.02699 (prev 0.01799) replaced",
+  "bad tick 2017-11-30 0.04048 (prev 0.02699) replaced",
+  "bad tick 2018-01-31 0.01349 (prev 0.02699) replaced",
+  "bad tick 2018-02-20 0.02024 (prev 0.01349) replaced",
+  "bad tick 2018-04-11 0.01349 (prev 0.02699) replaced",
+  "bad tick 2018-04-18 0.02024 (prev 0.01349) replaced",
+  "bad tick 2018-04-19 0.02024 (prev 0.01349) replaced",
+  "bad tick 2018-04-24 0.02699 (prev 0.01349) replaced",
+  "bad tick 2018-07-26 0.02024 (prev 0.01349) replaced"
+ ],
  "MEZ": [
   "distribution 2015-09-28 11.65 is 600% of price \u2014 dropped as a data error",
   "differs from Yahoo adjusted close by >1.5 pts in 2 year(s): {2014: -2.5, 2015: 129.1}"
