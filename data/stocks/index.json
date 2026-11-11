@@ -1,17 +1,17 @@
 {
-  "lastUpdated": "2026-11-10",
+  "lastUpdated": "2026-11-11",
   "count": 100,
   "stocks": [
     {
       "ticker": "VAS",
       "name": "Vanguard Australian Shares Index ETF",
       "exchange": "ASX",
-      "currentPrice": 113.14,
+      "currentPrice": 113.06,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 2.95,
+      "dividendYield": 3.13,
       "mer": null,
       "annualReturn": 7.8,
       "historicalReturns": {
@@ -26,7 +26,7 @@
         "2023": 12.0,
         "2024": 11.4,
         "2025": 10.7,
-        "2026": 7.3
+        "2026": 7.2
       },
       "historicalDividendYields": {
         "2015": 4.25,
@@ -42,18 +42,18 @@
         "2025": 3.39,
         "2026": 3.17
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "A200",
       "name": "BetaShares Australia 200 ETF",
       "exchange": "ASX",
-      "currentPrice": 152.8,
+      "currentPrice": 152.67,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.27,
+      "dividendYield": 3.37,
       "mer": null,
       "annualReturn": 8.3,
       "historicalReturns": {
@@ -64,7 +64,7 @@
         "2023": 12.0,
         "2024": 11.6,
         "2025": 10.3,
-        "2026": 8.3
+        "2026": 8.2
       },
       "historicalDividendYields": {
         "2019": 4.27,
@@ -76,18 +76,18 @@
         "2025": 3.54,
         "2026": 3.43
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "IOZ",
       "name": "iShares Core S&P/ASX 200 ETF",
       "exchange": "ASX",
-      "currentPrice": 36.62,
+      "currentPrice": 36.6,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.4,
+      "dividendYield": 3.44,
       "mer": null,
       "annualReturn": 8.1,
       "historicalReturns": {
@@ -102,7 +102,7 @@
         "2023": 12.2,
         "2024": 11.4,
         "2025": 10.2,
-        "2026": 8.0
+        "2026": 7.9
       },
       "historicalDividendYields": {
         "2015": 7.3,
@@ -118,18 +118,18 @@
         "2025": 3.61,
         "2026": 3.49
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "STW",
       "name": "SPDR ETFs Australia - State Street SPDR S&P/ASX 200 ETF",
       "exchange": "ASX",
-      "currentPrice": 81.79,
+      "currentPrice": 81.69,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.85,
+      "dividendYield": 3.8,
       "mer": null,
       "annualReturn": 8.3,
       "historicalReturns": {
@@ -144,7 +144,7 @@
         "2023": 12.2,
         "2024": 12.6,
         "2025": 10.2,
-        "2026": 8.1
+        "2026": 8.0
       },
       "historicalDividendYields": {
         "2015": 3.8,
@@ -160,18 +160,18 @@
         "2025": 3.71,
         "2026": 2.98
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VHY",
       "name": "Vanguard Australian Shares High Yield ETF",
       "exchange": "ASX",
-      "currentPrice": 86.41,
+      "currentPrice": 86.43,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.51,
+      "dividendYield": 3.61,
       "mer": null,
       "annualReturn": 12.5,
       "historicalReturns": {
@@ -202,18 +202,18 @@
         "2025": 8.78,
         "2026": 3.92
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "MVW",
       "name": "VanEck Australian Equal Weight ETF",
       "exchange": "ASX",
-      "currentPrice": 40.66,
+      "currentPrice": 40.71,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.39,
+      "dividendYield": 3.34,
       "mer": null,
       "annualReturn": 7.5,
       "historicalReturns": {
@@ -228,7 +228,7 @@
         "2023": 11.6,
         "2024": 9.4,
         "2025": 7.8,
-        "2026": 8.7
+        "2026": 8.8
       },
       "historicalDividendYields": {
         "2015": 1.73,
@@ -244,18 +244,18 @@
         "2025": 4.63,
         "2026": 3.38
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VAP",
       "name": "Vanguard Australian Property Securities Index ETF",
       "exchange": "ASX",
-      "currentPrice": 90.79,
+      "currentPrice": 90.84,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.19,
+      "dividendYield": 3.22,
       "mer": null,
       "annualReturn": 3.4,
       "historicalReturns": {
@@ -286,7 +286,7 @@
         "2025": 4.12,
         "2026": 2.77
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "MVA",
@@ -297,7 +297,7 @@
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 6.05,
+      "dividendYield": 5.9,
       "mer": null,
       "annualReturn": 3.8,
       "historicalReturns": {
@@ -328,27 +328,27 @@
         "2025": 4.36,
         "2026": 5.0
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "ATEC",
       "name": "BetaShares S&P/ASX Australian Technology ETF",
       "exchange": "ASX",
-      "currentPrice": 23.06,
+      "currentPrice": 23.24,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.95,
+      "dividendYield": 1.93,
       "mer": null,
-      "annualReturn": -0.2,
+      "annualReturn": -0.1,
       "historicalReturns": {
         "2021": 3.9,
         "2022": -32.4,
         "2023": 34.9,
         "2024": 42.3,
         "2025": -10.6,
-        "2026": -9.5
+        "2026": -8.8
       },
       "historicalDividendYields": {
         "2021": 2.91,
@@ -358,20 +358,20 @@
         "2025": 2.26,
         "2026": 1.59
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VGS",
       "name": "Vanguard MSCI Index International Shares ETF",
       "exchange": "ASX",
-      "currentPrice": 162.13,
+      "currentPrice": 162.95,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.25,
+      "dividendYield": 1.23,
       "mer": null,
-      "annualReturn": 11.5,
+      "annualReturn": 11.6,
       "historicalReturns": {
         "2015": 12.8,
         "2016": 7.7,
@@ -384,7 +384,7 @@
         "2023": 22.9,
         "2024": 30.9,
         "2025": 12.9,
-        "2026": 6.7
+        "2026": 7.3
       },
       "historicalDividendYields": {
         "2015": 3.16,
@@ -400,20 +400,20 @@
         "2025": 2.74,
         "2026": 1.27
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "IVV",
       "name": "iShares S&P 500 ETF",
       "exchange": "ASX",
-      "currentPrice": 72.65,
+      "currentPrice": 72.98,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.25,
+      "dividendYield": 1.04,
       "mer": null,
-      "annualReturn": 12.6,
+      "annualReturn": 12.7,
       "historicalReturns": {
         "2015": 13.8,
         "2016": 12.2,
@@ -426,7 +426,7 @@
         "2023": 20.1,
         "2024": 37.3,
         "2025": 9.4,
-        "2026": 7.0
+        "2026": 7.5
       },
       "historicalDividendYields": {
         "2015": 2.49,
@@ -442,20 +442,20 @@
         "2025": 1.11,
         "2026": 0.8
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VTS",
       "name": "Vanguard Morningstar US Total Market Shares Index ETF",
       "exchange": "ASX",
-      "currentPrice": 536.74,
+      "currentPrice": 539.16,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
       "dividendYield": 0.0,
       "mer": null,
-      "annualReturn": 11.8,
+      "annualReturn": 11.9,
       "historicalReturns": {
         "2015": 12.7,
         "2016": 13.1,
@@ -468,7 +468,7 @@
         "2023": 25.4,
         "2024": 36.2,
         "2025": 9.0,
-        "2026": 7.3
+        "2026": 7.8
       },
       "historicalDividendYields": {
         "2015": 2.17,
@@ -484,20 +484,20 @@
         "2025": 1.22,
         "2026": 0.84
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "NDQ",
       "name": "BetaShares NASDAQ 100 ETF",
       "exchange": "ASX",
-      "currentPrice": 58.58,
+      "currentPrice": 58.93,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.42,
+      "dividendYield": 1.54,
       "mer": null,
-      "annualReturn": 13.0,
+      "annualReturn": 13.1,
       "historicalReturns": {
         "2016": 7.1,
         "2017": 21.9,
@@ -509,7 +509,7 @@
         "2023": 53.4,
         "2024": 38.3,
         "2025": 11.3,
-        "2026": 6.2
+        "2026": 6.8
       },
       "historicalDividendYields": {
         "2016": 0.46,
@@ -524,20 +524,20 @@
         "2025": 1.02,
         "2026": 1.61
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "QUAL",
       "name": "Vaneck Msci International Quality Etf",
       "exchange": "ASX",
-      "currentPrice": 63.63,
+      "currentPrice": 64.05,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.43,
+      "dividendYield": 3.48,
       "mer": null,
-      "annualReturn": 10.7,
+      "annualReturn": 10.8,
       "historicalReturns": {
         "2015": 16.6,
         "2016": 5.1,
@@ -550,7 +550,7 @@
         "2023": 30.5,
         "2024": 30.6,
         "2025": 8.1,
-        "2026": 6.3
+        "2026": 7.0
       },
       "historicalDividendYields": {
         "2015": 1.93,
@@ -566,20 +566,20 @@
         "2025": 2.1,
         "2026": 3.49
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "MOAT",
       "name": "VanEck Morningstar Wide Moat ETF",
       "exchange": "ASX",
-      "currentPrice": 128.75,
+      "currentPrice": 129.38,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 10.04,
+      "dividendYield": 9.55,
       "mer": null,
-      "annualReturn": 10.7,
+      "annualReturn": 10.8,
       "historicalReturns": {
         "2016": 22.6,
         "2017": 13.9,
@@ -591,7 +591,7 @@
         "2023": 30.5,
         "2024": 20.4,
         "2025": 5.7,
-        "2026": 8.3
+        "2026": 8.8
       },
       "historicalDividendYields": {
         "2016": 1.41,
@@ -605,20 +605,20 @@
         "2025": 5.74,
         "2026": 8.87
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VESG",
       "name": "Vanguard Ethically Conscious International Shares Index ETF",
       "exchange": "ASX",
-      "currentPrice": 119.11,
+      "currentPrice": 119.65,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.3,
+      "dividendYield": 1.35,
       "mer": null,
-      "annualReturn": 10.9,
+      "annualReturn": 11.0,
       "historicalReturns": {
         "2019": 30.1,
         "2020": 9.8,
@@ -627,7 +627,7 @@
         "2023": 26.0,
         "2024": 31.7,
         "2025": 12.4,
-        "2026": 7.1
+        "2026": 7.6
       },
       "historicalDividendYields": {
         "2019": 1.76,
@@ -639,42 +639,42 @@
         "2025": 1.63,
         "2026": 1.4
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "BGBL",
       "name": "Betashares Global Shares ETF Units AUD",
       "exchange": "ASX",
-      "currentPrice": 86.2,
+      "currentPrice": 86.61,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.14,
+      "dividendYield": 1.16,
       "mer": null,
-      "annualReturn": 12.1,
+      "annualReturn": 12.2,
       "historicalReturns": {
         "2024": 30.9,
         "2025": 13.4,
-        "2026": 7.1
+        "2026": 7.6
       },
       "historicalDividendYields": {
         "2024": 1.14,
         "2025": 1.73,
         "2026": 1.21
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VGAD",
       "name": "Vanguard MSCI Index International Shares (Hedged) ETF",
       "exchange": "ASX",
-      "currentPrice": 130.25,
+      "currentPrice": 130.11,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 2.38,
+      "dividendYield": 2.4,
       "mer": null,
       "annualReturn": 9.9,
       "historicalReturns": {
@@ -689,7 +689,7 @@
         "2023": 21.6,
         "2024": 20.4,
         "2025": 19.3,
-        "2026": 10.5
+        "2026": 10.3
       },
       "historicalDividendYields": {
         "2016": 1.37,
@@ -701,20 +701,20 @@
         "2025": 4.86,
         "2026": 2.58
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "IHVV",
       "name": "iShares S&P 500 AUD Hedged ETF",
       "exchange": "ASX",
-      "currentPrice": 66.25,
+      "currentPrice": 66.09,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 4.03,
+      "dividendYield": 4.07,
       "mer": null,
-      "annualReturn": 9.7,
+      "annualReturn": 9.6,
       "historicalReturns": {
         "2016": 11.9,
         "2017": 21.8,
@@ -726,7 +726,7 @@
         "2023": 20.2,
         "2024": 23.2,
         "2025": 17.1,
-        "2026": 9.8
+        "2026": 9.5
       },
       "historicalDividendYields": {
         "2016": 0.63,
@@ -740,27 +740,27 @@
         "2025": 0.92,
         "2026": 4.3
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "HNDQ",
       "name": "Betashares Nasdaq 100 Currency Hedged ETF",
       "exchange": "ASX",
-      "currentPrice": 53.53,
+      "currentPrice": 53.4,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 2.06,
+      "dividendYield": 2.2,
       "mer": null,
-      "annualReturn": 9.8,
+      "annualReturn": 9.7,
       "historicalReturns": {
         "2021": 27.0,
         "2022": -35.7,
         "2023": 50.9,
         "2024": 24.0,
         "2025": 19.1,
-        "2026": 9.2
+        "2026": 8.9
       },
       "historicalDividendYields": {
         "2021": 4.46,
@@ -769,7 +769,7 @@
         "2025": 2.06,
         "2026": 2.4
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "ASIA",
@@ -780,7 +780,7 @@
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.79,
+      "dividendYield": 2.1,
       "mer": null,
       "annualReturn": 12.7,
       "historicalReturns": {
@@ -802,18 +802,18 @@
         "2025": 0.86,
         "2026": 2.63
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "DJRE",
       "name": "SPDR ETFs Australia - State Street SPDR Dow Jones Global Real Estate ESG Tilted ETF",
       "exchange": "ASX",
-      "currentPrice": 22.79,
+      "currentPrice": 22.81,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 2.88,
+      "dividendYield": 2.82,
       "mer": null,
       "annualReturn": 2.1,
       "historicalReturns": {
@@ -844,20 +844,20 @@
         "2025": 2.82,
         "2026": 1.79
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "IEM",
       "name": "iShares MSCI Emerging Markets ETF (AU)",
       "exchange": "ASX",
-      "currentPrice": 89.0,
+      "currentPrice": 89.26,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.4,
+      "dividendYield": 1.54,
       "mer": null,
-      "annualReturn": 6.7,
+      "annualReturn": 6.8,
       "historicalReturns": {
         "2015": -5.4,
         "2016": 12.1,
@@ -870,7 +870,7 @@
         "2023": 6.0,
         "2024": 17.3,
         "2025": 23.6,
-        "2026": 8.9
+        "2026": 9.2
       },
       "historicalDividendYields": {
         "2015": 2.26,
@@ -886,7 +886,7 @@
         "2025": 1.97,
         "2026": 0.92
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "F100",
@@ -897,7 +897,7 @@
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.44,
+      "dividendYield": 3.4,
       "mer": null,
       "annualReturn": 12.5,
       "historicalReturns": {
@@ -918,18 +918,18 @@
         "2025": 3.75,
         "2026": 3.44
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VDHG",
       "name": "Vanguard Diversified High Growth Index ETF",
       "exchange": "ASX",
-      "currentPrice": 76.91,
+      "currentPrice": 77.06,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.36,
+      "dividendYield": 3.5,
       "mer": null,
       "annualReturn": 8.3,
       "historicalReturns": {
@@ -941,7 +941,7 @@
         "2023": 15.5,
         "2024": 17.8,
         "2025": 12.9,
-        "2026": 6.9
+        "2026": 7.1
       },
       "historicalDividendYields": {
         "2018": 2.37,
@@ -954,18 +954,18 @@
         "2025": 4.27,
         "2026": 3.55
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "DHHF",
       "name": "BetaShares Diversified All Growth ETF",
       "exchange": "ASX",
-      "currentPrice": 42.1,
+      "currentPrice": 42.19,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.98,
+      "dividendYield": 2.08,
       "mer": null,
       "annualReturn": 9.5,
       "historicalReturns": {
@@ -974,7 +974,7 @@
         "2023": 17.0,
         "2024": 21.7,
         "2025": 11.9,
-        "2026": 7.5
+        "2026": 7.7
       },
       "historicalDividendYields": {
         "2021": 1.56,
@@ -984,18 +984,18 @@
         "2025": 2.33,
         "2026": 2.14
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VDGR",
       "name": "Vanguard Diversified Growth Index ETF",
       "exchange": "ASX",
-      "currentPrice": 68.47,
+      "currentPrice": 68.41,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 4.1,
+      "dividendYield": 4.31,
       "mer": null,
       "annualReturn": 6.4,
       "historicalReturns": {
@@ -1007,7 +1007,7 @@
         "2023": 12.9,
         "2024": 14.2,
         "2025": 11.1,
-        "2026": 5.7
+        "2026": 5.6
       },
       "historicalDividendYields": {
         "2018": 1.99,
@@ -1020,18 +1020,18 @@
         "2025": 3.27,
         "2026": 4.29
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VDBA",
       "name": "Vanguard Diversified Balanced Index ETF",
       "exchange": "ASX",
-      "currentPrice": 60.11,
+      "currentPrice": 60.06,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 5.19,
+      "dividendYield": 5.48,
       "mer": null,
       "annualReturn": 4.4,
       "historicalReturns": {
@@ -1056,20 +1056,20 @@
         "2025": 3.0,
         "2026": 5.34
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VDCO",
       "name": "Vanguard Diversified Conservative Index ETF",
       "exchange": "ASX",
-      "currentPrice": 55.0,
+      "currentPrice": 54.79,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 5.39,
+      "dividendYield": 5.73,
       "mer": null,
-      "annualReturn": 2.9,
+      "annualReturn": 2.8,
       "historicalReturns": {
         "2018": 0.7,
         "2019": 12.4,
@@ -1079,7 +1079,7 @@
         "2023": 8.1,
         "2024": 7.0,
         "2025": 7.5,
-        "2026": 3.3
+        "2026": 2.9
       },
       "historicalDividendYields": {
         "2018": 1.03,
@@ -1092,20 +1092,20 @@
         "2025": 2.44,
         "2026": 5.54
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "HACK",
       "name": "BetaShares Global Cybersecurity ETF",
       "exchange": "ASX",
-      "currentPrice": 17.42,
+      "currentPrice": 17.6,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.26,
+      "dividendYield": 3.36,
       "mer": null,
-      "annualReturn": 12.6,
+      "annualReturn": 12.8,
       "historicalReturns": {
         "2017": 9.2,
         "2018": 11.3,
@@ -1116,7 +1116,7 @@
         "2023": 38.8,
         "2024": 30.3,
         "2025": 5.1,
-        "2026": 26.1
+        "2026": 27.4
       },
       "historicalDividendYields": {
         "2017": 2.64,
@@ -1129,20 +1129,20 @@
         "2025": 3.1,
         "2026": 4.3
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "ETHI",
       "name": "BetaShares Global Sustainability Leaders ETF",
       "exchange": "ASX",
-      "currentPrice": 17.51,
+      "currentPrice": 17.62,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.78,
+      "dividendYield": 1.75,
       "mer": null,
-      "annualReturn": 8.8,
+      "annualReturn": 9.0,
       "historicalReturns": {
         "2018": 7.0,
         "2019": 36.9,
@@ -1152,7 +1152,7 @@
         "2023": 23.2,
         "2024": 27.6,
         "2025": 4.8,
-        "2026": 7.9
+        "2026": 8.6
       },
       "historicalDividendYields": {
         "2018": 1.96,
@@ -1165,26 +1165,26 @@
         "2025": 2.17,
         "2026": 1.83
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "SEMI",
       "name": "Global X Semiconductor ETF",
       "exchange": "ASX",
-      "currentPrice": 30.72,
+      "currentPrice": 31.16,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 7.35,
+      "dividendYield": 8.78,
       "mer": null,
-      "annualReturn": 27.2,
+      "annualReturn": 27.6,
       "historicalReturns": {
         "2022": -30.9,
         "2023": 69.1,
         "2024": 35.2,
         "2025": 43.8,
-        "2026": 40.3
+        "2026": 42.4
       },
       "historicalDividendYields": {
         "2022": 0.66,
@@ -1193,26 +1193,26 @@
         "2025": 7.5,
         "2026": 12.25
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "CLNE",
       "name": "VanEck Global Clean Energy ETF",
       "exchange": "ASX",
-      "currentPrice": 8.27,
+      "currentPrice": 8.17,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 0.86,
+      "dividendYield": 0.93,
       "mer": null,
-      "annualReturn": -5.3,
+      "annualReturn": -5.5,
       "historicalReturns": {
         "2022": -3.4,
         "2023": -13.1,
         "2024": -25.6,
         "2025": 42.6,
-        "2026": 6.5
+        "2026": 5.2
       },
       "historicalDividendYields": {
         "2022": 0.54,
@@ -1221,20 +1221,20 @@
         "2025": 1.26,
         "2026": 0.9
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "RBTZ",
       "name": "BetaShares Global Robotics and Artificial Intelligence ETF",
       "exchange": "ASX",
-      "currentPrice": 13.16,
+      "currentPrice": 13.14,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 0.05,
+      "dividendYield": 0.06,
       "mer": null,
-      "annualReturn": -2.1,
+      "annualReturn": -2.2,
       "historicalReturns": {
         "2019": 32.7,
         "2020": 39.0,
@@ -1243,7 +1243,7 @@
         "2023": 37.3,
         "2024": 24.2,
         "2025": 5.3,
-        "2026": -14.6
+        "2026": -14.7
       },
       "historicalDividendYields": {
         "2019": 0.68,
@@ -1255,25 +1255,25 @@
         "2025": 1.93,
         "2026": 0.05
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "URNM",
       "name": "BetaShares Global Uranium ETF",
       "exchange": "ASX",
-      "currentPrice": 8.37,
+      "currentPrice": 8.15,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 2.67,
+      "dividendYield": 3.04,
       "mer": null,
-      "annualReturn": 8.7,
+      "annualReturn": 8.1,
       "historicalReturns": {
         "2023": 57.0,
         "2024": -5.1,
         "2025": 33.6,
-        "2026": -18.6
+        "2026": -20.8
       },
       "historicalDividendYields": {
         "2023": 0.07,
@@ -1281,20 +1281,20 @@
         "2025": 2.95,
         "2026": 2.32
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "GEAR",
       "name": "Betashares Geared Australian Equities Complex ETF",
       "exchange": "ASX",
-      "currentPrice": 38.53,
+      "currentPrice": 38.44,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 1.85,
+      "dividendYield": 1.81,
       "mer": null,
-      "annualReturn": 11.3,
+      "annualReturn": 11.2,
       "historicalReturns": {
         "2015": -1.0,
         "2016": 16.1,
@@ -1307,7 +1307,7 @@
         "2023": 20.6,
         "2024": 16.2,
         "2025": 15.8,
-        "2026": 10.8
+        "2026": 10.5
       },
       "historicalDividendYields": {
         "2015": 3.58,
@@ -1323,18 +1323,18 @@
         "2025": 1.59,
         "2026": 1.86
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "VAF",
       "name": "Vanguard Australian Fixed Interest Index ETF",
       "exchange": "ASX",
-      "currentPrice": 45.48,
+      "currentPrice": 45.37,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 3.27,
+      "dividendYield": 3.47,
       "mer": null,
       "annualReturn": 0.8,
       "historicalReturns": {
@@ -1349,7 +1349,7 @@
         "2023": 4.8,
         "2024": 2.7,
         "2025": 3.3,
-        "2026": 2.6
+        "2026": 2.4
       },
       "historicalDividendYields": {
         "2015": 3.93,
@@ -1365,20 +1365,20 @@
         "2025": 3.09,
         "2026": 3.41
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "QAU",
       "name": "Betashares Gold Bullion Currency Hedged ETF",
       "exchange": "ASX",
-      "currentPrice": 30.85,
+      "currentPrice": 30.29,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 5.29,
+      "dividendYield": 5.56,
       "mer": null,
-      "annualReturn": 14.9,
+      "annualReturn": 14.5,
       "historicalReturns": {
         "2015": -11.8,
         "2016": 9.5,
@@ -1391,7 +1391,7 @@
         "2023": 10.7,
         "2024": 23.7,
         "2025": 64.4,
-        "2026": -6.3
+        "2026": -8.0
       },
       "historicalDividendYields": {
         "2020": 2.68,
@@ -1399,18 +1399,18 @@
         "2025": 2.09,
         "2026": 4.78
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "QPON",
       "name": "BetaShares Australian Bank Senior Floating Rate Bond ETF",
       "exchange": "ASX",
-      "currentPrice": 26.195,
+      "currentPrice": 26.21,
       "currency": "AUD",
       "marketCap": null,
       "sector": "Unknown",
       "industry": "",
-      "dividendYield": 4.29,
+      "dividendYield": 4.38,
       "mer": null,
       "annualReturn": 4.4,
       "historicalReturns": {
@@ -1422,7 +1422,7 @@
         "2023": 5.3,
         "2024": 5.9,
         "2025": 5.0,
-        "2026": 4.3
+        "2026": 4.4
       },
       "historicalDividendYields": {
         "2018": 2.61,
@@ -1435,20 +1435,20 @@
         "2025": 4.49,
         "2026": 4.21
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "AFI",
       "name": "Australian Foundation Investment Company Limited",
       "exchange": "ASX",
-      "currentPrice": 6.93,
+      "currentPrice": 6.96,
       "currency": "AUD",
-      "marketCap": 8477026816,
+      "marketCap": 8513724416,
       "sector": "Financial Services",
       "industry": "Asset Management",
       "dividendYield": 4.8,
       "mer": null,
-      "annualReturn": 0.6,
+      "annualReturn": 0.7,
       "historicalReturns": {
         "2015": 2.0,
         "2016": -12.2,
@@ -1461,7 +1461,7 @@
         "2023": 34.1,
         "2024": 0.7,
         "2025": 1.2,
-        "2026": 2.3
+        "2026": 2.7
       },
       "historicalDividendYields": {
         "2015": 3.8,
@@ -1477,20 +1477,20 @@
         "2025": 4.25,
         "2026": 5.67
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "ARG",
       "name": "Argo Investments Limited",
       "exchange": "ASX",
-      "currentPrice": 9.46,
+      "currentPrice": 9.49,
       "currency": "AUD",
-      "marketCap": 7118474752,
+      "marketCap": 7141048832,
       "sector": "Financial Services",
       "industry": "Asset Management",
-      "dividendYield": 4.2,
+      "dividendYield": 4.24,
       "mer": null,
-      "annualReturn": 3.8,
+      "annualReturn": 3.9,
       "historicalReturns": {
         "2015": 6.9,
         "2016": -12.4,
@@ -1503,7 +1503,7 @@
         "2023": -3.3,
         "2024": 14.7,
         "2025": 5.6,
-        "2026": 8.2
+        "2026": 8.5
       },
       "historicalDividendYields": {
         "2015": 3.8,
@@ -1519,7 +1519,7 @@
         "2025": 4.12,
         "2026": 4.22
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "WAM",
@@ -1561,20 +1561,20 @@
         "2025": 9.9,
         "2026": 8.64
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "WGB",
       "name": "WAM Global Limited",
       "exchange": "ASX",
-      "currentPrice": 1.95,
+      "currentPrice": 1.96,
       "currency": "AUD",
-      "marketCap": 701218752,
+      "marketCap": 704814784,
       "sector": "Financial Services",
       "industry": "Asset Management",
       "dividendYield": 6.95,
       "mer": null,
-      "annualReturn": 1.1,
+      "annualReturn": 1.2,
       "historicalReturns": {
         "2019": 21.3,
         "2020": 6.2,
@@ -1583,7 +1583,7 @@
         "2023": 14.5,
         "2024": 1.4,
         "2025": 18.5,
-        "2026": -15.9
+        "2026": -15.5
       },
       "historicalDividendYields": {
         "2019": 1.03,
@@ -1595,7 +1595,7 @@
         "2025": 7.62,
         "2026": 5.34
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "MFF",
@@ -1606,7 +1606,7 @@
       "marketCap": 3154651392,
       "sector": "Financial Services",
       "industry": "Asset Management",
-      "dividendYield": 4.22,
+      "dividendYield": 4.19,
       "mer": null,
       "annualReturn": 16.6,
       "historicalReturns": {
@@ -1637,18 +1637,18 @@
         "2025": 3.63,
         "2026": 4.19
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "CBA",
       "name": "Commonwealth Bank of Australia",
       "exchange": "ASX",
-      "currentPrice": 168.82,
+      "currentPrice": 169.05,
       "currency": "AUD",
-      "marketCap": 282238451712,
+      "marketCap": 282672529408,
       "sector": "Financial Services",
       "industry": "Banks - Diversified",
-      "dividendYield": 3.01,
+      "dividendYield": 3.04,
       "mer": null,
       "annualReturn": 13.3,
       "historicalReturns": {
@@ -1663,7 +1663,7 @@
         "2023": 13.9,
         "2024": 42.2,
         "2025": 7.9,
-        "2026": 8.3
+        "2026": 8.5
       },
       "historicalDividendYields": {
         "2015": 4.92,
@@ -1679,20 +1679,20 @@
         "2025": 3.16,
         "2026": 3.15
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "NAB",
       "name": "National Australia Bank Limited",
       "exchange": "ASX",
-      "currentPrice": 39.38,
+      "currentPrice": 38.745,
       "currency": "AUD",
-      "marketCap": 122520633344,
+      "marketCap": 120544985088,
       "sector": "Financial Services",
       "industry": "Banks - Diversified",
-      "dividendYield": 4.25,
+      "dividendYield": 4.31,
       "mer": null,
-      "annualReturn": 11.4,
+      "annualReturn": 11.1,
       "historicalReturns": {
         "2015": -2.8,
         "2016": 13.0,
@@ -1705,7 +1705,7 @@
         "2023": 8.5,
         "2024": 26.5,
         "2025": 19.1,
-        "2026": -2.8
+        "2026": -4.4
       },
       "historicalDividendYields": {
         "2015": 6.19,
@@ -1721,18 +1721,18 @@
         "2025": 4.58,
         "2026": 4.02
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "WBC",
       "name": "Westpac Banking Corporation",
       "exchange": "ASX",
-      "currentPrice": 37.445,
+      "currentPrice": 37.41,
       "currency": "AUD",
-      "marketCap": 127888285696,
+      "marketCap": 127768748032,
       "sector": "Financial Services",
       "industry": "Banks - Diversified",
-      "dividendYield": 4.16,
+      "dividendYield": 4.18,
       "mer": null,
       "annualReturn": 16.4,
       "historicalReturns": {
@@ -1763,20 +1763,20 @@
         "2025": 4.73,
         "2026": 3.99
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "ANZ",
       "name": "ANZ Group Holdings Limited",
       "exchange": "ASX",
-      "currentPrice": 39.6,
+      "currentPrice": 39.945,
       "currency": "AUD",
-      "marketCap": null,
+      "marketCap": 120275599360,
       "sector": "Financial Services",
       "industry": "Banks - Diversified",
-      "dividendYield": 4.12,
+      "dividendYield": 4.25,
       "mer": null,
-      "annualReturn": 12.8,
+      "annualReturn": 13.0,
       "historicalReturns": {
         "2015": -7.3,
         "2016": 15.8,
@@ -1789,7 +1789,7 @@
         "2023": 17.7,
         "2024": 16.3,
         "2025": 33.9,
-        "2026": 11.5
+        "2026": 12.5
       },
       "historicalDividendYields": {
         "2015": 5.64,
@@ -1805,20 +1805,20 @@
         "2025": 5.82,
         "2026": 2.28
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "MQG",
       "name": "Macquarie Group Limited",
       "exchange": "ASX",
-      "currentPrice": 251.71,
+      "currentPrice": 247.98,
       "currency": "AUD",
-      "marketCap": null,
-      "sector": "Unknown",
-      "industry": "",
-      "dividendYield": 0.0,
+      "marketCap": 94514700288,
+      "sector": "Financial Services",
+      "industry": "Capital Markets",
+      "dividendYield": 3.43,
       "mer": null,
-      "annualReturn": 8.0,
+      "annualReturn": 7.9,
       "historicalReturns": {
         "2015": 48.4,
         "2016": 11.6,
@@ -1831,7 +1831,7 @@
         "2023": 14.6,
         "2024": 24.6,
         "2025": -5.3,
-        "2026": 26.1
+        "2026": 25.8
       },
       "historicalDividendYields": {
         "2015": 6.18,
@@ -1845,22 +1845,22 @@
         "2023": 4.22,
         "2024": 3.51,
         "2025": 3.02,
-        "2026": 2.07
+        "2026": 3.67
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "BHP",
       "name": "BHP Group Limited",
       "exchange": "ASX",
-      "currentPrice": 59.965,
+      "currentPrice": 59.5,
       "currency": "AUD",
-      "marketCap": 304799318016,
+      "marketCap": 302435762176,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 4.2,
+      "dividendYield": 4.09,
       "mer": null,
-      "annualReturn": 19.4,
+      "annualReturn": 19.2,
       "historicalReturns": {
         "2015": -30.1,
         "2016": 43.7,
@@ -1873,7 +1873,7 @@
         "2023": 16.9,
         "2024": -17.2,
         "2025": 20.0,
-        "2026": 37.3
+        "2026": 36.2
       },
       "historicalDividendYields": {
         "2015": 6.9,
@@ -1889,20 +1889,20 @@
         "2025": 4.32,
         "2026": 5.32
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "RIO",
       "name": "Rio Tinto Group",
       "exchange": "ASX",
-      "currentPrice": 153.51,
+      "currentPrice": 150.62,
       "currency": "AUD",
-      "marketCap": 249667059712,
+      "marketCap": 244966801408,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 4.43,
+      "dividendYield": 4.36,
       "mer": null,
-      "annualReturn": 17.4,
+      "annualReturn": 17.0,
       "historicalReturns": {
         "2015": -18.9,
         "2016": 40.3,
@@ -1915,7 +1915,7 @@
         "2023": 22.5,
         "2024": -8.4,
         "2025": 31.6,
-        "2026": 8.8
+        "2026": 6.7
       },
       "historicalDividendYields": {
         "2015": 5.14,
@@ -1931,20 +1931,20 @@
         "2025": 5.05,
         "2026": 4.52
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "FMG",
       "name": "Fortescue Ltd",
       "exchange": "ASX",
-      "currentPrice": 15.475,
+      "currentPrice": 15.22,
       "currency": "AUD",
-      "marketCap": 47646986240,
+      "marketCap": 46861848576,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
       "dividendYield": 7.07,
       "mer": null,
-      "annualReturn": 8.2,
+      "annualReturn": 7.8,
       "historicalReturns": {
         "2015": -30.2,
         "2016": 227.4,
@@ -1957,7 +1957,7 @@
         "2023": 54.0,
         "2024": -31.1,
         "2025": 28.0,
-        "2026": -25.6
+        "2026": -26.9
       },
       "historicalDividendYields": {
         "2015": 1.82,
@@ -1973,20 +1973,20 @@
         "2025": 6.03,
         "2026": 4.91
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "S32",
       "name": "South32 Limited",
       "exchange": "ASX",
-      "currentPrice": 4.66,
+      "currentPrice": 4.595,
       "currency": "AUD",
-      "marketCap": 20839854080,
+      "marketCap": 20549169152,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 2.94,
+      "dividendYield": 2.85,
       "mer": null,
-      "annualReturn": 9.7,
+      "annualReturn": 9.4,
       "historicalReturns": {
         "2016": 159.8,
         "2017": 32.4,
@@ -1998,7 +1998,7 @@
         "2023": -14.1,
         "2024": 3.8,
         "2025": 8.0,
-        "2026": 34.5
+        "2026": 32.7
       },
       "historicalDividendYields": {
         "2016": 1.24,
@@ -2013,20 +2013,20 @@
         "2025": 2.74,
         "2026": 3.67
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "MIN",
       "name": "Mineral Resources Limited",
       "exchange": "ASX",
-      "currentPrice": 49.0,
+      "currentPrice": 48.27,
       "currency": "AUD",
-      "marketCap": 9732111360,
+      "marketCap": 9587122176,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 1.78,
+      "dividendYield": 1.7,
       "mer": null,
-      "annualReturn": 5.4,
+      "annualReturn": 5.1,
       "historicalReturns": {
         "2015": -44.6,
         "2016": 212.7,
@@ -2039,7 +2039,7 @@
         "2023": -7.2,
         "2024": -50.9,
         "2025": 58.8,
-        "2026": -8.7
+        "2026": -10.1
       },
       "historicalDividendYields": {
         "2015": 2.97,
@@ -2054,20 +2054,20 @@
         "2024": 0.29,
         "2026": 1.53
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "WHC",
       "name": "Whitehaven Coal Limited",
       "exchange": "ASX",
-      "currentPrice": 7.205,
+      "currentPrice": 7.245,
       "currency": "AUD",
-      "marketCap": 5912001536,
+      "marketCap": 5944823296,
       "sector": "Energy",
       "industry": "Thermal Coal",
       "dividendYield": 1.67,
       "mer": null,
-      "annualReturn": 30.2,
+      "annualReturn": 30.3,
       "historicalReturns": {
         "2015": -50.0,
         "2016": 272.9,
@@ -2080,7 +2080,7 @@
         "2023": -12.0,
         "2024": -14.1,
         "2025": 28.1,
-        "2026": -5.9
+        "2026": -5.4
       },
       "historicalDividendYields": {
         "2017": 2.3,
@@ -2093,20 +2093,20 @@
         "2025": 2.42,
         "2026": 1.29
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "IGO",
       "name": "IGO Limited",
       "exchange": "ASX",
-      "currentPrice": 5.205,
+      "currentPrice": 5.24,
       "currency": "AUD",
-      "marketCap": 3941579008,
+      "marketCap": 3968083200,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
       "dividendYield": 0.96,
       "mer": null,
-      "annualReturn": -9.5,
+      "annualReturn": -9.4,
       "historicalReturns": {
         "2015": -41.5,
         "2016": 70.9,
@@ -2119,7 +2119,7 @@
         "2023": -29.0,
         "2024": -43.5,
         "2025": 71.9,
-        "2026": -36.1
+        "2026": -35.7
       },
       "historicalDividendYields": {
         "2015": 1.92,
@@ -2134,15 +2134,15 @@
         "2024": 4.09,
         "2026": 0.61
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "LYC",
       "name": "Lynas Rare Earths Limited",
       "exchange": "ASX",
-      "currentPrice": 13.645,
+      "currentPrice": 13.625,
       "currency": "AUD",
-      "marketCap": 13733728256,
+      "marketCap": 13713597440,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
       "dividendYield": 0.0,
@@ -2160,23 +2160,23 @@
         "2023": -8.8,
         "2024": -10.2,
         "2025": 93.5,
-        "2026": 9.7
+        "2026": 9.5
       },
       "historicalDividendYields": {},
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "PLS",
       "name": "PLS Group Limited",
       "exchange": "ASX",
-      "currentPrice": 2.905,
+      "currentPrice": 2.92,
       "currency": "AUD",
-      "marketCap": 9371375616,
+      "marketCap": 9419764736,
       "sector": "Basic Materials",
       "industry": "Other Industrial Metals & Mining",
-      "dividendYield": 1.77,
+      "dividendYield": 1.73,
       "mer": null,
-      "annualReturn": 4.9,
+      "annualReturn": 5.0,
       "historicalReturns": {
         "2015": 661.9,
         "2016": 56.3,
@@ -2189,26 +2189,26 @@
         "2023": 11.4,
         "2024": -44.6,
         "2025": 92.7,
-        "2026": -30.5
+        "2026": -30.2
       },
       "historicalDividendYields": {
         "2023": 6.67,
         "2026": 1.18
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "PDN",
       "name": "Paladin Energy Ltd",
       "exchange": "ASX",
-      "currentPrice": 8.66,
+      "currentPrice": 8.41,
       "currency": "AUD",
-      "marketCap": 3891443968,
+      "marketCap": 3779104256,
       "sector": "Energy",
       "industry": "Uranium",
       "dividendYield": 0.0,
       "mer": null,
-      "annualReturn": -3.1,
+      "annualReturn": -3.7,
       "historicalReturns": {
         "2015": -33.3,
         "2016": -64.2,
@@ -2221,23 +2221,23 @@
         "2023": 40.7,
         "2024": -23.2,
         "2025": 26.9,
-        "2026": -9.7
+        "2026": -12.3
       },
       "historicalDividendYields": {},
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "BOE",
       "name": "Boss Energy Limited",
       "exchange": "ASX",
-      "currentPrice": 1.595,
+      "currentPrice": 1.58,
       "currency": "AUD",
-      "marketCap": 662246656,
+      "marketCap": 656018624,
       "sector": "Energy",
       "industry": "Uranium",
       "dividendYield": 0.0,
       "mer": null,
-      "annualReturn": -9.9,
+      "annualReturn": -10.0,
       "historicalReturns": {
         "2015": 326.5,
         "2016": 21.3,
@@ -2250,23 +2250,23 @@
         "2023": 89.2,
         "2024": -39.7,
         "2025": -39.7,
-        "2026": 8.9
+        "2026": 7.8
       },
       "historicalDividendYields": {},
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "NST",
       "name": "Northern Star Resources Limited",
       "exchange": "ASX",
-      "currentPrice": 26.325,
+      "currentPrice": 26.095,
       "currency": "AUD",
-      "marketCap": 37524824064,
+      "marketCap": 37196967936,
       "sector": "Basic Materials",
       "industry": "Gold",
-      "dividendYield": 2.14,
+      "dividendYield": 2.13,
       "mer": null,
-      "annualReturn": 23.0,
+      "annualReturn": 22.8,
       "historicalReturns": {
         "2015": 90.8,
         "2016": 33.4,
@@ -2279,7 +2279,7 @@
         "2023": 28.1,
         "2024": 16.3,
         "2025": 78.3,
-        "2026": 0.6
+        "2026": -0.3
       },
       "historicalDividendYields": {
         "2015": 3.36,
@@ -2295,20 +2295,20 @@
         "2025": 3.56,
         "2026": 2.06
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "EVN",
       "name": "Evolution Mining Limited",
       "exchange": "ASX",
-      "currentPrice": 13.835,
+      "currentPrice": 13.635,
       "currency": "AUD",
-      "marketCap": 28292786176,
+      "marketCap": 27883784192,
       "sector": "Basic Materials",
       "industry": "Gold",
       "dividendYield": 3.1,
       "mer": null,
-      "annualReturn": 29.6,
+      "annualReturn": 29.2,
       "historicalReturns": {
         "2015": 135.1,
         "2016": 57.5,
@@ -2321,7 +2321,7 @@
         "2023": 34.6,
         "2024": 23.7,
         "2025": 170.5,
-        "2026": 12.0
+        "2026": 10.3
       },
       "historicalDividendYields": {
         "2015": 3.21,
@@ -2337,20 +2337,20 @@
         "2025": 4.16,
         "2026": 3.23
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "CSL",
       "name": "CSL Limited",
       "exchange": "ASX",
-      "currentPrice": 200.16,
+      "currentPrice": 200.95,
       "currency": "AUD",
-      "marketCap": 96053641216,
+      "marketCap": 96432742400,
       "sector": "Healthcare",
       "industry": "Biotechnology",
       "dividendYield": 2.02,
       "mer": null,
-      "annualReturn": -6.7,
+      "annualReturn": -6.6,
       "historicalReturns": {
         "2015": 23.7,
         "2016": -3.0,
@@ -2363,7 +2363,7 @@
         "2023": 0.9,
         "2024": -0.4,
         "2025": -37.5,
-        "2026": 19.0
+        "2026": 19.4
       },
       "historicalDividendYields": {
         "2015": 1.9,
@@ -2379,20 +2379,20 @@
         "2025": 1.61,
         "2026": 2.35
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "SHL",
       "name": "Sonic Healthcare Limited",
       "exchange": "ASX",
-      "currentPrice": 19.85,
+      "currentPrice": 19.98,
       "currency": "AUD",
-      "marketCap": 9810623488,
+      "marketCap": 9874874368,
       "sector": "Healthcare",
       "industry": "Diagnostics & Research",
       "dividendYield": 5.46,
       "mer": null,
-      "annualReturn": -8.9,
+      "annualReturn": -8.8,
       "historicalReturns": {
         "2015": 0.1,
         "2016": 24.2,
@@ -2405,7 +2405,7 @@
         "2023": 10.5,
         "2024": -12.6,
         "2025": -12.6,
-        "2026": -7.5
+        "2026": -6.9
       },
       "historicalDividendYields": {
         "2015": 3.78,
@@ -2421,20 +2421,20 @@
         "2025": 3.96,
         "2026": 4.78
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "COH",
       "name": "Cochlear Limited",
       "exchange": "ASX",
-      "currentPrice": 151.08,
+      "currentPrice": 150.695,
       "currency": "AUD",
-      "marketCap": 9880468480,
+      "marketCap": 9855290368,
       "sector": "Healthcare",
       "industry": "Medical Devices",
       "dividendYield": 1.71,
       "mer": null,
-      "annualReturn": -5.7,
+      "annualReturn": -5.8,
       "historicalReturns": {
         "2015": 25.8,
         "2016": 30.7,
@@ -2447,7 +2447,7 @@
         "2023": 48.3,
         "2024": -1.6,
         "2025": -8.7,
-        "2026": -40.7
+        "2026": -40.9
       },
       "historicalDividendYields": {
         "2015": 2.45,
@@ -2462,18 +2462,18 @@
         "2025": 1.48,
         "2026": 1.32
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "RMD",
       "name": "ResMed Inc.",
       "exchange": "ASX",
-      "currentPrice": 34.16,
+      "currentPrice": 34.23,
       "currency": "AUD",
-      "marketCap": 48048455680,
+      "marketCap": 48146915328,
       "sector": "Healthcare",
       "industry": "Medical Instruments & Supplies",
-      "dividendYield": 1.08,
+      "dividendYield": 1.12,
       "mer": null,
       "annualReturn": 0.2,
       "historicalReturns": {
@@ -2488,35 +2488,35 @@
         "2023": -17.3,
         "2024": 45.4,
         "2025": -1.7,
-        "2026": -4.4
+        "2026": -4.0
       },
       "historicalDividendYields": {
         "2015": 0.88,
-        "2017": 1.66,
-        "2018": 0.92,
+        "2017": 1.67,
+        "2018": 0.93,
         "2019": 0.71,
-        "2020": 0.77,
-        "2021": 0.86,
-        "2022": 0.69,
+        "2020": 0.78,
+        "2021": 0.87,
+        "2022": 0.7,
         "2023": 0.86,
-        "2024": 1.15,
+        "2024": 1.16,
         "2025": 0.89,
-        "2026": 0.75
+        "2026": 1.02
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "PME",
       "name": "Pro Medicus Limited",
       "exchange": "ASX",
-      "currentPrice": 205.37,
+      "currentPrice": 206.09,
       "currency": "AUD",
-      "marketCap": 21454997504,
+      "marketCap": 21530214400,
       "sector": "Healthcare",
       "industry": "Health Information Services",
       "dividendYield": 0.34,
       "mer": null,
-      "annualReturn": 28.9,
+      "annualReturn": 29.0,
       "historicalReturns": {
         "2015": 210.9,
         "2016": 44.4,
@@ -2529,7 +2529,7 @@
         "2023": 74.2,
         "2024": 161.8,
         "2025": -11.5,
-        "2026": -6.6
+        "2026": -6.2
       },
       "historicalDividendYields": {
         "2015": 1.83,
@@ -2545,20 +2545,20 @@
         "2025": 0.22,
         "2026": 0.31
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "WES",
       "name": "Wesfarmers Limited",
       "exchange": "ASX",
-      "currentPrice": 80.86,
+      "currentPrice": 80.72,
       "currency": "AUD",
-      "marketCap": 91798962176,
+      "marketCap": 91640020992,
       "sector": "Consumer Cyclical",
       "industry": "Home Improvement Retail",
-      "dividendYield": 2.73,
+      "dividendYield": 2.77,
       "mer": null,
-      "annualReturn": 10.5,
+      "annualReturn": 10.4,
       "historicalReturns": {
         "2015": 6.6,
         "2016": 7.8,
@@ -2571,7 +2571,7 @@
         "2023": 28.9,
         "2024": 29.1,
         "2025": 16.2,
-        "2026": 2.5
+        "2026": 2.3
       },
       "historicalDividendYields": {
         "2015": 6.74,
@@ -2587,20 +2587,20 @@
         "2025": 2.88,
         "2026": 2.74
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "WOW",
       "name": "Woolworths Group Limited",
       "exchange": "ASX",
-      "currentPrice": 42.415,
+      "currentPrice": 42.15,
       "currency": "AUD",
-      "marketCap": null,
+      "marketCap": 51490410496,
       "sector": "Consumer Defensive",
       "industry": "Grocery Stores",
       "dividendYield": 2.28,
       "mer": null,
-      "annualReturn": 4.5,
+      "annualReturn": 4.4,
       "historicalReturns": {
         "2015": -15.1,
         "2016": 2.3,
@@ -2613,7 +2613,7 @@
         "2023": 13.9,
         "2024": -14.5,
         "2025": -0.8,
-        "2026": 48.1
+        "2026": 47.1
       },
       "historicalDividendYields": {
         "2015": 5.35,
@@ -2629,20 +2629,20 @@
         "2025": 2.76,
         "2026": 3.3
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "COL",
       "name": "Coles Group Limited",
       "exchange": "ASX",
-      "currentPrice": 22.565,
+      "currentPrice": 22.51,
       "currency": "AUD",
-      "marketCap": 30328539136,
+      "marketCap": 30254616576,
       "sector": "Consumer Defensive",
       "industry": "Grocery Stores",
-      "dividendYield": 3.27,
+      "dividendYield": 3.28,
       "mer": null,
-      "annualReturn": 8.7,
+      "annualReturn": 8.6,
       "historicalReturns": {
         "2019": 29.8,
         "2020": 26.5,
@@ -2651,7 +2651,7 @@
         "2023": 0.2,
         "2024": 21.8,
         "2025": 17.2,
-        "2026": 9.0
+        "2026": 8.8
       },
       "historicalDividendYields": {
         "2019": 3.02,
@@ -2663,20 +2663,20 @@
         "2025": 3.65,
         "2026": 3.64
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "JBH",
       "name": "JB Hi-Fi Limited",
       "exchange": "ASX",
-      "currentPrice": 77.72,
+      "currentPrice": 77.16,
       "currency": "AUD",
-      "marketCap": 8497437184,
+      "marketCap": 8436210688,
       "sector": "Consumer Cyclical",
       "industry": "Specialty Retail",
       "dividendYield": 4.39,
       "mer": null,
-      "annualReturn": 15.1,
+      "annualReturn": 15.0,
       "historicalReturns": {
         "2015": 29.9,
         "2016": 51.4,
@@ -2689,7 +2689,7 @@
         "2023": 35.5,
         "2024": 83.5,
         "2025": 7.5,
-        "2026": -15.6
+        "2026": -16.2
       },
       "historicalDividendYields": {
         "2015": 5.7,
@@ -2705,20 +2705,20 @@
         "2025": 4.05,
         "2026": 3.5
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "HVN",
       "name": "Harvey Norman Holdings Limited",
       "exchange": "ASX",
-      "currentPrice": 4.475,
+      "currentPrice": 4.49,
       "currency": "AUD",
-      "marketCap": 5575879680,
+      "marketCap": 5594569728,
       "sector": "Consumer Cyclical",
       "industry": "Specialty Retail",
       "dividendYield": 6.21,
       "mer": null,
-      "annualReturn": 3.3,
+      "annualReturn": 3.4,
       "historicalReturns": {
         "2015": 30.5,
         "2016": 30.9,
@@ -2731,7 +2731,7 @@
         "2023": 8.6,
         "2024": 16.2,
         "2025": 55.2,
-        "2026": -31.4
+        "2026": -31.2
       },
       "historicalDividendYields": {
         "2015": 5.95,
@@ -2747,20 +2747,20 @@
         "2025": 5.67,
         "2026": 3.96
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "PMV",
       "name": "Premier Investments Limited",
       "exchange": "ASX",
-      "currentPrice": 14.21,
+      "currentPrice": 14.42,
       "currency": "AUD",
-      "marketCap": 2268263424,
+      "marketCap": 2301784576,
       "sector": "Consumer Cyclical",
       "industry": "Apparel Retail",
-      "dividendYield": 6.7,
+      "dividendYield": 6.76,
       "mer": null,
-      "annualReturn": -10.8,
+      "annualReturn": -10.5,
       "historicalReturns": {
         "2015": 50.1,
         "2016": 5.0,
@@ -2773,7 +2773,7 @@
         "2023": 18.3,
         "2024": 24.1,
         "2025": -55.6,
-        "2026": 6.5
+        "2026": 8.1
       },
       "historicalDividendYields": {
         "2015": 5.18,
@@ -2789,20 +2789,20 @@
         "2025": 1.56,
         "2026": 3.26
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "WTC",
       "name": "WiseTech Global Limited",
       "exchange": "ASX",
-      "currentPrice": 46.17,
+      "currentPrice": 46.26,
       "currency": "AUD",
-      "marketCap": 15529059328,
+      "marketCap": 15559330816,
       "sector": "Technology",
       "industry": "Software - Application",
       "dividendYield": 0.49,
       "mer": null,
-      "annualReturn": -3.1,
+      "annualReturn": -3.0,
       "historicalReturns": {
         "2017": 151.3,
         "2018": 19.6,
@@ -2813,7 +2813,7 @@
         "2023": 48.8,
         "2024": 60.9,
         "2025": -43.3,
-        "2026": -32.2
+        "2026": -32.0
       },
       "historicalDividendYields": {
         "2017": 0.39,
@@ -2827,20 +2827,20 @@
         "2025": 0.18,
         "2026": 0.32
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "XRO",
       "name": "Xero Limited",
       "exchange": "ASX",
-      "currentPrice": 69.33,
+      "currentPrice": 70.55,
       "currency": "AUD",
-      "marketCap": 12210192384,
+      "marketCap": 12425055232,
       "sector": "Technology",
       "industry": "Software - Application",
       "dividendYield": 0.0,
       "mer": null,
-      "annualReturn": -13.4,
+      "annualReturn": -13.1,
       "historicalReturns": {
         "2015": 17.7,
         "2016": -9.0,
@@ -2853,23 +2853,23 @@
         "2023": 59.8,
         "2024": 50.1,
         "2025": -32.4,
-        "2026": -39.2
+        "2026": -38.1
       },
       "historicalDividendYields": {},
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "REA",
       "name": "REA Group Limited",
       "exchange": "ASX",
-      "currentPrice": 173.5,
+      "currentPrice": 174.68,
       "currency": "AUD",
-      "marketCap": 22704177152,
+      "marketCap": 22858590208,
       "sector": "Communication Services",
       "industry": "Internet Content & Information",
       "dividendYield": 1.99,
       "mer": null,
-      "annualReturn": 1.8,
+      "annualReturn": 2.0,
       "historicalReturns": {
         "2015": 23.4,
         "2016": 1.7,
@@ -2882,7 +2882,7 @@
         "2023": 65.4,
         "2024": 30.0,
         "2025": -20.6,
-        "2026": -3.7
+        "2026": -3.1
       },
       "historicalDividendYields": {
         "2015": 1.54,
@@ -2898,15 +2898,15 @@
         "2025": 1.06,
         "2026": 1.62
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "CPU",
       "name": "Computershare Limited",
       "exchange": "ASX",
-      "currentPrice": 43.64,
+      "currentPrice": 43.67,
       "currency": "AUD",
-      "marketCap": null,
+      "marketCap": 25258162176,
       "sector": "Financial Services",
       "industry": "Capital Markets",
       "dividendYield": 3.02,
@@ -2924,7 +2924,7 @@
         "2023": -4.2,
         "2024": 43.4,
         "2025": 2.9,
-        "2026": 32.2
+        "2026": 32.3
       },
       "historicalDividendYields": {
         "2015": 2.63,
@@ -2940,20 +2940,20 @@
         "2025": 2.74,
         "2026": 3.51
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "CAR",
       "name": "CAR Group Limited",
       "exchange": "ASX",
-      "currentPrice": 26.12,
+      "currentPrice": 26.42,
       "currency": "AUD",
-      "marketCap": 9909473280,
+      "marketCap": 10023287808,
       "sector": "Communication Services",
       "industry": "Internet Content & Information",
       "dividendYield": 3.36,
       "mer": null,
-      "annualReturn": 4.0,
+      "annualReturn": 4.3,
       "historicalReturns": {
         "2015": 16.2,
         "2016": 0.3,
@@ -2966,7 +2966,7 @@
         "2023": 54.9,
         "2024": 18.1,
         "2025": -12.7,
-        "2026": -12.1
+        "2026": -11.1
       },
       "historicalDividendYields": {
         "2015": 3.39,
@@ -2982,20 +2982,20 @@
         "2025": 2.22,
         "2026": 2.8
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "SEK",
       "name": "SEEK Limited",
       "exchange": "ASX",
-      "currentPrice": 14.13,
+      "currentPrice": 14.21,
       "currency": "AUD",
-      "marketCap": 5058118656,
+      "marketCap": 5086756352,
       "sector": "Communication Services",
       "industry": "Internet Content & Information",
-      "dividendYield": 3.58,
+      "dividendYield": 3.65,
       "mer": null,
-      "annualReturn": -14.9,
+      "annualReturn": -14.8,
       "historicalReturns": {
         "2015": -8.6,
         "2016": -0.7,
@@ -3008,7 +3008,7 @@
         "2023": 30.2,
         "2024": -14.3,
         "2025": 4.4,
-        "2026": -36.7
+        "2026": -36.3
       },
       "historicalDividendYields": {
         "2015": 2.08,
@@ -3024,20 +3024,20 @@
         "2025": 2.04,
         "2026": 2.25
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "NXT",
       "name": "NEXTDC Limited",
       "exchange": "ASX",
-      "currentPrice": 10.805,
+      "currentPrice": 10.63,
       "currency": "AUD",
-      "marketCap": 8218441728,
+      "marketCap": 8085334016,
       "sector": "Technology",
       "industry": "Information Technology Services",
       "dividendYield": 0.0,
       "mer": null,
-      "annualReturn": -1.4,
+      "annualReturn": -1.7,
       "historicalReturns": {
         "2015": 29.8,
         "2016": 53.0,
@@ -3050,46 +3050,46 @@
         "2023": 52.3,
         "2024": 9.8,
         "2025": -16.9,
-        "2026": -13.8
+        "2026": -15.2
       },
       "historicalDividendYields": {},
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "TYR",
       "name": "Tyro Payments Limited",
       "exchange": "ASX",
-      "currentPrice": 0.755,
+      "currentPrice": 0.747,
       "currency": "AUD",
-      "marketCap": 402545472,
+      "marketCap": 398280096,
       "sector": "Technology",
       "industry": "Software - Infrastructure",
       "dividendYield": 0.0,
       "mer": null,
-      "annualReturn": -25.4,
+      "annualReturn": -25.6,
       "historicalReturns": {
         "2021": -10.3,
         "2022": -50.5,
         "2023": -21.9,
         "2024": -26.2,
         "2025": 23.3,
-        "2026": -24.9
+        "2026": -25.7
       },
       "historicalDividendYields": {},
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "TCL",
       "name": "Transurban Group",
       "exchange": "ASX",
-      "currentPrice": 14.825,
+      "currentPrice": 14.75,
       "currency": "AUD",
-      "marketCap": 46270423040,
+      "marketCap": 46036340736,
       "sector": "Industrials",
       "industry": "Infrastructure Operations",
       "dividendYield": 4.77,
       "mer": null,
-      "annualReturn": 6.3,
+      "annualReturn": 6.2,
       "historicalReturns": {
         "2015": 27.8,
         "2016": 2.9,
@@ -3102,7 +3102,7 @@
         "2023": 10.3,
         "2024": 2.6,
         "2025": 11.3,
-        "2026": 6.8
+        "2026": 6.2
       },
       "historicalDividendYields": {
         "2015": 5.02,
@@ -3118,18 +3118,18 @@
         "2025": 5.0,
         "2026": 2.46
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "APA",
       "name": "APA Group",
       "exchange": "ASX",
-      "currentPrice": 11.11,
+      "currentPrice": 11.12,
       "currency": "AUD",
-      "marketCap": 14807569408,
+      "marketCap": 14820897792,
       "sector": "Utilities",
       "industry": "Utilities - Regulated Gas",
-      "dividendYield": 5.16,
+      "dividendYield": 5.22,
       "mer": null,
       "annualReturn": 11.1,
       "historicalReturns": {
@@ -3144,7 +3144,7 @@
         "2023": -15.7,
         "2024": -12.1,
         "2025": 37.4,
-        "2026": 27.5
+        "2026": 27.6
       },
       "historicalDividendYields": {
         "2015": 5.3,
@@ -3160,20 +3160,20 @@
         "2025": 8.25,
         "2026": 3.4
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "TLS",
       "name": "Telstra Group Limited",
       "exchange": "ASX",
-      "currentPrice": 5.065,
+      "currentPrice": 5.085,
       "currency": "AUD",
-      "marketCap": 55947292672,
+      "marketCap": 56168210432,
       "sector": "Communication Services",
       "industry": "Telecom Services",
-      "dividendYield": 4.12,
+      "dividendYield": 4.16,
       "mer": null,
-      "annualReturn": 9.6,
+      "annualReturn": 9.7,
       "historicalReturns": {
         "2015": -1.2,
         "2016": -3.6,
@@ -3186,7 +3186,7 @@
         "2023": 3.5,
         "2024": 6.1,
         "2025": 26.7,
-        "2026": 8.6
+        "2026": 9.0
       },
       "historicalDividendYields": {
         "2015": 5.11,
@@ -3202,20 +3202,20 @@
         "2025": 4.74,
         "2026": 4.31
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "WDS",
       "name": "Woodside Energy Group Ltd",
       "exchange": "ASX",
-      "currentPrice": 30.57,
+      "currentPrice": 30.925,
       "currency": "AUD",
-      "marketCap": 58116632576,
+      "marketCap": 58791522304,
       "sector": "Energy",
       "industry": "Oil & Gas E&P",
-      "dividendYield": 5.3,
+      "dividendYield": 5.31,
       "mer": null,
-      "annualReturn": 15.0,
+      "annualReturn": 15.2,
       "historicalReturns": {
         "2015": -17.9,
         "2016": 12.6,
@@ -3228,7 +3228,7 @@
         "2023": -3.9,
         "2024": -15.1,
         "2025": 2.5,
-        "2026": 36.5
+        "2026": 38.1
       },
       "historicalDividendYields": {
         "2015": 7.27,
@@ -3244,20 +3244,20 @@
         "2025": 6.78,
         "2026": 6.91
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "STO",
       "name": "Santos Limited",
       "exchange": "ASX",
-      "currentPrice": 8.535,
+      "currentPrice": 8.675,
       "currency": "AUD",
-      "marketCap": null,
+      "marketCap": 28174430208,
       "sector": "Energy",
       "industry": "Oil & Gas E&P",
       "dividendYield": 3.57,
       "mer": null,
-      "annualReturn": 9.4,
+      "annualReturn": 9.8,
       "historicalReturns": {
         "2015": -46.2,
         "2016": 10.9,
@@ -3270,7 +3270,7 @@
         "2023": 11.9,
         "2024": -6.4,
         "2025": -2.9,
-        "2026": 44.1
+        "2026": 46.4
       },
       "historicalDividendYields": {
         "2015": 3.64,
@@ -3285,20 +3285,20 @@
         "2025": 5.48,
         "2026": 4.98
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "AMC",
       "name": "Amcor plc",
       "exchange": "ASX",
-      "currentPrice": 65.84,
+      "currentPrice": 65.86,
       "currency": "AUD",
-      "marketCap": 30407919616,
+      "marketCap": 30417158144,
       "sector": "Consumer Cyclical",
       "industry": "Packaging & Containers",
       "dividendYield": 5.79,
       "mer": null,
-      "annualReturn": -0.0,
+      "annualReturn": 0.0,
       "historicalReturns": {
         "2015": 2.9,
         "2016": 15.4,
@@ -3327,18 +3327,18 @@
         "2025": 5.33,
         "2026": 4.4
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "BXB",
       "name": "Brambles Limited",
       "exchange": "ASX",
-      "currentPrice": 22.085,
+      "currentPrice": 22.14,
       "currency": "AUD",
-      "marketCap": 29312350208,
+      "marketCap": 29424080896,
       "sector": "Industrials",
       "industry": "Specialty Business Services",
-      "dividendYield": 2.95,
+      "dividendYield": 3.01,
       "mer": null,
       "annualReturn": 19.9,
       "historicalReturns": {
@@ -3353,7 +3353,7 @@
         "2023": 15.9,
         "2024": 45.9,
         "2025": 22.6,
-        "2026": -0.7
+        "2026": -0.5
       },
       "historicalDividendYields": {
         "2015": 2.63,
@@ -3369,20 +3369,20 @@
         "2025": 3.23,
         "2026": 2.86
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "QAN",
       "name": "Qantas Airways Limited",
       "exchange": "ASX",
-      "currentPrice": 9.72,
+      "currentPrice": 9.965,
       "currency": "AUD",
-      "marketCap": 14708296704,
+      "marketCap": 15079030784,
       "sector": "Industrials",
       "industry": "Airlines",
-      "dividendYield": 4.19,
+      "dividendYield": 4.25,
       "mer": null,
-      "annualReturn": 13.6,
+      "annualReturn": 14.2,
       "historicalReturns": {
         "2015": 60.0,
         "2016": -16.9,
@@ -3395,7 +3395,7 @@
         "2023": -10.6,
         "2024": 67.0,
         "2025": 21.8,
-        "2026": -2.0
+        "2026": 0.5
       },
       "historicalDividendYields": {
         "2016": 1.71,
@@ -3405,15 +3405,15 @@
         "2025": 5.89,
         "2026": 3.82
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "FLT",
       "name": "Flight Centre Travel Group Limited",
       "exchange": "ASX",
-      "currentPrice": 12.52,
+      "currentPrice": 12.49,
       "currency": "AUD",
-      "marketCap": 2529103104,
+      "marketCap": 2523042816,
       "sector": "Consumer Cyclical",
       "industry": "Travel Services",
       "dividendYield": 3.4,
@@ -3431,7 +3431,7 @@
         "2023": 41.8,
         "2024": -16.5,
         "2025": -7.2,
-        "2026": -13.3
+        "2026": -13.5
       },
       "historicalDividendYields": {
         "2015": 4.66,
@@ -3444,15 +3444,15 @@
         "2025": 2.4,
         "2026": 2.8
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "GMG",
       "name": "Goodman Group",
       "exchange": "ASX",
-      "currentPrice": 29.37,
+      "currentPrice": 29.295,
       "currency": "AUD",
-      "marketCap": 60348141568,
+      "marketCap": 60194033664,
       "sector": "Real Estate",
       "industry": "REIT - Diversified",
       "dividendYield": 1.07,
@@ -3470,7 +3470,7 @@
         "2023": 47.7,
         "2024": 42.1,
         "2025": -12.3,
-        "2026": -4.8
+        "2026": -5.0
       },
       "historicalDividendYields": {
         "2015": 4.04,
@@ -3486,20 +3486,20 @@
         "2025": 0.84,
         "2026": 0.48
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "SCG",
       "name": "Scentre Group",
       "exchange": "ASX",
-      "currentPrice": 3.505,
+      "currentPrice": 3.53,
       "currency": "AUD",
-      "marketCap": 18329131008,
+      "marketCap": 18459865088,
       "sector": "Real Estate",
       "industry": "REIT - Retail",
       "dividendYield": 5.34,
       "mer": null,
-      "annualReturn": 8.1,
+      "annualReturn": 8.2,
       "historicalReturns": {
         "2015": 26.3,
         "2016": 15.9,
@@ -3512,7 +3512,7 @@
         "2023": 10.1,
         "2024": 20.9,
         "2025": 28.3,
-        "2026": -12.5
+        "2026": -11.9
       },
       "historicalDividendYields": {
         "2015": 5.9,
@@ -3528,18 +3528,18 @@
         "2025": 5.08,
         "2026": 4.31
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "GPT",
       "name": "The GPT Group",
       "exchange": "ASX",
-      "currentPrice": 5.115,
+      "currentPrice": 5.1,
       "currency": "AUD",
-      "marketCap": 9798178816,
+      "marketCap": 9769445376,
       "sector": "Real Estate",
       "industry": "REIT - Diversified",
-      "dividendYield": 4.68,
+      "dividendYield": 4.85,
       "mer": null,
       "annualReturn": 5.3,
       "historicalReturns": {
@@ -3554,7 +3554,7 @@
         "2023": 16.9,
         "2024": -0.5,
         "2025": 29.9,
-        "2026": -3.3
+        "2026": -3.6
       },
       "historicalDividendYields": {
         "2015": 5.17,
@@ -3570,18 +3570,18 @@
         "2025": 5.49,
         "2026": 2.26
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "DXS",
       "name": "DEXUS",
       "exchange": "ASX",
-      "currentPrice": 5.985,
+      "currentPrice": 5.975,
       "currency": "AUD",
-      "marketCap": 6366061056,
+      "marketCap": 6355424256,
       "sector": "Real Estate",
       "industry": "REIT - Office",
-      "dividendYield": 6.14,
+      "dividendYield": 6.27,
       "mer": null,
       "annualReturn": -5.9,
       "historicalReturns": {
@@ -3596,7 +3596,7 @@
         "2023": 5.7,
         "2024": -8.0,
         "2025": 9.8,
-        "2026": -10.9
+        "2026": -11.0
       },
       "historicalDividendYields": {
         "2015": 6.37,
@@ -3612,18 +3612,18 @@
         "2025": 5.6,
         "2026": 2.55
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "MGR",
       "name": "Mirvac Group",
       "exchange": "ASX",
-      "currentPrice": 1.922,
+      "currentPrice": 1.925,
       "currency": "AUD",
-      "marketCap": 7459694080,
+      "marketCap": 7471336960,
       "sector": "Real Estate",
       "industry": "REIT - Diversified",
-      "dividendYield": 4.9,
+      "dividendYield": 5.04,
       "mer": null,
       "annualReturn": -2.7,
       "historicalReturns": {
@@ -3638,7 +3638,7 @@
         "2023": 2.6,
         "2024": -5.2,
         "2025": 14.2,
-        "2026": -3.7
+        "2026": -3.5
       },
       "historicalDividendYields": {
         "2015": 5.39,
@@ -3654,20 +3654,20 @@
         "2025": 4.91,
         "2026": 2.34
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "CHC",
       "name": "Charter Hall Group",
       "exchange": "ASX",
-      "currentPrice": 22.29,
+      "currentPrice": 22.34,
       "currency": "AUD",
-      "marketCap": 10543108096,
+      "marketCap": 10566757376,
       "sector": "Real Estate",
       "industry": "REIT - Diversified",
-      "dividendYield": 2.33,
+      "dividendYield": 2.37,
       "mer": null,
-      "annualReturn": 6.5,
+      "annualReturn": 6.6,
       "historicalReturns": {
         "2015": 6.2,
         "2016": 10.6,
@@ -3680,7 +3680,7 @@
         "2023": 4.4,
         "2024": 23.4,
         "2025": 74.3,
-        "2026": -7.8
+        "2026": -7.6
       },
       "historicalDividendYields": {
         "2015": 5.62,
@@ -3696,20 +3696,20 @@
         "2025": 3.43,
         "2026": 1.06
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "QBE",
       "name": "QBE Insurance Group Limited",
       "exchange": "ASX",
-      "currentPrice": 26.26,
+      "currentPrice": 26.59,
       "currency": "AUD",
-      "marketCap": 39236497408,
+      "marketCap": 39729569792,
       "sector": "Financial Services",
       "industry": "Insurance - Property & Casualty",
-      "dividendYield": 4.15,
+      "dividendYield": 4.22,
       "mer": null,
-      "annualReturn": 22.5,
+      "annualReturn": 22.8,
       "historicalReturns": {
         "2015": 16.0,
         "2016": 3.5,
@@ -3722,7 +3722,7 @@
         "2023": 13.6,
         "2024": 35.4,
         "2025": 8.3,
-        "2026": 39.0
+        "2026": 40.8
       },
       "historicalDividendYields": {
         "2015": 3.75,
@@ -3738,20 +3738,20 @@
         "2025": 4.9,
         "2026": 5.58
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "IAG",
       "name": "Insurance Australia Group Limited",
       "exchange": "ASX",
-      "currentPrice": 9.05,
+      "currentPrice": 8.905,
       "currency": "AUD",
-      "marketCap": 21169844224,
+      "marketCap": 20830656512,
       "sector": "Financial Services",
       "industry": "Insurance - Property & Casualty",
       "dividendYield": 3.58,
       "mer": null,
-      "annualReturn": 19.3,
+      "annualReturn": 18.9,
       "historicalReturns": {
         "2015": -6.1,
         "2016": 15.2,
@@ -3764,7 +3764,7 @@
         "2023": 22.6,
         "2024": 55.5,
         "2025": -2.1,
-        "2026": 18.4
+        "2026": 16.5
       },
       "historicalDividendYields": {
         "2015": 4.64,
@@ -3780,15 +3780,15 @@
         "2025": 3.66,
         "2026": 4.01
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "SUN",
       "name": "Suncorp Group Limited",
       "exchange": "ASX",
-      "currentPrice": 20.67,
+      "currentPrice": 20.71,
       "currency": "AUD",
-      "marketCap": 21911263232,
+      "marketCap": 21953662976,
       "sector": "Financial Services",
       "industry": "Insurance - Property & Casualty",
       "dividendYield": 3.4,
@@ -3806,7 +3806,7 @@
         "2023": 20.5,
         "2024": 43.8,
         "2025": -16.5,
-        "2026": 22.3
+        "2026": 22.5
       },
       "historicalDividendYields": {
         "2015": 6.26,
@@ -3822,7 +3822,7 @@
         "2025": 5.51,
         "2026": 4.48
       },
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     },
     {
       "ticker": "MFG",
@@ -3838,7 +3838,7 @@
       "annualReturn": null,
       "historicalReturns": {},
       "historicalDividendYields": {},
-      "lastUpdated": "2026-11-10"
+      "lastUpdated": "2026-11-11"
     }
   ]
 }
