@@ -26,7 +26,7 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "_data" / "promos.json"
-FF = ROOT / "_data" / "ff_weekly.json"
+FF = ROOT / "_data" / "ff_cards.json"
 
 FEEDS = {
     "Australian Frequent Flyer": "https://www.australianfrequentflyer.com.au/feed/",
@@ -103,14 +103,13 @@ def main():
     # Flag FF cards mentioned in card news published after the card was last verified
     flags = {}
     ff = json.load(open(FF))
-    for scheme in ("qantas", "velocity"):
-        for c in ff.get(scheme, []):
-            toks = card_tokens(c)
-            bank = c["bank"].lower().replace("amex", "amex|american express")
-            for n in cards:
-                t = n["title"].lower()
-                if re.search(bank, t) and any(tok in t for tok in toks) and n["date"] > (c.get("verified") or "0000"):
-                    flags.setdefault(f'{c["bank"]}|{c["name"]}', []).append(n)
+    for c in ff.get("cards", []):
+        toks = card_tokens(c)
+        bank = c["issuer"].lower().replace("american express", "amex|american express")
+        for n in cards:
+            t = n["title"].lower()
+            if re.search(bank, t) and any(tok in t for tok in toks) and n["date"] > (c.get("verified") or "0000"):
+                flags.setdefault(c["id"], []).append(n)
 
     out = {"updated": datetime.now(timezone.utc).date().isoformat(),
            "_source": "Headlines from public RSS feeds: " + ", ".join(FEEDS),

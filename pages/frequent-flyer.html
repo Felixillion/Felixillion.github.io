@@ -1,90 +1,122 @@
 ---
 layout: default
-title: AU Frequent Flyer Points Tracker | Felixillion
+title: AU Frequent Flyer Credit Card Offers | Felixillion
 permalink: /frequent-flyer.html
-description: "Australian credit card points tracker comparing Qantas and Velocity sign-up bonus offers. Find the best cents-per-point value and quantify the value of research travel."
+description: "Compare Qantas and Velocity credit card sign-up offers in one table: bonus points, spend needed, fees, net value at your own points valuation, and how each offer compares with past deals."
 footer_scripts: assets/js/frequent_flyer.js
 ---
 
 <script>
-  window.FF_DATA = {{ site.data.ff_weekly | jsonify }};
+  window.FF_DATA = {{ site.data.ff_cards | jsonify }};
+  window.FF_HISTORY = {{ site.data.ff_history | jsonify }};
+  window.FF_CHECKS = {{ site.data.ff_checks | jsonify }};
   window.FF_PROMOS = {{ site.data.promos | jsonify }};
 </script>
 
-<div class="container" style="padding-top:8rem;">
+<div class="container" style="padding-top:8rem;padding-bottom:3rem;">
   <div class="fade-in">
-    <h2>AU Credit Card Points Tracker</h2>
-    <p style="color:var(--text-secondary);margin-bottom:1rem;">
-      Comparing Qantas and Velocity sign-up offers. Quantifying the value of medical research travel.
+    <h2>Frequent flyer credit card offers</h2>
+    <p style="color:var(--text-secondary);margin:.4rem 0 .3rem;max-width:52rem;">
+      Every current Qantas and Velocity sign-up bonus from the main Australian issuers in one table, with what it's worth to you after fees —
+      and whether today's offer is better or worse than ones we've seen before.
     </p>
-    <div id="last-updated" style="font-size:.8rem;color:var(--tritc-red);margin-bottom:2rem;">
-      Offers are manually verified — see the date on each card
-    </div>
+    <p class="ff-muted" style="margin-bottom:1.5rem;">Offers checked by hand on <b id="ff-verified"></b> against each bank's own page · links and bonus numbers checked automatically every week (last: <b id="ff-checked"></b>).</p>
   </div>
 
-  <div class="card-controls fade-in" style="margin:2rem 0;display:flex;gap:1rem;flex-wrap:wrap;">
-    <button id="toggle-qantas" class="subheading"
-      style="cursor:pointer;background:var(--glass-bg);">Qantas</button>
-    <button id="toggle-velocity" class="subheading"
-      style="cursor:pointer;opacity:.5;background:var(--glass-bg);">Velocity</button>
+  <div class="ff-tabs fade-in">
+    <button type="button" class="ff-tab ff-tab-on" data-program="qantas">Qantas Points</button>
+    <button type="button" class="ff-tab" data-program="velocity">Velocity Points</button>
   </div>
 
-  <div class="fade-in" style="margin:0 0 1rem;font-size:.85rem;color:var(--text-secondary);">
-    <label for="point-value">Value you place on 1 point (cents):</label>
-    <input id="point-value" type="number" min="0.5" max="5" step="0.1" value="1.5"
-      style="width:5rem;margin-left:.5rem;background:var(--bg-color);color:white;border:1px solid var(--glass-border);padding:.25rem .4rem;">
-    <span style="font-size:.75rem;">(roughly 0.5–1¢ for shopping/gift cards, 1–2¢ economy reward seats, 3¢+ premium-cabin reward seats)</span>
+  <div class="ff-controls fade-in">
+    <label>Value of 1 point <span class="ff-q" title="Roughly 0.5–1¢ for gift cards or shopping, 1–2¢ for economy reward seats, 3¢+ for business-class reward seats.">?</span>
+      <span class="ff-inline"><input id="ff-cents" type="number" min="0.3" max="5" step="0.1" value="1.5">¢</span></label>
+    <label>I can spend in the first 3 months
+      <span class="ff-inline">$<input id="ff-spend" inputmode="numeric" placeholder="any"></span></label>
+    <label>Count
+      <select id="ff-horizon"><option value="y1">Year 1 bonus and fee</option><option value="y2">Years 1–2 (incl. year-2 bonus and second fee)</option></select></label>
+    <label class="ff-check"><input type="checkbox" id="ff-credits" checked> Count travel credits as savings <span id="ff-credits-note" class="ff-muted"></span></label>
   </div>
 
-  <!-- Mobile hint -->
-  <p style="font-size:.75rem;color:var(--text-secondary);margin-bottom:.5rem;display:none;" id="scroll-hint">
-    ← Scroll table to see all columns →
+  <div class="ff-check-note fade-in">
+    <b>Always check the offer on the bank's page before applying.</b> Figures here are checked by hand, and a weekly automatic check looks for changes —
+    but banks change their pages often and some block automated checks, so a change can be missed. Spotted something wrong (even if you're not sure)?
+    Use “Report wrong details” on that card, or <a href="https://github.com/Felixillion/Felixillion.github.io/issues/new?title=FF%20Points%3A%20card%20details%20look%20wrong" target="_blank" rel="noopener">report it here ↗</a> (needs a free GitHub account).
+  </div>
+
+  <div id="ff-table" class="glass-card fade-in ff-desktop"></div>
+  <div id="ff-cards" class="ff-mobile"></div>
+
+  <p class="ff-muted" style="margin-top:.8rem;">
+    <b>Net value</b> = bonus points × your point value − annual fee (+ cashback, and travel credits if ticked). <b>Cost per point</b> = what you pay per bonus point after cashback and credits.
+    Neither includes points from everyday spending, interest, foreign-transaction fees, insurance or lounge access. Year-2 bonuses usually need the second annual fee and sometimes more spending.
+    Cards only earn the bonus if you're a new customer — eligibility rules vary (see each card's note). Click a column heading to sort.
   </p>
 
-  <div id="card-table-container" class="glass-card fade-in" style="overflow-x:auto;">
-    <div style="text-align:center;padding:4rem;">Loading card offers…</div>
-  </div>
-
-  <!-- Auto-updated news -->
   <section class="fade-in" style="margin-top:2.5rem;">
-    <h3 style="font-size:1.05rem;margin-bottom:.4rem;">Latest card-offer news</h3>
-    <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.8rem;">
-      Checked automatically every day from Australian Frequent Flyer and Point Hacks. Cards marked 📰 above have been
-      in the news since their offer was last verified — the bonus or fee may have changed.
-    </p>
-    <ul id="ff-news" style="font-size:.85rem;line-height:1.7;padding-left:1.1rem;color:var(--text-secondary);"></ul>
+    <h3 style="font-size:1.1rem;margin-bottom:.2rem;">Past offers</h3>
+    <div id="ff-history"></div>
   </section>
 
-  <!-- T&C -->
-  <section class="fade-in" style="margin-top:4rem;padding:2rem;border-top:1px solid var(--glass-border);">
-    <h3 style="font-size:1rem;margin-bottom:1rem;">Terms and Conditions (Disclaimer)</h3>
-    <div style="font-size:.85rem;color:var(--text-secondary);line-height:1.8;">
-      <p>1. <strong>Financial Disclaimer:</strong> The information provided here is for informational purposes
-        only and does not constitute financial advice. Always read the Product Disclosure Statement (PDS)
-        provided by the bank.</p>
-      <p>2. <strong>Responsible Use:</strong> It is critical to
-        <a href="https://www.moneysmart.gov.au/credit-cards-and-debt/paying-off-your-credit-card"
-           target="_blank" style="color:var(--fitc-green);">pay off your credit card in full every month</a>
-        to avoid interest charges which negate the value of points.</p>
-      <p>3. <strong>Credit Scores:</strong> Frequent applications can impact your credit score. You can check
-        yours free at <a href="https://www.creditsmart.org.au/" target="_blank"
-          style="color:var(--fitc-green);">CreditSmart</a>.</p>
-      <p>4. "Cost ¢/pt" = (first-year fee − cashback) × 100 ÷ year-1 bonus points; the bracketed figure
-        spreads two years of fees over both years' bonuses. "Est. net value" = bonus × your point value − (first-year fee − cashback).
-        Neither includes points from everyday spend, interest, foreign transaction fees, travel credits or lounge passes.</p>
-      <p>5. Offers are subject to change by the provider without notice. Verify all details on the issuer's
-        website before applying.</p>
-      <p>6. <em>*Affiliate Disclosure: Some links on this page may be affiliate links. I may earn a small
-        commission if you apply through them, at no extra cost to you. This does not influence
-        rankings.</em></p>
+  <section class="fade-in" style="margin-top:2.5rem;">
+    <h3 style="font-size:1.05rem;margin-bottom:.4rem;">Latest card-offer news</h3>
+    <p class="ff-muted" style="margin-bottom:.8rem;">Headlines checked automatically every day from Australian Frequent Flyer, Point Hacks and The Milelion.
+      Cards marked 📰 have been in the news since they were last checked — the offer may have changed.</p>
+    <ul id="ff-news" style="font-size:.85rem;line-height:1.7;padding-left:1.1rem;color:var(--text-secondary);"></ul>
+    <p class="ff-muted">For full card reviews, see <a href="https://www.pointhacks.com.au/credit-cards/" target="_blank" rel="noopener">Point Hacks</a> and
+      <a href="https://www.australianfrequentflyer.com.au/" target="_blank" rel="noopener">Australian Frequent Flyer</a>. This page sticks to the numbers, side by side.</p>
+  </section>
+
+  <section class="fade-in" style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--glass-border);">
+    <h3 style="font-size:1rem;margin-bottom:.8rem;">Before you apply</h3>
+    <div style="font-size:.84rem;color:var(--text-secondary);line-height:1.75;">
+      <p>1. <strong>Not financial advice.</strong> This is general information only. Read the bank's Target Market Determination and terms, and check the offer on the bank's site before applying — offers change without notice.</p>
+      <p>2. <strong>Pay the balance in full every month.</strong> Interest wipes out the value of points quickly —
+        <a href="https://moneysmart.gov.au/credit-cards" target="_blank" rel="noopener" style="color:var(--fitc-green);">Moneysmart: credit cards</a>.</p>
+      <p>3. <strong>Applications show on your credit report.</strong> Many applications in a short time can affect your credit score.
+        You can check yours free — see <a href="https://moneysmart.gov.au/managing-debt/credit-scores-and-credit-reports" target="_blank" rel="noopener" style="color:var(--fitc-green);">Moneysmart: credit reports</a>.</p>
+      <p>4. Only cards that earn Qantas or Velocity points directly (or convert them automatically) are listed; flexible-points cards (e.g. Amex Membership Rewards) and business cards aren't included.</p>
+      <p id="ff-affiliate">5. <em>Some “Apply” links are referral links: I may earn a commission if you're approved, at no cost to you. It doesn't affect the order (sorted by value).</em></p>
     </div>
   </section>
 </div>
 
-<script>
-// Show scroll hint on mobile
-if (window.innerWidth < 700) {
-  const hint = document.getElementById('scroll-hint');
-  if (hint) hint.style.display = 'block';
-}
-</script>
+<style>
+  .ff-muted { color:#7c8798; font-size:.78rem; }
+  .ff-good { color:#4ade80; } .ff-bad { color:#f87171; } .ff-warn { color:#fbbf24; }
+  a.ff-warn { color:#fbbf24; }
+  .ff-small { font-size:.75rem; line-height:1.45; color:var(--text-secondary); }
+  .ff-note { font-size:.72rem; color:#7c8798; margin-top:.25rem; font-style:italic; max-width:20rem; }
+  .ff-pop { display:none; position:absolute; z-index:1000; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:.6rem .75rem; font-size:.78rem; line-height:1.5; color:#e2e8f0; box-shadow:0 6px 24px rgba(0,0,0,.5); }
+  .ff-check-note { font-size:.8rem; line-height:1.6; color:#e2e8f0; background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.3); border-radius:10px; padding:.7rem .9rem; margin-bottom:1rem; }
+  .ff-check-note a, .ff-report { color:#fbbf24; }
+  .ff-report { font-size:.72rem; }
+  .ff-hist-filters { margin:.4rem 0 .8rem; }
+  #ff-credits:disabled + * , .ff-check input:disabled { opacity:.5; }
+  .ff-q { display:inline-block; user-select:none; width:1rem; height:1rem; line-height:1rem; text-align:center; border-radius:50%; border:1px solid #475569; color:#94a3b8; font-size:.62rem; cursor:pointer; }
+  .ff-tabs { display:flex; gap:.5rem; margin-bottom:1rem; }
+  .ff-tab { padding:.5rem 1.1rem; border-radius:999px; border:1px solid var(--glass-border); background:transparent; color:var(--text-secondary); cursor:pointer; font-weight:600; font-family:inherit; }
+  .ff-tab-on { border-color:var(--fitc-green); color:var(--fitc-green); background:rgba(0,255,102,.08); }
+  .ff-controls { display:flex; flex-wrap:wrap; gap:1rem 1.6rem; align-items:end; margin-bottom:1rem; font-size:.8rem; color:var(--text-secondary); }
+  .ff-controls label { display:flex; flex-direction:column; gap:.3rem; }
+  .ff-controls input, .ff-controls select { background:#0a0f1e; color:#f0f0f0; border:1px solid var(--glass-border); border-radius:8px; padding:.4rem .55rem; font-family:inherit; font-size:.85rem; }
+  .ff-controls input:not([type=checkbox]) { width:5.5rem; }
+  .ff-inline { display:flex; align-items:center; gap:.3rem; }
+  .ff-check { flex-direction:row !important; align-items:center; }
+  .ff-table { width:100%; border-collapse:collapse; font-size:.84rem; }
+  .ff-table th { text-align:left; font-size:.72rem; color:#94a3b8; font-weight:600; padding:.7rem .6rem; border-bottom:1px solid var(--glass-border); vertical-align:bottom; }
+  .ff-table td { padding:.75rem .6rem; border-bottom:1px solid rgba(255,255,255,.06); vertical-align:top; }
+  .ff-sort { cursor:pointer; white-space:nowrap; }
+  .ff-pts { color:var(--fitc-green); font-size:.95rem; }
+  .ff-dim { opacity:.45; }
+  .ff-apply { display:inline-block; white-space:nowrap; padding:.4rem .85rem; border-radius:999px; border:1px solid var(--glass-border); background:rgba(255,255,255,.08); color:#fff; font-size:.78rem; font-weight:600; text-decoration:none; }
+  .ff-apply:hover { border-color:var(--fitc-green); background:rgba(0,255,102,.15); }
+  .ff-hist td { padding:.4rem .6rem; } .ff-hist-last td { border-bottom:1px solid var(--glass-border); }
+  #ff-table { overflow-x:auto; padding:.4rem; }
+  .ff-mobile { display:none; }
+  .ff-card { background:rgba(255,255,255,.03); border:1px solid var(--glass-border); border-radius:12px; padding:1rem; margin-bottom:.8rem; }
+  .ff-card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:.6rem; margin-bottom:.7rem; }
+  .ff-card-grid { display:grid; grid-template-columns:1fr 1fr; gap:.6rem .8rem; font-size:.82rem; }
+  .ff-card-grid span { display:block; font-size:.66rem; text-transform:uppercase; letter-spacing:.04em; color:#7c8798; margin-bottom:.1rem; }
+  @media (max-width: 900px) { .ff-desktop { display:none; } .ff-mobile { display:block; } }
+</style>

@@ -1,0 +1,753 @@
+{
+ "_readme": "Credit card sign-up offers shown on the FF Points page. Edited by hand: when you re-check a card, update its figures and 'verified' date. stages: bonus points by year (year 2 usually needs the second annual fee). fees.y1 / fees.ongoing include any rewards-program fee. credits = $ value of travel credits you'd need to use; cashback = $ back in year 1. affiliateLink: optional referral URL (used instead of link). The weekly check (.github/workflows/scripts/ff_check.py) tests every link and compares the bonus numbers with the bank's page.",
+ "verified": "2026-11-11",
+ "cards": [
+  {
+   "id": "westpac-altitude-qantas-black",
+   "program": "qantas",
+   "issuer": "Westpac",
+   "name": "Altitude Qantas Black",
+   "stages": [
+    {
+     "pts": 90000,
+     "year": 1,
+     "need": "Spend $9,000 in 90 days"
+    },
+    {
+     "pts": 60000,
+     "year": 2,
+     "need": "Spend another $9,000 within 90 days of the card anniversary"
+    }
+   ],
+   "minSpend": 9000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 450,
+    "ongoing": 450
+   },
+   "feeNote": "$295 card fee + $155 Qantas Rewards fee. Existing Westpac customers pay a $200 card fee in year 1.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 50,
+   "earn": "up to 1.5 pts/$",
+   "offerEnds": null,
+   "link": "https://www.westpac.com.au/credit-cards/reward/altitude-qantas-black",
+   "affiliateLink": "",
+   "source": "westpac.com.au product page",
+   "verified": "2026-11-11",
+   "notes": "Not available if you have held a Westpac credit card recently (see terms)."
+  },
+  {
+   "id": "westpac-altitude-qantas-platinum",
+   "program": "qantas",
+   "issuer": "Westpac",
+   "name": "Altitude Qantas Platinum",
+   "stages": [
+    {
+     "pts": 30000,
+     "year": 1,
+     "need": "Spend $6,000 in 90 days"
+    },
+    {
+     "pts": 20000,
+     "year": 2,
+     "need": "Spend another $6,000 within 90 days of the card anniversary"
+    }
+   ],
+   "minSpend": 6000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 300,
+    "ongoing": 300
+   },
+   "feeNote": "$175 card fee + $125 Qantas Rewards fee. Existing Westpac customers pay a $99 card fee in year 1.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "earn": "up to 0.75 pts/$",
+   "offerEnds": null,
+   "link": "https://www.westpac.com.au/credit-cards/reward/altitude-qantas-platinum",
+   "affiliateLink": "",
+   "source": "westpac.com.au product page",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "amex-qantas-ultimate",
+   "program": "qantas",
+   "issuer": "American Express",
+   "name": "Qantas Ultimate",
+   "stages": [
+    {
+     "pts": 70000,
+     "year": 1,
+     "need": "Spend $5,000 in 3 months"
+    },
+    {
+     "pts": 50000,
+     "year": 2,
+     "need": "Spend another $5,000 in the first 3 months of year 2"
+    }
+   ],
+   "minSpend": 5000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 450,
+    "ongoing": 450
+   },
+   "cashback": 0,
+   "credits": 450,
+   "creditNote": "$450 Qantas Travel Credit each year (Qantas flights of $450+ booked through Amex Travel)",
+   "statusCredits": 0,
+   "lounge": "2 Qantas Club invitations / yr",
+   "earn": "1.25 pts/$ (2.25 on Qantas)",
+   "offerEnds": "2026-11-17",
+   "link": "https://www.americanexpress.com/en-au/credit-cards/qantas-ultimate-card/",
+   "affiliateLink": "",
+   "source": "americanexpress.com (offer shown on Amex pages); Point Hacks",
+   "verified": "2026-11-11",
+   "notes": "New Amex Card Members only."
+  },
+  {
+   "id": "amex-qantas-premium",
+   "program": "qantas",
+   "issuer": "American Express",
+   "name": "Qantas Premium",
+   "stages": [
+    {
+     "pts": 20000,
+     "year": 1,
+     "need": "Spend $3,000 in 3 months"
+    }
+   ],
+   "minSpend": 3000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 249,
+    "ongoing": 249
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "earn": "1 pt/$ (2 on Qantas)",
+   "offerEnds": null,
+   "link": "https://www.americanexpress.com/en-au/credit-cards/qantas-premium-card/",
+   "affiliateLink": "",
+   "source": "americanexpress.com; Point Hacks",
+   "verified": "2026-11-11",
+   "notes": "Amex pages disagree on whether this bonus is currently offered — check before applying."
+  },
+  {
+   "id": "anz-ff-black",
+   "program": "qantas",
+   "issuer": "ANZ",
+   "name": "Frequent Flyer Black",
+   "stages": [
+    {
+     "pts": 50000,
+     "year": 1,
+     "need": "Spend $6,000 in 3 months"
+    },
+    {
+     "pts": 50000,
+     "year": 2,
+     "need": "Keep the card over 12 months"
+    }
+   ],
+   "minSpend": 6000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 425,
+    "ongoing": 425
+   },
+   "feeNote": "$370 card fee + $55 Rewards Program fee.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "lounge": "2 Qantas Club invitations / yr",
+   "earn": "1 pt/$ up to $7,500 per statement",
+   "offerEnds": null,
+   "link": "https://www.anz.com.au/personal/credit-cards/frequent-flyer-black/",
+   "affiliateLink": "",
+   "source": "anz.com.au product page",
+   "verified": "2026-11-11",
+   "notes": "Not if you hold or held an ANZ Rewards or Frequent Flyer card in the last 24 months."
+  },
+  {
+   "id": "anz-ff-platinum",
+   "program": "qantas",
+   "issuer": "ANZ",
+   "name": "Frequent Flyer Platinum",
+   "stages": [
+    {
+     "pts": 25000,
+     "year": 1,
+     "need": "Spend $3,500 in 4 months"
+    },
+    {
+     "pts": 25000,
+     "year": 2,
+     "need": "Keep the card over 12 months"
+    }
+   ],
+   "minSpend": 3500,
+   "spendDays": 120,
+   "fees": {
+    "y1": 295,
+    "ongoing": 295
+   },
+   "feeNote": "$240 card fee + $55 Rewards Program fee.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "earn": "0.75 pts/$ up to $3,000 per statement",
+   "offerEnds": null,
+   "link": "https://www.anz.com.au/personal/credit-cards/frequent-flyer-platinum/",
+   "affiliateLink": "",
+   "source": "anz.com.au product page",
+   "verified": "2026-11-11",
+   "notes": "Not if you hold or held an ANZ Rewards or Frequent Flyer card in the last 24 months."
+  },
+  {
+   "id": "nab-qantas-signature",
+   "program": "qantas",
+   "issuer": "NAB",
+   "name": "Qantas Rewards Signature",
+   "stages": [
+    {
+     "pts": 40000,
+     "year": 1,
+     "need": "Spend $5,000 in 90 days"
+    },
+    {
+     "pts": 20000,
+     "year": 2,
+     "need": "Keep the card over 12 months"
+    }
+   ],
+   "minSpend": 5000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 449,
+    "ongoing": 449
+   },
+   "cashback": 200,
+   "credits": 0,
+   "statusCredits": 0,
+   "earn": "0.75 pts/$ on the first $3,000 per statement",
+   "offerEnds": null,
+   "link": "https://www.nab.com.au/personal/credit-cards/qantas-rewards/nab-qantas-rewards-signature-card",
+   "affiliateLink": "",
+   "source": "nab.com.au product page",
+   "verified": "2026-11-11",
+   "notes": "Existing NAB customers: 50,000 + 20,000 points instead."
+  },
+  {
+   "id": "nab-qantas-premium",
+   "program": "qantas",
+   "issuer": "NAB",
+   "name": "Qantas Rewards Premium",
+   "stages": [
+    {
+     "pts": 25000,
+     "year": 1,
+     "need": "Spend $4,000 in 90 days"
+    },
+    {
+     "pts": 15000,
+     "year": 2,
+     "need": "Keep the card over 12 months"
+    }
+   ],
+   "minSpend": 4000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 295,
+    "ongoing": 295
+   },
+   "cashback": 150,
+   "credits": 0,
+   "statusCredits": 0,
+   "offerEnds": null,
+   "link": "https://www.nab.com.au/personal/credit-cards/qantas-rewards/nab-qantas-rewards-premium-card",
+   "affiliateLink": "",
+   "source": "nab.com.au product page",
+   "verified": "2026-11-11",
+   "notes": "Existing NAB customers: 40,000 + 20,000 points and $195 card fee in year 1."
+  },
+  {
+   "id": "qantas-money-titanium",
+   "program": "qantas",
+   "issuer": "Qantas Money",
+   "name": "Titanium",
+   "stages": [
+    {
+     "pts": 120000,
+     "year": 1,
+     "need": "Spend $5,000 in 90 days"
+    }
+   ],
+   "minSpend": 5000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 1200,
+    "ongoing": 1200
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "offerEnds": null,
+   "link": "https://www.qantasmoney.com/credit-cards/titanium",
+   "affiliateLink": "",
+   "source": "qantasmoney.com",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "qantas-money-platinum",
+   "program": "qantas",
+   "issuer": "Qantas Money",
+   "name": "Platinum",
+   "stages": [
+    {
+     "pts": 40000,
+     "year": 1,
+     "need": "Spend $5,000 in 90 days"
+    },
+    {
+     "pts": 40000,
+     "year": 1,
+     "need": "Extra if you earned no Qantas Points from a credit card in the last 24 months",
+     "cond": true
+    }
+   ],
+   "minSpend": 5000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 349,
+    "ongoing": 399
+   },
+   "feeNote": "$349 in year 1 if first used within 12 months, then $399.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "offerEnds": null,
+   "link": "https://www.qantasmoney.com/credit-cards/platinum",
+   "affiliateLink": "",
+   "source": "qantasmoney.com",
+   "verified": "2026-11-11",
+   "notes": "The second 40,000 is only for people who haven’t earned Qantas Points on a credit card in 24 months."
+  },
+  {
+   "id": "qantas-money-everyday",
+   "program": "qantas",
+   "issuer": "Qantas Money",
+   "name": "Everyday",
+   "stages": [
+    {
+     "pts": 5000,
+     "year": 1,
+     "need": "Spend $3,000 in 90 days"
+    }
+   ],
+   "minSpend": 3000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 99,
+    "ongoing": 99
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "offerEnds": null,
+   "link": "https://www.qantasmoney.com/credit-cards/everyday",
+   "affiliateLink": "",
+   "source": "qantasmoney.com",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "mycard-premier-qantas",
+   "program": "qantas",
+   "issuer": "MyCard",
+   "name": "Premier Qantas",
+   "stages": [
+    {
+     "pts": 40000,
+     "year": 1,
+     "need": "Spend $7,000 in 90 days"
+    },
+    {
+     "pts": 40000,
+     "year": 2,
+     "need": "Keep the card over 12 months"
+    }
+   ],
+   "minSpend": 7000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 350,
+    "ongoing": 350
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "lounge": "2 Priority Pass visits / yr",
+   "earn": "0.5 pts/$ (capped at $7,000 per statement)",
+   "offerEnds": null,
+   "link": "https://www.mycard.com.au/credit-cards/premier-card-qantas",
+   "affiliateLink": "",
+   "source": "mycard.com.au",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "stgeorge-amplify-qantas-signature",
+   "program": "qantas",
+   "issuer": "St.George",
+   "name": "Amplify Qantas Signature",
+   "stages": [
+    {
+     "pts": 60000,
+     "year": 1,
+     "need": "Spend $9,000 in 90 days"
+    }
+   ],
+   "minSpend": 9000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 450,
+    "ongoing": 450
+   },
+   "feeNote": "$295 card fee + $155 Qantas Rewards fee.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "lounge": "2 Qantas Club visits / yr",
+   "earn": "up to 1.5 pts/$",
+   "offerEnds": null,
+   "link": "https://www.stgeorge.com.au/personal/credit-cards/frequent-flyer/amplify-signature",
+   "affiliateLink": "",
+   "source": "stgeorge.com.au",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "stgeorge-amplify-qantas-platinum",
+   "program": "qantas",
+   "issuer": "St.George",
+   "name": "Amplify Qantas Platinum",
+   "stages": [
+    {
+     "pts": 30000,
+     "year": 1,
+     "need": "Spend $6,000 in 90 days"
+    }
+   ],
+   "minSpend": 6000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 300,
+    "ongoing": 300
+   },
+   "feeNote": "$175 card fee + $125 Qantas Rewards fee.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "earn": "up to 0.75 pts/$",
+   "offerEnds": null,
+   "link": "https://www.stgeorge.com.au/personal/credit-cards/frequent-flyer/amplify-platinum",
+   "affiliateLink": "",
+   "source": "stgeorge.com.au",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "westpac-altitude-velocity-black",
+   "program": "velocity",
+   "issuer": "Westpac",
+   "name": "Altitude Velocity Black",
+   "stages": [
+    {
+     "pts": 90000,
+     "year": 1,
+     "need": "Spend $9,000 in 90 days"
+    },
+    {
+     "pts": 60000,
+     "year": 2,
+     "need": "Spend another $9,000 within 90 days of the card anniversary"
+    }
+   ],
+   "minSpend": 9000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 450,
+    "ongoing": 450
+   },
+   "feeNote": "$295 card fee + $155 Velocity Rewards fee. Existing Westpac customers pay a $200 card fee in year 1.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "earn": "up to 1.5 pts/$",
+   "offerEnds": null,
+   "link": "https://www.westpac.com.au/credit-cards/reward/altitude-velocity-black",
+   "affiliateLink": "",
+   "source": "westpac.com.au product page",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "westpac-altitude-velocity-platinum",
+   "program": "velocity",
+   "issuer": "Westpac",
+   "name": "Altitude Velocity Platinum",
+   "stages": [
+    {
+     "pts": 30000,
+     "year": 1,
+     "need": "Spend $6,000 in 90 days"
+    },
+    {
+     "pts": 20000,
+     "year": 2,
+     "need": "Spend another $6,000 within 90 days of the card anniversary"
+    }
+   ],
+   "minSpend": 6000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 300,
+    "ongoing": 300
+   },
+   "feeNote": "$175 card fee + $125 Velocity Rewards fee. Existing Westpac customers pay a $99 card fee in year 1.",
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "earn": "up to 0.75 pts/$",
+   "offerEnds": null,
+   "link": "https://www.westpac.com.au/credit-cards/reward/altitude-velocity-platinum",
+   "affiliateLink": "",
+   "source": "westpac.com.au product page",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "virgin-money-high-flyer",
+   "program": "velocity",
+   "issuer": "Virgin Money",
+   "name": "Velocity High Flyer",
+   "stages": [
+    {
+     "pts": 80000,
+     "year": 1,
+     "need": "40,000 for each of the first 2 months you spend $3,500+"
+    },
+    {
+     "pts": 20000,
+     "year": 2,
+     "need": "Keep the card open over 12 months"
+    }
+   ],
+   "minSpend": 7000,
+   "spendDays": 60,
+   "fees": {
+    "y1": 349,
+    "ongoing": 349
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 100,
+   "offerEnds": null,
+   "link": "https://www.virginmoney.com.au/credit-cards/high-flyer-credit-card",
+   "affiliateLink": "",
+   "source": "virginmoney.com.au; Velocity newsroom (26 Oct 2026)",
+   "verified": "2026-11-11",
+   "notes": "100 Status Credits once the 80,000 points are earned (they expire after 12 months). Not for existing Virgin Money cardholders."
+  },
+  {
+   "id": "virgin-money-flyer",
+   "program": "velocity",
+   "issuer": "Virgin Money",
+   "name": "Velocity Flyer",
+   "stages": [
+    {
+     "pts": 50000,
+     "year": 1,
+     "need": "25,000 for each of the first 2 months you spend $1,500+"
+    },
+    {
+     "pts": 20000,
+     "year": 2,
+     "need": "Keep the card open over 12 months"
+    }
+   ],
+   "minSpend": 3000,
+   "spendDays": 60,
+   "fees": {
+    "y1": 169,
+    "ongoing": 169
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 50,
+   "offerEnds": null,
+   "link": "https://www.virginmoney.com.au/credit-cards/flyer-credit-card",
+   "affiliateLink": "",
+   "source": "virginmoney.com.au; Velocity newsroom (26 Oct 2026)",
+   "verified": "2026-11-11",
+   "notes": "50 Status Credits once the 50,000 points are earned. Not for existing Virgin Money cardholders."
+  },
+  {
+   "id": "amex-velocity-platinum",
+   "program": "velocity",
+   "issuer": "American Express",
+   "name": "Velocity Platinum",
+   "stages": [
+    {
+     "pts": 50000,
+     "year": 1,
+     "need": "Spend $5,000 in 3 months"
+    }
+   ],
+   "minSpend": 5000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 440,
+    "ongoing": 440
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "earn": "1.25 pts/$ (2.25 on Virgin Australia)",
+   "offerEnds": null,
+   "link": "https://www.americanexpress.com/en-au/credit-cards/velocity-platinum-card/",
+   "affiliateLink": "",
+   "source": "americanexpress.com; Velocity newsroom (26 Oct 2026)",
+   "verified": "2026-11-11",
+   "notes": "Also up to 100 Status Credits a year: 50 after $25,000 spend and 50 more after another $25,000. New Amex Card Members only."
+  },
+  {
+   "id": "amex-velocity-escape-plus",
+   "program": "velocity",
+   "issuer": "American Express",
+   "name": "Velocity Escape Plus",
+   "stages": [
+    {
+     "pts": 20000,
+     "year": 1,
+     "need": "Spend $3,000 in 3 months"
+    }
+   ],
+   "minSpend": 3000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 95,
+    "ongoing": 95
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "offerEnds": "2027-05-25",
+   "link": "https://www.americanexpress.com/en-au/credit-cards/velocity-escape-plus-card/",
+   "affiliateLink": "",
+   "source": "americanexpress.com (Velocity Platinum page); Point Hacks",
+   "verified": "2026-11-11",
+   "notes": "New Amex Card Members only."
+  },
+  {
+   "id": "nab-rewards-velocity",
+   "program": "velocity",
+   "issuer": "NAB",
+   "name": "Rewards Card (Velocity)",
+   "stages": [
+    {
+     "pts": 40000,
+     "year": 1,
+     "need": "Spend $4,000 in 90 days"
+    },
+    {
+     "pts": 40000,
+     "year": 2,
+     "need": "Keep the card over 12 months"
+    }
+   ],
+   "minSpend": 4000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 195,
+    "ongoing": 195
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "offerEnds": null,
+   "via": "NAB Rewards Points, auto-converted to Velocity each month (3 NAB pts = 1 Velocity pt)",
+   "link": "https://www.nab.com.au/personal/credit-cards/nab-rewards-cards/velocity-points",
+   "affiliateLink": "",
+   "source": "nab.com.au product page",
+   "verified": "2026-11-11"
+  },
+  {
+   "id": "nab-rewards-travel-velocity",
+   "program": "velocity",
+   "issuer": "NAB",
+   "name": "Rewards Travel Card (Velocity)",
+   "stages": [
+    {
+     "pts": 50000,
+     "year": 1,
+     "need": "Spend $5,000 in 90 days"
+    },
+    {
+     "pts": 40000,
+     "year": 2,
+     "need": "Keep the card over 12 months"
+    }
+   ],
+   "minSpend": 5000,
+   "spendDays": 90,
+   "fees": {
+    "y1": 395,
+    "ongoing": 395
+   },
+   "cashback": 0,
+   "credits": 0,
+   "statusCredits": 0,
+   "offerEnds": null,
+   "via": "NAB Rewards Points, auto-converted to Velocity each month",
+   "link": "https://www.nab.com.au/personal/credit-cards/nab-rewards-cards/velocity-points",
+   "affiliateLink": "",
+   "source": "nab.com.au product page",
+   "verified": "2026-11-11",
+   "notes": "No international transaction fees. Online applications only for this offer."
+  },
+  {
+   "id": "anz-rewards-platinum-velocity",
+   "program": "velocity",
+   "issuer": "ANZ",
+   "name": "Rewards Platinum (Velocity offer)",
+   "stages": [
+    {
+     "pts": 60000,
+     "year": 1,
+     "need": "Spend $3,500 in 3 months"
+    },
+    {
+     "pts": 20000,
+     "year": 2,
+     "need": "Keep the card over 15 months"
+    }
+   ],
+   "minSpend": 3500,
+   "spendDays": 90,
+   "fees": {
+    "y1": 149,
+    "ongoing": 149
+   },
+   "feeNote": "$94 card fee + $55 Rewards Program fee.",
+   "cashback": 50,
+   "credits": 0,
+   "statusCredits": 0,
+   "offerEnds": null,
+   "via": "ANZ Reward Points with auto-redemption to Velocity switched on",
+   "link": "https://www.anz.com.au/personal/credit-cards/rewards-platinum/",
+   "affiliateLink": "",
+   "source": "anz.com.au product page",
+   "verified": "2026-11-11",
+   "notes": "Choose the Velocity offer when applying. Not if you hold or held an ANZ Rewards or Frequent Flyer card in the last 24 months."
+  }
+ ]
+}

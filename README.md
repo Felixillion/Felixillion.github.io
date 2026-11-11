@@ -1,6 +1,6 @@
 # Felixillion — Personal Portfolio Site
 
-A personal Jekyll site hosted on GitHub Pages. Features spatial biology image galleries, an AU ETF compounding and retirement simulator, a frequent flyer credit card tracker, and an astrobiology-themed cosmic horoscope lab.
+A personal Jekyll site hosted on GitHub Pages. Features spatial biology image galleries, AU ETF tools (compare any ASX fund, backtest portfolios, track your holdings), a frequent flyer credit card tracker, and an astrobiology-themed cosmic horoscope lab.
 
 **Live site:** [felixillion.github.io](https://felixillion.github.io)
 
@@ -19,7 +19,9 @@ A personal Jekyll site hosted on GitHub Pages. Features spatial biology image ga
 ```
 .
 ├── _data/
-│   ├── ff_weekly.json          ← FF card data served to Jekyll at build time
+│   ├── ff_cards.json           ← FF card offers (edited by hand)
+│   ├── ff_history.json         ← past offers (grows weekly)
+│   ├── ff_checks.json          ← weekly automatic check of each bank page
 │   └── astrology_daily.json    ← Daily horoscope/planetary data
 ├── _includes/
 │   └── nav.html                ← Navigation bar (shared across all pages)
@@ -29,7 +31,7 @@ A personal Jekyll site hosted on GitHub Pages. Features spatial biology image ga
 │   ├── css/
 │   │   └── style.css           ← Global styles + CSS variables
 │   ├── js/
-│   │   ├── etf_tools.js        ← ETF compounding + retirement simulator
+│   │   ├── etf_tools.js        ← ETF Tools: compare, backtest, my portfolio
 │   │   ├── frequent_flyer.js   ← FF points card table
 │   │   ├── astrobiology.js     ← Cosmic lab / horoscope frontend
 │   │   ├── gallery.js          ← Spatial gallery renderer
@@ -38,11 +40,13 @@ A personal Jekyll site hosted on GitHub Pages. Features spatial biology image ga
 │   └── gallery/
 │       └── *.jpg               ← Gallery images (author's own — see licence above)
 ├── data/
-│   ├── etf_data.json           ← ETF seed data (45 ETFs, asset class returns 1901–2024)
+│   ├── etf_data.json           ← Asset-class returns 1901+ (AU Investing) + hand-checked fund sectors/holdings
+│   ├── universe.json           ← The ~670 ASX codes whose prices are downloaded
 │   ├── astrology_daily.json    ← Mirror of _data/ for client-side fetch
-│   └── stocks/
-│       ├── index.json          ← Live-updated ticker index
-│       └── <TICKER>.AX.json    ← Per-ETF live data from yfinance
+│   └── prices/
+│       ├── index.json          ← Search list + headline returns for every code
+│       ├── _quality.json       ← What the data sanity checks found
+│       └── <CODE>.json         ← Weekly prices, total-return index and distributions
 ├── pages/
 │   ├── etf-tools.html
 │   ├── frequent-flyer.html
@@ -52,11 +56,14 @@ A personal Jekyll site hosted on GitHub Pages. Features spatial biology image ga
 │   └── privacy.html
 ├── .github/
 │   └── workflows/
-│       ├── daily-update.yml                ← GitHub Actions workflow
+│       ├── daily-update.yml                ← daily data jobs
+│       ├── weekly-prices.yml               ← weekly ETF/share prices
+│       ├── ticker-request.yml              ← "Add ticker: ABC" issues → added automatically
 │       └── scripts/
-│           ├── update_etf_data.py          ← yfinance ETF price updater
+│           ├── fetch_prices.py             ← yfinance weekly prices + sanity checks
+│           ├── update_etf_data.py          ← new asset-class years from the price files
 │           ├── generate_astrology_data.js  ← Daily horoscope generator
-│           └── ff_scraper.js               ← FF card data writer
+│           └── ff_check.py                 ← weekly FF link/offer check
 ├── 404.html
 ├── index.html
 └── requirements.txt                        ← yfinance>=0.2.54
@@ -73,7 +80,7 @@ A personal Jekyll site hosted on GitHub Pages. Features spatial biology image ga
 | CV | `/cv.html` | Academic CV with live ORCID publication fetch |
 | Cosmic Lab | `/astrobiology.html` | Daily science-themed horoscopes |
 | FF Points | `/frequent-flyer.html` | AU credit card bonus comparison |
-| ETF Tools | `/etf-tools.html` | Compounding calculator + retirement simulator |
+| ETF Tools | `/etf-tools.html` | Compare funds, backtest a portfolio, track your holdings |
 | Privacy | `/privacy.html` | Privacy statement |
 
 ---
@@ -84,9 +91,10 @@ Workflow file: `.github/workflows/daily-update.yml`
 
 | Job | Schedule | What it does |
 |---|---|---|
-| **Update ETF & Stock Data** | Daily, 7am AEST | Runs `update_etf_data.py` — fetches current prices and historical returns via `yfinance` for all 45 ETFs. Writes `data/stocks/<TICKER>.AX.json` and `data/stocks/index.json`. Commits to `data/`. |
+| **Weekly Price Update** (`weekly-prices.yml`) | Saturdays | Runs `fetch_prices.py` — full daily history from Yahoo Finance for every code in `data/universe.json`, cleaned and saved as weekly files in `data/prices/`; then `update_etf_data.py` adds any newly completed year to the asset-class returns. |
+| **Ticker Request** (`ticker-request.yml`) | When an issue titled “Add ticker: ABC” is opened | Checks the code on Yahoo, adds it to `universe.json`, downloads it, replies and closes the issue. |
 | **Generate Astrology Data** | Daily, 7am AEST | Runs `generate_astrology_data.js` — computes real planetary positions (VSOP87-approximated), generates date-seeded horoscope readings, writes `data/astrology_daily.json` and `_data/astrology_daily.json`. |
-| **Scrape FF Data** | Mondays, 7am AEST | Runs `ff_scraper.js` — writes the curated FF card dataset to `_data/ff_weekly.json`. Commits to `_data/`. |
+| **FF Offer Check** (`ff-check.yml`) | Mondays | Runs `ff_check.py` — tests each card link, compares bonus numbers with the bank's page, records offer history, opens an issue if anything needs re-checking. |
 
 Manual trigger: GitHub → Actions → Daily Data Update → Run workflow.
 
@@ -94,26 +102,20 @@ Manual trigger: GitHub → Actions → Daily Data Update → Run workflow.
 
 ## ETF Tools — calculation notes
 
-All calculation code is in `assets/js/etf_tools.js`. Key design decisions:
+All calculation code is in `assets/js/etf_tools.js`; prices come from `data/prices/` (weekly).
 
-**Compounding (Projection mode)**
-- Monthly compounding using `(1 + netAnnual)^(1/12) - 1` applied per month
-- `netAnnual = (annualReturn / 100) − MER − dividendYield` (if DRIP off, dividends stripped from growth)
-- Partial first/last month uses `daysRemaining / daysInMonth` fraction
-- Verified against textbook annuity formula — exact match ✓
+**Data**
+- `fetch_prices.py` downloads full daily history (split-adjusted closes and cash distributions) and builds its own total-return index: distributions reinvested at the ex-date close. Yahoo's "Adj Close" isn't used because it is wrong for some funds and LICs.
+- Sanity checks: one-day jumps over 40% that reverse within 3 days are treated as bad ticks; a single distribution over 50% of the price is dropped; over 15% is kept but flagged. Findings go to `data/prices/_quality.json` and the Data Audit.
+- Saved weekly (last close of each week) to keep files small; dates are implicit (start Friday + 7 days × index).
 
-**Compounding (Historical mode)**
-- Uses actual year-by-year returns from `historicalReturns` in `etf_data.json` (sourced from Yahoo Finance adjusted close prices)
-- MER is NOT deducted in historical mode (returns are already net-of-fee from Yahoo adjusted close)
-- Inflation adjustment uses real ABS CPI data by year (AU_CPI_YR table)
+**Compare** — buys at the weekly close; DRP on = units grow with the total-return index; DRP off = distributions paid as cash to units held before each ex-date. "Your annual return" is money-weighted (XIRR); "fund total return" is time-weighted. Today's-dollars mode uses ABS CPI (annual average, interpolated).
 
-**Retirement simulator**
-- Method: Bengen (1994) sequence-of-returns historical simulation — same approach as the Trinity Study
-- Runs every historical start year from 1901 to (last data year − retirement duration)
-- Each year: weighted composite return from asset class data minus fund MER
-- Start-of-year timing (conservative) or end-of-year timing (optimistic)
-- Pre-1970 data is estimated from DMS Yearbook — marked with dashed borders in heatmap
-- Verified: withdrawal rate arithmetic, timing logic, binary search solver all correct ✓
+**Backtest** — weights, rebalancing at the first week of each year/quarter/month, contributions split by target weight, distributions reinvested. Metrics: CAGR, volatility (weekly, annualised), max drawdown, best/worst year, worst 12 months, Sharpe vs the average RBA cash rate, correlations of weekly returns. Look-through uses the hand-checked sectors/holdings in `etf_data.json`.
+
+**My portfolio** — trades saved in the browser (localStorage, key `felixillion-etf-portfolio-v1`); export/import JSON; CSV import for generic broker exports and CommSec. Average-cost gains; distributions estimated from units held before each ex-date; XIRR includes distributions; the benchmark gets the same cash flows.
+
+**Retirement** — moved to the AU Investing page (one maintained withdrawal-rate engine).
 
 **Franking credits**
 - Formula: `dividendYield × frankingPct × (0.30/0.70) × (1 − marginalRate)`
@@ -167,24 +169,17 @@ No code changes needed — `gallery.js` reads from `window.GALLERY_DATA` injecte
 
 ## FF card data — updating manually
 
-Edit `.github/workflows/scripts/ff_scraper.js`. The card objects follow this shape:
+Edit `_data/ff_cards.json` (one object per card; the `_readme` at the top explains each field). Example:
 
-```js
-{
-  bank: "ANZ",
-  name: "Frequent Flyer Black",
-  signupBonus: 130000,
-  year1Bonus: 0,
-  fee: 425,
-  minSpend: 5000,
-  link: "https://www.anz.com.au/...",
-  affiliateLink: "",       // ← set to your referral URL to earn commission
-  loungePasses: "2 Qantas Club",
-  notes: "Optional note shown in table",
-}
+```json
+{ "id": "anz-ff-black", "program": "qantas", "issuer": "ANZ", "name": "Frequent Flyer Black",
+  "stages": [{"pts": 50000, "year": 1, "need": "Spend $6,000 in 3 months"}, {"pts": 50000, "year": 2, "need": "Keep the card over 12 months"}],
+  "minSpend": 6000, "spendDays": 90, "fees": {"y1": 425, "ongoing": 425}, "cashback": 0, "credits": 0,
+  "link": "https://www.anz.com.au/personal/credit-cards/frequent-flyer-black/", "affiliateLink": "",
+  "source": "anz.com.au product page", "verified": "2026-11-11" }
 ```
 
-The script runs weekly (Mondays) and writes directly to `_data/ff_weekly.json`.
+When you re-check a card, update its figures **and** its `verified` date. `.github/workflows/ff-check.yml` runs weekly (Mondays): it tests every link, checks the bonus numbers still appear on the bank's page, adds changed offers to `_data/ff_history.json` (the page's "Past offers"), and opens a GitHub issue “FF Points: offers to re-check” when something needs a human. Some banks block automated visitors — those cards just show no automatic tick.
 
 **Affiliate links:** Set `affiliateLink` to your referral URL. The JS uses `card.affiliateLink || card.link`, so it falls back to the official link when empty.
 
@@ -214,16 +209,16 @@ The Actions workflow runs separately on its own cron schedule and commits data u
 
 ## Known limitations / future work
 
-- FF card data is **manually curated** (banks block automated scraping). Update `ff_scraper.js` when offers change — typically quarterly.
+- FF card offers are **edited by hand** in `_data/ff_cards.json` (banks have no feed). The weekly check tells you when to look.
 - Horoscope readings: 7 per sign × 12 signs = 84 unique readings. With a daily seed they cycle slowly but will repeat. Expanding the reading pool in `generate_astrology_data.js` would reduce repetition.
 - Pre-1970 asset class returns are estimated from academic sources and carry ±2–5% uncertainty. Treat retirement simulations starting before 1970 as illustrative only.
-- ETF inception years: some ETFs launched after 2010 have limited historical data. The tool falls back to asset class history for years before inception.
+- ETF Tools only show real history: a comparison or backtest starts when the youngest fund listed (no stand-in index data). Prices are weekly and update weekly.
 
 ---
 
 ## Data sources
 
-- **ETF returns:** [Yahoo Finance](https://finance.yahoo.com/) adjusted close prices via `yfinance`
+- **ETF/share prices and distributions:** [Yahoo Finance](https://finance.yahoo.com/) via `yfinance`, total returns rebuilt from prices + distributions
 - **Asset class history (1970–2024):** RBA Statistics, ASX 200 total return index, MSCI data
 - **Pre-1970 estimates:** Dimson, Marsh & Staunton — *Global Investment Returns Yearbook* (UBS, annual)
 - **Australian CPI:** ABS Cat. 6401.0
@@ -239,11 +234,11 @@ The Actions workflow runs separately on its own cron schedule and commits data u
 
 | Check | Reference | Fails when |
 |---|---|---|
-| Freshness | — | Cosmic Lab data > 1 day old, ETF/stock data > 8 days old |
+| Freshness | — | Cosmic Lab data > 1 day old, ETF data or weekly prices > 8–9 days old |
 | CPI tables (ETF tools, AU investing) | RBA Table G1 | any year differs by > 0.15 pts |
 | AU shares asset class | All Ords Accumulation (Market Index) | any year out of tolerance |
 | Cash asset class | RBA Table F1 | any year differs by > 0.3 pts |
-| ETF annual returns | Yahoo adjusted-close files in `data/stocks/` | stored value differs by > 1 pt |
+| VAS weekly total returns | All Ords Accumulation | any year differs by > 2.5 pts (checks the price pipeline) |
 | Income tax second bracket | ATO rates by financial year | rate doesn't match the current FY |
 | Status Credits | Qantas earning tables | table or tier thresholds differ |
 | Planet positions | PyEphem (VSOP87/ELP) | any body off by > 0.5° |
@@ -251,4 +246,4 @@ The Actions workflow runs separately on its own cron schedule and commits data u
 Warnings (don't fail the build): FF offers not re-verified in 60 days, Rich List edition out of date, scraped "proposed" values awaiting review.
 If the audit fails, an issue labelled `data-audit` is opened automatically.
 
-**Yearly checklist (Jan–Jun):** add last year's CPI and cash rate from the RBA tables, last year's All Ords Accumulation return, next FY's tax rates (by 1 July) and the new AFR Rich List figures (late May) to `reference_series.json` / `_data/billionaires.json`; re-verify the FF card offers every ~6 weeks (update `verified` per card in `ff_scraper.js`).
+**Yearly checklist (Jan–Jun):** add last year's CPI and cash rate from the RBA tables, last year's All Ords Accumulation return, next FY's tax rates (by 1 July) and the new AFR Rich List figures (late May) to `reference_series.json` / `_data/billionaires.json`; re-verify the FF card offers every ~6 weeks (update `verified` per card in `_data/ff_cards.json`).

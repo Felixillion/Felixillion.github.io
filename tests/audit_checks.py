@@ -50,12 +50,16 @@ if os.path.exists(pidx_path):
     if noted: warn(f"Prices: data-quality notes for {len(noted)} code(s) (see data/prices/_quality.json): {', '.join(noted[:15])}")
 else:
     fail("data/prices/index.json missing — run the Weekly Price Update workflow")
-ff = json.load(open(P('_data', 'ff_weekly.json')))
-for scheme in ('qantas', 'velocity'):
-    for c in ff[scheme]:
-        v = c.get('verified')
-        if not v: warn(f"FF: {c['bank']} {c['name']} has never been verified")
-        elif age_days(v) > 60: warn(f"FF: {c['bank']} {c['name']} last verified {v} ({age_days(v)} days ago)")
+ff = json.load(open(P('_data', 'ff_cards.json')))
+for c in ff['cards']:
+    v = c.get('verified')
+    if not v: warn(f"FF: {c['issuer']} {c['name']} has never been verified")
+    elif age_days(v) > 60: warn(f"FF: {c['issuer']} {c['name']} last verified {v} ({age_days(v)} days ago)")
+    if c.get('offerEnds') and c['offerEnds'] < TODAY.isoformat(): warn(f"FF: {c['issuer']} {c['name']} offer ended {c['offerEnds']} — update or remove it")
+ffc = P('_data', 'ff_checks.json')
+if os.path.exists(ffc):
+    for k, r in json.load(open(ffc))['results'].items():
+        if r.get('status') in ('broken', 'differs'): warn(f"FF: {k} — weekly check says the bank page {'link is broken' if r['status'] == 'broken' else 'no longer shows our bonus figures'}")
 pr_path = P('_data', 'promos.json')
 if os.path.exists(pr_path):
     pr = json.load(open(pr_path))

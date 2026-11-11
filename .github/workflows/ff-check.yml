@@ -1,0 +1,53 @@
+name: FF Offer Check
+
+# Weekly: tests every card link on the FF Points page, checks the bonus numbers still appear on the
+# bank's page, records offer history, and opens (or updates) a GitHub issue if anything needs a human.
+on:
+  schedule:
+    - cron: '41 21 * * 0'      # Monday ~8am Sydney
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: ff-check
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Check the card offers
+        run: python .github/workflows/scripts/ff_check.py
+      - name: Commit results
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name  "github-actions[bot]"
+          git pull --rebase origin main 2>/dev/null || true
+          git add _data/ff_checks.json _data/ff_history.json
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: weekly FF offer check $(date -u +%Y-%m-%d)"
+            git push
+          fi
+      - name: Open or update an issue if offers need re-checking
+        if: hashFiles('ff_report.md') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="FF Points: offers to re-check"
+          N=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number')
+          if [ -n "$N" ]; then gh issue comment "$N" --body-file ff_report.md
+          else gh issue create --title "$TITLE" --body-file ff_report.md; fi

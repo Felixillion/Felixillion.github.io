@@ -1,0 +1,262 @@
+{
+ "_readme": "Offer history for the FF Points page. One entry per offer seen: 'from'/'to' are when it was seen or its stated start/end. The weekly check (ff_check.py) adds a new entry automatically whenever a card's figures in ff_cards.json change, so this grows over time.",
+ "entries": [
+  {
+   "id": "westpac-altitude-velocity-black",
+   "from": "2026-02",
+   "to": "2026-03-05",
+   "total": 150000,
+   "y1": 120000,
+   "fee": 450,
+   "note": "Up to 150,000 incl. 30,000 for activating the offer before applying",
+   "source": "velocityfrequentflyer.com bonus-offer page (activation offer ended 5 Mar 2026)"
+  },
+  {
+   "id": "westpac-altitude-velocity-platinum",
+   "from": "2026-02",
+   "to": "2026-03-05",
+   "total": 100000,
+   "y1": 80000,
+   "fee": 250,
+   "note": "Up to 100,000 incl. 20,000 activation bonus; $175 card + $75 rewards fee",
+   "source": "velocityfrequentflyer.com bonus-offer page (activation offer ended 5 Mar 2026)"
+  },
+  {
+   "id": "amex-velocity-platinum",
+   "from": "2026-02",
+   "to": "2026-04-30",
+   "total": 100000,
+   "y1": 70000,
+   "fee": 440,
+   "note": "70,000 for $5,000 spend in 3 months + 30,000 in year 2",
+   "source": "velocityfrequentflyer.com bonus-offer page (activation offer ended 5 Mar 2026)"
+  },
+  {
+   "id": "anz-rewards-platinum-velocity",
+   "from": "2026-02",
+   "to": "2026-03-05",
+   "total": 80000,
+   "y1": 70000,
+   "fee": 149,
+   "note": "Incl. 10,000 activation bonus",
+   "source": "velocityfrequentflyer.com bonus-offer page (activation offer ended 5 Mar 2026)"
+  },
+  {
+   "id": "nab-rewards-velocity",
+   "from": "2026-02",
+   "to": "2026-03-05",
+   "total": 90000,
+   "y1": 50000,
+   "fee": 195,
+   "note": "Listed as \"NAB Rewards Platinum\", up to 90,000 incl. 10,000 activation bonus",
+   "source": "velocityfrequentflyer.com bonus-offer page (activation offer ended 5 Mar 2026)"
+  },
+  {
+   "id": "amex-velocity-escape-plus",
+   "from": "2026-02",
+   "to": "2026-08-04",
+   "total": 30000,
+   "y1": 30000,
+   "fee": 95,
+   "note": "Incl. 10,000 activation bonus",
+   "source": "velocityfrequentflyer.com bonus-offer page (activation offer ended 5 Mar 2026)"
+  },
+  {
+   "id": "virgin-money-high-flyer",
+   "from": "2026-07-06",
+   "to": "2026-09-30",
+   "total": 100000,
+   "y1": 80000,
+   "fee": 329,
+   "note": "Same points, no Status Credits; fee $329 (rose to $349 on 1 Oct 2026)",
+   "source": "Virgin Money offer wording captured by CraigSaves (offer commenced 6 Jul 2026)"
+  },
+  {
+   "id": "westpac-altitude-qantas-black",
+   "from": "2026-11-11",
+   "total": 150000,
+   "y1": 90000,
+   "fee": 450,
+   "sc": 50,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "westpac-altitude-qantas-platinum",
+   "from": "2026-11-11",
+   "total": 50000,
+   "y1": 30000,
+   "fee": 300,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "amex-qantas-ultimate",
+   "from": "2026-11-11",
+   "total": 120000,
+   "y1": 70000,
+   "fee": 450,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "amex-qantas-premium",
+   "from": "2026-11-11",
+   "total": 20000,
+   "y1": 20000,
+   "fee": 249,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "anz-ff-black",
+   "from": "2026-11-11",
+   "total": 100000,
+   "y1": 50000,
+   "fee": 425,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "anz-ff-platinum",
+   "from": "2026-11-11",
+   "total": 50000,
+   "y1": 25000,
+   "fee": 295,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "nab-qantas-signature",
+   "from": "2026-11-11",
+   "total": 60000,
+   "y1": 40000,
+   "fee": 449,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "nab-qantas-premium",
+   "from": "2026-11-11",
+   "total": 40000,
+   "y1": 25000,
+   "fee": 295,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "qantas-money-titanium",
+   "from": "2026-11-11",
+   "total": 120000,
+   "y1": 120000,
+   "fee": 1200,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "qantas-money-platinum",
+   "from": "2026-11-11",
+   "total": 80000,
+   "y1": 80000,
+   "fee": 349,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "qantas-money-everyday",
+   "from": "2026-11-11",
+   "total": 5000,
+   "y1": 5000,
+   "fee": 99,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "mycard-premier-qantas",
+   "from": "2026-11-11",
+   "total": 80000,
+   "y1": 40000,
+   "fee": 350,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "stgeorge-amplify-qantas-signature",
+   "from": "2026-11-11",
+   "total": 60000,
+   "y1": 60000,
+   "fee": 450,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "stgeorge-amplify-qantas-platinum",
+   "from": "2026-11-11",
+   "total": 30000,
+   "y1": 30000,
+   "fee": 300,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "westpac-altitude-velocity-black",
+   "from": "2026-11-11",
+   "total": 150000,
+   "y1": 90000,
+   "fee": 450,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "westpac-altitude-velocity-platinum",
+   "from": "2026-11-11",
+   "total": 50000,
+   "y1": 30000,
+   "fee": 300,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "virgin-money-high-flyer",
+   "from": "2026-11-11",
+   "total": 100000,
+   "y1": 80000,
+   "fee": 349,
+   "sc": 100,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "virgin-money-flyer",
+   "from": "2026-11-11",
+   "total": 70000,
+   "y1": 50000,
+   "fee": 169,
+   "sc": 50,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "amex-velocity-platinum",
+   "from": "2026-11-11",
+   "total": 50000,
+   "y1": 50000,
+   "fee": 440,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "amex-velocity-escape-plus",
+   "from": "2026-11-11",
+   "total": 20000,
+   "y1": 20000,
+   "fee": 95,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "nab-rewards-velocity",
+   "from": "2026-11-11",
+   "total": 80000,
+   "y1": 40000,
+   "fee": 195,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "nab-rewards-travel-velocity",
+   "from": "2026-11-11",
+   "total": 90000,
+   "y1": 50000,
+   "fee": 395,
+   "source": "issuer page (checked 2026-11-11)"
+  },
+  {
+   "id": "anz-rewards-platinum-velocity",
+   "from": "2026-11-11",
+   "total": 80000,
+   "y1": 60000,
+   "fee": 149,
+   "source": "issuer page (checked 2026-11-11)"
+  }
+ ]
+}

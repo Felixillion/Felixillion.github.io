@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-10",
- "_source": "Headlines from public RSS feeds: Australian Frequent Flyer, Point Hacks, The Milelion",
+ "updated": "2026-11-04",
+ "_source": "Headlines from public RSS feeds (Australian Frequent Flyer, Point Hacks); seeded manually on 2026-11-04.",
  "sc": [
   {
    "title": "Qantas launches new double Status Credits (or Qantas Points) promotion",
@@ -10,25 +10,6 @@
    "qantas_link": "https://www.qantas.com/au/en/frequent-flyer/member-offers/twice-as-rewarding.html"
   }
  ],
- "cards": [
-  {
-   "title": "How to maximise your points earn using credit card spend categories",
-   "link": "https://www.pointhacks.com.au/maximise-your-points-using-credit-card-spend-categories/",
-   "date": "2026-09-30",
-   "source": "Point Hacks"
-  },
-  {
-   "title": "What happens to your bank rewards points when you cancel a credit card",
-   "link": "https://www.pointhacks.com.au/what-happens-to-your-bank-rewards-points-when-you-cancel-a-credit-card/",
-   "date": "2026-09-28",
-   "source": "Point Hacks"
-  },
-  {
-   "title": "How much is 100,000 Amex Points worth in 2026?",
-   "link": "https://www.pointhacks.com.au/how-much-is-100000-amex-points-worth-in-2026/",
-   "date": "2026-09-23",
-   "source": "Point Hacks"
-  }
- ],
+ "cards": [],
  "card_flags": {}
 }
