@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-11-04",
+    "lastUpdated": "2026-11-11",
     "sources": [
       "AU_SHARES 1901\u20132024: All Ordinaries Accumulation Index calendar-year returns (Market Index historical returns infographic 2025); later years from VAS adjusted prices by update_etf_data.py. Pre-1980 values are reconstructions.",
       "CASH 1977\u20132025: RBA Table F1 interbank overnight cash rate, annual average. Earlier years approximate.",
