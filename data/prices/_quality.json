@@ -129,7 +129,7 @@
  "CGHE": [],
  "CGUN": [],
  "CHC": [
-  "differs from Yahoo adjusted close by >1.5 pts in 1 year(s): {2010: 2.7}"
+  "differs from Yahoo adjusted close by >1.5 pts in 1 year(s): {2010: 2.8}"
  ],
  "CIEM": [],
  "CIIH": [],
@@ -605,7 +605,7 @@
  "JHLO": [],
  "JHPI": [],
  "JHX": [
-  "differs from Yahoo adjusted close by >1.5 pts in 2 year(s): {2013: 1.9, 2021: 1.7}"
+  "differs from Yahoo adjusted close by >1.5 pts in 2 year(s): {2013: 1.9, 2021: 1.8}"
  ],
  "JNDQ": [],
  "JPEQ": [],
@@ -663,9 +663,7 @@
   "large distribution 2025-07-01 2.415 (17% of price) \u2014 kept, please check",
   "differs from Yahoo adjusted close by >1.5 pts in 1 year(s): {2025: -3.0}"
  ],
- "MCY": [
-  "differs from Yahoo adjusted close by >1.5 pts in 1 year(s): {2014: -1.5}"
- ],
+ "MCY": [],
  "MEM": [
   "bad tick 2008-01-21 16.09 (prev 11.42) replaced",
   "bad tick 2017-05-15 0.008995 (prev 0.01799) replaced",
@@ -684,7 +682,7 @@
  ],
  "MEZ": [
   "distribution 2015-09-28 11.65 is 600% of price \u2014 dropped as a data error",
-  "differs from Yahoo adjusted close by >1.5 pts in 2 year(s): {2014: -2.5, 2015: 129.1}"
+  "differs from Yahoo adjusted close by >1.5 pts in 2 year(s): {2014: -2.4, 2015: 129.1}"
  ],
  "MFF": [],
  "MFOA": [],
