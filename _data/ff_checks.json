@@ -1,0 +1,206 @@
+{
+ "checked": "2026-11-16",
+ "results": {
+  "westpac-altitude-qantas-black": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    60000,
+    90000,
+    150000
+   ],
+   "status": "match"
+  },
+  "westpac-altitude-qantas-platinum": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    20000,
+    30000,
+    50000
+   ],
+   "status": "match"
+  },
+  "amex-qantas-ultimate": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [],
+   "status": "differs"
+  },
+  "amex-qantas-premium": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [],
+   "status": "differs"
+  },
+  "anz-ff-black": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    50000,
+    100000
+   ],
+   "status": "match"
+  },
+  "anz-ff-platinum": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    25000,
+    50000
+   ],
+   "status": "match"
+  },
+  "nab-qantas-signature": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    20000,
+    40000,
+    60000
+   ],
+   "status": "match"
+  },
+  "nab-qantas-premium": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    15000,
+    25000,
+    40000
+   ],
+   "status": "match"
+  },
+  "qantas-money-titanium": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    120000
+   ],
+   "status": "match"
+  },
+  "qantas-money-platinum": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    40000,
+    80000
+   ],
+   "status": "match"
+  },
+  "qantas-money-everyday": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    5000
+   ],
+   "status": "match"
+  },
+  "mycard-premier-qantas": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    40000,
+    80000
+   ],
+   "status": "match"
+  },
+  "stgeorge-amplify-qantas-signature": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    60000
+   ],
+   "status": "match"
+  },
+  "stgeorge-amplify-qantas-platinum": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    30000
+   ],
+   "status": "match"
+  },
+  "westpac-altitude-velocity-black": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    60000,
+    90000,
+    150000
+   ],
+   "status": "match"
+  },
+  "westpac-altitude-velocity-platinum": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    20000,
+    30000,
+    50000
+   ],
+   "status": "match"
+  },
+  "virgin-money-high-flyer": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    20000,
+    80000,
+    100000
+   ],
+   "status": "match"
+  },
+  "virgin-money-flyer": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    20000,
+    50000,
+    70000
+   ],
+   "status": "match"
+  },
+  "amex-velocity-platinum": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [],
+   "status": "differs"
+  },
+  "amex-velocity-escape-plus": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [],
+   "status": "differs"
+  },
+  "nab-rewards-velocity": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    40000,
+    80000
+   ],
+   "status": "match"
+  },
+  "nab-rewards-travel-velocity": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    40000,
+    50000,
+    90000
+   ],
+   "status": "match"
+  },
+  "anz-rewards-platinum-velocity": {
+   "checked": "2026-11-16",
+   "http": 200,
+   "found": [
+    20000,
+    60000,
+    80000
+   ],
+   "status": "match"
+  }
+ }
+}
