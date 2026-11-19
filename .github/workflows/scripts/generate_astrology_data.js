@@ -1297,7 +1297,7 @@ function sydneyDate(d = new Date()) {
 
 function main() {
   // The reading "day" is the SYDNEY calendar day. Previously the UTC date was
-  // used, but the job runs at ~7am Sydney (= previous day in UTC), so the site
+  // used, but the job runs overnight Sydney time (= previous day in UTC), so the site
   // was always labelled with yesterday's date.
   // Positions are computed for ~midday Sydney time on that day (01:30 UTC), so
   // re-runs on the same day produce byte-identical output (no duplicate commits).
