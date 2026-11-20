@@ -149,8 +149,12 @@ async function initAstrobiology() {
     generateDailyProtocol();
 
     try {
-        const data = window.ASTROLOGY_DATA;
+        let data = window.ASTROLOGY_DATA;
         if (!data) throw new Error("No data available from Jekyll.");
+        // The data file also holds tomorrow's readings (`next`), so the page rolls
+        // over at midnight Sydney time without waiting for the daily update.
+        const todaySydney = new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Sydney' }).format(new Date());
+        if (data.lastUpdated < todaySydney && data.next && data.next.lastUpdated <= todaySydney) data = data.next;
         planetaryData = data.planetary_positions;
 
         // Show which day the horoscope/positions are for, and flag stale data

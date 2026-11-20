@@ -1295,13 +1295,10 @@ function sydneyDate(d = new Date()) {
     year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
 }
 
-function main() {
-  // The reading "day" is the SYDNEY calendar day. Previously the UTC date was
-  // used, but the job runs overnight Sydney time (= previous day in UTC), so the site
-  // was always labelled with yesterday's date.
+function buildDay(dateStr) {
+  // The reading "day" is the SYDNEY calendar day.
   // Positions are computed for ~midday Sydney time on that day (01:30 UTC), so
-  // re-runs on the same day produce byte-identical output (no duplicate commits).
-  const dateStr   = process.env.ASTRO_DATE || sydneyDate();
+  // re-runs for the same day produce byte-identical output (no duplicate commits).
   const today     = new Date(`${dateStr}T01:30:00Z`);
   const yesterday = new Date(today.getTime() - 86400000);
 
@@ -1361,6 +1358,20 @@ function main() {
       "Daily readings: deterministic date-seed (PRNG) selects from 60-entry per-sign pools + 30-entry suffix pool; 1,800 combinations per sign",
     ],
   };
+  return output;
+}
+
+function main() {
+  // GitHub often starts scheduled runs hours late, so the job runs in the Sydney
+  // afternoon and also writes TOMORROW's readings under `next`. The page switches
+  // to `next` by itself at midnight Sydney time — no overnight run needed.
+  const dateStr = process.env.ASTRO_DATE || sydneyDate();
+  const d = new Date(`${dateStr}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + 1);
+  const nextStr = d.toISOString().slice(0, 10);
+  const output = buildDay(dateStr);
+  const next = buildDay(nextStr); delete next.calculation_methods;
+  output.next = next;
+  const positions = output.planetary_positions;
 
   // Write to both data/ (static fetch) and _data/ (Jekyll site.data)
   for (const outPath of [OUT_DATA, OUT_JDATA]) {
@@ -1375,8 +1386,7 @@ function main() {
   console.log(`   Mercury: ${positions.mercury.sign}${positions.mercury.retrograde ? ' ℞' : ''}`);
   console.log(`   Venus: ${positions.venus.sign}${positions.venus.retrograde ? ' ℞' : ''}`);
   console.log(`   Mars: ${positions.mars.sign}${positions.mars.retrograde ? ' ℞' : ''}`);
-  console.log(`   Aspects found: ${aspects.length}`);
-  console.log(`   Compatibility pairs: ${Object.keys(compatibilityMatrix).length}`);
+  console.log(`   Next: ${nextStr}`);
 }
 
 if (require.main === module) main();
